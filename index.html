@@ -259,6 +259,10 @@ nav.tabs .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:1f
 .priv-txt a{color:var(--brand)}
 .priv-row{display:flex;gap:8px;flex-wrap:wrap}
 .priv-row .btn{flex:1;text-decoration:none;color:var(--ink)}
+/* modo admin */
+.nav-right{position:relative}
+.admin-tag{position:absolute;right:4px;top:calc(100% - 2px);font-size:9px;font-weight:800;letter-spacing:.08em;color:#fff;background:var(--danger);border-radius:4px;padding:1px 5px;line-height:1.4}
+header.top.sub .admin-tag{display:none}
 /* uso de la app */
 .us-user{display:flex;flex-direction:column;gap:8px}
 .us-h{display:flex;flex-direction:column;min-width:0}
@@ -611,7 +615,7 @@ header.top.sub .top-coins{display:none}
         </svg></div>
       <div class="nav-title" id="navTitle"></div>
     </div>
-    <div class="nav-right"><button type="button" class="coin-chip top-coins" id="topCoins" aria-label="Tienda de TochiCoins" hidden></button></div>
+    <div class="nav-right"><span class="admin-tag" id="adminTag" hidden>ADMIN</span><button type="button" class="coin-chip top-coins" id="topCoins" aria-label="Tienda de TochiCoins" hidden></button></div>
   </header>
 
   <!-- ENTRENOS -->
@@ -628,7 +632,6 @@ header.top.sub .top-coins{display:none}
       <button type="button" class="tool" id="openMonth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Estadísticas</span></button>
       <button type="button" class="tool" id="openRMBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3M19 12h3"/><rect x="5" y="7" width="3" height="10" rx="1"/><rect x="16" y="7" width="3" height="10" rx="1"/><path d="M8 12h8"/></svg><span>Calculadora RM</span></button>
       <button type="button" class="tool" id="openPainBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg><span>Molestias</span></button>
-      <button type="button" class="tool" id="openShopBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="var(--coin)"/><path d="M8.2 8.3h7.6M12 8.3v8" stroke="var(--coin-in)" stroke-width="2.4" stroke-linecap="round"/></svg><span>Tienda</span></button>
       <button type="button" class="tool" id="openUsageBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><path d="M16 6.5a3 3 0 0 1 0 5.6M18 14.5c1.4.7 2.3 2.2 2.6 4.5"/></svg><span>Uso de la app</span></button>
       <button type="button" class="tool" id="openCycleBtn" hidden><svg viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 1 1 8 1 11.5a6 6 0 0 0 12 0C13 8 7 1 7 1z" fill="var(--drop)"/></svg><span>Ciclo</span></button>
     </div>
@@ -1176,7 +1179,7 @@ function renderShop(){
   let body="";
   if(shopTab==="shop"){
     const items=SHOP;
-    body=`${shopAdmin?`<details class="shop-add" id="shopAdd"${shopAddOpen?" open":""}><summary>+ Añadir imagen a la tienda</summary>
+    body=`${adminOn()?`<details class="shop-add" id="shopAdd"${shopAddOpen?" open":""}><summary>+ Añadir imagen a la tienda</summary>
         <form id="shopForm" class="shop-form" novalidate>
           <label class="shop-pick" id="shopPick"><span id="shopPrev">Elegir imagen</span><input type="file" id="shopFile" accept="image/*"></label>
           <div class="field"><label for="shopName">Nombre</label><input id="shopName" maxlength="40" placeholder="Ej. Gatito campeón"></div>
@@ -1190,9 +1193,9 @@ function renderShop(){
           <span class="price">${COIN_SVG}<span class="mono">${it.price}</span></span>
           ${has?`<span class="tag">Ya es tuya</span>`:buying===it.id?`<div class="buy-confirm"><span>¿Comprar por ${it.price}?</span><div class="row-actions"><button type="button" class="btn primary" data-buyok="${it.id}">Sí</button><button type="button" class="btn" data-buyno>No</button></div></div>`
             :`<button type="button" class="btn ${short>0?"":"primary"}" data-buy="${it.id}" ${short>0?"disabled":""}>${short>0?`Te faltan ${short}`:"Comprar"}</button>`}
-          ${shopAdmin?`<div class="sc-admin"><button type="button" class="link-btn" data-edit="${it.id}">Cambiar precio</button><button type="button" class="link-btn" data-del="${it.id}">Quitar</button></div>`:""}
+          ${adminOn()?`<div class="sc-admin"><button type="button" class="link-btn" data-edit="${it.id}">Cambiar precio</button><button type="button" class="link-btn" data-del="${it.id}">Quitar</button></div>`:""}
         </div></div>`}).join("")}</div>`
-      :`<div class="empty"><h3>La tienda está vacía</h3><p style="margin:0">${shopAdmin?"Añade la primera imagen con «+ Añadir imagen a la tienda».":"Pronto habrá imágenes para comprar con tus TochiCoins."}</p></div>`}`;
+      :`<div class="empty"><h3>La tienda está vacía</h3><p style="margin:0">${adminOn()?"Añade la primera imagen con «+ Añadir imagen a la tienda».":"Pronto habrá imágenes para comprar con tus TochiCoins."}</p></div>`}`;
   }else if(shopTab==="mine"){
     const mine=allItems().filter(i=>own.has(i.id));
     const cur=s=>slots[s]||(s==="start"?"b-start":"b-win");
@@ -1445,7 +1448,7 @@ $("#addEx").onclick=()=>{const cards=document.querySelectorAll("#exRows .ex-card
   const p=!!last&&last.querySelector(".drop-btn")?.getAttribute("aria-pressed")==="true";
   openPicker(addRow({period:p}).querySelector(".exn"))};
 const VIEW_NAME={log:"Entrenos",lib:"Ejercicios",wod:"Entreno",ex:"Ejercicio",stats:"Estadísticas",rm:"Calculadora",pain:"Molestias",cycle:"Ciclo",shop:"Tienda"};
-$("#openShopBtn").onclick=()=>openShop("shop");
+
 $("#openRMBtn").onclick=()=>openRM();$("#openPainBtn").onclick=()=>openPain();$("#openCycleBtn").onclick=()=>openCycle();
 $("#openMonth").onclick=()=>openMonth();
 let formBack=()=>show("log"),formBackLabel="Entrenos",lastEx=null,lastWodId=null;
@@ -2186,9 +2189,9 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
 addEventListener("pagehide",usageFlush);
 /* Cada cambio de pantalla cuenta como uso de esa sección */
 {const _show=show;show=function(v){_show(v);if(v!=="auth"&&v!==USAGE.lastView){usageFlush();USAGE.lastView=v;track("view",{view:v})}}}
-{const _start=startApp;startApp=async function(u){const fresh=!(appStarted&&authUser&&authUser.id===u.id);await _start(u);if(fresh){usageStart();if(current&&current!=="auth"){USAGE.lastView=current;track("view",{view:current})}$("#openUsageBtn").hidden=!shopAdmin}}}
+{const _start=startApp;startApp=async function(u){const fresh=!(appStarted&&authUser&&authUser.id===u.id);await _start(u);if(fresh){usageStart();if(current&&current!=="auth"){USAGE.lastView=current;track("view",{view:current})}paintAdminUI()}}}
 {const _out=signedOut;signedOut=function(){usageStop();$("#openUsageBtn").hidden=true;_out()}}
-{const _init=initShop;initShop=async function(on){await _init(on);$("#openUsageBtn").hidden=!shopAdmin}}
+{const _init=initShop;initShop=async function(on){await _init(on);paintAdminUI()}}
 /* ---------------- Panel «Uso de la app» (solo administradoras) ---------------- */
 let usageDays=30;
 function openUsage(){openTool("usage","Uso de la app",renderUsage)}
@@ -2318,6 +2321,27 @@ function paintPrivacy(){
 }
 function repaintAccount(){paintAccount()}
 {const _pa=paintAccount;paintAccount=function(){_pa();paintPrivacy()}}
+
+/* ---------------- Modo admin ---------------- */
+/* Las herramientas de administración (uso de la app y gestión de la tienda) solo se ven con el modo admin activado. */
+let adminMode=false;try{adminMode=localStorage.getItem("tochinuri-admin")==="1"}catch(e){}
+const adminOn=()=>shopAdmin&&adminMode;
+function paintAdminUI(){
+  const b=$("#openUsageBtn");if(b)b.hidden=!adminOn();
+  document.body.classList.toggle("admin-on",adminOn());
+  const tag=$("#adminTag");if(tag)tag.hidden=!adminOn();
+}
+function setAdminMode(on){adminMode=on;try{localStorage.setItem("tochinuri-admin",on?"1":"0")}catch(e){}paintAdminUI();if(current==="shop")renderShop();if(current==="usage"&&!on)show("log");toast(on?"Modo admin activado":"Modo admin desactivado")}
+{const _ra=renderAll;renderAll=function(){_ra();paintAdminUI()}}
+{const _is=initShop;initShop=async function(o){await _is(o);paintAdminUI()}}
+function paintAdminSwitch(){
+  const box=$("#meAccount");if(!box||!shopAdmin)return;
+  const d=document.createElement("div");d.className="field";
+  d.innerHTML=`<label>Administración</label><div class="acct priv"><label class="switch"><input type="checkbox" id="adminSw"${adminMode?" checked":""}><span class="sw"></span><span class="sw-l"><b>Modo admin</b><small>Muestra «Uso de la app» y la gestión de la tienda. Solo en este dispositivo.</small></span></label></div>`;
+  box.prepend(d);$("#adminSw").onchange=e=>setAdminMode(e.target.checked);
+}
+{const _pa=paintAccount;paintAccount=function(){_pa();paintAdminSwitch()}}
+
 
 applyTheme(themePref());renderChips();renderLib();renderAll();
 initStore();

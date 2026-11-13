@@ -244,6 +244,21 @@ nav.tabs .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:1f
 @media (prefers-reduced-motion:no-preference){.picker{animation:up .22s ease-out}}
 /* Con ratón (ordenador) los filtros se reparten en varias líneas para verlos todos; en el móvil se deslizan con el dedo */
 @media (hover:hover) and (pointer:fine){.chips{flex-wrap:wrap;overflow-x:visible}}
+/* consentimientos */
+.au-checks{display:flex;flex-direction:column;gap:10px;margin-top:2px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.45;color:var(--muted);cursor:pointer}
+.chk input{width:20px;height:20px;min-height:0;flex:none;margin-top:1px;accent-color:var(--brand)}
+.chk a{color:var(--brand)}
+.au-small{font-size:13px}
+.au-small a{color:var(--muted)}
+.priv{flex-direction:column;align-items:stretch}
+.field .priv label.switch,.field .priv label.switch *{text-transform:none;letter-spacing:0;font-size:15px;color:var(--ink);font-weight:inherit}
+.field .priv label.switch b{font-weight:600}
+.field .priv label.switch small{font-size:13px;color:var(--muted)}
+.priv-txt{font-size:13px;margin:0;color:var(--muted)}
+.priv-txt a{color:var(--brand)}
+.priv-row{display:flex;gap:8px;flex-wrap:wrap}
+.priv-row .btn{flex:1;text-decoration:none;color:var(--ink)}
 /* uso de la app */
 .us-user{display:flex;flex-direction:column;gap:8px}
 .us-h{display:flex;flex-direction:column;min-width:0}
@@ -946,10 +961,15 @@ function showAuth(mode){
   if(authMode==="login")body=`<form id="authForm" novalidate>${f("auEmail","Email","email","email","tu@email.com")}${f("auPass","Contraseña","password","current-password")}
       <p class="form-error" id="auErr" hidden></p><button class="btn primary full" type="submit">Entrar</button></form>
       <button type="button" class="link-btn au-link" data-go="forgot">¿Olvidaste tu contraseña?</button>
-      <p class="au-alt">¿No tienes cuenta? <button type="button" class="link-btn" data-go="signup">Regístrate</button></p>`;
+      <p class="au-alt">¿No tienes cuenta? <button type="button" class="link-btn" data-go="signup">Regístrate</button></p>
+      <p class="au-alt au-small"><a href="legal.html" target="_blank" rel="noopener">Aviso legal y privacidad</a></p>`;
   else if(authMode==="signup")body=`<form id="authForm" novalidate>${f("auEmail","Email","email","email","tu@email.com")}${f("auPass","Contraseña (mínimo 6 caracteres)","password","new-password")}${f("auPass2","Repite la contraseña","password","new-password")}
-      <p class="form-error" id="auErr" hidden></p><button class="btn primary full" type="submit">Crear cuenta</button>
-      <p class="au-legal">Al crear la cuenta, TochiNuri guarda tus entrenos y datos de uso (cuándo entras, qué secciones abres y cuánto tiempo) para mejorar la app. Solo la administración de TochiNuri puede verlos.</p></form>
+      <div class="au-checks">
+        <label class="chk"><input type="checkbox" id="auTerms"><span>He leído y acepto el <a href="legal.html#aviso-legal" target="_blank" rel="noopener">aviso legal</a> y la <a href="legal.html#privacidad" target="_blank" rel="noopener">política de privacidad</a>. Entiendo que TochiNuri guarda mis entrenos y datos de uso (cuándo entro, qué secciones abro y cuánto tiempo) para mejorar la app.</span></label>
+        <label class="chk"><input type="checkbox" id="auAge"><span>Tengo 14 años o más.</span></label>
+        <label class="chk"><input type="checkbox" id="auHealth"><span><b>Opcional:</b> doy mi consentimiento explícito para que se traten los datos de salud que yo decida apuntar (ciclo menstrual, días con la regla, molestias y lesiones). Puedo retirarlo cuando quiera en mi perfil. <a href="legal.html#salud" target="_blank" rel="noopener">Más información</a></span></label>
+      </div>
+      <p class="form-error" id="auErr" hidden></p><button class="btn primary full" type="submit">Crear cuenta</button></form>
       <p class="au-alt">¿Ya tienes cuenta? <button type="button" class="link-btn" data-go="login">Entra</button></p>`;
   else if(authMode==="forgot")body=`<p class="au-sub">Escribe el email de tu cuenta y te enviaremos un enlace para crear una contraseña nueva.</p>
       <form id="authForm" novalidate>${f("auEmail","Email","email","email","tu@email.com")}<p class="form-error" id="auErr" hidden></p><button class="btn primary full" type="submit">Enviar enlace</button></form>
@@ -970,10 +990,13 @@ async function onAuthSubmit(ev){
   if((authMode==="login")&&!pass)return err("Escribe tu contraseña.");
   if((authMode==="signup"||authMode==="reset")&&(pass||"").length<6)return err("La contraseña debe tener al menos 6 caracteres.");
   if((authMode==="signup"||authMode==="reset")&&pass!==pass2)return err("Las dos contraseñas no coinciden.");
+  if(authMode==="signup"&&!$("#auTerms").checked)return err("Para crear la cuenta tienes que aceptar el aviso legal y la política de privacidad.");
+  if(authMode==="signup"&&!$("#auAge").checked)return err("Para registrarte tienes que tener al menos 14 años.");
   btn.disabled=true;const old=btn.textContent;btn.textContent="Un momento…";
   try{
     if(authMode==="login"){const{error}=await SB.auth.signInWithPassword({email,password:pass});if(error)throw error}
-    else if(authMode==="signup"){const{data,error}=await SB.auth.signUp({email,password:pass,options:{emailRedirectTo:location.origin+location.pathname}});if(error)throw error;
+    else if(authMode==="signup"){const now=new Date().toISOString(),hc=$("#auHealth").checked;
+      const{data,error}=await SB.auth.signUp({email,password:pass,options:{emailRedirectTo:location.origin+location.pathname,data:{terms_accepted_at:now,terms_version:"2026-11-14",age_14:true,health_consent:hc,health_consent_at:hc?now:null}}});if(error)throw error;
       if(!data.session){showAuth("sent");$("#auSentTxt").innerHTML=`Te hemos enviado un correo a <b>${esc(email)}</b>. Ábrelo y pulsa el enlace para confirmar tu cuenta; después podrás entrar. Si no lo ves, mira en spam.`;return}}
     else if(authMode==="forgot"){const{error}=await SB.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});if(error)throw error;
       showAuth("sent");$("#auSentTxt").innerHTML=`Si <b>${esc(email)}</b> tiene cuenta, te llegará un correo con un enlace para crear una contraseña nueva. Si no lo ves, mira en spam.`;return}
@@ -1066,7 +1089,7 @@ $("#tabNew").onclick=()=>startNew();
 
 /* ---------------- Perfil ---------------- */
 const DROP_SVG=`<svg class="drop-ico" viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 1 1 8 1 11.5a6 6 0 0 0 12 0C13 8 7 1 7 1z" fill="currentColor"/></svg>`;
-const isWoman=()=>profile?.sex==="mujer";
+const isWoman=()=>profile?.sex==="mujer"&&healthOK();
 function avatarInner(p){if(p?.photo)return`<img src="${p.photo}" alt="">`;const n=(p?.name||"").trim();return n?esc(n[0].toUpperCase()):"·"}
 function renderProfileBits(){
   /* Arriba a la derecha: tus TochiCoins (abren la tienda). Tu perfil se abre tocando tu foto en el saludo. */
@@ -2220,6 +2243,81 @@ async function renderUsage(){
   v.querySelectorAll("[name=usDays]").forEach(r=>r.onchange=()=>{usageDays=Number(r.value);renderUsage()});
 }
 $("#openUsageBtn").onclick=()=>openUsage();
+
+/* ---------------- Consentimientos y derechos (RGPD) ---------------- */
+/* Datos de salud (ciclo, gota, molestias): solo con consentimiento explícito. El del perfil manda; si no hay, vale el del registro. */
+function healthOK(){
+  if(profile&&profile.health&&typeof profile.health.on==="boolean")return profile.health.on;
+  return authUser?.user_metadata?.health_consent===true;
+}
+function applyHealthUI(){
+  const ok=healthOK();
+  const pb=$("#openPainBtn");if(pb)pb.hidden=!ok;
+  const cb=$("#openCycleBtn");if(cb&&!ok)cb.hidden=true;
+  const ap=$("#addPain");if(ap){ap.hidden=!ok;const lbl=ap.previousElementSibling?.previousElementSibling;if(lbl&&lbl.classList.contains("field"))lbl.hidden=!ok;$("#painRows").hidden=!ok}
+  if(!ok){const cc=$("#cycleCard");if(cc)cc.innerHTML=""}
+}
+{const _ra=renderAll;renderAll=function(){_ra();applyHealthUI()}}
+{const _sh=show;show=function(v){_sh(v);applyHealthUI()}}
+
+function paintPrivacy(){
+  const box=$("#meAccount");if(!box||!authUser)return;
+  const ok=healthOK(),hasHealth=!!(profile?.cycle?.starts?.length)||workouts.some(w=>(w.pains||[]).length||(w.exercises||[]).some(e=>e.period));
+  const sec=document.createElement("div");sec.className="field";sec.id="mePrivacy";
+  sec.innerHTML=`<label>Tus datos</label><div class="acct priv">
+    <label class="switch"><input type="checkbox" id="hcSwitch"${ok?" checked":""}><span class="sw"></span><span class="sw-l"><b>Datos de salud</b><small>${ok?"Activado: puedes usar ciclo, gota y molestias.":"Desactivado: ciclo, gota y molestias están ocultos."}</small></span></label>
+    <p class="priv-txt" id="hcTxt" hidden>Al activarlo das tu <b>consentimiento explícito</b> para que TochiNuri trate los datos de salud que apuntes (ciclo menstrual, días con la regla, molestias y lesiones). Solo los ves tú y puedes retirarlo cuando quieras. <a href="legal.html#salud" target="_blank" rel="noopener">Más información</a></p>
+    <div class="row-actions" id="hcConfirm" hidden><button type="button" class="btn primary" id="hcYes">Doy mi consentimiento</button><button type="button" class="btn" id="hcNo">Cancelar</button></div>
+    ${hasHealth?`<button type="button" class="btn ghost" id="hcDel">Borrar mis datos de salud</button>`:""}
+    <div class="priv-row"><button type="button" class="btn" id="dlData">Descargar mis datos</button><a class="btn ghost" href="legal.html" target="_blank" rel="noopener">Aviso legal y privacidad</a></div>
+    <button type="button" class="btn danger" id="delAcc">Eliminar mi cuenta</button>
+    <div id="delBox" hidden class="confirm"><b>¿Eliminar tu cuenta para siempre?</b><span class="muted">Se borrarán tu perfil, tus entrenos, tus datos de salud, tus TochiCoins y tu actividad. No se puede deshacer.</span>
+      <input id="delTxt" placeholder="Escribe ELIMINAR para confirmar" autocomplete="off" aria-label="Escribe ELIMINAR para confirmar">
+      <p class="form-error" id="delErr" hidden></p>
+      <div class="row-actions"><button type="button" class="btn danger" id="delYes">Eliminar definitivamente</button><button type="button" class="btn" id="delNo">Cancelar</button></div></div>
+  </div>`;
+  box.appendChild(sec);
+  const sw=$("#hcSwitch");
+  sw.onchange=async()=>{
+    if(sw.checked){sw.checked=false;$("#hcTxt").hidden=false;$("#hcConfirm").hidden=false;return}
+    await saveProf({health:{on:false,at:new Date().toISOString()}},"Datos de salud desactivados");repaintAccount();
+  };
+  $("#hcYes").onclick=async()=>{await saveProf({health:{on:true,at:new Date().toISOString()}},"Datos de salud activados");repaintAccount()};
+  $("#hcNo").onclick=()=>{$("#hcTxt").hidden=true;$("#hcConfirm").hidden=true};
+  const hd=$("#hcDel");if(hd)hd.onclick=async()=>{
+    if(hd.dataset.c!=="1"){hd.dataset.c="1";hd.textContent="¿Seguro? Toca otra vez para borrarlos";return}
+    hd.disabled=true;hd.textContent="Borrando…";
+    try{
+      for(const w of [...workouts]){if(!(w.pains||[]).length&&!(w.exercises||[]).some(e=>e.period))continue;
+        await store.save({...w,pains:[],exercises:(w.exercises||[]).map(e=>({...e,period:false}))})}
+      const p={...profile};delete p.cycle;await store.saveProfile(p);profile=p;renderAll();toast("Datos de salud borrados");repaintAccount();
+    }catch(e){toast("No se pudieron borrar todos. Inténtalo de nuevo.");hd.disabled=false}
+  };
+  $("#dlData").onclick=async()=>{
+    const b=$("#dlData");b.disabled=true;b.textContent="Preparando…";
+    try{
+      const ev=await SB.from("events").select("type,view,seconds,created_at").eq("user_id",authUser.id).order("created_at");
+      const out={generado:new Date().toISOString(),cuenta:{email:authUser.email,alta:authUser.created_at,consentimientos:authUser.user_metadata||{}},perfil:profile,entrenos:workouts,actividad:ev.data||[]};
+      const blob=new Blob([JSON.stringify(out,null,2)],{type:"application/json"}),a=document.createElement("a");
+      a.href=URL.createObjectURL(blob);a.download=`tochinuri-mis-datos-${today()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+      toast("Descarga lista");
+    }catch(e){toast("No se pudieron preparar tus datos.")}
+    finally{b.disabled=false;b.textContent="Descargar mis datos"}
+  };
+  $("#delAcc").onclick=()=>{$("#delBox").hidden=false;$("#delTxt").focus()};
+  $("#delNo").onclick=()=>{$("#delBox").hidden=true};
+  $("#delYes").onclick=async()=>{
+    const e=m=>{$("#delErr").textContent=m;$("#delErr").hidden=false};
+    if($("#delTxt").value.trim().toUpperCase()!=="ELIMINAR")return e("Escribe ELIMINAR para confirmar.");
+    const b=$("#delYes");b.disabled=true;b.textContent="Eliminando…";
+    const{error}=await SB.rpc("delete_my_account");
+    if(error){b.disabled=false;b.textContent="Eliminar definitivamente";return e("No se pudo eliminar la cuenta: "+error.message)}
+    try{localStorage.removeItem("tochinuri-coins-seen")}catch(x){}
+    await SB.auth.signOut().catch(()=>{});signedOut();toast("Tu cuenta y tus datos se han eliminado");
+  };
+}
+function repaintAccount(){paintAccount()}
+{const _pa=paintAccount;paintAccount=function(){_pa();paintPrivacy()}}
 
 applyTheme(themePref());renderChips();renderLib();renderAll();
 initStore();

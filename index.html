@@ -2163,7 +2163,7 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
 addEventListener("pagehide",usageFlush);
 /* Cada cambio de pantalla cuenta como uso de esa sección */
 {const _show=show;show=function(v){_show(v);if(v!=="auth"&&v!==USAGE.lastView){usageFlush();USAGE.lastView=v;track("view",{view:v})}}}
-{const _start=startApp;startApp=async function(u){const fresh=!(appStarted&&authUser&&authUser.id===u.id);await _start(u);if(fresh){usageStart();$("#openUsageBtn").hidden=!shopAdmin}}}
+{const _start=startApp;startApp=async function(u){const fresh=!(appStarted&&authUser&&authUser.id===u.id);await _start(u);if(fresh){usageStart();if(current&&current!=="auth"){USAGE.lastView=current;track("view",{view:current})}$("#openUsageBtn").hidden=!shopAdmin}}}
 {const _out=signedOut;signedOut=function(){usageStop();$("#openUsageBtn").hidden=true;_out()}}
 {const _init=initShop;initShop=async function(on){await _init(on);$("#openUsageBtn").hidden=!shopAdmin}}
 /* ---------------- Panel «Uso de la app» (solo administradoras) ---------------- */

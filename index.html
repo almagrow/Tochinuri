@@ -244,6 +244,11 @@ nav.tabs .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:1f
 @media (prefers-reduced-motion:no-preference){.picker{animation:up .22s ease-out}}
 /* Con ratón (ordenador) los filtros se reparten en varias líneas para verlos todos; en el móvil se deslizan con el dedo */
 @media (hover:hover) and (pointer:fine){.chips{flex-wrap:wrap;overflow-x:visible}}
+/* uso de la app */
+.us-user{display:flex;flex-direction:column;gap:8px}
+.us-h{display:flex;flex-direction:column;min-width:0}
+.us-h .muted{font-size:13px;overflow-wrap:anywhere}
+.au-legal{font-size:12px;color:var(--muted);margin:0;text-align:center}
 /* cuenta */
 header.top.authing{display:none}
 .au-wrap{max-width:420px;margin:0 auto;padding-top:calc(6vh + 10px);display:flex;flex-direction:column;gap:14px}
@@ -609,6 +614,7 @@ header.top.sub .top-coins{display:none}
       <button type="button" class="tool" id="openRMBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3M19 12h3"/><rect x="5" y="7" width="3" height="10" rx="1"/><rect x="16" y="7" width="3" height="10" rx="1"/><path d="M8 12h8"/></svg><span>Calculadora RM</span></button>
       <button type="button" class="tool" id="openPainBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg><span>Molestias</span></button>
       <button type="button" class="tool" id="openShopBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="var(--coin)"/><path d="M8.2 8.3h7.6M12 8.3v8" stroke="var(--coin-in)" stroke-width="2.4" stroke-linecap="round"/></svg><span>Tienda</span></button>
+      <button type="button" class="tool" id="openUsageBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><path d="M16 6.5a3 3 0 0 1 0 5.6M18 14.5c1.4.7 2.3 2.2 2.6 4.5"/></svg><span>Uso de la app</span></button>
       <button type="button" class="tool" id="openCycleBtn" hidden><svg viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 1 1 8 1 11.5a6 6 0 0 0 12 0C13 8 7 1 7 1z" fill="var(--drop)"/></svg><span>Ciclo</span></button>
     </div>
     <div id="logList"></div>
@@ -675,6 +681,8 @@ header.top.sub .top-coins{display:none}
 
   <!-- ESTADÍSTICAS MENSUALES -->
   <section class="view" id="v-stats" hidden></section>
+
+  <section class="view" id="v-usage" hidden></section>
 
   <!-- ENTRAR / REGISTRARSE -->
   <section class="view" id="v-auth" hidden></section>
@@ -940,7 +948,8 @@ function showAuth(mode){
       <button type="button" class="link-btn au-link" data-go="forgot">¿Olvidaste tu contraseña?</button>
       <p class="au-alt">¿No tienes cuenta? <button type="button" class="link-btn" data-go="signup">Regístrate</button></p>`;
   else if(authMode==="signup")body=`<form id="authForm" novalidate>${f("auEmail","Email","email","email","tu@email.com")}${f("auPass","Contraseña (mínimo 6 caracteres)","password","new-password")}${f("auPass2","Repite la contraseña","password","new-password")}
-      <p class="form-error" id="auErr" hidden></p><button class="btn primary full" type="submit">Crear cuenta</button></form>
+      <p class="form-error" id="auErr" hidden></p><button class="btn primary full" type="submit">Crear cuenta</button>
+      <p class="au-legal">Al crear la cuenta, TochiNuri guarda tus entrenos y datos de uso (cuándo entras, qué secciones abres y cuánto tiempo) para mejorar la app. Solo la administración de TochiNuri puede verlos.</p></form>
       <p class="au-alt">¿Ya tienes cuenta? <button type="button" class="link-btn" data-go="login">Entra</button></p>`;
   else if(authMode==="forgot")body=`<p class="au-sub">Escribe el email de tu cuenta y te enviaremos un enlace para crear una contraseña nueva.</p>
       <form id="authForm" novalidate>${f("auEmail","Email","email","email","tu@email.com")}<p class="form-error" id="auErr" hidden></p><button class="btn primary full" type="submit">Enviar enlace</button></form>
@@ -980,7 +989,7 @@ async function startApp(u){
   const docs=SB.from("docs");
   store={
     async save(w){const{id,...body}=w;const{error}=await docs.upsert({user_id:u.id,id,data:body,updated_at:new Date().toISOString()});if(error)throw error;
-      const i=workouts.findIndex(x=>x.id===id);if(i>=0)workouts[i]=w;else workouts.push(w);renderAll()},
+      const i=workouts.findIndex(x=>x.id===id);track(i>=0?"workout_edit":"workout_new");if(i>=0)workouts[i]=w;else workouts.push(w);renderAll()},
     async remove(id){const{error}=await docs.delete().eq("id",id);if(error)throw error;workouts=workouts.filter(x=>x.id!==id);renderAll()},
     async saveProfile(p){const{error}=await docs.upsert({user_id:u.id,id:PID,data:p,updated_at:new Date().toISOString()});if(error)throw error;profile=p}
   };
@@ -2129,6 +2138,88 @@ function renderAll(){
   checkNewCoins();snapshotMonths();
   if(profileReady&&!profile&&current!=="me"&&current!=="auth")openMe(true);
 }
+
+/* ---------------- Registro de uso (solo web) ---------------- */
+/* Apunta, por cada usuario: cuándo entra (sesión), qué secciones abre y cuánto tiempo pasa con la app abierta y a la vista.
+   Solo lo pueden leer las administradoras desde «Uso de la app». */
+const USAGE={sid:null,lastView:null,visibleSince:null,pending:0,timer:null};
+const VIEW_LABEL={log:"Entrenos",new:"Apuntar entreno",wod:"Detalle de entreno",lib:"Ejercicios",ex:"Ficha de ejercicio",stats:"Estadísticas",rm:"Calculadora RM",pain:"Molestias",cycle:"Ciclo",shop:"Tienda",me:"Perfil",usage:"Uso de la app"};
+function track(type,extra={}){
+  if(!SB||!authUser||!USAGE.sid)return;
+  SB.from("events").insert({user_id:authUser.id,session_id:USAGE.sid,type,...extra}).then(()=>{},()=>{});
+}
+function usageFlush(){
+  if(USAGE.visibleSince){USAGE.pending+=(Date.now()-USAGE.visibleSince)/1000;USAGE.visibleSince=document.visibilityState==="visible"?Date.now():null}
+  const s=Math.round(USAGE.pending);if(s>=1){USAGE.pending-=s;track("time",{seconds:s,view:USAGE.lastView})}
+}
+function usageStart(){
+  USAGE.sid="s"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);USAGE.lastView=null;USAGE.pending=0;
+  USAGE.visibleSince=document.visibilityState==="visible"?Date.now():null;
+  track("start",{view:navigator.standalone||matchMedia("(display-mode: standalone)").matches?"app instalada":"navegador"});
+  clearInterval(USAGE.timer);USAGE.timer=setInterval(usageFlush,60000);
+}
+function usageStop(){usageFlush();clearInterval(USAGE.timer);USAGE.sid=null}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")usageFlush();else USAGE.visibleSince=Date.now()});
+addEventListener("pagehide",usageFlush);
+/* Cada cambio de pantalla cuenta como uso de esa sección */
+{const _show=show;show=function(v){_show(v);if(v!=="auth"&&v!==USAGE.lastView){usageFlush();USAGE.lastView=v;track("view",{view:v})}}}
+{const _start=startApp;startApp=async function(u){const fresh=!(appStarted&&authUser&&authUser.id===u.id);await _start(u);if(fresh){usageStart();$("#openUsageBtn").hidden=!shopAdmin}}}
+{const _out=signedOut;signedOut=function(){usageStop();$("#openUsageBtn").hidden=true;_out()}}
+{const _init=initShop;initShop=async function(on){await _init(on);$("#openUsageBtn").hidden=!shopAdmin}}
+/* ---------------- Panel «Uso de la app» (solo administradoras) ---------------- */
+let usageDays=30;
+function openUsage(){openTool("usage","Uso de la app",renderUsage)}
+async function renderUsage(){
+  const v=$("#v-usage");v.innerHTML=`<h2 class="view-title" style="margin-top:12px">Uso de la app</h2><p class="muted">Cargando…</p>`;
+  const since=new Date(Date.now()-usageDays*864e5).toISOString();
+  let ev=[],users=[];
+  try{
+    const [e,u]=await Promise.all([SB.from("events").select("user_id,session_id,type,view,seconds,created_at").gte("created_at",since).order("created_at",{ascending:false}).limit(20000),SB.rpc("admin_users")]);
+    if(e.error)throw e.error;if(u.error)throw u.error;ev=e.data||[];users=u.data||[];
+  }catch(err){v.innerHTML=`<h2 class="view-title" style="margin-top:12px">Uso de la app</h2><p class="form-error">No se pudieron cargar los datos de uso: ${esc(err.message||err)}</p>`;return}
+  const day=d=>d.slice(0,10),todayK=new Date().toISOString().slice(0,10),wk=new Date(Date.now()-7*864e5).toISOString();
+  const byUser={};users.forEach(u=>byUser[u.user_id]={...u,sessions:new Set(),secs:0,views:{},last:null,days:new Set()});
+  const sess={};
+  for(const x of ev){const U=byUser[x.user_id];if(!U)continue;U.sessions.add(x.session_id);U.days.add(day(x.created_at));if(!U.last||x.created_at>U.last)U.last=x.created_at;
+    if(x.type==="time"&&x.seconds)U.secs+=x.seconds;if(x.type==="view"&&x.view)U.views[x.view]=(U.views[x.view]||0)+1;
+    const S=sess[x.session_id]||(sess[x.session_id]={secs:0,start:x.created_at});if(x.type==="time")S.secs+=x.seconds||0;if(x.created_at<S.start)S.start=x.created_at}
+  const U=Object.values(byUser),activeToday=U.filter(u=>u.days.has(todayK)).length,active7=U.filter(u=>u.last&&u.last>=wk).length;
+  const S=Object.values(sess),totalSecs=S.reduce((a,s)=>a+s.secs,0),avg=S.length?totalSecs/S.length:0;
+  const viewsAll={};ev.forEach(x=>{if(x.type==="view"&&x.view&&x.view!=="usage")viewsAll[x.view]=(viewsAll[x.view]||0)+1});
+  const vTot=Object.values(viewsAll).reduce((a,b)=>a+b,0);
+  const timeByView={};ev.forEach(x=>{if(x.type==="time"&&x.view&&x.seconds)timeByView[x.view]=(timeByView[x.view]||0)+x.seconds});
+  const tv=Object.values(timeByView).reduce((a,b)=>a+b,0);
+  const newW=ev.filter(x=>x.type==="workout_new").length;
+  const fmtDur=s=>{s=Math.round(s);if(s<60)return s+" s";const m=Math.floor(s/60);if(m<60)return m+" min";const h=Math.floor(m/60);return h+" h "+(m%60)+" min"};
+  const fmtAgo=d=>{if(!d)return"—";const m=Math.round((Date.now()-new Date(d))/6e4);if(m<2)return"ahora";if(m<60)return`hace ${m} min`;const h=Math.round(m/60);if(h<24)return`hace ${h} h`;const dd=Math.round(h/24);return`hace ${dd} ${dd===1?"día":"días"}`};
+  /* usuarios activos por día (últimos 14) */
+  const days=[];for(let i=13;i>=0;i--){const k=new Date(Date.now()-i*864e5).toISOString().slice(0,10);days.push({k,n:U.filter(u=>u.days.has(k)).length})}
+  const mx=Math.max(1,...days.map(d=>d.n));
+  const bar=(l,n,t,extra="")=>`<div class="sbar sbar-w"><span class="sbar-l">${l}</span><span class="sbar-t"><span class="sbar-f brand" style="width:${t?Math.round(n/t*100):0}%"></span></span><span class="sbar-v mono">${t?Math.round(n/t*100):0} %</span><span class="sbar-n mono">${extra||n}</span></div>`;
+  v.innerHTML=`<h2 class="view-title" style="margin-top:12px">Uso de la app</h2>
+    <div class="seg seg3" style="margin-bottom:12px">${[7,30,90].map(d=>`<input type="radio" name="usDays" id="us${d}" value="${d}"${usageDays===d?" checked":""}><label for="us${d}">${d} días</label>`).join("")}</div>
+    <div class="mgrid">
+      <div class="mtile"><span class="eyebrow">Usuarios</span><b>${users.length}</b><span class="muted">registrados</span></div>
+      <div class="mtile"><span class="eyebrow">Activos hoy</span><b>${activeToday}</b><span class="muted">${active7} en 7 días</span></div>
+      <div class="mtile"><span class="eyebrow">Sesiones</span><b>${S.length}</b><span class="muted">en ${usageDays} días</span></div>
+      <div class="mtile"><span class="eyebrow">Tiempo medio</span><b style="font-size:24px">${fmtDur(avg)}</b><span class="muted">por sesión</span></div>
+      <div class="mtile"><span class="eyebrow">Tiempo total</span><b style="font-size:24px">${fmtDur(totalSecs)}</b><span class="muted">con la app abierta</span></div>
+      <div class="mtile"><span class="eyebrow">Entrenos nuevos</span><b>${newW}</b><span class="muted">apuntados</span></div>
+    </div>
+    <div class="sec"><h3>Usuarios activos por día</h3><div class="pr-box"><div class="mchart">${days.map((d,i)=>`<div class="mc-col${i===13?" cur":""}"><span class="mc-n mono">${d.n}</span><span class="mc-bar" style="height:${Math.max(3,d.n/mx*100)}%"></span><span class="mc-l">${d.k.slice(8)}</span></div>`).join("")}</div></div></div>
+    <div class="sec"><h3>Lo que más usan</h3><div class="pr-box">
+      <div class="eyebrow" style="margin-bottom:6px">Veces que se abre cada sección</div>
+      ${Object.entries(viewsAll).sort((a,b)=>b[1]-a[1]).map(([k,n])=>bar(esc(VIEW_LABEL[k]||k),n,vTot)).join("")||`<p class="muted" style="margin:0">Aún no hay datos.</p>`}
+      ${tv?`<div class="eyebrow" style="margin:12px 0 6px">Tiempo en cada sección</div>${Object.entries(timeByView).sort((a,b)=>b[1]-a[1]).map(([k,n])=>bar(esc(VIEW_LABEL[k]||k),n,tv,fmtDur(n))).join("")}`:""}
+    </div></div>
+    <div class="sec"><h3>Usuarios</h3><div class="list">${U.sort((a,b)=>(b.last||"").localeCompare(a.last||"")).map(u=>{const top=Object.entries(u.views).filter(([k])=>k!=="usage").sort((a,b)=>b[1]-a[1])[0];
+      return`<div class="pr-box us-user"><div class="us-h"><b>${esc(u.name||"Sin perfil")}</b><span class="muted">${esc(u.email||"")}</span></div>
+        <div class="h-grid"><span><small>Último acceso</small><b>${fmtAgo(u.last||u.last_sign_in_at)}</b></span><span><small>Sesiones</small><b class="mono">${u.sessions.size}</b></span><span><small>Tiempo</small><b class="mono">${fmtDur(u.secs)}</b></span><span><small>Entrenos</small><b class="mono">${u.workouts}</b></span></div>
+        <p class="muted" style="margin:6px 0 0;font-size:12px">Alta: ${esc(shortDate(u.created_at.slice(0,10)))} ${u.created_at.slice(0,4)}${top?` · Lo que más abre: ${esc(VIEW_LABEL[top[0]]||top[0])}`:""} · Días activo: ${u.days.size}</p></div>`}).join("")}</div></div>
+    <p class="muted" style="font-size:12px">Solo las administradoras ven esta pantalla. El tiempo cuenta mientras la app está abierta y a la vista.</p>`;
+  v.querySelectorAll("[name=usDays]").forEach(r=>r.onchange=()=>{usageDays=Number(r.value);renderUsage()});
+}
+$("#openUsageBtn").onclick=()=>openUsage();
 
 applyTheme(themePref());renderChips();renderLib();renderAll();
 initStore();

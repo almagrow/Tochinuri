@@ -3754,7 +3754,7 @@ function paintRepeat(){
 }
 
 /* 3 · Al pulsar + se elige qué apuntar */
-openSheet=function(){paintRepeat();$("#sheetTitle").textContent="¿Qué vas a apuntar?";$("#sheet").hidden=false;($("#sheetRepeat").hidden?$("#sheetWod"):$("#sheetRepeat")).focus()};
+openSheet=function(){paintRepeat();const g=mode==="gym";$("#sheetWod").hidden=g;$("#sheetLift").hidden=g;$("#sheetGym").hidden=!g;$("#sheetTitle").textContent="¿Qué vas a apuntar?";$("#sheet").hidden=false;($("#sheetRepeat").hidden?$("#sheetWod"):$("#sheetRepeat")).focus()};
 $("#sheetRepeat").onclick=()=>{closeSheet();repeatWorkout(lastInMode())};
 $("#sheetWod").onclick=()=>{closeSheet();if(mode!=="cf")setMode("cf");openForm({kind:"cf"})};
 $("#sheetGym").onclick=()=>{closeSheet();if(mode!=="gym")setMode("gym");openForm({kind:"gym",type:"Gym"})};

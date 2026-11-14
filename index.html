@@ -832,6 +832,30 @@ header.top.sub .top-coins{display:none}
 [data-skin="revista"] .tab[aria-current="page"]{color:#C6F432}
 [data-skin="revista"] .tab-new{border-radius:0;box-shadow:none}
 
+/* Logos de la tienda (llama en la i) */
+.brand.has-logo>:not(.lg){display:none}
+.lg{font-family:"Lilita One","Nunito",sans-serif;font-weight:400;display:inline-flex;flex-direction:column;align-items:center;line-height:1;color:var(--ink);text-transform:none;letter-spacing:0}
+.lg-w{font-size:32px;white-space:nowrap}
+.lg-i{position:relative;display:inline-block}
+.lg-i svg{position:absolute;left:50%;bottom:.65em;width:.46em;height:.575em;transform:translateX(-42%) rotate(10deg);overflow:visible}
+.lg-viva .lg-n{color:#C026D3}
+.lg-bar{width:120px;height:12px;margin-top:2px;color:var(--ink)}
+.lg-peg{background:#FFFFFF;border:2.5px solid #2E1065;border-radius:14px;padding:5px 10px 2px;box-shadow:3px 3px 0 #2E1065;transform:rotate(-3deg)}
+.lg-peg .lg-w{font-size:27px;color:#A78BFA;-webkit-text-stroke:1.5px #2E1065;paint-order:stroke fill;text-shadow:2px 2px 0 #2E1065}
+.lg-peg .lg-n{color:#F0ABFC}
+.lg-peg .lg-i svg{transform:translateX(-50%)}
+.lg-noche{background:#160A2C;border-radius:14px;padding:7px 12px 4px}
+.lg-noche .lg-w{font-size:27px;color:#FFFFFF}
+.lg-noche .lg-n{color:#F0ABFC;text-shadow:0 0 10px rgba(217,70,239,.7)}
+.lg-noche .lg-i svg{transform:translateX(-50%);filter:drop-shadow(0 0 5px #E879F9)}
+.lg-sub{font-size:8.5px;letter-spacing:3px;color:#C4B5FD;margin-top:2px}
+.lg-esc{width:60px;height:60px;box-sizing:border-box;border-radius:50%;background:#FFFFFF;border:2.5px solid #2E1065;box-shadow:2px 2px 0 #2E1065;justify-content:center;line-height:.95;color:#2E1065}
+.lg-esc .lg-t{font-size:15px}
+.lg-esc .lg-n{font-size:19px;color:#C026D3}
+.lg-esc .lg-i svg{transform:translateX(-50%)}
+.lg-normal{font-family:var(--f-display);font-size:26px}.lg-normal span{color:var(--brand)}
+.lg-prev{height:110px;display:flex;align-items:center;justify-content:center;background:var(--surface-2);border-radius:10px 10px 0 0;overflow:hidden}
+
 /* 11 · Llama clásica (estilo del icono) */
 :root[data-skin="llama"]{--bg:#FFFFFF;--surface:#FFFFFF;--surface-2:#F4EEFF;--ink:#2E1065;--muted:#5B21B6;--line:#2E1065;--accent:#A21CAF;--accent-ink:#FFFFFF;--brand:#C026D3;--f-display:"Lilita One","Nunito",sans-serif;--f-body:"Nunito",system-ui,sans-serif;
   --p-red:#cf3a2f;--p-blue:#2b62c6;--p-yellow:#c99a0c;--p-green:#2c9452;--p-white:#7d8894;--danger:#c0352b;--drop:#d7263d;--star:#e0a100;color-scheme:light}
@@ -1719,7 +1743,7 @@ function coinBalance(){const earned=coinLedger().reduce((a,e)=>a+e.amt,0),spent=
 const allItems=()=>[...BUILTIN(),...SHOP];
 /* La cuenta administradora tiene todo desbloqueado, sin gastar monedas */
 let shopFree=false;
-const ownedIds=()=>(shopAdmin||shopFree)?new Set(["b-start","b-win",...SHOP.map(i=>i.id),...(typeof SKINS!=="undefined"?SKINS.map(x=>"t-"+x.id):[]),...(coinsData().owned||[])]):new Set(["b-start","b-win",...(coinsData().owned||[])]);
+const ownedIds=()=>(shopAdmin||shopFree)?new Set(["b-start","b-win",...SHOP.map(i=>i.id),...(typeof SKINS!=="undefined"?SKINS.map(x=>"t-"+x.id):[]),...(typeof LOGOS!=="undefined"?LOGOS.map(x=>"l-"+x.id):[]),...(coinsData().owned||[])]):new Set(["b-start","b-win",...(coinsData().owned||[])]);
 function slotSrc(slot){const id=(coinsData().slots||{})[slot];const it=id&&allItems().find(i=>i.id===id);return it?it.src:(slot==="start"?GOAL_CAT:GOAL_CAT_WIN)}
 /* Aviso cuando ganas monedas nuevas (se recuerda en este navegador lo último que viste) */
 function checkNewCoins(){
@@ -1901,6 +1925,62 @@ function paintSkinShop(){
 {const _rs=renderShop;renderShop=function(){_rs();paintSkinShop()}}
 {const _ra=renderAll;renderAll=function(){_ra();applySkin(skinPref())}}
 {const _is=initShop;initShop=async function(o){await _is(o);applySkin(skinPref());if(current==="shop")renderShop()}}
+
+
+/* ---------------- Logos de la tienda ----------------
+   Logos de TochiNuri con una llama en el punto de la última «i». Se compran con TochiCoins
+   y, al ponerlos, sustituyen al logo normal de arriba. Se guardan en el perfil (logo). */
+const FLAME_OUT="M12 1C13.5 6.5 21 10 21 18a9 9 0 0 1-18 0c0-4.5 2.3-6.6 4.4-8.8.3 2.8 1.8 4.4 3.4 4.9C9.8 10.5 9.6 5 12 1z";
+const FLAME_IN="M12 13c.9 2.6 4.2 3.8 4.2 7.4a4.2 4.2 0 0 1-8.4 0c0-2 1.2-3.2 2.1-4.3.4 1.3 1.1 1.8 1.8 2-.4-1.9-.4-3.4.3-5.1z";
+const flameI=(fill,stroke,inner)=>`<span class="lg-i">ı<svg viewBox="0 0 24 30" aria-hidden="true"><path d="${FLAME_OUT}" fill="${fill}"${stroke?` stroke="${stroke}" stroke-width="2.2" stroke-linejoin="round"`:""}/>${inner?`<path d="${FLAME_IN}" fill="${inner}"${stroke?` stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"`:""}/>`:""}</svg></span>`;
+const LOGO_BAR=`<svg class="lg-bar" viewBox="0 0 210 20" aria-hidden="true"><path d="M8 14 Q105 0 202 14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><rect x="22" y="2" width="10" height="18" rx="3" fill="#C026D3" stroke="currentColor" stroke-width="2"/><rect x="178" y="2" width="10" height="18" rx="3" fill="#C026D3" stroke="currentColor" stroke-width="2"/></svg>`;
+const LOGOS=[
+  {id:"viva",name:"Llama viva",price:150,html:()=>`<span class="lg lg-viva"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("#D946EF","currentColor","#FDE047")}</span></span>${LOGO_BAR}</span>`},
+  {id:"pegatina",name:"Pegatina",price:200,html:()=>`<span class="lg lg-peg"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("#D946EF","#2E1065")}</span></span></span>`},
+  {id:"noche",name:"Noche",price:200,html:()=>`<span class="lg lg-noche"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("#E879F9","","#FDE68A")}</span></span><span class="lg-sub">CROSSFIT · GYM</span></span>`},
+  {id:"escudo",name:"Escudo",price:250,html:()=>`<span class="lg lg-esc"><span class="lg-t">Tochi</span><span class="lg-n">Nur${flameI("#D946EF","#2E1065")}</span></span>`}
+];
+const logoItemId=id=>"l-"+id;
+const logoOwned=id=>ownedIds().has(logoItemId(id));
+function logoPref(){if(profile&&"logo" in profile)return profile.logo||"";try{return localStorage.getItem("tochinuri-logo")||""}catch(e){return""}}
+function applyLogo(id){
+  const b=$("#brand");if(!b)return;
+  let L=LOGOS.find(x=>x.id===id)||null;if(L&&profile&&!logoOwned(L.id))L=null;
+  const cur=b.querySelector(".lg");
+  if(L){loadFonts(["Lilita+One"]);if(!cur||cur.dataset.logo!==L.id){cur?.remove();b.insertAdjacentHTML("beforeend",L.html());b.querySelector(".lg").dataset.logo=L.id}b.classList.add("has-logo")}
+  else{cur?.remove();b.classList.remove("has-logo")}
+  try{localStorage.setItem("tochinuri-logo",L?L.id:"")}catch(e){}
+}
+async function useLogo(id){const ok=await saveProf({logo:id||""},id?`Logo «${(LOGOS.find(x=>x.id===id)||{}).name}» puesto`:"Vuelves al logo normal");applyLogo(logoPref());return ok}
+function paintLogoShop(){
+  const sec=$("#v-shop .skins-sec");if(!sec||shopTab==="coins")return;
+  const B=coinBalance(),cur=logoPref(),box=document.createElement("div");box.className="logos-sec";
+  const prev=L=>`<div class="lg-prev">${L?L.html():`<span class="lg lg-normal">Tochi<span>Nuri</span></span>`}</div>`;
+  if(shopTab==="shop"){
+    box.innerHTML=`<h3 style="margin-top:18px">Logos</h3><p class="muted">Cambia el logo de arriba por uno con una llama en la «i». Cuando lo compres, lo pones desde «Mías».</p><div class="shop-grid">${LOGOS.map(L=>{const iid=logoItemId(L.id),has=logoOwned(L.id),short=L.price-B.bal;
+      return`<div class="shop-card${has?" owned":""}">${prev(L)}<div class="sc-b"><b>${esc(L.name)}</b><span class="price">${COIN_SVG}<span class="mono">${L.price}</span></span>
+        ${has?`<span class="tag">Ya es tuyo</span>`:buying===iid?`<div class="buy-confirm"><span>¿Comprar por ${L.price}?</span><div class="row-actions"><button type="button" class="btn primary" data-logook="${L.id}">Sí</button><button type="button" class="btn" data-buyno>No</button></div></div>`
+          :`<button type="button" class="btn ${short>0?"":"primary"}" data-logobuy="${L.id}" ${short>0?"disabled":""}>${short>0?`Te faltan ${short}`:"Comprar"}</button>`}</div></div>`}).join("")}</div>`;
+  }else{
+    const mine=[null,...LOGOS.filter(L=>logoOwned(L.id))];
+    box.innerHTML=`<h3 style="margin-top:18px">Logo de la app</h3><p class="muted">${mine.length>1?"Elige el logo que sale arriba.":"Compra logos en la pestaña «Tienda» para cambiar el de arriba."}</p><div class="shop-grid">${mine.map(L=>{const id=L?L.id:"",on=(cur||"")===id;
+      return`<div class="shop-card owned">${prev(L)}<div class="sc-b"><b>${L?esc(L.name):"Logo normal"}</b><button type="button" class="btn ${on?"on":"primary"}" data-logouse="${id}" ${on?'aria-pressed="true"':""}>${on?"✓ En uso":"Usar este logo"}</button></div></div>`}).join("")}</div>`;
+  }
+  const last=[...sec.querySelectorAll(":scope > h3")].pop();sec.insertBefore(box,last);
+  loadFonts(["Lilita+One"]);
+  box.querySelectorAll("[data-logobuy]").forEach(b=>b.onclick=()=>{buying=logoItemId(b.dataset.logobuy);renderShop()});
+  box.querySelectorAll("[data-buyno]").forEach(b=>b.onclick=()=>{buying=null;renderShop()});
+  box.querySelectorAll("[data-logook]").forEach(b=>b.onclick=async()=>{const L=LOGOS.find(x=>x.id===b.dataset.logook);if(!L)return;
+    if(coinBalance().bal<L.price){toast("No tienes suficientes TochiCoins.");buying=null;renderShop();return}
+    b.disabled=true;const c=coinsData(),iid=logoItemId(L.id);
+    const ok=await saveProf({coins:{...c,owned:[...(c.owned||[]),iid],spent:[...(c.spent||[]),{id:iid,name:"Logo "+L.name,price:L.price,date:today()}]}},`¡Has comprado el logo «${L.name}»!`);
+    buying=null;if(ok)shopTab="mine";renderShop()});
+  box.querySelectorAll("[data-logouse]").forEach(b=>b.onclick=async()=>{b.disabled=true;await useLogo(b.dataset.logouse);renderShop()});
+}
+{const _rs=renderShop;renderShop=function(){_rs();paintLogoShop()}}
+{const _ra=renderAll;renderAll=function(){_ra();applyLogo(logoPref())}}
+{const _is=initShop;initShop=async function(o){await _is(o);applyLogo(logoPref())}}
+try{applyLogo(localStorage.getItem("tochinuri-logo")||"")}catch(e){}
 
 let themeSynced=false;
 

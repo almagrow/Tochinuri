@@ -1045,6 +1045,9 @@ header.top.sub .top-coins{display:none}
 .field label,.field .field-lbl{font-size:13px;font-weight:800;color:var(--ink);letter-spacing:.06em}
 #wodForm>.field>label,#wodForm .mo-flat>.field>label{font-size:14px}
 .sw-l small,.date-human{color:var(--muted);font-size:13px}
+/* Botones de añadir del formulario: que se vea claro que son botones */
+#wodForm .btn.ghost,#v-cex .btn.ghost{border:2px solid var(--brand);background:color-mix(in srgb,var(--brand) 9%,var(--surface));color:var(--brand);font-weight:800;box-shadow:0 2px 0 color-mix(in srgb,var(--brand) 35%,transparent)}
+#wodForm .btn.ghost:active{transform:translateY(1px);box-shadow:none}
 /* ---------------- Textos que nunca se salen de su recuadro (todos los temas, móvil y ordenador) ---------------- */
 .wod{grid-template-columns:52px minmax(0,1fr) auto}
 .wod>*{min-width:0}

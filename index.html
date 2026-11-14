@@ -22,7 +22,7 @@ img{max-width:100%}
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
-<script>try{var t=localStorage.getItem("tochinuri-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var t=localStorage.getItem("tochinuri-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);var k=localStorage.getItem("tochinuri-skin");if(k)document.documentElement.setAttribute("data-skin",k)}catch(e){}</script>
 <style>
 /* Layout: una sola columna tipo app móvil; pizarra de box con barra de pestañas fija abajo. Categorías codificadas con los colores de los discos bumper (25 rojo, 20 azul, 15 amarillo, 10 verde, 5 blanco). */
 :root{
@@ -590,6 +590,181 @@ header.top.sub .top-coins{display:none}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom,0px) + 14px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:14px;z-index:30}
 @media (prefers-reduced-motion:no-preference){.view{animation:in .18s ease-out}@keyframes in{from{transform:translateY(4px)}to{transform:none}}}
 @media (max-width:380px){.ex-nums{grid-template-columns:repeat(2,1fr)}}
+/* ---------------- Temas de la tienda (se compran con TochiCoins) ----------------
+   Cada tema fija su propio aspecto (claro u oscuro) y manda sobre el modo noche. */
+:root[data-skin="industrial"]{--bg:#1B1C1E;--surface:#26272A;--surface-2:#202124;--ink:#ECEAE4;--muted:#A9A79F;--line:#3A3B3F;--accent:#F5C400;--accent-ink:#1B1C1E;--brand:#F5C400;--f-display:"Oswald","Barlow Condensed",sans-serif;
+  --p-red:#ff6a5c;--p-blue:#6f9bff;--p-yellow:#f2c94c;--p-green:#53c47f;--p-white:#b9c2cc;--danger:#ff7a6e;--drop:#ff5a6e;--star:#ffc53d;color-scheme:dark}
+:root[data-skin="pizarra"]{--bg:#24302A;--surface:#2B3831;--surface-2:#27332D;--ink:#EDEFE8;--muted:#B9C2B6;--line:rgba(237,239,232,.38);--accent:#F2E28A;--accent-ink:#24302A;--brand:#F4A7B9;--f-display:"Caveat Brush",cursive;--f-body:"Patrick Hand","Comic Sans MS",cursive;
+  --p-red:#ff8a7e;--p-blue:#8fb4ff;--p-yellow:#F2E28A;--p-green:#8fdca8;--p-white:#d5dbd2;--danger:#ff8a7e;--drop:#ff7a8a;--star:#F2E28A;color-scheme:dark}
+:root[data-skin="neon"]{--bg:#0B0A14;--surface:#15132A;--surface-2:#100F20;--ink:#EDE9FF;--muted:#9E97C2;--line:#2E2A55;--accent:#FF3EA5;--accent-ink:#0B0A14;--brand:#2DE2E6;--f-display:"Audiowide",sans-serif;
+  --p-red:#ff5c7a;--p-blue:#6f9bff;--p-yellow:#FFD60A;--p-green:#39e1a0;--p-white:#b9b4d6;--danger:#ff6b8a;--drop:#ff5a8e;--star:#FFD60A;color-scheme:dark}
+:root[data-skin="gatitos"]{--bg:#FFF1F5;--surface:#FFFFFF;--surface-2:#FFF7FA;--ink:#3B2A4A;--muted:#735F82;--line:#F1CCDB;--accent:#7B4FD0;--accent-ink:#FFFFFF;--brand:#7B4FD0;--f-display:"Baloo 2",sans-serif;--f-body:"Baloo 2",sans-serif;
+  --p-red:#cf3a2f;--p-blue:#2b62c6;--p-yellow:#c99a0c;--p-green:#2c9452;--p-white:#7d8894;--danger:#c0352b;--drop:#d7263d;--star:#e0a100;color-scheme:light}
+:root[data-skin="arcade"]{--bg:#10102A;--surface:#17173A;--surface-2:#131332;--ink:#F4F4F4;--muted:#B1B1D2;--line:#4A4A8C;--accent:#E83B3B;--accent-ink:#FFFFFF;--brand:#B07CFF;--f-display:"Press Start 2P",monospace;--f-body:"VT323",monospace;--f-mono:"VT323",monospace;
+  --p-red:#ff6a5c;--p-blue:#6f9bff;--p-yellow:#FCE05E;--p-green:#39E16B;--p-white:#c9c9e0;--danger:#ff7a6e;--drop:#ff5a6e;--star:#FCE05E;color-scheme:dark}
+:root[data-skin="suizo"]{--bg:#FFFFFF;--surface:#FFFFFF;--surface-2:#F3F3F3;--ink:#111111;--muted:#555555;--line:#111111;--accent:#111111;--accent-ink:#FFFFFF;--brand:#D10A11;--f-display:"Inter Tight","Helvetica Neue",Arial,sans-serif;--f-body:"Inter Tight","Helvetica Neue",Arial,sans-serif;
+  --p-red:#cf3a2f;--p-blue:#2b62c6;--p-yellow:#c99a0c;--p-green:#2c9452;--p-white:#7d8894;--danger:#c0352b;--drop:#d7263d;--star:#e0a100;color-scheme:light}
+:root[data-skin="marcador"]{--bg:#0E0F11;--surface:#17181B;--surface-2:#000000;--ink:#E9E9EA;--muted:#9A9CA1;--line:#2A2C30;--accent:#FF3B30;--accent-ink:#0E0F11;--brand:#FF3B30;--f-display:"Teko","Barlow Condensed",sans-serif;--f-mono:"Share Tech Mono",ui-monospace,monospace;
+  --p-red:#ff6a5c;--p-blue:#6f9bff;--p-yellow:#FFB020;--p-green:#39D353;--p-white:#b9c2cc;--danger:#ff7a6e;--drop:#ff5a6e;--star:#FFB020;color-scheme:dark}
+:root[data-skin="outdoor"]{--bg:#F1ECDF;--surface:#FFFFFF;--surface-2:#F7F3E9;--ink:#1D2A22;--muted:#55615A;--line:#DDD5C2;--accent:#C2501C;--accent-ink:#FFFFFF;--brand:#2E6B48;--f-display:"Barlow Condensed",sans-serif;--f-body:"Barlow",system-ui,sans-serif;
+  --p-red:#cf3a2f;--p-blue:#2b62c6;--p-yellow:#c99a0c;--p-green:#2c9452;--p-white:#7d8894;--danger:#c0352b;--drop:#d7263d;--star:#e0a100;color-scheme:light}
+:root[data-skin="comic"]{--bg:#FFE14D;--surface:#FFFFFF;--surface-2:#FFF6C7;--ink:#111111;--muted:#3D3D3D;--line:#111111;--accent:#2F6BFF;--accent-ink:#FFFFFF;--brand:#8A46F0;--f-display:"Bangers",Impact,sans-serif;--f-body:"Comic Neue","Comic Sans MS",cursive;
+  --p-red:#d4262b;--p-blue:#2b62c6;--p-yellow:#a87d00;--p-green:#1f8a46;--p-white:#6d7781;--danger:#c0352b;--drop:#d7263d;--star:#c98a00;color-scheme:light}
+:root[data-skin="revista"]{--bg:#ECECEA;--surface:#FFFFFF;--surface-2:#F5F5F3;--ink:#111111;--muted:#55554F;--line:#111111;--accent:#6D28D9;--accent-ink:#FFFFFF;--brand:#6D28D9;--f-display:"Anton",Impact,sans-serif;--f-body:"Inter",sans-serif;
+  --p-red:#cf3a2f;--p-blue:#2b62c6;--p-yellow:#c99a0c;--p-green:#2c9452;--p-white:#7d8894;--danger:#c0352b;--drop:#d7263d;--star:#e0a100;color-scheme:light}
+
+/* Fuentes de una sola grosor: sin negrita falsa */
+:is([data-skin="pizarra"],[data-skin="neon"],[data-skin="arcade"],[data-skin="comic"],[data-skin="revista"]) :is(.brand,h2.view-title,.sec h3,.goal-txt h3,.empty h3,.stat b,.date b,.streak b){font-weight:400}
+
+/* 1 · Box industrial */
+[data-skin="industrial"] :is(.wod,.goal,.stat,.pr-box,.empty,.shop-card,.wallet,.btn,input,select,textarea,.confirm){border-radius:4px}
+[data-skin="industrial"] .wod{border-left:4px solid var(--accent)}
+[data-skin="industrial"] header.top:not(.sub)::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:6px;background:repeating-linear-gradient(-45deg,#F5C400 0 10px,#1B1C1E 10px 20px)}
+[data-skin="industrial"] nav.tabs{background:#111214;border-top:2px solid #F5C400}
+[data-skin="industrial"] .tab-new{border-radius:8px}
+[data-skin="industrial"] .tab[aria-current="page"]{color:#F5C400}
+[data-skin="industrial"] .dot{border-radius:2px}
+
+/* 2 · Pizarra de tiza */
+[data-skin="pizarra"] body{font-size:17px}
+[data-skin="pizarra"] body::after{content:"";position:fixed;inset:0;border:7px solid #6B4A2B;pointer-events:none;z-index:30}
+[data-skin="pizarra"] :is(.wod,.goal,.stat,.pr-box,.shop-card,.wallet,.confirm){background:transparent;border:2px solid var(--line)}
+[data-skin="pizarra"] .empty{background:transparent}
+[data-skin="pizarra"] .btn.primary{background:transparent;color:var(--accent);border:2px solid var(--accent)}
+[data-skin="pizarra"] .tab-new{background:var(--bg);color:var(--accent);border:3px solid var(--accent);box-shadow:none}
+[data-skin="pizarra"] nav.tabs{background:#1E2923;border-top:2px solid var(--line)}
+[data-skin="pizarra"] .tab[aria-current="page"]{color:var(--accent)}
+[data-skin="pizarra"] .brand{font-size:36px}
+[data-skin="pizarra"] :is(h2.view-title,.sec h3,.goal-txt h3,.empty h3){text-transform:none}
+[data-skin="pizarra"] .goal-txt h3{font-size:26px}
+[data-skin="pizarra"] .eyebrow{font-size:14px}
+
+/* 3 · Neón nocturno */
+[data-skin="neon"] .brand-word{color:#2DE2E6;text-shadow:0 0 8px rgba(45,226,230,.75)}
+[data-skin="neon"] .brand-word span{color:#FF3EA5;text-shadow:0 0 8px rgba(255,62,165,.85)}
+[data-skin="neon"] .brand{font-size:26px}
+[data-skin="neon"] h2.view-title{font-size:26px}
+[data-skin="neon"] :is(.goal-txt h3,.sec h3,.empty h3){font-size:17px}
+[data-skin="neon"] :is(.wod,.goal,.stat,.pr-box,.empty,.shop-card,.wallet,.confirm){border-radius:16px}
+[data-skin="neon"] :is(.btn.primary,.tab-new){box-shadow:0 0 18px rgba(255,62,165,.55)}
+[data-skin="neon"] .dot.on{box-shadow:0 0 8px var(--brand)}
+[data-skin="neon"] .result{color:#2DE2E6}
+[data-skin="neon"] nav.tabs{background:#100F20}
+[data-skin="neon"] .tab[aria-current="page"]{color:#2DE2E6}
+
+/* 4 · Gatitos kawaii */
+[data-skin="gatitos"] :is(.wod,.goal,.stat,.pr-box,.shop-card,.wallet,.confirm){border-radius:22px;box-shadow:0 5px 0 #F7CFDD}
+[data-skin="gatitos"] .empty{border-radius:22px}
+[data-skin="gatitos"] .btn{border-radius:999px}
+[data-skin="gatitos"] .btn.primary{box-shadow:0 4px 0 #5E36AE}
+[data-skin="gatitos"] .tab-new{box-shadow:0 4px 0 #5E36AE}
+[data-skin="gatitos"] :is(input,select,textarea){border-radius:16px}
+[data-skin="gatitos"] :is(h2.view-title,.sec h3,.goal-txt h3,.empty h3){text-transform:none}
+[data-skin="gatitos"] .dot{height:14px}
+[data-skin="gatitos"] .dot.on{background:#F28DB2;border-color:#F28DB2}
+[data-skin="gatitos"] nav.tabs{border-top:0;box-shadow:0 -4px 0 #F7CFDD}
+[data-skin="gatitos"] .tab[aria-current="page"]{color:#7B4FD0}
+
+/* 5 · Arcade 8-bit */
+[data-skin="arcade"] body{font-size:20px;line-height:1.25}
+[data-skin="arcade"] :is(input,select,textarea){font-size:20px}
+[data-skin="arcade"] :is(.wod,.goal,.stat,.pr-box,.empty,.shop-card,.wallet,.btn,input,select,textarea,.chip,.coin-chip,.tag,.trend,.dot,.confirm,.streak){border-radius:0}
+[data-skin="arcade"] :is(.wod,.goal,.stat,.pr-box,.shop-card,.wallet){border:3px solid var(--line);box-shadow:4px 4px 0 #2A2A60}
+[data-skin="arcade"] .btn.primary{border:3px solid #F4F4F4;box-shadow:4px 4px 0 #7A1414}
+[data-skin="arcade"] .tab-new{border-radius:0;border:3px solid #F4F4F4;box-shadow:4px 4px 0 #7A1414}
+[data-skin="arcade"] .brand{font-size:18px}
+[data-skin="arcade"] .brand-word{text-shadow:2px 2px 0 #E83B3B}
+[data-skin="arcade"] .brand-bar{margin-top:-2px}
+[data-skin="arcade"] h2.view-title{font-size:17px;line-height:1.35}
+[data-skin="arcade"] :is(.sec h3,.goal-txt h3,.empty h3){font-size:12px;line-height:1.5}
+[data-skin="arcade"] :is(.stat b,.date b,.streak b){font-size:15px;line-height:1.4}
+[data-skin="arcade"] .eyebrow{font-size:15px}
+[data-skin="arcade"] .tab{font-size:17px}
+[data-skin="arcade"] nav.tabs{background:#000;border-top:3px solid #F4F4F4}
+[data-skin="arcade"] .tab[aria-current="page"]{color:#FCE05E}
+[data-skin="arcade"] .dot.on{background:#39E16B;border-color:#39E16B}
+
+/* 6 · Minimal suizo */
+[data-skin="suizo"] :is(.wod,.goal,.stat,.pr-box,.empty,.shop-card,.wallet,.btn,input,select,textarea,.chip,.confirm,.streak,.dot){border-radius:0}
+[data-skin="suizo"] .brand{font-weight:800;letter-spacing:-.03em}
+[data-skin="suizo"] :is(h2.view-title,.sec h3,.goal-txt h3,.empty h3){text-transform:none;letter-spacing:-.02em;font-weight:800}
+[data-skin="suizo"] :is(.stat b,.streak b){font-weight:800;letter-spacing:-.04em}
+[data-skin="suizo"] nav.tabs{border-top:2px solid #111}
+[data-skin="suizo"] .tab-new{border-radius:0;box-shadow:none}
+[data-skin="suizo"] .tab[aria-current="page"]{color:#D10A11}
+
+/* 7 · Marcador de estadio */
+[data-skin="marcador"] .brand{font-size:38px}
+[data-skin="marcador"] .brand-bar{margin-top:-16px}
+[data-skin="marcador"] h2.view-title{font-size:42px}
+[data-skin="marcador"] .goal-txt h3{font-size:28px}
+[data-skin="marcador"] .sec h3{font-size:26px}
+[data-skin="marcador"] :is(.result,.big-result){color:#FF3B30;text-shadow:0 0 6px rgba(255,59,48,.6)}
+[data-skin="marcador"] :is(.stat b,.streak b){font-family:var(--f-mono);color:#FFB020;text-shadow:0 0 8px rgba(255,176,32,.55)}
+[data-skin="marcador"] .stat{background:#000}
+[data-skin="marcador"] .dot.on{box-shadow:0 0 6px var(--brand)}
+[data-skin="marcador"] .goal.met .dot.on{box-shadow:0 0 6px var(--p-green)}
+[data-skin="marcador"] nav.tabs{background:#17181B}
+[data-skin="marcador"] .tab{font-family:var(--f-display);font-size:17px;letter-spacing:.05em;text-transform:uppercase;font-weight:500}
+[data-skin="marcador"] .tab[aria-current="page"]{color:#FF3B30}
+
+/* 8 · Aventura outdoor */
+[data-skin="outdoor"] .goal{background:#1F3D2B url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='160' fill='none' stroke='%232E5640' stroke-width='1.5'%3E%3Cpath d='M-10 130 C60 90 120 150 200 100 S330 70 410 110'/%3E%3Cpath d='M-10 110 C60 70 130 130 210 80 S330 50 410 90'/%3E%3Cpath d='M-10 90 C70 50 140 110 220 60 S330 30 410 70'/%3E%3Cpath d='M-10 70 C80 30 150 90 230 40 S330 10 410 50'/%3E%3C/svg%3E") no-repeat right top;color:#F1ECDF;border-color:#1F3D2B}
+[data-skin="outdoor"] .goal-txt p{color:#C9D4C5}
+[data-skin="outdoor"] .goal-txt p b{color:#FFFFFF}
+[data-skin="outdoor"] .goal .dot{background:#2E5640;border-color:#3E6B52}
+[data-skin="outdoor"] .goal .dot.on{background:#F2A65A;border-color:#F2A65A}
+[data-skin="outdoor"] .goal-foot{color:#C9D4C5}
+[data-skin="outdoor"] .goal-foot button{color:#F2A65A}
+[data-skin="outdoor"] .goal .streak{background:rgba(241,236,223,.12);color:#F2A65A}
+[data-skin="outdoor"] .goal-nums button{background:#2E5640;border-color:#3E6B52;color:#F1ECDF}
+[data-skin="outdoor"] .goal-nums button[aria-pressed="true"]{background:#F2A65A;border-color:#F2A65A;color:#1F3D2B}
+[data-skin="outdoor"] nav.tabs{background:#1F3D2B;border-top:0}
+[data-skin="outdoor"] .tab{color:#C9D4C5}
+[data-skin="outdoor"] .tab[aria-current="page"]{color:#FFFFFF}
+[data-skin="outdoor"] .brand-word span{color:#C2501C}
+
+/* 9 · Cómic */
+[data-skin="comic"] body{background-image:radial-gradient(rgba(0,0,0,.12) 1.5px,transparent 1.6px);background-size:9px 9px}
+[data-skin="comic"] :is(.wod,.goal,.stat,.pr-box,.shop-card,.wallet,.confirm){border:3px solid #111;border-radius:6px;box-shadow:4px 4px 0 #111}
+[data-skin="comic"] .empty{border:3px dashed #111}
+[data-skin="comic"] .btn{border:2px solid #111;border-radius:6px}
+[data-skin="comic"] .btn.primary{box-shadow:3px 3px 0 #111;border-color:#111}
+[data-skin="comic"] .tab-new{border:3px solid #111;box-shadow:3px 3px 0 #111}
+[data-skin="comic"] nav.tabs{border-top:3px solid #111}
+[data-skin="comic"] .brand{font-size:36px}
+[data-skin="comic"] .brand-word{color:#FFFFFF;-webkit-text-stroke:1.5px #111;text-shadow:3px 3px 0 #111;letter-spacing:.04em}
+[data-skin="comic"] .brand-word span{color:#9B5CF6}
+[data-skin="comic"] :is(h2.view-title,.sec h3,.goal-txt h3,.empty h3){letter-spacing:.04em}
+[data-skin="comic"] .tab{font-family:var(--f-display);font-size:16px;letter-spacing:.05em;font-weight:400}
+[data-skin="comic"] .tab[aria-current="page"]{color:#8A46F0}
+
+/* 10 · Revista fitness */
+[data-skin="revista"] :is(.wod,.goal,.stat,.pr-box,.empty,.shop-card,.wallet,.btn,input,select,textarea,.confirm,.streak){border-radius:0}
+[data-skin="revista"] .brand{font-size:34px}
+[data-skin="revista"] .brand-bar{margin-top:-10px}
+[data-skin="revista"] h2.view-title{font-size:40px}
+[data-skin="revista"] .goal{background:#C6F432;border-color:#111}
+[data-skin="revista"] .goal-txt p{color:#2B2B26}
+[data-skin="revista"] .goal .dot{background:#FFFFFF;border-color:#111}
+[data-skin="revista"] .goal .dot.on,[data-skin="revista"] .goal.met .dot.on{background:#111;border-color:#111}
+[data-skin="revista"] .goal .streak{background:#111;color:#C6F432}
+[data-skin="revista"] .goal-foot{color:#2B2B26}
+[data-skin="revista"] .goal-foot button{color:#111;text-decoration:underline}
+[data-skin="revista"] nav.tabs{background:#111;border-top:0}
+[data-skin="revista"] .tab{color:#BDBDB8;text-transform:uppercase;letter-spacing:.06em}
+[data-skin="revista"] .tab[aria-current="page"]{color:#C6F432}
+[data-skin="revista"] .tab-new{border-radius:0;box-shadow:none}
+
+/* Tienda: tarjetas de temas */
+.skin-prev{aspect-ratio:1;display:flex;flex-direction:column;justify-content:center;gap:9px;padding:14px;border-bottom:1px solid var(--line)}
+.skin-prev .sk-t{font-size:22px;line-height:1;white-space:nowrap;overflow:hidden}
+.skin-prev .sk-card{height:30px;border-radius:6px}
+.skin-prev .sk-row{display:flex;gap:6px}
+.skin-prev .sk-row i{flex:1;height:8px;border-radius:4px;opacity:.9}
+.skin-prev .sk-btn{height:22px;border-radius:6px}
+.skins-sec{margin-bottom:18px}
+.skins-sec p{margin:0 0 10px;font-size:14px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -1280,6 +1455,68 @@ async function setTheme(t){applyTheme(t);if(profile&&store&&profile.theme!==t){c
 $("#themeBtn").onclick=()=>{const d=isDarkNow();setTheme(d?"light":"dark");toast(d?"Modo día":"Modo noche")};
 document.querySelectorAll("[name=meTheme]").forEach(r=>r.addEventListener("change",()=>setTheme(r.value)));
 matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>applyTheme(themePref()));
+/* ---------------- Temas de la tienda ---------------- */
+/* Se compran con TochiCoins como las imágenes. El tema puesto se guarda en el perfil (todos tus dispositivos) y en el navegador (para abrir ya con él). */
+const SKINS=[
+  {id:"industrial",name:"Box industrial",price:100,ff:"Oswald",fonts:["Oswald:wght@500;700"],c:["#1B1C1E","#F5C400","#ECEAE4","#26272A","#F5C400"]},
+  {id:"pizarra",name:"Pizarra de tiza",price:100,ff:"Caveat Brush",fonts:["Caveat+Brush","Patrick+Hand"],c:["#24302A","#F4A7B9","#EDEFE8","#2B3831","#F2E28A"]},
+  {id:"suizo",name:"Minimal suizo",price:100,ff:"Inter Tight",fonts:["Inter+Tight:wght@400;500;700;800"],c:["#FFFFFF","#D10A11","#111111","#F3F3F3","#111111"]},
+  {id:"outdoor",name:"Aventura outdoor",price:150,ff:"Barlow Condensed",fonts:["Barlow:wght@400;500;600"],c:["#F1ECDF","#2E6B48","#1D2A22","#1F3D2B","#C2501C"]},
+  {id:"revista",name:"Revista fitness",price:150,ff:"Anton",fonts:["Anton"],c:["#ECECEA","#6D28D9","#111111","#C6F432","#6D28D9"]},
+  {id:"neon",name:"Neón nocturno",price:200,ff:"Audiowide",fonts:["Audiowide"],c:["#0B0A14","#FF3EA5","#2DE2E6","#15132A","#FF3EA5"]},
+  {id:"gatitos",name:"Gatitos kawaii",price:200,ff:"Baloo 2",fonts:["Baloo+2:wght@500;600;700;800"],c:["#FFF1F5","#7B4FD0","#3B2A4A","#FFFFFF","#7B4FD0"]},
+  {id:"marcador",name:"Marcador de estadio",price:200,ff:"Teko",fonts:["Teko:wght@500;600","Share+Tech+Mono"],c:["#0E0F11","#FF3B30","#E9E9EA","#000000","#FF3B30"]},
+  {id:"comic",name:"Cómic",price:250,ff:"Bangers",fonts:["Comic+Neue:wght@400;700"],c:["#FFE14D","#9B5CF6","#111111","#FFFFFF","#2F6BFF"]},
+  {id:"arcade",name:"Arcade 8-bit",price:300,ff:"Press Start 2P",fonts:["Press+Start+2P","VT323"],c:["#10102A","#B07CFF","#F4F4F4","#17173A","#E83B3B"]},
+];
+const skinItemId=id=>"t-"+id;
+const skinOwned=id=>ownedIds().has(skinItemId(id));
+const fontsLoaded=new Set();
+function loadFonts(list){const need=list.filter(f=>!fontsLoaded.has(f));if(!need.length)return;need.forEach(f=>fontsLoaded.add(f));
+  const l=document.createElement("link");l.rel="stylesheet";l.href="https://fonts.googleapis.com/css2?"+need.map(f=>"family="+f).join("&")+"&display=swap";document.head.appendChild(l)}
+function skinPref(){if(profile&&"skin" in profile)return profile.skin||"";try{return localStorage.getItem("tochinuri-skin")||""}catch(e){return""}}
+function applySkin(id){
+  let s=SKINS.find(x=>x.id===id)||null;
+  if(s&&profile&&!skinOwned(s.id))s=null;
+  const root=document.documentElement;
+  if(s){if(root.getAttribute("data-skin")!==s.id)root.setAttribute("data-skin",s.id);loadFonts(s.fonts)}else if(root.hasAttribute("data-skin"))root.removeAttribute("data-skin");
+  try{localStorage.setItem("tochinuri-skin",s?s.id:"")}catch(e){}
+  const tb=$("#themeBtn");if(tb)tb.hidden=!!s;
+}
+async function useSkin(id){const ok=await saveProf({skin:id||""},id?`Tema «${SKINS.find(s=>s.id===id).name}» puesto`:"Tema normal puesto");if(ok)applySkin(id||"");return ok}
+function skinPreview(s){const[bg,brand,ink,card,btn]=s.c;
+  return`<div class="skin-prev" style="background:${bg}" aria-hidden="true"><span class="sk-t" style="font-family:'${s.ff}',sans-serif;color:${ink}">Tochi<span style="color:${brand}">Nuri</span></span>
+    <span class="sk-card" style="background:${card};border:1px solid ${ink}22"></span><span class="sk-row"><i style="background:${brand}"></i><i style="background:${brand}"></i><i style="background:${ink}33"></i></span><span class="sk-btn" style="background:${btn}"></span></div>`}
+const NORMAL_SKIN={id:"",name:"TochiNuri clásico",ff:"Barlow Condensed",fonts:[],c:["#eceff2","#7c3aed","#17202a","#ffffff","#d43f2a"]};
+function paintSkinShop(){
+  const body=$("#v-shop .shop-body");if(!body||shopTab==="coins")return;
+  loadFonts(SKINS.flatMap(s=>s.fonts).concat(["Oswald:wght@500;700","Caveat+Brush","Inter+Tight:wght@400;500;700;800","Anton","Audiowide","Baloo+2:wght@500;600;700;800","Teko:wght@500;600","Press+Start+2P"]));
+  const B=coinBalance(),cur=skinPref(),sec=document.createElement("div");sec.className="sec skins-sec";
+  if(shopTab==="shop"){
+    sec.innerHTML=`<h3>Temas</h3><p class="muted">Cambia el aspecto de toda la app. Cuando lo compres, lo pones desde «Mías».</p><div class="shop-grid">${SKINS.map(s=>{const iid=skinItemId(s.id),has=skinOwned(s.id),short=s.price-B.bal;
+      return`<div class="shop-card${has?" owned":""}">${skinPreview(s)}<div class="sc-b"><b>${esc(s.name)}</b><span class="price">${COIN_SVG}<span class="mono">${s.price}</span></span>
+        ${has?`<span class="tag">Ya es tuyo</span>`:buying===iid?`<div class="buy-confirm"><span>¿Comprar por ${s.price}?</span><div class="row-actions"><button type="button" class="btn primary" data-skinok="${s.id}">Sí</button><button type="button" class="btn" data-buyno>No</button></div></div>`
+          :`<button type="button" class="btn ${short>0?"":"primary"}" data-skinbuy="${s.id}" ${short>0?"disabled":""}>${short>0?`Te faltan ${short}`:"Comprar"}</button>`}</div></div>`}).join("")}</div>
+      <h3 style="margin-top:18px">Imágenes</h3>`;
+  }else{
+    const mine=[NORMAL_SKIN,...SKINS.filter(s=>skinOwned(s.id))];
+    sec.innerHTML=`<h3>Tema de la app</h3><p class="muted">${mine.length>1?"Elige cómo se ve TochiNuri.":"Compra temas en la pestaña «Tienda» para cambiar el aspecto de la app."}</p><div class="shop-grid">${mine.map(s=>{const on=(cur||"")===s.id;
+      return`<div class="shop-card owned">${skinPreview(s)}<div class="sc-b"><b>${esc(s.name)}</b><button type="button" class="btn ${on?"on":"primary"}" data-skinuse="${s.id}" ${on?'aria-pressed="true"':""}>${on?"✓ En uso":"Usar este tema"}</button></div></div>`}).join("")}</div>
+      <h3 style="margin-top:18px">Imágenes del reto</h3>`;
+  }
+  body.prepend(sec);
+  body.querySelectorAll("[data-skinbuy]").forEach(b=>b.onclick=()=>{buying=skinItemId(b.dataset.skinbuy);renderShop()});
+  body.querySelectorAll("[data-buyno]").forEach(b=>b.onclick=()=>{buying=null;renderShop()});
+  body.querySelectorAll("[data-skinok]").forEach(b=>b.onclick=async()=>{const s=SKINS.find(x=>x.id===b.dataset.skinok);if(!s)return;
+    if(coinBalance().bal<s.price){toast("No tienes suficientes TochiCoins.");buying=null;renderShop();return}
+    b.disabled=true;const c=coinsData(),iid=skinItemId(s.id);
+    const ok=await saveProf({coins:{...c,owned:[...(c.owned||[]),iid],spent:[...(c.spent||[]),{id:iid,name:"Tema "+s.name,price:s.price,date:today()}]}},`¡Has comprado el tema «${s.name}»!`);
+    buying=null;if(ok)shopTab="mine";renderShop()});
+  body.querySelectorAll("[data-skinuse]").forEach(b=>b.onclick=async()=>{b.disabled=true;await useSkin(b.dataset.skinuse);renderShop()});
+}
+{const _rs=renderShop;renderShop=function(){_rs();paintSkinShop()}}
+{const _ra=renderAll;renderAll=function(){_ra();applySkin(skinPref())}}
+
 let themeSynced=false;
 
 /* ---------------- Reto semanal y racha ---------------- */

@@ -1049,7 +1049,7 @@ header.top.sub .top-coins{display:none}
 #wodForm .btn.ghost,#v-cex .btn.ghost{border:2px solid var(--brand);background:color-mix(in srgb,var(--brand) 9%,var(--surface));color:var(--brand);font-weight:800;box-shadow:0 2px 0 color-mix(in srgb,var(--brand) 35%,transparent)}
 #wodForm .btn.ghost:active{transform:translateY(1px);box-shadow:none}
 .nav-right{gap:8px;align-items:center}
-.top-stats{display:inline-flex;align-items:center;justify-content:center;height:36px;min-width:44px;padding:0 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--brand) 55%,var(--line));background:color-mix(in srgb,var(--brand) 12%,var(--surface));color:var(--brand);cursor:pointer}
+.top-stats{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:36px;min-width:44px;padding:0 10px;font-size:15px;font-weight:700;border-radius:999px;border:1px solid color-mix(in srgb,var(--brand) 55%,var(--line));background:color-mix(in srgb,var(--brand) 12%,var(--surface));color:var(--brand);cursor:pointer}
 .top-stats svg{width:20px;height:20px}
 .tot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .tot-row{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:4px}
@@ -1105,7 +1105,7 @@ h2.view-title{text-wrap:balance}
         </svg></div>
       <div class="nav-title" id="navTitle"></div>
     </div>
-    <div class="nav-right"><span class="admin-tag" id="adminTag" hidden>ADMIN</span><button type="button" class="top-stats" id="topStats" aria-label="Progreso y estadísticas" title="Progreso y estadísticas" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V11M10 20V5M16 20v-6M21 20H3"/></svg></button><button type="button" class="coin-chip top-coins" id="topCoins" aria-label="Tienda de TochiCoins" hidden></button></div>
+    <div class="nav-right"><span class="admin-tag" id="adminTag" hidden>ADMIN</span><button type="button" class="top-stats" id="topStats" aria-label="Insignias" title="Insignias" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="14" r="6"/><path d="M9 3l1.5 5M15 3l-1.5 5M12 11.5l.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2L9.1 13.6l2-.3z"/></svg><b class="mono" id="topBadgeN"></b></button><button type="button" class="coin-chip top-coins" id="topCoins" aria-label="Tienda de TochiCoins" hidden></button></div>
   </header>
 
   <!-- ENTRENOS -->
@@ -1122,12 +1122,12 @@ h2.view-title{text-wrap:balance}
       <div class="stat"><span class="eyebrow">Total</span><b id="stTotal">0</b></div>
     </div>
     <div class="tools">
+      <button type="button" class="tool" id="openProgBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V5M16 20v-6M21 20H3"/></svg><span>Estadísticas</span></button>
       <button type="button" class="tool" id="openTotalsBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 5H6l6 7-6 7h12"/></svg><span>Totales</span></button>
-      <button type="button" class="tool" id="openProgBtn" hidden></button>
       <button type="button" class="tool" id="openMonth" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Estadísticas</span></button>
       <button type="button" class="tool" id="openRMBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3M19 12h3"/><rect x="5" y="7" width="3" height="10" rx="1"/><rect x="16" y="7" width="3" height="10" rx="1"/><path d="M8 12h8"/></svg><span>Calculadora RM</span></button>
       <button type="button" class="tool" id="openWeightsBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 8h11l2 12h-15z"/><circle cx="12" cy="5" r="2"/><path d="M10 13.5h4M12 11.5v4"/></svg><span>Mis pesos</span></button>
-      <button type="button" class="tool" id="openBadgesBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"/><path d="M9 3l1.5 5M15 3l-1.5 5M12 11.5l.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2L9.1 13.6l2-.3z"/></svg><span>Insignias <small id="badgeCount" class="bd-count"></small></span></button>
+      <button type="button" class="tool" id="openBadgesBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"/><path d="M9 3l1.5 5M15 3l-1.5 5M12 11.5l.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2L9.1 13.6l2-.3z"/></svg><span>Insignias <small id="badgeCount" class="bd-count"></small></span></button>
       <button type="button" class="tool" id="openPainBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg><span>Molestias</span></button>
       <button type="button" class="tool" id="openUsageBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><path d="M16 6.5a3 3 0 0 1 0 5.6M18 14.5c1.4.7 2.3 2.2 2.6 4.5"/></svg><span>Uso de la app</span></button>
       <button type="button" class="tool" id="openCycleBtn" hidden><svg viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 1 1 8 1 11.5a6 6 0 0 0 12 0C13 8 7 1 7 1z" fill="var(--drop)"/></svg><span>Ciclo</span></button>
@@ -3301,7 +3301,7 @@ async function checkBadges(){
   if(!profileReady||!profile||!store||badgeSaving)return;
   const s=badgeStats(),got=badgeLevels(),ups=[];
   const nb={};for(const b of BADGES){const cur={...(got[b.id]||{})},lv=badgeLevel(b,s);for(let i=1;i<=lv;i++)if(!cur[i]){cur[i]=today();ups.push([b,i])}nb[b.id]=cur}
-  const n=BADGES.filter(b=>Object.keys(nb[b.id]).length).length,lb=$("#badgeCount");if(lb)lb.textContent=`${n}/${BADGES.length}`;
+  const n=BADGES.filter(b=>Object.keys(nb[b.id]).length).length,lb=$("#badgeCount");if(lb)lb.textContent=`${n}/${BADGES.length}`;{const tn=$("#topBadgeN");if(tn)tn.textContent=n;const tb=$("#topStats");if(tb)tb.setAttribute("aria-label",`Insignias: ${n} de ${BADGES.length}`)}
   if(!ups.length)return;badgeSaving=true;
   const top=new Map();for(const[b,i]of ups)top.set(b.id,[b,Math.max(i,top.get(b.id)?.[1]||0)]);
   const list=[...top.values()],msg=list.length===1?`🏅 «${list[0][0].n}» sube a ${TIER[list[0][1]].n}`:`🏅 ¡${list.length} insignias suben de nivel!`;
@@ -3849,9 +3849,10 @@ const TOUR=[
   ["#tabNew","Apunta tu entreno","Toca + para apuntar un WOD, halterofilia, una sesión de gym o repetir el último."],
   ["#modeNow","CrossFit o Gym","Cambia de sección cuando quieras. La app recuerda la última que usaste."],
   ["#goalCard","Tu reto semanal","Elige cuántos días quieres entrenar a la semana y mantén la racha."],
-  ["#topStats","Tu progreso","Estadísticas, calculadora de RM y tus últimos pesos de cada ejercicio."],
+  ["#openProgBtn","Tus estadísticas","Estadísticas, calculadora de RM y tus últimos pesos de cada ejercicio."],
   ["#openTotalsBtn","Totales","Todo lo que llevas hecho de cada ejercicio: veces, repeticiones y kilos."],
   ['.tab[data-tab="lib"]',"Ejercicios","Cómo se hace cada ejercicio, con su animación. También puedes crear los tuyos."],
+  ["#topStats","Insignias","Logros que vas subiendo de bronce a diamante al cumplir retos."],
   ["#topCoins","TochiCoins","Ganas monedas entrenando. Gástalas en la Tienda en temas y logos."]
 ];
 let tourOn=false;
@@ -3937,7 +3938,7 @@ function renderTotals(){
 function openTotals(){openTool("totals","Estadísticas totales",renderTotals)}
 VIEW_NAME.totals="Totales";
 $("#openTotalsBtn").onclick=()=>openTotals();
-$("#topStats").onclick=()=>openMonth();
+$("#topStats").onclick=()=>openBadges();
 
 </script>
 

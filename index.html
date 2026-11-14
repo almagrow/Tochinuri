@@ -125,6 +125,29 @@ input.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 .types input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
 
 
+
+.brand{cursor:pointer;-webkit-tap-highlight-color:transparent}.brand:active{opacity:.7}
+.mw-intro{margin:0 0 12px;font-size:14px}
+.mw-ctrl{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.mw-ctrl input[type=search]{width:100%}
+.mw-seg{grid-template-columns:repeat(3,1fr)}
+.mw-sort{display:flex;gap:6px;flex-wrap:wrap}
+.mw-sort button{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer}
+.mw-sort button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.mw-list{display:flex;flex-direction:column;gap:8px}
+.mw-item{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;color:var(--ink)}
+.mw-item:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mw-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.mw-n{font-size:16px;min-width:0;overflow-wrap:anywhere}
+.mw-kg{font-size:22px;font-weight:800;white-space:nowrap}.mw-kg small{font-size:13px;font-weight:600;color:var(--muted)}
+.mw-nokg{font-size:13px;white-space:nowrap}
+.mw-sub{font-size:13px}
+.mw-sub .pos{color:var(--p-green);font-weight:700}.mw-sub .neg{color:var(--danger);font-weight:700}
+.mw-foot{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-top:4px;font-size:12px;color:var(--muted)}
+.mw-tag b{color:var(--ink)}
+.mw-hist{display:flex;gap:4px;margin-left:auto;font-family:var(--f-mono)}
+.mw-hist span{padding:2px 5px;border-radius:5px;background:var(--bg)}
+.mw-hist span.cur{background:var(--accent);color:#fff;font-weight:700}
 .lift-btn{margin-top:8px}
 .lift-card{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
 .lift-top{display:flex;justify-content:space-between;align-items:center}
@@ -897,7 +920,7 @@ header.top.sub .top-coins{display:none}
       <button class="nav-back" id="navBack" hidden><svg viewBox="0 0 12 21" aria-hidden="true"><path d="M10.5 1.5 1.5 10.5l9 9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="navBackLabel">Atrás</span></button>
     </div>
     <div class="nav-center">
-      <div class="brand" id="brand" aria-label="TochiNuri"><div class="brand-word">Tochi<span>Nuri</span></div><svg class="brand-bar" viewBox="0 0 200 44" aria-hidden="true">
+      <div class="brand" id="brand" role="link" tabindex="0" aria-label="TochiNuri · ir a la página principal" title="Ir a la página principal"><div class="brand-word">Tochi<span>Nuri</span></div><svg class="brand-bar" viewBox="0 0 200 44" aria-hidden="true">
           <path d="M8 34 Q100 8 192 34" fill="none" stroke="var(--ink)" stroke-width="3.2" stroke-linecap="round"/>
           <g id="bbPlates" transform="translate(30 28.6) rotate(-13)">
             <rect x="-11" y="-15" width="8" height="30" rx="2.2" fill="var(--p-red)"/>
@@ -924,6 +947,7 @@ header.top.sub .top-coins{display:none}
     <div class="tools">
       <button type="button" class="tool" id="openMonth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Estadísticas</span></button>
       <button type="button" class="tool" id="openRMBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3M19 12h3"/><rect x="5" y="7" width="3" height="10" rx="1"/><rect x="16" y="7" width="3" height="10" rx="1"/><path d="M8 12h8"/></svg><span>Calculadora RM</span></button>
+      <button type="button" class="tool" id="openWeightsBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 8h11l2 12h-15z"/><circle cx="12" cy="5" r="2"/><path d="M10 13.5h4M12 11.5v4"/></svg><span>Mis pesos</span></button>
       <button type="button" class="tool" id="openBadgesBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"/><path d="M9 3l1.5 5M15 3l-1.5 5M12 11.5l.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2L9.1 13.6l2-.3z"/></svg><span>Insignias <small id="badgeCount" class="bd-count"></small></span></button>
       <button type="button" class="tool" id="openPainBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg><span>Molestias</span></button>
       <button type="button" class="tool" id="openUsageBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><path d="M16 6.5a3 3 0 0 1 0 5.6M18 14.5c1.4.7 2.3 2.2 2.6 4.5"/></svg><span>Uso de la app</span></button>
@@ -995,6 +1019,7 @@ header.top.sub .top-coins{display:none}
   <section class="view" id="v-shop" hidden></section>
   <section class="view" id="v-badges" hidden></section>
   <section class="view" id="v-cex" hidden></section>
+  <section class="view" id="v-weights" hidden></section>
   <section class="view" id="v-pain" hidden></section>
   <section class="view" id="v-cycle" hidden></section>
 
@@ -1515,6 +1540,11 @@ function setNav(title,backLabel,fn){
 }
 function clearNav(){$("#brand").hidden=false;$("#navBack").hidden=true;$("#themeBtn").hidden=false;$("#navTitle").textContent="";$(".top").classList.remove("sub");navBackFn=null}
 $("#navBack").onclick=()=>navBackFn&&navBackFn();
+/* Tocar el logo de TochiNuri siempre vuelve a la página principal */
+function goHome(){const pk=$("#picker");if(pk&&!pk.hidden)closePicker();document.querySelectorAll(".viewer,.lightbox").forEach(x=>{if(!x.hidden&&x.id!=="modePick")x.hidden=true});
+  returnTo="log";if(current==="log")window.scrollTo({top:0,behavior:"smooth"});else show("log")}
+$("#brand").addEventListener("click",goHome);
+$("#brand").addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();goHome()}});
 /* Deslizar desde el borde izquierdo también vuelve atrás, como en iOS */
 let sx=null,sy=null;
 document.addEventListener("touchstart",e=>{const t=e.touches[0];sx=t.clientX<28?t.clientX:null;sy=t.clientY},{passive:true});
@@ -1954,10 +1984,10 @@ function addRow(e={}){
 $("#addEx").onclick=()=>{const cards=document.querySelectorAll("#exRows .ex-card"),last=cards[cards.length-1];
   const p=!!last&&last.querySelector(".drop-btn")?.getAttribute("aria-pressed")==="true";
   openPicker(addRow({period:p}).querySelector(".exn"))};
-const VIEW_NAME={log:"Entrenos",lib:"Ejercicios",wod:"Entreno",ex:"Ejercicio",stats:"Estadísticas",rm:"Calculadora",pain:"Molestias",cycle:"Ciclo",shop:"Tienda",badges:"Insignias",cex:"Nuevo ejercicio"};
+const VIEW_NAME={log:"Entrenos",lib:"Ejercicios",wod:"Entreno",ex:"Ejercicio",stats:"Estadísticas",rm:"Calculadora",pain:"Molestias",cycle:"Ciclo",shop:"Tienda",badges:"Insignias",cex:"Nuevo ejercicio",weights:"Mis pesos"};
 
 $("#openRMBtn").onclick=()=>openRM();$("#openPainBtn").onclick=()=>openPain();$("#openCycleBtn").onclick=()=>openCycle();
-$("#openMonth").onclick=()=>openMonth();$("#addCexBtn").onclick=()=>openCexForm();$("#openBadgesBtn").onclick=()=>openBadges();
+$("#openMonth").onclick=()=>openMonth();$("#addCexBtn").onclick=()=>openCexForm();$("#openBadgesBtn").onclick=()=>openBadges();$("#openWeightsBtn").onclick=()=>openWeights();
 let formBack=()=>show("log"),formBackLabel="Entrenos",lastEx=null,lastWodId=null;
 function openForm(w){
   const prev=current,exAtOpen=lastEx,wodAtOpen=lastWodId;
@@ -2886,8 +2916,8 @@ function openEx(ex){
   if(ex.custom){$("#cexEdit").onclick=()=>openCexForm(ex.n);$("#cexDel").onclick=()=>{$("#cexDelBox").hidden=false};$("#cexDelNo").onclick=()=>{$("#cexDelBox").hidden=true};
     $("#cexDelYes").onclick=async()=>{const ok=await saveCustomEx(cexList().filter(x=>norm(x.n)!==norm(ex.n)),`«${ex.n}» borrado de Otros`);if(ok)show("lib")}}
   const rb=$("#exRM");if(rb)rb.onclick=()=>openRM(ex.n,ex);
-  const fromWod=returnTo.startsWith("wod:")?returnTo.slice(4):null;
-  show("ex");setNav("Ejercicio",fromWod?"Entreno":"Ejercicios",()=>{if(fromWod&&workouts.some(w=>w.id===fromWod))openWod(fromWod);else show("lib")});
+  const fromWod=returnTo.startsWith("wod:")?returnTo.slice(4):null,fromMw=returnTo==="weights";
+  show("ex");setNav("Ejercicio",fromWod?"Entreno":fromMw?"Mis pesos":"Ejercicios",()=>{if(fromWod&&workouts.some(w=>w.id===fromWod))openWod(fromWod);else if(fromMw)openWeights();else show("lib")});
 }
 
 
@@ -3120,6 +3150,64 @@ function liftHtml(x){
     </div>`}).join("")}</div>`;
 }
 $("#addLift").onclick=()=>{const c=addLift();openPicker(c.querySelector(".lpn"))};
+
+
+/* ---------------- Mis pesos ----------------
+   Todos los ejercicios que has apuntado alguna vez, con el último peso registrado,
+   tu récord, tu RM guardado y los últimos pesos para ver la tendencia. */
+let mwQ="",mwK="all",mwSort="recent";
+function weightsData(){
+  const by=new Map();
+  for(const w of workouts)(w.exercises||[]).forEach((e0,i)=>{if(!e0.name)return;const e=myEx(e0),key=exKey(e.name),f=findEx(e.name);
+    if(!by.has(key))by.set(key,{key,name:f?f.n:e.name,ex:f||null,kinds:new Set(),rows:[]});
+    const o=by.get(key);o.kinds.add(w.kind==="gym"?"gym":"cf");
+    o.rows.push({date:w.date||"",ord:w.createdAt||0,idx:i,wid:w.id,w:num(e.weight),reps:num(e.reps),sets:num(e.sets),time:e.time>0?e.time:null,e})});
+  const out=[];
+  for(const o of by.values()){
+    o.rows.sort((a,b)=>a.date.localeCompare(b.date)||a.ord-b.ord||a.idx-b.idx);
+    const wr=o.rows.filter(r=>r.w),last=o.rows[o.rows.length-1],lastW=wr[wr.length-1]||null;
+    const best=wr.length?Math.max(...wr.map(r=>r.w)):null;
+    out.push({...o,last,lastW,best,hist:wr.slice(-6),times:o.rows.length,rm:(profile?.rms||{})[o.name]||null});
+  }
+  return out;
+}
+let MW=[];
+function mwListHtml(){
+  const all=MW;
+  const q=norm(mwQ),list=all.filter(o=>(mwK==="all"||o.kinds.has(mwK))&&(!q||norm(o.name).includes(q)));
+  const S={recent:(a,b)=>(b.last.date).localeCompare(a.last.date)||b.last.ord-a.last.ord,az:(a,b)=>a.name.localeCompare(b.name,"es"),kg:(a,b)=>(b.lastW?.w||0)-(a.lastW?.w||0)||a.name.localeCompare(b.name,"es")};
+  list.sort(S[mwSort]);
+  const item=o=>{const L=o.lastW,h=o.hist,prev=h.length>1?h[h.length-2].w:null,d=L&&prev!=null?L.w-prev:null;
+    const det=L?[L.reps?`${L.reps} reps`:"",L.sets?`${L.sets} ${L.sets===1?"serie":"series"}`:""].filter(Boolean).join(" × "):"";
+    return`<button type="button" class="mw-item" data-mw="${esc(o.key)}">
+      <div class="mw-top"><b class="mw-n">${esc(o.name)}</b>${L?`<span class="mw-kg mono">${kg(L.w)}<small> kg</small></span>`:`<span class="mw-nokg muted">sin peso</span>`}</div>
+      <div class="mw-sub muted">${L?`${esc(shortDate(L.date))}${det?" · "+det:""}${d?` · <span class="${d>0?"pos":"neg"}">${d>0?"+":"−"}${kg(Math.abs(d))} kg</span>`:d===0?" · igual":""}`:`Última vez ${esc(shortDate(o.last.date))}${exNums(o.last.e)?" · "+esc(exNums(o.last.e)):""}`}</div>
+      ${L?`<div class="mw-foot"><span class="mw-tag">Récord <b class="mono">${kg(o.best)} kg</b>${L.w>=o.best&&h.length>1?" ★":""}</span>${o.rm?`<span class="mw-tag">RM <b class="mono">${kg(o.rm)} kg</b></span>`:""}
+        ${h.length>1?`<span class="mw-hist" aria-label="Últimos pesos">${h.map((r,k)=>`<span class="${k===h.length-1?"cur":""}">${kg(r.w)}</span>`).join("")}</span>`:""}</div>`:""}
+    </button>`};
+  return list.length?list.map(item).join(""):`<p class="muted">No hay ejercicios que coincidan.</p>`;
+}
+function renderWeights(){
+  const v=$("#v-weights"),all=MW=weightsData(),withW=all.filter(o=>o.lastW).length;
+  v.innerHTML=`<h2 class="view-title">Mis pesos</h2>
+    <p class="muted mw-intro">${all.length?`${all.length} ejercicios apuntados · ${withW} con peso. Toca uno para ver su progreso.`:"Aún no has apuntado ningún ejercicio."}</p>
+    ${all.length?`<div class="mw-ctrl">
+      <input type="search" id="mwQ" placeholder="Buscar ejercicio" value="${esc(mwQ)}" autocomplete="off" aria-label="Buscar ejercicio">
+      <div class="seg mw-seg" role="radiogroup" aria-label="Sección">${[["all","Todos"],["cf","CrossFit"],["gym","Gym"]].map(([k,l])=>`<input type="radio" name="mwK" id="mwK_${k}" value="${k}"${mwK===k?" checked":""}><label for="mwK_${k}">${l}</label>`).join("")}</div>
+      <div class="mw-sort" role="group" aria-label="Ordenar">${[["recent","Recientes"],["kg","Más peso"],["az","A–Z"]].map(([k,l])=>`<button type="button" data-mws="${k}" aria-pressed="${mwSort===k}">${l}</button>`).join("")}</div>
+    </div>
+    <div class="mw-list" id="mwList"></div>`:""}`;
+  if(!all.length)return;
+  const paint=()=>{$("#mwList").innerHTML=mwListHtml();
+    v.querySelectorAll("[data-mws]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mws===mwSort)))};
+  $("#mwQ").addEventListener("input",()=>{mwQ=$("#mwQ").value;paint()});
+  v.querySelectorAll("[name=mwK]").forEach(r=>r.onchange=()=>{mwK=r.value;paint()});
+  v.querySelectorAll("[data-mws]").forEach(b=>b.onclick=()=>{mwSort=b.dataset.mws;paint()});
+  $("#mwList").onclick=ev=>{const b=ev.target.closest("[data-mw]");if(!b)return;const o=all.find(x=>x.key===b.dataset.mw);if(!o)return;
+    if(o.ex){returnTo="weights";openEx(o.ex)}else if(o.last.wid){returnTo="log";openWod(o.last.wid)}};
+  paint();
+}
+function openWeights(){openTool("weights","Mis pesos",renderWeights)}
 
 function syncCustomEx(){
   for(let i=EX.length-1;i>=0;i--)if(EX[i].custom)EX.splice(i,1);

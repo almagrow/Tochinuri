@@ -124,6 +124,42 @@ input.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 .types input:checked+label{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .types input:focus-visible+label{outline:2px solid var(--accent);outline-offset:2px}
 
+
+.lift-btn{margin-top:8px}
+.lift-card{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.lift-top{display:flex;justify-content:space-between;align-items:center}
+.lift-parts{display:flex;flex-direction:column;gap:6px}
+.lift-part{display:flex;align-items:center;gap:6px}
+.lift-part .lpn{flex:1;min-width:0;font-weight:700}
+.lift-part:first-child .lp-plus{visibility:hidden}
+.lp-plus{font-weight:800;color:var(--muted);width:12px;text-align:center}
+.lift-addpart,.lift-userm{background:none;border:0;color:var(--accent);font:inherit;font-weight:700;padding:4px 0;cursor:pointer;text-align:left}
+.lift-rmhint{margin:4px 0 0;font-size:13px}
+.lift-rm .lrm{max-width:140px}
+.lift-sets{display:flex;flex-direction:column;gap:6px}
+.ls-row{display:grid;grid-template-columns:36px 1fr 1.2fr 1fr 32px;gap:6px;align-items:center}
+.ls-h{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.ls-body{display:flex;flex-direction:column;gap:6px}
+.ls-row input{width:100%;min-width:0}
+.ls-pct{display:flex;align-items:center;gap:4px}.ls-pct i{font-style:normal;color:var(--muted)}
+.ls-n{text-align:center;color:var(--muted)}
+.ls-kg{font-size:16px}
+.lift-actions{display:flex;flex-wrap:wrap;gap:8px}
+.lift-actions .btn{flex:1;min-width:120px}
+.lift-total{margin:0;font-size:13px}
+.lift-view{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:14px;margin-bottom:12px;background:var(--surface);display:flex;flex-direction:column;gap:10px}
+.lv-name{font-size:20px;font-weight:800;line-height:1.25;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;text-wrap:balance}
+.lv-name i{font-style:normal;color:var(--accent)}
+.lv-name button{all:unset;cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.lv-rm{display:flex;align-items:baseline;gap:10px}.lv-rm b{font-size:22px}
+.lv-tbl{overflow-x:auto}
+.lv-tbl table{width:100%;border-collapse:collapse;font-size:15px}
+.lv-tbl th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:left;padding:4px 6px;border-bottom:1px solid var(--line)}
+.lv-tbl td{padding:7px 6px;border-bottom:1px solid var(--line)}
+.lv-tbl tr:last-child td{border-bottom:0}
+.lv-tbl .kgc{font-weight:800}
+.lv-tot{margin:0;font-size:13px}
+
 .ex-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
 .ex-head{display:flex;gap:8px;align-items:flex-end}
 .ex-head .field{flex:1}
@@ -923,6 +959,9 @@ header.top.sub .top-coins{display:none}
       <div class="field"><label>Ejercicios</label></div>
       <div id="exRows" class="list"></div>
       <button type="button" class="btn ghost" id="addEx">+ Añadir ejercicio</button>
+      <div class="field" id="liftLbl" hidden><label>Halterofilia</label></div>
+      <div id="liftRows" class="list"></div>
+      <button type="button" class="btn ghost lift-btn" id="addLift">+ Halterofilia · complex por %</button>
 
       <div class="field"><label>Molestias</label></div>
       <div id="painRows" class="list"></div>
@@ -1846,8 +1885,9 @@ function openWod(id){
     ${x.duration?`<p class="meta" style="color:var(--muted)">Duración: <span style="font-family:var(--f-mono)">${fmtTime(x.duration)}</span></p>`:""}
     ${pairSection(x)}
     ${wodSummary(x)}
-    <div class="sec"><h3>Ejercicios</h3><div class="pr-box">${(x.exercises||[]).length?(x.exercises).map((e,i)=>`
-      <div class="wod-ex"><div class="nm">${findEx(e.name)?`<button data-ex="${esc(e.name)}">${esc(e.name)}</button>`:esc(e.name||"—")}</div><div class="nums">${esc(exNums(e))}${e.feel?" "+faceHtml(e.feel):""}</div>${e.name&&(cmpFor(x.id,i)||e.period)?`<div class="trends">${e.period?`<span class="drop-chip">${DROP_SVG} Con la regla</span>`:""}${trendBadges(cmpFor(x.id,i))}</div>`:""}${e.notes?`<div class="nt">${esc(e.notes)}</div>`:""}${e.name?`<div class="xs-wrap">${exStatsTable(x.id,i)}</div>`:""}</div>`).join(""):`<p style="margin:0;color:var(--muted)">Sin ejercicios apuntados.</p>`}</div></div>
+    ${liftHtml(x)}
+    ${(x.exercises||[]).some(e=>!e.fromLift)||!(x.lifts||[]).length?`<div class="sec"><h3>Ejercicios</h3><div class="pr-box">${(x.exercises||[]).some(e=>!e.fromLift)?(x.exercises).map((e,i)=>e.fromLift?"":`
+      <div class="wod-ex"><div class="nm">${findEx(e.name)?`<button data-ex="${esc(e.name)}">${esc(e.name)}</button>`:esc(e.name||"—")}</div><div class="nums">${esc(exNums(e))}${e.feel?" "+faceHtml(e.feel):""}</div>${e.name&&(cmpFor(x.id,i)||e.period)?`<div class="trends">${e.period?`<span class="drop-chip">${DROP_SVG} Con la regla</span>`:""}${trendBadges(cmpFor(x.id,i))}</div>`:""}${e.notes?`<div class="nt">${esc(e.notes)}</div>`:""}${e.name?`<div class="xs-wrap">${exStatsTable(x.id,i)}</div>`:""}</div>`).join(""):`<p style="margin:0;color:var(--muted)">Sin ejercicios apuntados.</p>`}</div></div>`:""}
     ${(x.pains||[]).length?`<div class="sec"><h3>Molestias</h3><div class="pr-box pain-box">${x.pains.map(p=>`<div>${painLine(p)}${p.note?`<p class="muted" style="margin:4px 0 0;font-size:13px">${esc(p.note)}</p>`:""}</div>`).join("")}</div></div>`:""}
     ${x.notes?`<div class="sec"><h3>Notas</h3><p class="lead" style="white-space:pre-wrap">${esc(x.notes)}</p></div>`:""}
     ${x.photo&&/^data:image\//.test(x.photo)?`<div class="sec"><h3>Foto</h3><img class="wod-photo" src="${x.photo}" alt="Foto del entreno"></div>`:""}
@@ -1935,7 +1975,9 @@ function openForm(w){
   $("#exRows").innerHTML="";
   /* Si el día cae en tu regla (según el ciclo), los ejercicios nuevos salen ya con la gota */
   const autoP=!editingId&&isWoman()&&isPeriodDay($("#fDate").value);
-  const exs=w?.exercises?.length?(editingId?w.exercises:w.exercises.map(e=>({...e,period:autoP||e.period}))):[{period:autoP}];exs.forEach(addRow);
+  const wex=(w?.exercises||[]).filter(e=>!e.fromLift);
+  const exs=wex.length?(editingId?wex:wex.map(e=>({...e,period:autoP||e.period}))):(w?.lifts?.length?[]:[{period:autoP}]);exs.forEach(addRow);
+  $("#liftRows").innerHTML="";$("#liftLbl").hidden=true;(w?.lifts||[]).forEach(addLift);
   setLevel(w?.level||null);
   $("#fPair").checked=!!w?.pair;$("#fPairName").value=w?.pair?.name||"";paintPair();
   $("#painRows").innerHTML="";(editingId?(w.pains||[]):[]).forEach(addPainRow);
@@ -1970,11 +2012,14 @@ $("#wodForm").addEventListener("submit",async ev=>{
     exercises.push({name,sets:sets?Number(sets)||sets:null,reps:reps?Number(reps)||reps:null,weight:wt?Number(wt)||wt:null,time:ts,notes:nt,feel,period:!!period,share});
   });
   if(bad)return err(`El tiempo de ${bad} debe tener el formato m:ss.`);
+  const lifts=readLifts();if(lifts.some(l=>!l.parts.length))return err("Elige al menos un ejercicio en la cabecera del complex.");
+  exercises.push(...liftExercises(lifts));
   const old=workouts.find(w=>w.id===editingId);
   const gym=formKind==="gym";
   const w={id:editingId||newId(),date,name:$("#fName").value.trim(),type:gym?"Gym":(document.querySelector("[name=ftype]:checked")||{}).value||"Otro",
     result:gym?"":$("#fResult").value.trim(),duration:durS,notes:$("#fNotes").value.trim(),exercises,photo:formPhoto||null,level:gym?null:getLevel(),pains:readPains(),pair:!gym&&$("#fPair").checked?{name:$("#fPairName").value.trim()||null}:null,createdAt:old?.createdAt||Date.now()};
   if(gym)w.kind="gym";
+  if(lifts.length)w.lifts=lifts;
   if(!store)return err("Tus datos aún se están cargando. Espera un momento y vuelve a guardar.");
   const btn=$("#saveBtn");btn.disabled=true;
   try{await store.save(w);toast(editingId?"Cambios guardados":gym?"Sesión guardada":"Entreno guardado");if(!editingId&&(w.kind==="gym")!==(mode==="gym"))setMode(w.kind==="gym"?"gym":"cf");openWod(w.id)}
@@ -1990,7 +2035,7 @@ const MET=[
   {k:"reps",l:"Reps",better:1,get:e=>num(e.reps),fmt:v=>String(Math.round(v*10)/10).replace(".",",")},
   {k:"sets",l:"Rondas",better:1,get:e=>num(e.sets),fmt:v=>String(Math.round(v*10)/10).replace(".",",")},
   {k:"time",l:"Tiempo",better:-1,get:e=>e.time>0?e.time:null,fmt:v=>fmtTime(v)},
-  {k:"vol",l:"Volumen",better:1,get:e=>{const w=num(e.weight),r=num(e.reps);return w&&r?(num(e.sets)||1)*r*w:null},fmt:v=>kg(v)+" kg"},
+  {k:"vol",l:"Volumen",better:1,get:e=>{if(e.liftVol)return e.liftVol;const w=num(e.weight),r=num(e.reps);return w&&r?(num(e.sets)||1)*r*w:null},fmt:v=>kg(v)+" kg"},
   {k:"feel",l:"Sensación",better:1,get:e=>e.feel||null,fmt:v=>FEEL[Math.round(v)]?FEEL[Math.round(v)].f+" "+String(Math.round(v*10)/10).replace(".",","):"—"}
 ];
 const pctTxt=p=>(p>0?"+":p<0?"−":"±")+String(Math.abs(Math.round(p*10)/10)).replace(".",",")+" %";
@@ -2026,7 +2071,7 @@ function wodSummary(x){
   const comp=ex.filter(o=>o.c&&o.c.status!=="first"),n=comp.length;
   const cnt=s=>comp.filter(o=>o.c.status===s).length,up=cnt("up"),eq=cnt("eq"),dn=cnt("down"),pr=ex.filter(o=>o.c?.pr).length,first=ex.filter(o=>o.c?.status==="first").length;
   const P=v=>n?Math.round(v/n*100):0;
-  const vol=ex.reduce((a,o)=>a+(MET[4].get(o.e)||0),0),reps=ex.reduce((a,o)=>a+(num(o.e.reps)||0)*(num(o.e.sets)||1),0);
+  const vol=ex.reduce((a,o)=>a+(MET[4].get(o.e)||0),0),reps=ex.reduce((a,o)=>a+(o.e.liftReps??(num(o.e.reps)||0)*(num(o.e.sets)||1)),0);
   const feels=ex.map(o=>o.e.feel).filter(Boolean),fAvg=feels.length?feels.reduce((a,b)=>a+b,0)/feels.length:null;
   /* Media de cambio de cada ejercicio respecto a su vez anterior (en su dato principal) */
   const ch=comp.map(o=>{const c=o.c;if(!c.pv)return null;const p=(c.val-c.pv)/c.pv*100;return c.m==="time"?-p:p}).filter(v=>v!=null);
@@ -2992,6 +3037,90 @@ document.addEventListener("input",ev=>{const t=ev.target;if(!(t instanceof HTMLI
 /* ---------------- Ejercicios propios («Otros») ----------------
    Cada persona puede crear sus ejercicios. Se guardan en el perfil (customEx) y se añaden a la biblioteca
    en la categoría «Otros» de CrossFit, de Gym o de las dos. Tienen progreso y récords igual que los demás. */
+
+/* ---------------- Halterofilia: complex por porcentajes ----------------
+   Un bloque = cabecera con las partes del complex (Power Clean + Front Squat + Jerk),
+   el RM que tomas de base y las series en % de ese RM. Los kilos de cada serie se calculan solos.
+   Se guarda en w.lifts=[{parts:[…],rm:30,sets:[{r:2,p:50},…]}] y además como un ejercicio
+   (fromLift) con la serie más pesada, para que tenga progreso y récords. */
+const LIFT_DEF=[{r:2,p:50},{r:2,p:60},{r:3,p:70},{r:4,p:80},{r:1,p:90}];
+const liftName=l=>(l.parts||[]).filter(Boolean).join(" + ")||"Complex";
+const liftKg=(rm,p)=>rm>0&&p>0?r05(rm*p/100):null;
+let liftSeq=0;
+function addLift(l={}){
+  const i=++liftSeq,el=document.createElement("div");el.className="lift-card";
+  el.innerHTML=`<div class="lift-top"><span class="eyebrow">Halterofilia · complex</span><button type="button" class="icon-btn lift-del" aria-label="Quitar bloque de halterofilia">×</button></div>
+    <div class="lift-parts"></div>
+    <button type="button" class="lift-addpart">+ Añadir parte al complex</button>
+    <div class="lift-rm"><div class="field"><label for="lrm${i}">RM de base (kg)</label><input class="num lrm" id="lrm${i}" inputmode="decimal" placeholder="Ej. 30" value="${l.rm?String(l.rm).replace(".",","):""}"></div><p class="lift-rmhint muted" hidden></p></div>
+    <div class="lift-sets" role="table" aria-label="Series por porcentaje">
+      <div class="ls-row ls-h" role="row"><span role="columnheader">Serie</span><span role="columnheader">Reps</span><span role="columnheader">% RM</span><span role="columnheader">Kg</span><span></span></div>
+      <div class="ls-body"></div>
+    </div>
+    <div class="lift-actions"><button type="button" class="btn ghost lift-addset">+ Serie</button><button type="button" class="btn ghost lift-def" title="2×50 · 2×60 · 3×70 · 4×80 · 1×90 %">Plantilla 50→90 %</button></div>
+    <p class="lift-total muted"></p>`;
+  const partsBox=el.querySelector(".lift-parts"),body=el.querySelector(".ls-body"),rmIn=el.querySelector(".lrm"),hint=el.querySelector(".lift-rmhint");
+  const rm=()=>num(rmIn.value.replace(",","."))||0;
+  const parts=()=>[...partsBox.querySelectorAll(".lpn")].map(x=>x.value.trim()).filter(Boolean);
+  const paintRmHint=()=>{const n=parts();if(!n.length){hint.hidden=true;return}
+    const R0=profile?.rms||{},nm=n.join(" + "),who=R0[nm]?nm:R0[n[0]]?n[0]:null,r=who?{v:R0[who]}:null;
+    if(!r){hint.hidden=true;return}
+    hint.innerHTML=`Tu RM guardado de ${esc(who)}: <b>${kg(r.v)} kg</b>${rm()!==r05(r.v)?` <button type="button" class="lift-userm">Usar</button>`:""}`;hint.hidden=false;
+    const u=hint.querySelector(".lift-userm");if(u)u.onclick=()=>{rmIn.value=kg(r05(r.v));paint()}};
+  const paint=()=>{const R=rm();let tot=0,reps=0;
+    body.querySelectorAll(".ls-row").forEach((row,k)=>{row.querySelector(".ls-n").textContent=k+1;
+      const p=num(row.querySelector(".lsp").value.replace(",",".")),r=num(row.querySelector(".lsr").value)||0,w=liftKg(R,p);
+      row.querySelector(".ls-kg").textContent=w!=null?kg(w):"—";if(w!=null){tot+=w*r;reps+=r}});
+    el.querySelector(".lift-total").textContent=tot?`${reps} reps del complex · ${kg(tot)} kg movidos en total`:R?"":"Pon tu RM y se calculan los kilos de cada serie.";
+    paintRmHint()};
+  const addPart=(name="")=>{const row=document.createElement("div");row.className="lift-part";
+    row.innerHTML=`<span class="lp-plus" aria-hidden="true">+</span><input class="lpn" placeholder="Toca para elegir ejercicio" value="${esc(name)}" readonly aria-label="Parte del complex"><button type="button" class="icon-btn" aria-label="Quitar parte">×</button>`;
+    const inp=row.querySelector(".lpn");inp.addEventListener("click",()=>openPicker(inp));
+    inp.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();openPicker(inp)}});
+    inp.addEventListener("change",()=>{const n=parts();if(!rmIn.value&&n.length){const s=(profile?.rms||{})[n.join(" + ")]||(profile?.rms||{})[n[0]];if(s)rmIn.value=kg(r05(s))}paint()});
+    row.querySelector(".icon-btn").onclick=()=>{if(partsBox.children.length>1)row.remove();else inp.value="";paint()};
+    partsBox.appendChild(row);return inp};
+  const addSet=(s={})=>{const row=document.createElement("div");row.className="ls-row";row.setAttribute("role","row");
+    row.innerHTML=`<span class="ls-n mono" role="cell"></span><input class="num lsr" role="cell" inputmode="numeric" aria-label="Repeticiones" value="${s.r??""}"><span class="ls-pct" role="cell"><input class="num lsp" inputmode="decimal" aria-label="Porcentaje del RM" value="${s.p!=null?String(s.p).replace(".",","):""}"><i>%</i></span><b class="ls-kg mono" role="cell">—</b><button type="button" class="icon-btn" aria-label="Quitar serie">×</button>`;
+    row.querySelectorAll("input").forEach(x=>x.addEventListener("input",paint));
+    row.querySelector(".icon-btn").onclick=()=>{row.remove();paint()};
+    body.appendChild(row);return row};
+  (l.parts?.length?l.parts:[""]).forEach(p=>addPart(p));
+  (l.sets?.length?l.sets:LIFT_DEF).forEach(addSet);
+  rmIn.addEventListener("input",paint);
+  el.querySelector(".lift-del").onclick=()=>el.remove();
+  el.querySelector(".lift-addpart").onclick=()=>openPicker(addPart());
+  el.querySelector(".lift-addset").onclick=()=>{const last=[...body.querySelectorAll(".ls-row")].pop(),lp=last?num(last.querySelector(".lsp").value.replace(",",".")):0;
+    addSet({r:1,p:lp?Math.min(lp+5,105):50}).querySelector(".lsr").focus();paint()};
+  el.querySelector(".lift-def").onclick=()=>{body.innerHTML="";LIFT_DEF.forEach(addSet);paint()};
+  el._read=()=>{const ps=parts(),R=rm(),sets=[...body.querySelectorAll(".ls-row")].map(row=>({r:num(row.querySelector(".lsr").value)||0,p:num(row.querySelector(".lsp").value.replace(",","."))||0})).filter(s=>s.r||s.p);
+    if(!ps.length&&!R)return null;return{parts:ps,rm:R||null,sets}};
+  paint();
+  $("#liftRows").appendChild(el);$("#liftLbl").hidden=false;
+  return el;
+}
+function readLifts(){return[...document.querySelectorAll("#liftRows .lift-card")].map(c=>c._read()).filter(Boolean)}
+/* El ejercicio «resumen» de cada bloque: la serie más pesada, para progreso y récords */
+function liftExercises(lifts){return lifts.filter(l=>l.parts.length).map(l=>{
+  const top=l.sets.reduce((a,s)=>s.p>(a?.p||0)?s:a,null),w=top?liftKg(l.rm,top.p):null;
+  const liftReps=l.sets.reduce((a,s)=>a+s.r,0),liftVol=l.sets.reduce((a,s)=>a+(liftKg(l.rm,s.p)||0)*s.r,0)||null;
+  return{liftReps,liftVol,name:liftName(l),sets:l.sets.length||null,reps:top?.r||null,weight:w,time:null,notes:top?`Serie top al ${String(top.p).replace(".",",")} % de ${kg(l.rm||0)} kg`:"",feel:null,period:false,share:null,fromLift:true}})}
+function liftHtml(x){
+  const L=x.lifts||[];if(!L.length)return"";
+  return`<div class="sec"><h3>Halterofilia</h3>${L.map(l=>{
+    const idx=(x.exercises||[]).findIndex(e=>e.fromLift&&e.name===liftName(l));
+    let tot=0,reps=0;const rows=l.sets.map((s,k)=>{const w=liftKg(l.rm,s.p);if(w!=null){tot+=w*s.r;reps+=s.r}
+      return`<tr><td class="mono">${k+1}</td><td><b>${s.r}</b> rep${s.r==1?"":"s"}</td><td class="mono">${String(s.p).replace(".",",")} %</td><td class="mono kgc">${w!=null?kg(w)+" kg":"—"}</td></tr>`}).join("");
+    return`<div class="lift-view">
+      <div class="lv-head"><span class="eyebrow">Complex</span><div class="lv-name">${l.parts.map(p=>findEx(p)?`<button data-ex="${esc(p)}">${esc(p)}</button>`:`<span>${esc(p)}</span>`).join(`<i aria-hidden="true">+</i>`)||"Complex"}</div></div>
+      <div class="lv-rm"><span class="eyebrow">RM de base</span><b class="mono">${l.rm?kg(l.rm)+" kg":"—"}</b></div>
+      ${l.sets.length?`<div class="lv-tbl"><table><thead><tr><th>Serie</th><th>Reps</th><th>% RM</th><th>Kg</th></tr></thead><tbody>${rows}</tbody></table></div>`:""}
+      ${tot?`<p class="muted lv-tot">${reps} reps del complex · ${kg(tot)} kg movidos</p>`:""}
+      ${idx>=0?`<div class="xs-wrap">${exStatsTable(x.id,idx)}</div>`:""}
+    </div>`}).join("")}</div>`;
+}
+$("#addLift").onclick=()=>{const c=addLift();openPicker(c.querySelector(".lpn"))};
+
 function syncCustomEx(){
   for(let i=EX.length-1;i>=0;i--)if(EX[i].custom)EX.splice(i,1);
   for(const c of(profile?.customEx||[])){if(!c?.n||EX.some(e=>norm(e.n)===norm(c.n)))continue;

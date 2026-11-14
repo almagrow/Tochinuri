@@ -768,6 +768,11 @@ header.top.sub .top-coins{display:none}
 .skin-prev .sk-btn{height:22px;border-radius:6px}
 .skins-sec{margin-bottom:18px}
 .skins-sec p{margin:0 0 10px;font-size:14px}
+/* CrossFit / Gym */
+.mode-seg{margin:0 0 16px}
+.mode-seg label{font-family:var(--f-display);font-size:18px;text-transform:uppercase;letter-spacing:.03em;padding:8px 4px}
+#v-lib .mode-seg{margin:0 0 12px}
+#wodForm.is-gym .field:has(#fType),#wodForm.is-gym .field:has(#fLevelSeg),#wodForm.is-gym #pairBox,#wodForm.is-gym .field:has(#fResult){display:none}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -813,6 +818,7 @@ header.top.sub .top-coins{display:none}
       <button type="button" class="tool" id="openUsageBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><path d="M16 6.5a3 3 0 0 1 0 5.6M18 14.5c1.4.7 2.3 2.2 2.6 4.5"/></svg><span>Uso de la app</span></button>
       <button type="button" class="tool" id="openCycleBtn" hidden><svg viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 1 1 8 1 11.5a6 6 0 0 0 12 0C13 8 7 1 7 1z" fill="var(--drop)"/></svg><span>Ciclo</span></button>
     </div>
+    <div class="seg mode-seg" role="radiogroup" aria-label="Sección"><input type="radio" name="mode" id="mdCf" value="cf"><label for="mdCf">CrossFit</label><input type="radio" name="mode" id="mdGym" value="gym"><label for="mdGym">Gym</label></div>
     <div id="logList"></div>
   </section>
 
@@ -861,6 +867,7 @@ header.top.sub .top-coins{display:none}
   <!-- BIBLIOTECA -->
   <section class="view" id="v-lib" hidden>
     <h2 class="view-title">Ejercicios</h2>
+    <div class="seg mode-seg" role="radiogroup" aria-label="Sección"><input type="radio" name="libMode" id="lmCf" value="cf"><label for="lmCf">CrossFit</label><input type="radio" name="libMode" id="lmGym" value="gym"><label for="lmGym">Gym</label></div>
     <div class="search"><input type="search" id="libSearch" placeholder="Buscar: thruster, dominadas, remo…" aria-label="Buscar ejercicio"></div>
     <div class="chips" id="libChips" role="group" aria-label="Filtrar por categoría"></div>
     <p class="count-note" id="libCount"></p>
@@ -951,7 +958,17 @@ const CATS = {
   fue:{n:"Fuerza", c:"var(--p-blue)"},
   gim:{n:"Gimnásticos", c:"var(--p-yellow)"},
   mon:{n:"Cardio", c:"var(--p-green)"},
-  kb:{n:"Kettlebell y material", c:"var(--p-white)"}
+  kb:{n:"Kettlebell y material", c:"var(--p-white)"},
+  /* Gym */
+  ype:{n:"Pecho", c:"var(--p-red)"},
+  yes:{n:"Espalda", c:"var(--p-blue)"},
+  ypi:{n:"Pierna", c:"var(--p-green)"},
+  ygl:{n:"Glúteo", c:"var(--p-yellow)"},
+  yho:{n:"Hombro", c:"var(--brand)"},
+  ybi:{n:"Bíceps", c:"#e07a1f"},
+  ytr:{n:"Tríceps", c:"#0e9aa7"},
+  yco:{n:"Core", c:"var(--p-white)"},
+  yca:{n:"Cardio", c:"var(--muted)"}
 };
 const EX = [
 // Halterofilia
@@ -970,29 +987,29 @@ const EX = [
 {n:"Thruster",c:"hal",d:"Sentadilla frontal que encadena con un press por encima de la cabeza en un solo movimiento.",k:["Codos altos en la sentadilla","Usar el impulso de la cadera para el press","Cabeza pasa a través al bloquear"],m:["Cuádriceps","Glúteos","Hombros","Tríceps"],e:"Barra más ligera, mancuernas, wall ball."},
 {n:"Cluster",c:"hal",d:"Squat clean seguido directamente de un thruster en cada repetición.",k:["Recibir la cargada y subir en thruster sin pausa","Mantener rack fuerte"],m:["Cuerpo completo"],e:"Power clean + thruster, mancuernas."},
 // Fuerza
-{n:"Back Squat",c:"fue",d:"Sentadilla con la barra apoyada en la espalda alta.",k:["Pies a anchura de hombros","Rodillas siguen la línea de los pies","Cadera por debajo de la rodilla","Talones apoyados"],m:["Cuádriceps","Glúteos","Aductores","Core"],e:"Sentadilla a cajón, goblet squat, air squat."},
-{n:"Front Squat",c:"fue",d:"Sentadilla con la barra en rack frontal sobre los hombros.",k:["Codos altos todo el recorrido","Torso vertical","Bajar controlado y subir fuerte"],m:["Cuádriceps","Glúteos","Core","Espalda alta"],e:"Goblet squat, sentadilla a cajón."},
-{n:"Deadlift (peso muerto)",c:"fue",d:"Levantar la barra del suelo hasta estar de pie con cadera y rodillas extendidas.",k:["Espalda neutra, pecho arriba","Barra pegada a las piernas","Empujar el suelo con los pies","Bloquear con glúteos, sin hiperextender"],m:["Isquios","Glúteos","Espalda baja","Trapecio"],e:"Kettlebell deadlift, rumano, bloques elevados."},
+{n:"Back Squat",c:"fue",y:"ypi",d:"Sentadilla con la barra apoyada en la espalda alta.",k:["Pies a anchura de hombros","Rodillas siguen la línea de los pies","Cadera por debajo de la rodilla","Talones apoyados"],m:["Cuádriceps","Glúteos","Aductores","Core"],e:"Sentadilla a cajón, goblet squat, air squat."},
+{n:"Front Squat",c:"fue",y:"ypi",d:"Sentadilla con la barra en rack frontal sobre los hombros.",k:["Codos altos todo el recorrido","Torso vertical","Bajar controlado y subir fuerte"],m:["Cuádriceps","Glúteos","Core","Espalda alta"],e:"Goblet squat, sentadilla a cajón."},
+{n:"Deadlift (peso muerto)",c:"fue",y:"yes",d:"Levantar la barra del suelo hasta estar de pie con cadera y rodillas extendidas.",k:["Espalda neutra, pecho arriba","Barra pegada a las piernas","Empujar el suelo con los pies","Bloquear con glúteos, sin hiperextender"],m:["Isquios","Glúteos","Espalda baja","Trapecio"],e:"Kettlebell deadlift, rumano, bloques elevados."},
 {n:"Sumo Deadlift High Pull (SDHP)",c:"fue",d:"Peso muerto con postura sumo y agarre estrecho que termina tirando la barra hasta la barbilla con codos altos.",k:["Pies anchos, agarre estrecho","Extender cadera antes de tirar con brazos","Codos por encima de las manos"],m:["Glúteos","Isquios","Trapecio","Hombros"],e:"Kettlebell, sin tirón final."},
-{n:"Romanian Deadlift (RDL)",c:"fue",d:"Peso muerto desde arriba bajando con bisagra de cadera y rodillas casi rectas.",k:["Llevar la cadera hacia atrás","Barra cerca de las piernas","Bajar hasta notar tensión en isquios"],m:["Isquios","Glúteos","Espalda baja"],e:"Mancuernas, kettlebell."},
-{n:"Strict Press (press militar)",c:"fue",d:"Press de la barra desde los hombros hasta encima de la cabeza sin ayuda de las piernas.",k:["Glúteos y core apretados","Barra en línea recta, cabeza aparta","Bloquear con la barra sobre los pies"],m:["Hombros","Tríceps","Core"],e:"Mancuernas, barra vacía."},
-{n:"Push Press",c:"fue",d:"Press por encima de la cabeza usando un impulso de piernas (dip y drive) sin volver a flexionar al recibir.",k:["Dip corto y vertical","Extensión de piernas explosiva","Terminar con brazos"],m:["Hombros","Tríceps","Cuádriceps"],e:"Mancuernas, strict press."},
-{n:"Bench Press",c:"fue",d:"Press de banca tumbado, bajando la barra al pecho y empujándola hasta bloquear.",k:["Escápulas retraídas","Pies firmes en el suelo","Barra al pecho medio"],m:["Pectoral","Tríceps","Hombros"],e:"Mancuernas, flexiones."},
-{n:"Lunges (zancadas)",c:"fue",d:"Paso adelante (o caminando) bajando hasta que la rodilla trasera roza el suelo. Pueden hacerse con carga frontal, overhead o en la espalda.",k:["Torso erguido","Rodilla delantera sobre el pie","Tocar el suelo con la rodilla trasera suave"],m:["Cuádriceps","Glúteos","Aductores"],e:"Sin carga, zancada estática, rango reducido."},
-{n:"Good Morning",c:"fue",d:"Con la barra en la espalda, bisagra de cadera inclinando el torso hacia delante con rodillas ligeramente flexionadas.",k:["Espalda neutra","Cadera atrás","Peso ligero, rango controlado"],m:["Isquios","Glúteos","Espalda baja"],e:"PVC, sin carga."},
+{n:"Romanian Deadlift (RDL)",c:"fue",y:"ypi",d:"Peso muerto desde arriba bajando con bisagra de cadera y rodillas casi rectas.",k:["Llevar la cadera hacia atrás","Barra cerca de las piernas","Bajar hasta notar tensión en isquios"],m:["Isquios","Glúteos","Espalda baja"],e:"Mancuernas, kettlebell."},
+{n:"Strict Press (press militar)",c:"fue",y:"yho",d:"Press de la barra desde los hombros hasta encima de la cabeza sin ayuda de las piernas.",k:["Glúteos y core apretados","Barra en línea recta, cabeza aparta","Bloquear con la barra sobre los pies"],m:["Hombros","Tríceps","Core"],e:"Mancuernas, barra vacía."},
+{n:"Push Press",c:"fue",y:"yho",d:"Press por encima de la cabeza usando un impulso de piernas (dip y drive) sin volver a flexionar al recibir.",k:["Dip corto y vertical","Extensión de piernas explosiva","Terminar con brazos"],m:["Hombros","Tríceps","Cuádriceps"],e:"Mancuernas, strict press."},
+{n:"Bench Press",c:"fue",y:"ype",d:"Press de banca tumbado, bajando la barra al pecho y empujándola hasta bloquear.",k:["Escápulas retraídas","Pies firmes en el suelo","Barra al pecho medio"],m:["Pectoral","Tríceps","Hombros"],e:"Mancuernas, flexiones."},
+{n:"Lunges (zancadas)",c:"fue",y:"ypi",d:"Paso adelante (o caminando) bajando hasta que la rodilla trasera roza el suelo. Pueden hacerse con carga frontal, overhead o en la espalda.",k:["Torso erguido","Rodilla delantera sobre el pie","Tocar el suelo con la rodilla trasera suave"],m:["Cuádriceps","Glúteos","Aductores"],e:"Sin carga, zancada estática, rango reducido."},
+{n:"Good Morning",c:"fue",y:"ypi",d:"Con la barra en la espalda, bisagra de cadera inclinando el torso hacia delante con rodillas ligeramente flexionadas.",k:["Espalda neutra","Cadera atrás","Peso ligero, rango controlado"],m:["Isquios","Glúteos","Espalda baja"],e:"PVC, sin carga."},
 // Gimnásticos
-{n:"Pull-up (dominada)",c:"gim",d:"Colgado de la barra, subir hasta que la barbilla supera la barra. Puede ser estricta, kipping o butterfly.",k:["Partir con brazos completamente extendidos","Barbilla por encima de la barra","Kipping: hollow y arch rítmicos"],m:["Dorsales","Bíceps","Espalda alta","Core"],e:"Con banda, jumping pull-up, ring row."},
+{n:"Pull-up (dominada)",c:"gim",y:"yes",d:"Colgado de la barra, subir hasta que la barbilla supera la barra. Puede ser estricta, kipping o butterfly.",k:["Partir con brazos completamente extendidos","Barbilla por encima de la barra","Kipping: hollow y arch rítmicos"],m:["Dorsales","Bíceps","Espalda alta","Core"],e:"Con banda, jumping pull-up, ring row."},
 {n:"Chest-to-Bar (C2B)",c:"gim",d:"Dominada en la que el pecho, por debajo de la clavícula, toca la barra.",k:["Tirar hacia atrás, no solo hacia arriba","Kip más potente que en la dominada"],m:["Dorsales","Bíceps","Espalda alta"],e:"Pull-ups, con banda."},
 {n:"Bar Muscle-up",c:"gim",d:"Desde colgado en la barra, pasar por encima hasta bloquear los brazos con la cadera a la altura de la barra.",k:["Kip fuerte y cadera hacia la barra","Tirar la barra hacia la cadera","Girar muñecas y empujar hasta bloquear"],m:["Dorsales","Pectoral","Tríceps","Core"],e:"C2B + fondos, banda, transiciones en barra baja."},
 {n:"Ring Muscle-up",c:"gim",d:"En anillas, pasar de colgado a apoyo con brazos bloqueados por encima de las anillas.",k:["Agarre falso (false grip) en estricto","Anillas pegadas al cuerpo","Transición rápida y fondo completo"],m:["Dorsales","Pectoral","Tríceps"],e:"Transiciones bajas, ring rows + ring dips."},
 {n:"Toes-to-Bar (T2B)",c:"gim",d:"Colgado de la barra, tocar la barra con ambos pies a la vez.",k:["Hombros activos empujando la barra","Ritmo hollow-arch","Ambos pies tocan a la vez"],m:["Core","Flexores de cadera","Dorsales"],e:"Knee raises, knees-to-elbows, V-ups."},
 {n:"Knees-to-Elbows (K2E)",c:"gim",d:"Colgado de la barra, llevar las rodillas hasta tocar los codos.",k:["Compresión fuerte","Controlar el balanceo"],m:["Core","Flexores de cadera"],e:"Hanging knee raises."},
-{n:"Push-up (flexión)",c:"gim",d:"Flexión de brazos con el pecho tocando el suelo y bloqueo completo arriba, cuerpo en línea.",k:["Cuerpo rígido como tabla","Codos a unos 45°","Pecho al suelo"],m:["Pectoral","Tríceps","Hombros","Core"],e:"Rodillas apoyadas, manos elevadas."},
+{n:"Push-up (flexión)",c:"gim",y:"ype",d:"Flexión de brazos con el pecho tocando el suelo y bloqueo completo arriba, cuerpo en línea.",k:["Cuerpo rígido como tabla","Codos a unos 45°","Pecho al suelo"],m:["Pectoral","Tríceps","Hombros","Core"],e:"Rodillas apoyadas, manos elevadas."},
 {n:"Handstand Push-up (HSPU)",c:"gim",d:"Flexión en pino contra la pared: la cabeza toca el suelo y se bloquean los brazos arriba. Kipping o estricta.",k:["Manos algo más anchas que hombros","Triángulo cabeza-manos","Kipping: rodillas al pecho y extensión explosiva"],m:["Hombros","Tríceps","Core"],e:"Pike push-up, con abmat, box HSPU."},
 {n:"Handstand Walk",c:"gim",d:"Caminar sobre las manos en posición de pino. Se mide en metros o pasos.",k:["Cuerpo hollow","Mirada entre las manos","Pasos cortos con hombros encima"],m:["Hombros","Core","Muñecas"],e:"Wall walks, bear crawl, pino contra la pared."},
 {n:"Wall Walk",c:"gim",d:"Desde tumbado boca abajo con los pies en la pared, caminar con manos hacia atrás y pies pared arriba hasta tocarla con la nariz, y volver.",k:["Core fuerte","Manos cerca de la pared arriba","Volver controlado"],m:["Hombros","Core"],e:"Rango parcial, plancha con pies elevados."},
-{n:"Ring Dip",c:"gim",d:"Fondo en anillas: bajar hasta que los hombros quedan por debajo de los codos y bloquear arriba.",k:["Anillas pegadas al cuerpo","Rango completo","Girar anillas hacia fuera al bloquear"],m:["Tríceps","Pectoral","Hombros"],e:"Fondos en barras paralelas, en banco, con banda."},
-{n:"Air Squat",c:"gim",d:"Sentadilla sin carga con cadera por debajo de la rodilla y extensión completa arriba.",k:["Peso en talones","Rodillas hacia fuera","Brazos delante como contrapeso"],m:["Cuádriceps","Glúteos"],e:"Sentadilla a cajón."},
+{n:"Ring Dip",c:"gim",y:"ytr",d:"Fondo en anillas: bajar hasta que los hombros quedan por debajo de los codos y bloquear arriba.",k:["Anillas pegadas al cuerpo","Rango completo","Girar anillas hacia fuera al bloquear"],m:["Tríceps","Pectoral","Hombros"],e:"Fondos en barras paralelas, en banco, con banda."},
+{n:"Air Squat",c:"gim",y:"ypi",d:"Sentadilla sin carga con cadera por debajo de la rodilla y extensión completa arriba.",k:["Peso en talones","Rodillas hacia fuera","Brazos delante como contrapeso"],m:["Cuádriceps","Glúteos"],e:"Sentadilla a cajón."},
 {n:"Pistol Squat",c:"gim",d:"Sentadilla completa a una pierna con la otra extendida al frente.",k:["Talón apoyado","Brazos al frente","Control en la bajada"],m:["Cuádriceps","Glúteos","Equilibrio"],e:"A cajón, con apoyo en anilla, zancadas."},
 {n:"Burpee",c:"gim",d:"Pecho y muslos al suelo, levantarse y saltar con palmada por encima de la cabeza.",k:["Pecho al suelo","Pies cerca de las manos al subir","Ritmo constante, no rápido"],m:["Cuerpo completo"],e:"Sin salto, step-back burpee, a cajón."},
 {n:"Bar-Facing Burpee",c:"gim",d:"Burpee perpendicular a la barra y salto por encima de ella con los dos pies.",k:["Bajar paralelo a la barra","Saltar con ambos pies a la vez"],m:["Cuerpo completo"],e:"Pasar la barra caminando."},
@@ -1000,25 +1017,25 @@ const EX = [
 {n:"Box Jump Over",c:"gim",d:"Saltar o subir al cajón y pasar al otro lado. No hace falta extender arriba.",k:["Se puede tocar con un pie","Bajar al lado contrario"],m:["Piernas"],e:"Step-over."},
 {n:"Rope Climb",c:"gim",d:"Subir la cuerda (habitualmente 4,5 m) usando bloqueo de pies (J-hook o S-wrap).",k:["Bloqueo de pies firme","Subir con piernas, no solo brazos","Bajar mano a mano, sin deslizar"],m:["Dorsales","Bíceps","Antebrazos","Core"],e:"Tumbado a de pie, mitad de altura, tirones de toalla."},
 {n:"Legless Rope Climb",c:"gim",d:"Subida a la cuerda solo con brazos.",k:["Tirones largos","Core apretado","Bajar controlado"],m:["Dorsales","Bíceps","Antebrazos"],e:"Rope climb con pies."},
-{n:"Sit-up (AbMat)",c:"gim",d:"Abdominal completo con abmat bajo la zona lumbar: tocar el suelo detrás de la cabeza y los pies delante.",k:["Plantas juntas, rodillas fuera","Tocar suelo detrás y pies delante"],m:["Core","Flexores de cadera"],e:"Rango reducido, crunch."},
+{n:"Sit-up (AbMat)",c:"gim",y:"yco",d:"Abdominal completo con abmat bajo la zona lumbar: tocar el suelo detrás de la cabeza y los pies delante.",k:["Plantas juntas, rodillas fuera","Tocar suelo detrás y pies delante"],m:["Core","Flexores de cadera"],e:"Rango reducido, crunch."},
 {n:"GHD Sit-up",c:"gim",d:"Abdominal en la máquina GHD bajando hasta tocar el suelo y subiendo con extensión de rodillas.",k:["Empezar con rango corto","Patada de rodillas para subir","Cuidado con el volumen (riesgo de rabdomiólisis)"],m:["Core","Flexores de cadera","Cuádriceps"],e:"AbMat sit-up."},
-{n:"Hollow Hold / Rock",c:"gim",d:"Posición de barco bocarriba con lumbar pegada al suelo; en rock se balancea manteniendo la forma.",k:["Lumbar pegada","Brazos junto a las orejas"],m:["Core"],e:"Rodillas flexionadas, brazos al costado."},
+{n:"Hollow Hold / Rock",c:"gim",y:"yco",d:"Posición de barco bocarriba con lumbar pegada al suelo; en rock se balancea manteniendo la forma.",k:["Lumbar pegada","Brazos junto a las orejas"],m:["Core"],e:"Rodillas flexionadas, brazos al costado."},
 {n:"L-sit",c:"gim",d:"Sostener el cuerpo apoyado en manos (paralelas, anillas o suelo) con piernas extendidas a 90°.",k:["Hombros deprimidos","Piernas rectas y juntas"],m:["Core","Flexores de cadera","Tríceps"],e:"Tuck sit, una pierna."},
 {n:"V-up",c:"gim",d:"Desde tumbado, elevar a la vez piernas y tronco hasta tocar los pies con las manos.",k:["Piernas rectas","Bajar controlado"],m:["Core"],e:"Tuck-ups."},
-{n:"Ring Row",c:"gim",d:"Remo inclinado colgado de las anillas, llevando el pecho a las manos.",k:["Cuerpo en línea","Escápulas juntas arriba"],m:["Espalda alta","Bíceps"],e:"Más vertical para facilitar."},
-{n:"Back Extension",c:"gim",d:"Extensión de cadera y espalda en la GHD.",k:["Movimiento controlado","Apretar glúteos arriba"],m:["Espalda baja","Glúteos","Isquios"],e:"Superman en suelo."},
+{n:"Ring Row",c:"gim",y:"yes",d:"Remo inclinado colgado de las anillas, llevando el pecho a las manos.",k:["Cuerpo en línea","Escápulas juntas arriba"],m:["Espalda alta","Bíceps"],e:"Más vertical para facilitar."},
+{n:"Back Extension",c:"gim",y:"yes",d:"Extensión de cadera y espalda en la GHD.",k:["Movimiento controlado","Apretar glúteos arriba"],m:["Espalda baja","Glúteos","Isquios"],e:"Superman en suelo."},
 // Cardio
-{n:"Row (remo)",c:"mon",d:"Remo en ergómetro. Se mide en metros o calorías.",k:["Secuencia: piernas, cadera, brazos","Vuelta: brazos, cadera, piernas","Ritmo 24-30 paladas/min"],m:["Piernas","Espalda","Brazos"],e:"Menos distancia, otra máquina."},
-{n:"Assault / Echo Bike",c:"mon",d:"Bicicleta de aire con brazos. Se mide en calorías.",k:["Empuja y tira con brazos","Ritmo sostenible al principio"],m:["Piernas","Brazos","Cardio"],e:"Menos calorías, bici normal."},
-{n:"Bike Erg",c:"mon",d:"Bicicleta ergométrica de resistencia por aire, sin brazos. Metros o calorías.",k:["Sillín a la altura de la cadera","Cadencia estable"],m:["Piernas","Cardio"],e:"Menos distancia."},
-{n:"Ski Erg",c:"mon",d:"Ergómetro de esquí: tirones verticales con flexión de cadera.",k:["Bisagra de cadera, no solo brazos","Manos a las rodillas"],m:["Dorsales","Tríceps","Core"],e:"Remo, menos calorías."},
-{n:"Run (carrera)",c:"mon",d:"Carrera, normalmente 200, 400, 800 m o millas.",k:["Zancada corta y cadencia alta","Respirar con ritmo"],m:["Piernas","Cardio"],e:"Remo o bici equivalente, caminar."},
-{n:"Double-Under",c:"mon",d:"Saltar a la comba pasando la cuerda dos veces por debajo de los pies en cada salto.",k:["Saltos pequeños y rectos","Giro desde las muñecas","Codos pegados"],m:["Gemelos","Hombros","Cardio"],e:"Singles (x2 o x3), intentos de dobles."},
-{n:"Single-Under",c:"mon",d:"Salto a la comba normal, una vuelta por salto.",k:["Rebotes en la punta del pie","Muñecas relajadas"],m:["Gemelos","Cardio"],e:"Saltos laterales sin cuerda."},
+{n:"Row (remo)",c:"mon",y:"yca",d:"Remo en ergómetro. Se mide en metros o calorías.",k:["Secuencia: piernas, cadera, brazos","Vuelta: brazos, cadera, piernas","Ritmo 24-30 paladas/min"],m:["Piernas","Espalda","Brazos"],e:"Menos distancia, otra máquina."},
+{n:"Assault / Echo Bike",c:"mon",y:"yca",d:"Bicicleta de aire con brazos. Se mide en calorías.",k:["Empuja y tira con brazos","Ritmo sostenible al principio"],m:["Piernas","Brazos","Cardio"],e:"Menos calorías, bici normal."},
+{n:"Bike Erg",c:"mon",y:"yca",d:"Bicicleta ergométrica de resistencia por aire, sin brazos. Metros o calorías.",k:["Sillín a la altura de la cadera","Cadencia estable"],m:["Piernas","Cardio"],e:"Menos distancia."},
+{n:"Ski Erg",c:"mon",y:"yca",d:"Ergómetro de esquí: tirones verticales con flexión de cadera.",k:["Bisagra de cadera, no solo brazos","Manos a las rodillas"],m:["Dorsales","Tríceps","Core"],e:"Remo, menos calorías."},
+{n:"Run (carrera)",c:"mon",y:"yca",d:"Carrera, normalmente 200, 400, 800 m o millas.",k:["Zancada corta y cadencia alta","Respirar con ritmo"],m:["Piernas","Cardio"],e:"Remo o bici equivalente, caminar."},
+{n:"Double-Under",c:"mon",y:"yca",d:"Saltar a la comba pasando la cuerda dos veces por debajo de los pies en cada salto.",k:["Saltos pequeños y rectos","Giro desde las muñecas","Codos pegados"],m:["Gemelos","Hombros","Cardio"],e:"Singles (x2 o x3), intentos de dobles."},
+{n:"Single-Under",c:"mon",y:"yca",d:"Salto a la comba normal, una vuelta por salto.",k:["Rebotes en la punta del pie","Muñecas relajadas"],m:["Gemelos","Cardio"],e:"Saltos laterales sin cuerda."},
 {n:"Swim (natación)",c:"mon",d:"Nado, habitual en la competición. Metros.",k:["Respiración bilateral","Cuerpo horizontal"],m:["Cuerpo completo"],e:"Remo."},
 // Kettlebell y material
-{n:"Kettlebell Swing",c:"kb",d:"Balanceo de la pesa con impulso de cadera. Ruso: hasta la altura de los ojos. Americano: hasta encima de la cabeza.",k:["Bisagra de cadera, no sentadilla","Glúteos aprietan arriba","Brazos solo guían"],m:["Glúteos","Isquios","Core","Hombros"],e:"Ruso en vez de americano, menos peso."},
-{n:"Goblet Squat",c:"kb",d:"Sentadilla sujetando una kettlebell o mancuerna delante del pecho.",k:["Codos entre las rodillas","Torso erguido"],m:["Cuádriceps","Glúteos"],e:"Air squat."},
+{n:"Kettlebell Swing",c:"kb",y:"ygl",d:"Balanceo de la pesa con impulso de cadera. Ruso: hasta la altura de los ojos. Americano: hasta encima de la cabeza.",k:["Bisagra de cadera, no sentadilla","Glúteos aprietan arriba","Brazos solo guían"],m:["Glúteos","Isquios","Core","Hombros"],e:"Ruso en vez de americano, menos peso."},
+{n:"Goblet Squat",c:"kb",y:"ypi",d:"Sentadilla sujetando una kettlebell o mancuerna delante del pecho.",k:["Codos entre las rodillas","Torso erguido"],m:["Cuádriceps","Glúteos"],e:"Air squat."},
 {n:"Turkish Get-up",c:"kb",d:"Pasar de tumbado a de pie sosteniendo una pesa por encima con el brazo bloqueado, y volver.",k:["Mirar la pesa siempre","Movimiento lento por fases"],m:["Hombros","Core","Cuerpo completo"],e:"Sin pesa o con zapato encima del puño."},
 {n:"Kettlebell Snatch",c:"kb",d:"Llevar la kettlebell desde entre las piernas hasta encima de la cabeza en un movimiento con un brazo.",k:["Pesa cerca del cuerpo","Mano a través del asa sin golpe"],m:["Glúteos","Hombros","Core"],e:"Swing a un brazo."},
 {n:"Wall Ball",c:"kb",d:"Sentadilla con balón medicinal y lanzamiento a una diana (3 m hombres / 2,7 m mujeres; 9/6 kg).",k:["Sentadilla completa","Lanzar con la extensión de piernas","Recibir y bajar en el mismo movimiento"],m:["Cuádriceps","Glúteos","Hombros"],e:"Balón más ligero, diana más baja."},
@@ -1026,13 +1043,106 @@ const EX = [
 {n:"Devil Press",c:"kb",d:"Burpee con dos mancuernas seguido de un swing doble que las lleva por encima de la cabeza.",k:["Pecho al suelo entre mancuernas","Bisagra y extensión explosiva"],m:["Cuerpo completo"],e:"Burpee + DB snatch a un brazo."},
 {n:"Dumbbell Thruster",c:"kb",d:"Thruster con dos mancuernas en los hombros.",k:["Codos al frente","Press usando el impulso"],m:["Cuádriceps","Hombros"],e:"Una mancuerna, menos peso."},
 {n:"Dumbbell Clean & Jerk",c:"kb",d:"Cargada con mancuerna(s) a los hombros seguida de un jerk por encima de la cabeza.",k:["Mancuerna toca el suelo","Dip y drive al jerk"],m:["Cuerpo completo"],e:"Hang clean + push press."},
-{n:"Dumbbell Box Step-up",c:"kb",d:"Subir al cajón con mancuernas en la mano o en los hombros, extensión completa arriba.",k:["Pie entero en el cajón","Empujar con la pierna de arriba"],m:["Cuádriceps","Glúteos"],e:"Sin peso, cajón más bajo."},
-{n:"Farmer Carry",c:"kb",d:"Caminar con una pesa pesada en cada mano.",k:["Hombros atrás y abajo","Pasos cortos y firmes"],m:["Antebrazos","Trapecio","Core"],e:"Menos peso o distancia."},
+{n:"Dumbbell Box Step-up",c:"kb",y:"ygl",d:"Subir al cajón con mancuernas en la mano o en los hombros, extensión completa arriba.",k:["Pie entero en el cajón","Empujar con la pierna de arriba"],m:["Cuádriceps","Glúteos"],e:"Sin peso, cajón más bajo."},
+{n:"Farmer Carry",c:"kb",y:"yco",d:"Caminar con una pesa pesada en cada mano.",k:["Hombros atrás y abajo","Pasos cortos y firmes"],m:["Antebrazos","Trapecio","Core"],e:"Menos peso o distancia."},
 {n:"Sandbag Clean",c:"kb",d:"Levantar un saco del suelo al hombro o al pecho.",k:["Abrazar el saco","Extensión de cadera, no lumbar"],m:["Glúteos","Espalda","Core"],e:"Saco más ligero."},
 {n:"Sled Push / Pull",c:"kb",d:"Empujar o arrastrar un trineo con peso una distancia.",k:["Cuerpo inclinado 45° al empujar","Pasos cortos y continuos"],m:["Piernas","Glúteos","Cardio"],e:"Menos peso."},
 {n:"Slam Ball",c:"kb",d:"Levantar un balón pesado por encima de la cabeza y estamparlo contra el suelo.",k:["Extender completamente arriba","Bajar con todo el cuerpo"],m:["Core","Dorsales","Hombros"],e:"Balón más ligero."},
 {n:"Med Ball Clean",c:"kb",d:"Llevar el balón medicinal del suelo al pecho recibiendo en sentadilla.",k:["Bisagra, balón entre los pies","Codos por debajo al recibir"],m:["Piernas","Espalda"],e:"Balón ligero."},
-{n:"Burpee Box Jump Over",c:"kb",d:"Burpee frente al cajón seguido de salto o paso por encima del cajón.",k:["Pecho al suelo","Pasar el cajón sin paradas"],m:["Cuerpo completo"],e:"Step-over, cajón bajo."}
+{n:"Burpee Box Jump Over",c:"kb",d:"Burpee frente al cajón seguido de salto o paso por encima del cajón.",k:["Pecho al suelo","Pasar el cajón sin paradas"],m:["Cuerpo completo"],e:"Step-over, cajón bajo."},
+// ---- Gym: pecho
+{n:"Press banca con mancuernas",c:"ype",d:"Tumbado en banco plano, empujar dos mancuernas desde el pecho hasta estirar los brazos.",k:["Escápulas juntas y pies firmes en el suelo","Bajar controlado hasta la altura del pecho","Codos a unos 45° del cuerpo"],m:["Pectoral","Tríceps","Deltoides anterior"],e:"Más ligero, banco inclinado o press en máquina."},
+{n:"Press banca inclinado con barra",c:"ype",d:"Press de banca en un banco a 30-45°, para insistir en la parte alta del pecho.",k:["Banco a 30-45°, no más","Barra baja hacia la parte alta del pecho","Glúteos apoyados todo el rato"],m:["Pectoral superior","Deltoides anterior","Tríceps"],e:"Con mancuernas o en máquina Smith."},
+{n:"Press inclinado con mancuernas",c:"ype",d:"Empuje con mancuernas en banco inclinado, con más recorrido que con barra.",k:["Mancuernas a la altura del pecho alto","Empujar hacia arriba y un poco hacia dentro","Muñecas firmes sobre los codos"],m:["Pectoral superior","Deltoides anterior","Tríceps"],e:"Menos inclinación o menos peso."},
+{n:"Press banca declinado",c:"ype",d:"Press de banca con el banco inclinado hacia abajo, que trabaja más la parte baja del pecho.",k:["Piernas bien sujetas","Barra a la parte baja del pecho","Pide ayuda para sacar y dejar la barra"],m:["Pectoral inferior","Tríceps"],e:"Fondos en paralelas o press en polea de arriba abajo."},
+{n:"Press de pecho en máquina",c:"ype",d:"Empuje sentado en máquina guiada, cómodo para aprender y para acabar la sesión.",k:["Asiento con las asas a la altura del pecho","Espalda pegada al respaldo","No bloquees los codos de golpe"],m:["Pectoral","Tríceps","Deltoides anterior"],e:"Baja el peso o haz flexiones."},
+{n:"Press en máquina Smith",c:"ype",d:"Press de banca con la barra guiada por raíles, más estable que la barra libre.",k:["Banco colocado para que la barra baje al pecho","Seguros puestos a la altura correcta","Mismo gesto que el press banca"],m:["Pectoral","Tríceps","Deltoides anterior"],e:"Banco inclinado para pecho alto."},
+{n:"Aperturas con mancuernas",c:"ype",d:"Tumbado, abrir los brazos con los codos algo doblados y volver a cerrarlos por encima del pecho.",k:["Codos ligeramente flexionados y fijos","Bajar hasta notar estiramiento, sin dolor","Pensar en abrazar un árbol al subir"],m:["Pectoral","Deltoides anterior"],e:"Contractora o aperturas en polea."},
+{n:"Cruce de poleas",c:"ype",d:"De pie entre dos poleas altas, juntar las manos delante del cuerpo en arco.",k:["Un pie adelantado para estabilidad","Codos algo doblados","Apretar el pecho al juntar las manos"],m:["Pectoral","Deltoides anterior"],e:"Poleas bajas para pecho alto."},
+{n:"Contractora (pec deck)",c:"ype",d:"Máquina en la que se juntan los brazos delante del pecho, sentado.",k:["Asas a la altura del pecho","Hombros atrás y abajo","Volver despacio"],m:["Pectoral"],e:"Aperturas con mancuernas."},
+{n:"Fondos en paralelas",c:"ype",d:"Bajar y subir el cuerpo entre dos barras paralelas, inclinado hacia delante para dar más pecho.",k:["Inclinar el tronco hacia delante","Bajar hasta que el hombro quede a la altura del codo","Hombros lejos de las orejas"],m:["Pectoral inferior","Tríceps","Deltoides anterior"],e:"Máquina de fondos asistidos o con banda."},
+{n:"Pullover con mancuerna",c:"ype",d:"Tumbado, llevar una mancuerna desde encima del pecho hasta detrás de la cabeza con los brazos casi estirados.",k:["Costillas abajo, sin arquear la espalda","Codos ligeramente doblados","Bajar solo hasta donde controles"],m:["Pectoral","Dorsal","Serrato"],e:"Pullover en polea alta."},
+// ---- Gym: espalda
+{n:"Jalón al pecho",c:"yes",d:"Sentado en polea alta, tirar de la barra hasta la parte alta del pecho.",k:["Pecho alto y ligera inclinación atrás","Llevar los codos hacia abajo y atrás","Subir controlando, sin soltar"],m:["Dorsal","Bíceps","Romboides"],e:"Menos peso o dominadas asistidas."},
+{n:"Jalón agarre estrecho",c:"yes",d:"Jalón con un agarre en V o estrecho, con las palmas enfrentadas.",k:["Tronco estable","Llevar el agarre al esternón","Codos pegados al cuerpo"],m:["Dorsal","Bíceps","Redondo mayor"],e:"Jalón al pecho normal."},
+{n:"Remo con barra",c:"yes",d:"Inclinado hacia delante con la espalda recta, llevar la barra hacia el ombligo.",k:["Espalda neutra y rodillas algo dobladas","Tirar con los codos, no con las manos","Apretar las escápulas arriba"],m:["Dorsal","Romboides","Trapecio","Bíceps"],e:"Remo con apoyo en banco o en máquina."},
+{n:"Remo Pendlay",c:"yes",d:"Remo con barra desde el suelo en cada repetición, con el tronco paralelo al suelo.",k:["Tronco horizontal","Barra parte del suelo cada vez","Tirón explosivo hacia el abdomen"],m:["Dorsal","Romboides","Trapecio"],e:"Remo con barra clásico."},
+{n:"Remo con mancuerna a una mano",c:"yes",d:"Con una rodilla y una mano apoyadas en el banco, tirar de la mancuerna hacia la cadera.",k:["Espalda plana","Llevar el codo hacia el bolsillo","Sin girar el tronco"],m:["Dorsal","Romboides","Bíceps"],e:"Menos peso o remo en máquina."},
+{n:"Remo en polea baja",c:"yes",d:"Sentado, tirar del agarre de la polea baja hacia el abdomen.",k:["Pecho alto, sin balancearse","Codos atrás pegados al cuerpo","Estirar los brazos sin redondear la espalda"],m:["Dorsal","Romboides","Trapecio medio"],e:"Remo en máquina con apoyo de pecho."},
+{n:"Remo en máquina",c:"yes",d:"Remo sentado con el pecho apoyado en el respaldo de la máquina.",k:["Pecho pegado al apoyo","Tirar hasta juntar escápulas","Volver estirando del todo"],m:["Dorsal","Romboides","Trapecio"],e:"Más ligero o a una mano."},
+{n:"Remo en T",c:"yes",d:"Remo con una barra anclada por un extremo, tirando con un agarre en V.",k:["Espalda neutra","Llevar el agarre al pecho bajo","No tirar con impulso de piernas"],m:["Dorsal","Romboides","Trapecio"],e:"Remo con apoyo de pecho."},
+{n:"Dominada supina (chin-up)",c:"yes",d:"Dominada con las palmas hacia ti, que da más trabajo al bíceps.",k:["Agarre a la anchura de los hombros","Subir hasta pasar la barbilla","Bajar estirando del todo"],m:["Dorsal","Bíceps"],e:"Banda elástica, máquina asistida o negativas."},
+{n:"Dominada lastrada",c:"yes",d:"Dominada estricta con peso extra colgado de un cinturón o entre los pies.",k:["Solo si haces varias estrictas","Sin balanceo","Recorrido completo"],m:["Dorsal","Bíceps","Core"],e:"Dominadas sin lastre."},
+{n:"Pullover en polea alta",c:"yes",d:"De pie frente a la polea alta, bajar la barra con los brazos casi estirados hasta los muslos.",k:["Brazos casi rectos","Inclinado ligeramente hacia delante","Notar el dorsal, no los tríceps"],m:["Dorsal","Redondo mayor"],e:"Con cuerda o con banda."},
+{n:"Rack pull",c:"yes",d:"Peso muerto parcial desde soportes a la altura de las rodillas.",k:["Espalda neutra","Empujar el suelo y llevar la cadera adelante","Hombros atrás al final"],m:["Erectores","Trapecio","Glúteos"],e:"Peso muerto rumano."},
+// ---- Gym: pierna
+{n:"Prensa de piernas",c:"ypi",d:"Empujar la plataforma de la máquina con los pies desde las rodillas dobladas.",k:["Espalda y cadera pegadas al respaldo","Rodillas en la línea de los pies","No bloquear las rodillas arriba"],m:["Cuádriceps","Glúteos","Isquios"],e:"Menos recorrido o menos peso."},
+{n:"Sentadilla hack",c:"ypi",d:"Sentadilla en máquina hack con la espalda apoyada y el recorrido guiado.",k:["Pies a la anchura de la cadera","Bajar hasta donde mantengas la espalda apoyada","Subir empujando con todo el pie"],m:["Cuádriceps","Glúteos"],e:"Prensa de piernas."},
+{n:"Sentadilla en Smith",c:"ypi",d:"Sentadilla con la barra guiada, útil para trabajar con más estabilidad.",k:["Pies un poco por delante de la barra","Seguros a la altura correcta","Bajar con la espalda recta"],m:["Cuádriceps","Glúteos"],e:"Sentadilla goblet."},
+{n:"Sentadilla búlgara",c:"ypi",d:"Sentadilla a una pierna con el pie de atrás apoyado en un banco.",k:["Pie delantero lejos del banco","Bajar en vertical","Rodilla en la línea del pie"],m:["Cuádriceps","Glúteos"],e:"Sin peso o zancada estática."},
+{n:"Extensión de cuádriceps",c:"ypi",d:"Sentado en máquina, estirar las rodillas levantando el rodillo.",k:["Rodilla alineada con el eje de la máquina","Subir hasta estirar y apretar","Bajar despacio"],m:["Cuádriceps"],e:"Menos peso o a una pierna."},
+{n:"Curl femoral tumbado",c:"ypi",d:"Boca abajo en máquina, doblar las rodillas llevando el rodillo hacia los glúteos.",k:["Cadera pegada al banco","Subir sin impulso","Bajar controlado"],m:["Isquiotibiales","Gemelos"],e:"Curl femoral sentado o con fitball."},
+{n:"Curl femoral sentado",c:"ypi",d:"Sentado en máquina, doblar las rodillas empujando el rodillo hacia abajo.",k:["Muslos bien sujetos","Recorrido completo","Pausa abajo"],m:["Isquiotibiales"],e:"Curl femoral tumbado."},
+{n:"Curl nórdico",c:"ypi",d:"De rodillas con los tobillos sujetos, dejarse caer hacia delante lo más lento posible.",k:["Cuerpo recto de rodillas a cabeza","Frenar con los isquios","Ayudarte con las manos al final"],m:["Isquiotibiales"],e:"Solo la bajada, con banda o menos recorrido."},
+{n:"Peso muerto piernas rígidas",c:"ypi",d:"Peso muerto con las rodillas casi estiradas, para estirar y cargar los isquios.",k:["Rodillas apenas dobladas","Espalda neutra","Barra pegada a las piernas"],m:["Isquiotibiales","Glúteos","Erectores"],e:"Peso muerto rumano con mancuernas."},
+{n:"Sentadilla sumo con mancuerna",c:"ypi",d:"Sentadilla con los pies muy abiertos sujetando una mancuerna entre las piernas.",k:["Puntas hacia fuera","Rodillas hacia fuera","Pecho alto"],m:["Aductores","Glúteos","Cuádriceps"],e:"Sin peso o con kettlebell."},
+{n:"Aductores en máquina",c:"ypi",d:"Sentado, juntar las piernas contra la resistencia de la máquina.",k:["Espalda apoyada","Juntar sin golpear","Abrir despacio"],m:["Aductores"],e:"Con banda o balón entre las rodillas."},
+{n:"Elevación de gemelos de pie",c:"ypi",d:"De pie, subir sobre las puntas de los pies con peso.",k:["Bajar el talón por debajo del escalón","Subir lo más alto posible","Pausa arriba"],m:["Gemelos"],e:"Sin peso o a una pierna."},
+{n:"Elevación de gemelos sentado",c:"ypi",d:"Sentado con peso sobre las rodillas, subir los talones.",k:["Recorrido completo","Sin rebotar","Pausa arriba y abajo"],m:["Sóleo","Gemelos"],e:"Con una mancuerna sobre la rodilla."},
+// ---- Gym: glúteo
+{n:"Hip thrust con barra",c:"ygl",d:"Con la espalda alta apoyada en un banco, empujar la cadera hacia arriba con una barra sobre ella.",k:["Barbilla hacia el pecho","Espinillas verticales arriba","Apretar glúteos sin arquear la zona lumbar"],m:["Glúteos","Isquiotibiales"],e:"Puente de glúteo o hip thrust sin peso."},
+{n:"Puente de glúteo",c:"ygl",d:"Tumbado boca arriba con las rodillas dobladas, subir la cadera apretando los glúteos.",k:["Pies cerca de la cadera","Subir hasta alinear rodillas, cadera y hombros","Pausa arriba"],m:["Glúteos","Isquiotibiales"],e:"A una pierna o con banda en las rodillas."},
+{n:"Patada de glúteo en polea",c:"ygl",d:"Con la tobillera en la polea baja, llevar la pierna hacia atrás.",k:["Tronco estable","Movimiento desde la cadera","Sin arquear la espalda"],m:["Glúteo mayor"],e:"Patada en cuadrupedia con banda."},
+{n:"Abductores en máquina",c:"ygl",d:"Sentado, abrir las piernas contra la resistencia de la máquina.",k:["Espalda apoyada o algo inclinada hacia delante","Abrir sin impulso","Volver despacio"],m:["Glúteo medio","Glúteo menor"],e:"Con banda elástica."},
+{n:"Peso muerto a una pierna",c:"ygl",d:"Inclinarse hacia delante sobre una pierna llevando la otra atrás, con mancuerna o kettlebell.",k:["Cadera cuadrada","Espalda neutra","Rodilla de apoyo algo doblada"],m:["Glúteos","Isquiotibiales","Core"],e:"Sin peso o apoyando una mano."},
+{n:"Pull-through en polea",c:"ygl",d:"De espaldas a la polea baja con una cuerda entre las piernas, extender la cadera hasta ponerte de pie.",k:["Bisagra de cadera","Brazos relajados","Apretar glúteos arriba"],m:["Glúteos","Isquiotibiales"],e:"Kettlebell swing ruso."},
+{n:"Monster walk con banda",c:"ygl",d:"Caminar de lado o en diagonal con una banda en las rodillas o tobillos.",k:["Rodillas algo dobladas","Pasos cortos sin juntar los pies","Tronco quieto"],m:["Glúteo medio"],e:"Banda más suave."},
+// ---- Gym: hombro
+{n:"Press militar con mancuernas",c:"yho",d:"Sentado o de pie, empujar las mancuernas desde los hombros hasta arriba.",k:["Core firme, sin arquear","Mancuernas a la altura de las orejas abajo","Subir hasta estirar"],m:["Deltoides","Tríceps"],e:"Press en máquina o más ligero."},
+{n:"Press Arnold",c:"yho",d:"Press de hombro girando las mancuernas desde las palmas hacia ti hasta mirar al frente.",k:["Empezar con las palmas hacia ti","Girar mientras subes","Bajar deshaciendo el giro"],m:["Deltoides","Tríceps"],e:"Press militar con mancuernas."},
+{n:"Press de hombro en máquina",c:"yho",d:"Empuje vertical sentado en máquina guiada.",k:["Asas a la altura de los hombros","Espalda apoyada","Sin bloquear de golpe"],m:["Deltoides","Tríceps"],e:"Con mancuernas ligeras."},
+{n:"Elevaciones laterales",c:"yho",d:"De pie, subir las mancuernas hacia los lados hasta la altura de los hombros.",k:["Codos ligeramente doblados","Subir con los codos, no con las manos","Sin balanceo"],m:["Deltoides lateral"],e:"Más ligero o en polea."},
+{n:"Elevaciones laterales en polea",c:"yho",d:"Elevación lateral a una mano con la polea baja, con tensión constante.",k:["De lado a la polea","Subir hasta la altura del hombro","Bajar despacio"],m:["Deltoides lateral"],e:"Con mancuerna."},
+{n:"Elevaciones frontales",c:"yho",d:"Subir mancuernas, disco o barra por delante hasta la altura de los ojos.",k:["Brazos casi estirados","Sin impulso de espalda","Bajar controlado"],m:["Deltoides anterior"],e:"Con un disco o en polea."},
+{n:"Pájaros (deltoides posterior)",c:"yho",d:"Inclinado hacia delante, abrir los brazos hacia los lados con mancuernas ligeras.",k:["Espalda recta","Codos algo doblados","Pensar en abrir, no en tirar"],m:["Deltoides posterior","Romboides"],e:"Contractora inversa."},
+{n:"Contractora inversa",c:"yho",d:"Sentado de cara a la máquina pec deck, abrir los brazos hacia atrás.",k:["Pecho apoyado","Brazos casi rectos","Volver despacio"],m:["Deltoides posterior","Romboides"],e:"Pájaros con mancuernas."},
+{n:"Face pull",c:"yho",d:"Tirar de una cuerda en polea alta hacia la cara, abriendo las manos al final.",k:["Polea a la altura de la cara","Codos altos","Separar las manos junto a las orejas"],m:["Deltoides posterior","Manguito rotador","Trapecio"],e:"Con banda elástica."},
+{n:"Remo al mentón",c:"yho",d:"Subir una barra o mancuernas pegadas al cuerpo hasta el pecho, con los codos altos.",k:["Agarre algo más ancho que los hombros","Codos por encima de las manos","No pasar de la altura del pecho"],m:["Deltoides","Trapecio"],e:"Elevaciones laterales si molesta al hombro."},
+{n:"Encogimientos (shrugs)",c:"yho",d:"Con barra o mancuernas, subir los hombros hacia las orejas.",k:["Brazos estirados","Subir en vertical, sin girar","Pausa arriba"],m:["Trapecio"],e:"Con mancuernas o en máquina."},
+// ---- Gym: bíceps
+{n:"Curl con barra",c:"ybi",d:"De pie, doblar los codos subiendo la barra hacia los hombros.",k:["Codos pegados al cuerpo","Sin balancear la espalda","Bajar estirando del todo"],m:["Bíceps","Braquial"],e:"Barra Z o mancuernas."},
+{n:"Curl con barra Z",c:"ybi",d:"Curl con la barra de agarre ondulado, más cómodo para las muñecas.",k:["Agarre en la parte inclinada","Codos fijos","Recorrido completo"],m:["Bíceps","Braquial"],e:"Curl con mancuernas."},
+{n:"Curl con mancuernas",c:"ybi",d:"Curl alterno o simultáneo girando la palma hacia arriba al subir.",k:["Girar la muñeca al subir","Codos quietos","Sin impulso"],m:["Bíceps"],e:"Más ligero o sentado."},
+{n:"Curl martillo",c:"ybi",d:"Curl con las palmas enfrentadas, como si sujetaras un martillo.",k:["Palmas mirándose","Codos pegados","Subir y bajar controlado"],m:["Braquial","Braquiorradial","Bíceps"],e:"Con cuerda en polea."},
+{n:"Curl predicador (banco Scott)",c:"ybi",d:"Curl con los brazos apoyados en el banco inclinado, sin poder hacer trampa.",k:["Axilas pegadas al banco","No estirar de golpe abajo","Subir apretando"],m:["Bíceps"],e:"En máquina o con mancuerna."},
+{n:"Curl concentrado",c:"ybi",d:"Sentado, con el codo apoyado en el muslo, curl a una mano.",k:["Codo fijo en el muslo","Subir despacio","Apretar arriba"],m:["Bíceps"],e:"Más ligero."},
+{n:"Curl inclinado con mancuernas",c:"ybi",d:"Curl tumbado en banco inclinado con los brazos colgando por detrás del cuerpo.",k:["Hombros atrás","Codos apuntando al suelo","Recorrido completo"],m:["Bíceps (cabeza larga)"],e:"Curl con mancuernas de pie."},
+{n:"Curl en polea",c:"ybi",d:"Curl de pie con la barra o cuerda de la polea baja.",k:["Codos fijos","Tensión todo el recorrido","Sin inclinarse atrás"],m:["Bíceps"],e:"Con banda."},
+// ---- Gym: tríceps
+{n:"Extensión de tríceps en polea",c:"ytr",d:"De pie frente a la polea alta, empujar la barra hacia abajo estirando los codos.",k:["Codos pegados a los costados","Solo se mueve el antebrazo","Estirar del todo abajo"],m:["Tríceps"],e:"Con banda."},
+{n:"Extensión con cuerda",c:"ytr",d:"Igual que la extensión en polea pero con cuerda, separando las manos al final.",k:["Codos fijos","Abrir la cuerda abajo","Subir controlado"],m:["Tríceps"],e:"Barra recta."},
+{n:"Press francés",c:"ytr",d:"Tumbado, bajar la barra Z hacia la frente doblando solo los codos.",k:["Codos apuntando al techo","Bajar despacio","No abrir los codos"],m:["Tríceps"],e:"Con mancuernas o en polea."},
+{n:"Extensión de tríceps sobre la cabeza",c:"ytr",d:"Con una mancuerna sujeta con las dos manos, bajarla detrás de la cabeza y volver a subir.",k:["Codos cerca de la cabeza","Core firme","Recorrido completo"],m:["Tríceps (cabeza larga)"],e:"En polea con cuerda."},
+{n:"Fondos en banco",c:"ytr",d:"Con las manos en un banco detrás de ti, bajar y subir el cuerpo doblando los codos.",k:["Espalda cerca del banco","Codos hacia atrás","Bajar hasta 90°"],m:["Tríceps","Deltoides anterior"],e:"Rodillas dobladas para que sea más fácil."},
+{n:"Press banca agarre estrecho",c:"ytr",d:"Press de banca con las manos a la anchura de los hombros para cargar el tríceps.",k:["Codos pegados al cuerpo","Barra al esternón","Muñecas rectas"],m:["Tríceps","Pectoral"],e:"Flexiones diamante."},
+{n:"Patada de tríceps",c:"ytr",d:"Inclinado, con el codo pegado al cuerpo, estirar el brazo hacia atrás con una mancuerna.",k:["Brazo paralelo al suelo","Solo se mueve el antebrazo","Apretar arriba"],m:["Tríceps"],e:"En polea."},
+// ---- Gym: core
+{n:"Plancha",c:"yco",d:"Mantener el cuerpo recto apoyado en antebrazos y puntas de los pies.",k:["Cuerpo en línea recta","Apretar glúteos y abdomen","Respirar sin soltar la postura"],m:["Core","Transverso"],e:"Con las rodillas apoyadas."},
+{n:"Plancha lateral",c:"yco",d:"Plancha de lado apoyado en un antebrazo y el canto del pie.",k:["Cadera alta","Cuerpo en línea","Hombro encima del codo"],m:["Oblicuos","Glúteo medio"],e:"Rodillas apoyadas."},
+{n:"Crunch abdominal",c:"yco",d:"Tumbado con las rodillas dobladas, despegar los hombros del suelo contrayendo el abdomen.",k:["Barbilla separada del pecho","Subir solo hasta despegar las escápulas","Bajar despacio"],m:["Recto abdominal"],e:"Con las manos en los muslos."},
+{n:"Crunch en polea",c:"yco",d:"De rodillas frente a la polea alta, flexionar el tronco tirando de la cuerda con el abdomen.",k:["Cadera quieta","Redondear la espalda al bajar","Sin tirar con los brazos"],m:["Recto abdominal"],e:"Crunch en el suelo."},
+{n:"Elevación de piernas colgado",c:"yco",d:"Colgado de una barra, subir las piernas hacia delante sin balancearse.",k:["Sin impulso","Subir la pelvis al final","Bajar controlado"],m:["Recto abdominal","Flexores de cadera"],e:"Rodillas al pecho o en silla romana."},
+{n:"Rueda abdominal",c:"yco",d:"De rodillas, rodar la rueda hacia delante estirando el cuerpo y volver.",k:["Espalda sin arquear","Solo hasta donde controles","Volver apretando el abdomen"],m:["Core","Dorsal"],e:"Menos recorrido o contra una pared."},
+{n:"Russian twist",c:"yco",d:"Sentado con el tronco inclinado atrás, girar de lado a lado con o sin peso.",k:["Espalda recta","Girar desde el tronco","Pies en el suelo si cuesta"],m:["Oblicuos"],e:"Sin peso."},
+{n:"Pallof press",c:"yco",d:"De lado a una polea o banda, empujar el agarre al frente sin dejar que el cuerpo gire.",k:["Pies a la anchura de la cadera","Resistir el giro","Pausa con los brazos estirados"],m:["Oblicuos","Core"],e:"Banda más suave."},
+{n:"Dead bug",c:"yco",d:"Boca arriba, estirar a la vez un brazo y la pierna contraria sin despegar la zona lumbar.",k:["Lumbar pegada al suelo","Movimientos lentos","Exhalar al estirar"],m:["Core","Transverso"],e:"Solo piernas o solo brazos."},
+{n:"Leñador en polea",c:"yco",d:"Girar el tronco llevando la polea en diagonal de arriba abajo o de abajo arriba.",k:["Brazos casi rectos","Girar con el tronco y la cadera","Controlar la vuelta"],m:["Oblicuos","Core"],e:"Con banda o balón medicinal."},
+// ---- Gym: cardio
+{n:"Cinta de correr",c:"yca",d:"Caminar o correr en cinta, con o sin inclinación.",k:["Calentar caminando","Sin agarrarse a las barras","Apunta tiempo, distancia y velocidad"],m:["Piernas","Corazón"],e:"Caminar con inclinación."},
+{n:"Bicicleta estática",c:"yca",d:"Pedalear en bicicleta estática a ritmo continuo o en intervalos.",k:["Sillín a la altura de la cadera","Rodilla casi estirada abajo","Apunta tiempo y distancia"],m:["Cuádriceps","Corazón"],e:"Menos resistencia."},
+{n:"Bicicleta de spinning",c:"yca",d:"Bici de ciclo indoor con resistencia regulable, ideal para intervalos.",k:["Ajustar sillín y manillar","Subir resistencia para ir de pie","Hidratación"],m:["Piernas","Corazón"],e:"Bicicleta estática."},
+{n:"Elíptica",c:"yca",d:"Cardio de bajo impacto moviendo piernas y brazos a la vez.",k:["Pies apoyados todo el rato","Tronco recto","Apunta tiempo y nivel"],m:["Piernas","Brazos","Corazón"],e:"Menos resistencia."},
+{n:"Escaladora",c:"yca",d:"Máquina de subir escalones sin fin.",k:["Sin apoyar el peso en las barras","Pasos completos","Ritmo constante"],m:["Glúteos","Cuádriceps","Corazón"],e:"Cinta con inclinación."}
 ];
 const FEEL=[null,{f:"😿",t:"Muy mal"},{f:"😾",t:"Mal"},{f:"🐱",t:"Normal"},{f:"😺",t:"Bien"},{f:"😻",t:"Muy bien"}];
 const faceHtml=v=>FEEL[v]?`<span class="face" title="${FEEL[v].t}" aria-label="${FEEL[v].t}">${FEEL[v].f}</span>`:"";
@@ -1051,6 +1161,15 @@ function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth
 function dObj(s){const[y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)}
 function newId(){return"w"+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
 function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2200)}
+/* ---------------- CrossFit y Gym ---------------- */
+/* Dos secciones: los entrenos de gym llevan kind:"gym"; los demás son de CrossFit. Los ejercicios de gym tienen categoría "y…"; algunos de CrossFit también salen en gym (campo y). */
+let mode="cf";try{if(localStorage.getItem("tochinuri-mode")==="gym")mode="gym"}catch(e){}
+let formKind="cf";
+const isGymCat=c=>c&&c[0]==="y";
+const exFor=k=>k==="gym"?EX.filter(e=>isGymCat(e.c)||e.y):EX.filter(e=>!isGymCat(e.c));
+const catIn=(e,k)=>k==="gym"?(isGymCat(e.c)?e.c:e.y):e.c;
+const catsFor=k=>Object.entries(CATS).filter(([c])=>isGymCat(c)===(k==="gym"));
+const inMode=x=>(x.kind==="gym")===(mode==="gym");
 function findEx(name){const n=norm(name);return EX.find(e=>norm(e.n)===n)||EX.find(e=>norm(e.n).split(" (")[0]===n)}
 
 /* ---------------- Progreso por ejercicio ---------------- */
@@ -1610,16 +1729,17 @@ function sorted(){return[...workouts].sort((a,b)=>(b.date||"").localeCompare(a.d
 function renderLog(){
   const now=new Date(),t0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
   const wk=new Date(t0);wk.setDate(t0.getDate()-((t0.getDay()+6)%7));
-  let w=0,m=0;
-  for(const x of workouts){if(!x.date)continue;const d=dObj(x.date);if(d>=wk)w++;if(d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear())m++}
-  $("#stWeek").textContent=w;$("#stMonth").textContent=m;$("#stTotal").textContent=workouts.length;
+  let w=0,m=0;const MW=workouts.filter(inMode);
+  for(const x of MW){if(!x.date)continue;const d=dObj(x.date);if(d>=wk)w++;if(d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear())m++}
+  $("#stWeek").textContent=w;$("#stMonth").textContent=m;$("#stTotal").textContent=MW.length;
   const box=$("#logList");
-  if(!workouts.length){
-    box.innerHTML=`<div class="empty"><h3>Tu pizarra está vacía</h3><p>Apunta tu primer WOD: ejercicios, repeticiones, peso y tiempo.</p><button class="btn primary" id="emptyNew">+ Apuntar entreno</button></div>`;
+  if(!MW.length){
+    box.innerHTML=mode==="gym"?`<div class="empty"><h3>Aún no tienes sesiones de gym</h3><p>Apunta tu primera sesión: ejercicios, series, repeticiones y peso.</p><button class="btn primary" id="emptyNew">+ Apuntar sesión de gym</button></div>`
+      :`<div class="empty"><h3>Tu pizarra está vacía</h3><p>Apunta tu primer WOD: ejercicios, repeticiones, peso y tiempo.</p><button class="btn primary" id="emptyNew">+ Apuntar entreno</button></div>`;
     $("#emptyNew").onclick=()=>startNew();return;
   }
   let html="",lastKey="";
-  for(const x of sorted()){
+  for(const x of sorted().filter(inMode)){
     const d=dObj(x.date||today()),key=d.getFullYear()+"-"+d.getMonth();
     if(key!==lastKey){html+=`<div class="eyebrow month">${MESL[d.getMonth()]} ${d.getFullYear()}</div>`;lastKey=key}
     const exs=(x.exercises||[]).map(e=>e.name).filter(Boolean);
@@ -1678,7 +1798,7 @@ function addRow(e={}){
     <button type="button" class="icon-btn" aria-label="Quitar ejercicio">×</button></div>
     <div class="period-note" hidden>${DROP_SVG} Con la regla · sus estadísticas van aparte</div>
     <div class="ex-nums">
-      <div class="field"><label for="exs${i}">Rondas</label><input class="num exs" id="exs${i}" inputmode="numeric" value="${esc(e.sets||"")}"></div>
+      <div class="field"><label for="exs${i}">${formKind==="gym"?"Series":"Rondas"}</label><input class="num exs" id="exs${i}" inputmode="numeric" value="${esc(e.sets||"")}"></div>
       <div class="field"><label for="exr${i}">Reps</label><input class="num exr" id="exr${i}" inputmode="numeric" value="${esc(e.reps||"")}"></div>
       <div class="field"><label for="exw${i}">Kg</label><input class="num exw" id="exw${i}" inputmode="decimal" value="${esc(e.weight||"")}"></div>
       <div class="field"><label for="ext${i}">Tiempo</label><input class="num ext" id="ext${i}" inputmode="numeric" placeholder="m:ss" value="${e.time?fmtTime(e.time):""}"></div>
@@ -1725,7 +1845,8 @@ function openForm(w){
   formBackLabel=VIEW_NAME[prev]||"Atrás";
   formBack=prev==="wod"&&wodAtOpen?()=>openWod(wodAtOpen):prev==="ex"&&exAtOpen?()=>openEx(exAtOpen):()=>show(prev==="new"?"log":prev);
   editingId=w&&w.id||null;
-  $("#formTitle").textContent=editingId?"Editar entreno":"Nuevo entreno";
+  formKind=w?.kind||(editingId?"cf":mode);paintFormKind();
+  $("#formTitle").textContent=formKind==="gym"?(editingId?"Editar sesión de gym":"Nueva sesión de gym"):(editingId?"Editar entreno":"Nuevo entreno");
   $("#fDate").value=w?.date||today();$("#fDateHuman").textContent=humanDate($("#fDate").value);
   $("#fName").value=w?.name||"";
   $("#fResult").value=w?.result||"";
@@ -1743,7 +1864,7 @@ function openForm(w){
   formPhoto=w?.photo||null;photoOpen=true;paintPhoto();
   $("#formErr").hidden=true;
   returnTo=editingId?"wod:"+editingId:"log";
-  show("new");setNav(editingId?"Editar entreno":"Nuevo entreno",formBackLabel,formBack);
+  show("new");setNav($("#formTitle").textContent,formBackLabel,formBack);
 }
 $("#cancelBtn").onclick=()=>formBack();
 $("#fDate").addEventListener("input",()=>{$("#fDateHuman").textContent=humanDate($("#fDate").value);paintCycleHint()});
@@ -1771,11 +1892,13 @@ $("#wodForm").addEventListener("submit",async ev=>{
   });
   if(bad)return err(`El tiempo de ${bad} debe tener el formato m:ss.`);
   const old=workouts.find(w=>w.id===editingId);
-  const w={id:editingId||newId(),date,name:$("#fName").value.trim(),type:(document.querySelector("[name=ftype]:checked")||{}).value||"Otro",
-    result:$("#fResult").value.trim(),duration:durS,notes:$("#fNotes").value.trim(),exercises,photo:formPhoto||null,level:getLevel(),pains:readPains(),pair:$("#fPair").checked?{name:$("#fPairName").value.trim()||null}:null,createdAt:old?.createdAt||Date.now()};
+  const gym=formKind==="gym";
+  const w={id:editingId||newId(),date,name:$("#fName").value.trim(),type:gym?"Gym":(document.querySelector("[name=ftype]:checked")||{}).value||"Otro",
+    result:gym?"":$("#fResult").value.trim(),duration:durS,notes:$("#fNotes").value.trim(),exercises,photo:formPhoto||null,level:gym?null:getLevel(),pains:readPains(),pair:!gym&&$("#fPair").checked?{name:$("#fPairName").value.trim()||null}:null,createdAt:old?.createdAt||Date.now()};
+  if(gym)w.kind="gym";
   if(!store)return err("Tus datos aún se están cargando. Espera un momento y vuelve a guardar.");
   const btn=$("#saveBtn");btn.disabled=true;
-  try{await store.save(w);toast(editingId?"Cambios guardados":"Entreno guardado");openWod(w.id)}
+  try{await store.save(w);toast(editingId?"Cambios guardados":gym?"Sesión guardada":"Entreno guardado");if(!editingId&&(w.kind==="gym")!==(mode==="gym"))setMode(w.kind==="gym"?"gym":"cf");openWod(w.id)}
   catch(e){err(e&&e.code==="quota_exceeded"?"No queda espacio para más entrenos. Borra alguno antiguo.":"No se pudo guardar. Revisa la conexión e inténtalo de nuevo.")}
   finally{btn.disabled=false}
 });
@@ -2217,7 +2340,8 @@ function painAlertFor(exName){
 /* Panel propio con buscador y barra de desplazamiento: favoritos arriba, luego por categoría */
 let pickerTarget=null,pickerCat="all";
 function renderPickerChips(){
-  const F=favs(),all=[["all","Todos",null],["fav","Favoritos","star"],...Object.entries(CATS).map(([k,v])=>[k,v.n,v.c])];
+  if(pickerCat!=="all"&&pickerCat!=="fav"&&!catsFor(formKind).some(([k])=>k===pickerCat))pickerCat="all";
+  const F=favs(),all=[["all","Todos",null],["fav","Favoritos","star"],...catsFor(formKind).map(([k,v])=>[k,v.n,v.c])];
   $("#pickerChips").innerHTML=all.map(([k,n,c])=>`<button type="button" class="chip" data-pcat="${k}" aria-pressed="${k===pickerCat}">${c==="star"?`<span class="chip-star">${STAR(true)}</span>`:c?`<span class="plate" style="--c:${c}"></span>`:""}${n}${k==="fav"&&F.size?` <span class="chip-n">${F.size}</span>`:""}</button>`).join("");
   $("#pickerChips").querySelectorAll("[data-pcat]").forEach(b=>b.onclick=()=>{pickerCat=b.dataset.pcat;renderPickerChips();renderPicker();$("#pickerList").scrollTop=0;syncRail()});
 }
@@ -2236,19 +2360,20 @@ function pickExercise(name){const t=pickerTarget;if(!t)return;t.value=name;t.dis
 function renderPicker(){
   const raw=$("#pickerSearch").value.trim(),q=norm(raw),cur=pickerTarget?.value||"",F=favs();
   const match=e=>!q||norm(e.n+" "+e.m.join(" ")).includes(q);
-  const item=e=>`<div class="picker-row"><button type="button" class="picker-item${e.n===cur?" sel":""}" data-pick="${esc(e.n)}"><span class="plate" style="--c:${CATS[e.c].c}"></span>${esc(e.n)}</button><button type="button" class="star-btn" data-pfav="${esc(e.n)}" aria-pressed="${F.has(e.n)}" aria-label="${F.has(e.n)?"Quitar de favoritos":"Añadir a favoritos"}: ${esc(e.n)}">${STAR(F.has(e.n))}</button></div>`;
+  const PX=exFor(formKind);
+  const item=e=>`<div class="picker-row"><button type="button" class="picker-item${e.n===cur?" sel":""}" data-pick="${esc(e.n)}"><span class="plate" style="--c:${CATS[catIn(e,formKind)].c}"></span>${esc(e.n)}</button><button type="button" class="star-btn" data-pfav="${esc(e.n)}" aria-pressed="${F.has(e.n)}" aria-label="${F.has(e.n)?"Quitar de favoritos":"Añadir a favoritos"}: ${esc(e.n)}">${STAR(F.has(e.n))}</button></div>`;
   let h="";
-  if(raw&&!EX.some(e=>norm(e.n)===q))h+=`<button type="button" class="picker-item custom" data-pick="${esc(raw)}">+ Usar «${esc(raw)}»</button>`;
+  if(raw&&!PX.some(e=>norm(e.n)===q))h+=`<button type="button" class="picker-item custom" data-pick="${esc(raw)}">+ Usar «${esc(raw)}»</button>`;
   if(pickerCat==="fav"){
-    const fl=EX.filter(e=>F.has(e.n)&&match(e));
+    const fl=PX.filter(e=>F.has(e.n)&&match(e));
     if(fl.length)h+=fl.map(item).join("");
     else if(!F.size)h+=`<p class="picker-empty">Aún no tienes favoritos. Ve a «Todos» y toca la estrella de los ejercicios que más haces: aparecerán aquí para elegirlos rápido.</p>`;
     else if(!raw)h+=`<p class="picker-empty">Ningún favorito coincide.</p>`;
-    else if(EX.some(match))h+=`<p class="picker-empty">Ningún favorito coincide. Prueba en «Todos».</p>`;
+    else if(PX.some(match))h+=`<p class="picker-empty">Ningún favorito coincide. Prueba en «Todos».</p>`;
   }else{
-    const cats=pickerCat==="all"?Object.entries(CATS):[[pickerCat,CATS[pickerCat]]];
-    if(pickerCat==="all"){const fl=EX.filter(e=>F.has(e.n)&&match(e));if(fl.length)h+=`<div class="picker-group"><span class="chip-star">${STAR(true)}</span>Favoritos</div>`+fl.map(item).join("")}
-    for(const [k,c] of cats){const l=EX.filter(e=>e.c===k&&match(e));if(l.length)h+=`<div class="picker-group"><span class="plate" style="--c:${c.c}"></span>${c.n}</div>`+l.map(item).join("")}
+    const cats=pickerCat==="all"||!CATS[pickerCat]?catsFor(formKind):[[pickerCat,CATS[pickerCat]]];
+    if(pickerCat==="all"){const fl=PX.filter(e=>F.has(e.n)&&match(e));if(fl.length)h+=`<div class="picker-group"><span class="chip-star">${STAR(true)}</span>Favoritos</div>`+fl.map(item).join("")}
+    for(const [k,c] of cats){const l=PX.filter(e=>catIn(e,formKind)===k&&match(e));if(l.length)h+=`<div class="picker-group"><span class="plate" style="--c:${c.c}"></span>${c.n}</div>`+l.map(item).join("")}
   }
   if(!h)h=`<p class="picker-empty">No hay ejercicios con «${esc(raw)}».</p>`;
   if(cur&&!q)h=`<button type="button" class="picker-item custom" data-pick="">Quitar ejercicio elegido</button>`+h;
@@ -2281,7 +2406,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#picker").hidde
 /* ---------------- Foto del entreno (de recordatorio) ---------------- */
 /* La foto se queda fija arriba del formulario para copiar los datos sin salir a la galería */
 let formPhoto=null,afterPick=null,photoOpen=true;
-function openSheet(){$("#sheet").hidden=false;$("#sheetPhoto").focus()}
+function openSheet(){$("#sheetTitle").textContent=mode==="gym"?"¿Cómo quieres apuntar la sesión de gym?":"¿Cómo quieres apuntar el entreno?";$("#sheet").hidden=false;$("#sheetPhoto").focus()}
 function closeSheet(){$("#sheet").hidden=true}
 function startNew(){openSheet()}
 $("#sheetCancel").onclick=closeSheet;
@@ -2341,19 +2466,20 @@ async function toggleFav(name){
 }
 function paintExStar(){const b=$("#exStar");if(!b||!lastEx)return;const on=favs().has(lastEx.n);b.innerHTML=STAR(on)+(on?"Favorito":"Añadir a favoritos");b.setAttribute("aria-pressed",on)}
 function renderChips(){
-  const all=[["all","Todos",null],["fav","Favoritos","star"],...Object.entries(CATS).map(([k,v])=>[k,v.n,v.c])];
+  if(libCat!=="all"&&libCat!=="fav"&&!catsFor(mode).some(([k])=>k===libCat))libCat="all";
+  const all=[["all","Todos",null],["fav","Favoritos","star"],...catsFor(mode).map(([k,v])=>[k,v.n,v.c])];
   $("#libChips").innerHTML=all.map(([k,n,c])=>`<button class="chip" data-cat="${k}" aria-pressed="${k===libCat}">${c==="star"?`<span class="chip-star">${STAR(true)}</span>`:c?`<span class="plate" style="--c:${c}"></span>`:""}${n}${k==="fav"&&favs().size?` <span class="chip-n">${favs().size}</span>`:""}</button>`).join("");
   $("#libChips").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{libCat=b.dataset.cat;renderChips();renderLib()});
 }
 function renderLib(){
   const q=norm($("#libSearch").value);
   const F=favs();
-  const list=EX.filter(e=>(libCat==="all"||(libCat==="fav"?F.has(e.n):e.c===libCat))&&(!q||norm(e.n+" "+e.d+" "+e.m.join(" ")).includes(q)));
+  const list=exFor(mode).filter(e=>(libCat==="all"||(libCat==="fav"?F.has(e.n):catIn(e,mode)===libCat))&&(!q||norm(e.n+" "+e.d+" "+e.m.join(" ")).includes(q))).sort((x,y)=>{if(mode!=="gym")return 0;const o=catsFor("gym").map(c=>c[0]);return o.indexOf(catIn(x,"gym"))-o.indexOf(catIn(y,"gym"))});
   $("#libCount").textContent=list.length+(list.length===1?" ejercicio":" ejercicios");
   if(libCat==="fav"&&!F.size){
     $("#libList").innerHTML=`<div class="empty"><h3>Aún no tienes favoritos</h3><p style="margin:0">Toca la ${STAR(false).replace("<svg",'<svg class="inline-star"')} de cualquier ejercicio y aparecerá aquí.</p></div>`;return;
   }
-  $("#libList").innerHTML=list.length?list.map(e=>`<div class="lib-row"><button class="lib-item" data-i="${EX.indexOf(e)}"><span class="plate" style="--c:${CATS[e.c].c}"></span><span class="t"><b>${esc(e.n)}</b><small>${esc(e.m.slice(0,3).join(" · "))}</small></span>${(()=>{const a=ANALYSIS.get(norm(e.n))||[],ap=ANALYSIS.get(norm(e.n)+"|p")||[];if(!a.length&&!ap.length)return"";const s=a.length?a[a.length-1].cmp?.status:null;return`<span class="mini-trend">${s==="up"?`<span class="u">▲</span>`:s==="down"?`<span class="d">▼</span>`:""} ${a.length+ap.length}×${ap.length?" "+DROP_SVG:""}</span>`})()}<span class="chev">›</span></button><button class="star-btn" data-fav="${EX.indexOf(e)}" aria-pressed="${F.has(e.n)}" aria-label="${F.has(e.n)?"Quitar de favoritos":"Añadir a favoritos"}: ${esc(e.n)}">${STAR(F.has(e.n))}</button></div>`).join("")
+  $("#libList").innerHTML=list.length?list.map(e=>`<div class="lib-row"><button class="lib-item" data-i="${EX.indexOf(e)}"><span class="plate" style="--c:${CATS[catIn(e,mode)].c}"></span><span class="t"><b>${esc(e.n)}</b><small>${esc(e.m.slice(0,3).join(" · "))}</small></span>${(()=>{const a=ANALYSIS.get(norm(e.n))||[],ap=ANALYSIS.get(norm(e.n)+"|p")||[];if(!a.length&&!ap.length)return"";const s=a.length?a[a.length-1].cmp?.status:null;return`<span class="mini-trend">${s==="up"?`<span class="u">▲</span>`:s==="down"?`<span class="d">▼</span>`:""} ${a.length+ap.length}×${ap.length?" "+DROP_SVG:""}</span>`})()}<span class="chev">›</span></button><button class="star-btn" data-fav="${EX.indexOf(e)}" aria-pressed="${F.has(e.n)}" aria-label="${F.has(e.n)?"Quitar de favoritos":"Añadir a favoritos"}: ${esc(e.n)}">${STAR(F.has(e.n))}</button></div>`).join("")
     :`<div class="empty"><p style="margin:0">No hay ningún ejercicio con «${esc($("#libSearch").value)}». Prueba con el nombre en inglés.</p></div>`;
   $("#libList").querySelectorAll(".lib-item").forEach(b=>b.onclick=()=>{returnTo="lib";openEx(EX[b.dataset.i])});
   $("#libList").querySelectorAll("[data-fav]").forEach(b=>b.onclick=()=>toggleFav(EX[b.dataset.fav].n));
@@ -2412,7 +2538,7 @@ function openEx(ex){
     ${painAlertFor(ex.n)}
     <div class="sec"><h3>Puntos clave</h3><ul>${ex.k.map(k=>`<li>${esc(k)}</li>`).join("")}</ul></div>
     <div class="sec"><h3>Músculos</h3><div class="muscles">${ex.m.map(m=>`<span class="tag">${esc(m)}</span>`).join("")}</div></div>
-    <div class="sec"><h3>Cómo escalarlo</h3><p style="margin:0;max-width:65ch">${esc(ex.e)}</p></div>
+    <div class="sec"><h3>${isGymCat(ex.c)?"Variantes y alternativas":"Cómo escalarlo"}</h3><p style="margin:0;max-width:65ch">${esc(ex.e)}</p></div>
     ${rmSection(ex)}
     <div class="sec"><h3>Tu progreso</h3>${arr.length?`<div class="pr-box">${statsBlock(arr)}${table(arr)}</div>`
       :`<div class="empty" style="padding:18px"><p style="margin:0 0 12px">${arrP.length?"Aún no lo has hecho ningún día sin la regla.":"Aún no lo has apuntado en ningún entreno."}</p><button class="btn" id="eLog">Apuntar con este ejercicio</button></div>`}</div>
@@ -2424,6 +2550,20 @@ function openEx(ex){
   show("ex");setNav("Ejercicio",fromWod?"Entreno":"Ejercicios",()=>{if(fromWod&&workouts.some(w=>w.id===fromWod))openWod(fromWod);else show("lib")});
 }
 
+/* Cambiar de sección (CrossFit / Gym) */
+function setMode(m){mode=m==="gym"?"gym":"cf";try{localStorage.setItem("tochinuri-mode",mode)}catch(e){}
+  document.querySelectorAll("[name=mode],[name=libMode]").forEach(r=>r.checked=r.value===mode);
+  $("#libSearch").placeholder=mode==="gym"?"Buscar: press banca, jalón, hip thrust…":"Buscar: thruster, dominadas, remo…";
+  renderLog();renderChips();renderLib()}
+document.querySelectorAll("[name=mode],[name=libMode]").forEach(r=>r.addEventListener("change",()=>setMode(r.value)));
+/* El formulario de gym no tiene formato, nivel, pareja ni resultado; las rondas se llaman series */
+function paintFormKind(){
+  const g=formKind==="gym";$("#wodForm").classList.toggle("is-gym",g);
+  $("label[for=fName]").textContent=g?"Nombre de la sesión":"Nombre del WOD";
+  $("#fName").placeholder=g?"Ej. Pierna, Torso, Empuje…":"Ej. Fran, Murph o WOD del box";
+  $("#saveBtn").textContent=g?"Guardar sesión":"Guardar entreno";
+  if(g&&$("#fPair").checked){$("#fPair").checked=false;paintPair()}
+}
 function renderAll(){
   if(profile&&!themeSynced){themeSynced=true;applyTheme(themePref())}
   analyze();renderProfileBits();renderGoal();renderLog();if(current==="lib"){renderChips();renderLib()}if(current==="stats"&&statMonth)renderStats();
@@ -2433,7 +2573,7 @@ function renderAll(){
   if(profileReady&&!profile&&current!=="me"&&current!=="auth")openMe(true);
 }
 
-/* ---------------- Registro de uso (solo web) ---------------- */
+setMode(mode);/* ---------------- Registro de uso (solo web) ---------------- */
 /* Apunta, por cada usuario: cuándo entra (sesión), qué secciones abre y cuánto tiempo pasa con la app abierta y a la vista.
    Solo lo pueden leer las administradoras desde «Uso de la app». */
 const USAGE={sid:null,lastView:null,visibleSince:null,pending:0,timer:null};

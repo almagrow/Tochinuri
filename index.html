@@ -1011,6 +1011,36 @@ header.top.sub .top-coins{display:none}
 .field-lbl{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
 .cex-form .seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 .cex-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0 12px}
+
+/* ---------- Mejoras de uso ---------- */
+.log-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:-2px 0 12px}
+.mode-sw{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px}
+.mode-sw button{border:0;background:none;color:var(--muted);font:inherit;font-weight:700;font-size:14px;padding:7px 14px;border-radius:999px;cursor:pointer;min-height:36px}
+.mode-sw button[aria-checked="true"]{background:var(--brand);color:#fff}
+.repeat-last{display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--line);border-radius:999px;padding:7px 12px;font:inherit;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;min-height:38px;max-width:100%;min-width:0}
+.repeat-last span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.repeat-last svg{width:18px;height:18px;flex:none;color:var(--brand)}
+.log-search{margin:0 0 12px}.log-search input{width:100%}
+.log-found{margin:0 0 10px;font-size:14px}
+.prog-tabs{display:flex;gap:6px;overflow-x:auto;margin:4px 0 14px;padding-bottom:2px}
+.prog-tabs button{flex:1 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--muted);font:inherit;font-weight:700;font-size:14px;padding:9px 12px;border-radius:999px;cursor:pointer;min-height:40px}
+.prog-tabs button[aria-current="page"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.more-opts{border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:6px 0 4px}
+.more-opts summary{list-style:none;cursor:pointer;padding:14px;display:flex;flex-direction:column;gap:2px;position:relative;font-weight:700}
+.more-opts summary::-webkit-details-marker{display:none}
+.more-opts summary small{font-weight:500;color:var(--muted);font-size:13px}
+.more-opts summary::after{content:"";position:absolute;right:16px;top:50%;width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-70%) rotate(45deg);transition:transform .2s}
+.more-opts[open] summary::after{transform:translateY(-30%) rotate(-135deg)}
+.more-opts .mo-in{padding:0 14px 14px;display:flex;flex-direction:column;gap:12px}
+.just-bought{background:color-mix(in srgb,var(--brand) 12%,var(--surface));border:1px solid var(--brand);border-radius:12px;padding:12px 14px;margin:0 0 14px}
+.just-bought p{margin:0 0 10px}
+.tour{position:fixed;inset:0;z-index:300}
+.tour-spot{position:fixed;border-radius:14px;box-shadow:0 0 0 9999px rgba(10,6,25,.62);transition:all .25s;pointer-events:none}
+.tour-tip{position:fixed;left:16px;right:16px;max-width:420px;margin:0 auto;background:var(--surface);color:var(--ink);border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.tour-tip h3{margin:2px 0 6px;font-family:var(--f-display);font-size:22px}
+.tour-tip p{margin:0 0 12px;color:var(--muted)}
+.tour-n{font-size:12px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.06em}
+
 /* ---------------- Textos que nunca se salen de su recuadro (todos los temas, móvil y ordenador) ---------------- */
 .wod{grid-template-columns:52px minmax(0,1fr) auto}
 .wod>*{min-width:0}
@@ -1062,6 +1092,9 @@ h2.view-title{text-wrap:balance}
   </header>
 
   <!-- ENTRENOS -->
+  <nav class="prog-tabs" id="progTabs" aria-label="Progreso" hidden>
+    <button type="button" data-prog="stats">Estadísticas</button><button type="button" data-prog="rm">Calculadora RM</button><button type="button" data-prog="weights">Mis pesos</button>
+  </nav>
   <section class="view" id="v-log">
     <div class="hello" id="hello" hidden></div>
     <div id="goalCard"></div>
@@ -1072,15 +1105,21 @@ h2.view-title{text-wrap:balance}
       <div class="stat"><span class="eyebrow">Total</span><b id="stTotal">0</b></div>
     </div>
     <div class="tools">
-      <button type="button" class="tool" id="openMonth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Estadísticas</span></button>
+      <button type="button" class="tool" id="openProgBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-8"/><path d="M15 8h5v5"/></svg><span>Progreso</span></button>
+      <button type="button" class="tool" id="openMonth" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Estadísticas</span></button>
       <button type="button" class="tool" id="openRMBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3M19 12h3"/><rect x="5" y="7" width="3" height="10" rx="1"/><rect x="16" y="7" width="3" height="10" rx="1"/><path d="M8 12h8"/></svg><span>Calculadora RM</span></button>
-      <button type="button" class="tool" id="openWeightsBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 8h11l2 12h-15z"/><circle cx="12" cy="5" r="2"/><path d="M10 13.5h4M12 11.5v4"/></svg><span>Mis pesos</span></button>
+      <button type="button" class="tool" id="openWeightsBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 8h11l2 12h-15z"/><circle cx="12" cy="5" r="2"/><path d="M10 13.5h4M12 11.5v4"/></svg><span>Mis pesos</span></button>
       <button type="button" class="tool" id="openBadgesBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"/><path d="M9 3l1.5 5M15 3l-1.5 5M12 11.5l.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2L9.1 13.6l2-.3z"/></svg><span>Insignias <small id="badgeCount" class="bd-count"></small></span></button>
       <button type="button" class="tool" id="openPainBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg><span>Molestias</span></button>
       <button type="button" class="tool" id="openUsageBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><path d="M16 6.5a3 3 0 0 1 0 5.6M18 14.5c1.4.7 2.3 2.2 2.6 4.5"/></svg><span>Uso de la app</span></button>
       <button type="button" class="tool" id="openCycleBtn" hidden><svg viewBox="0 0 14 18" aria-hidden="true"><path d="M7 1C7 1 1 8 1 11.5a6 6 0 0 0 12 0C13 8 7 1 7 1z" fill="var(--drop)"/></svg><span>Ciclo</span></button>
     </div>
-    <p class="mode-now" id="modeNow"></p>    <div id="logList"></div>
+    <div class="log-bar">
+      <div class="mode-sw" id="modeNow" role="radiogroup" aria-label="Sección"></div>
+      <button type="button" class="repeat-last" id="repeatLast" hidden></button>
+    </div>
+    <div class="log-search" id="logSearchBox" hidden><input type="search" id="logQ" placeholder="Buscar: Fran, sentadilla, Murph…" autocomplete="off" aria-label="Buscar entrenos"></div>
+    <div id="logList"></div>
   </section>
 
   <!-- NUEVO / EDITAR -->
@@ -1099,14 +1138,7 @@ h2.view-title{text-wrap:balance}
       <div class="cycle-hint" id="cycleHint" hidden></div>
       <div class="field"><label for="fName">Nombre del WOD</label><input id="fName" placeholder="Ej. Fran, Murph o WOD del box" autocomplete="off"></div>
       <div class="field"><label>Formato</label><div class="types" id="fType"></div></div>
-      <div class="field"><label>Nivel</label><div class="seg seg4" id="fLevelSeg"><input type="radio" name="fLevel" id="fLvRx" value="rx"><label for="fLvRx">RX</label><input type="radio" name="fLevel" id="fLvIn" value="inter"><label for="fLvIn">Intermedio</label><input type="radio" name="fLevel" id="fLvSc" value="scaled"><label for="fLvSc">Escalado</label><input type="radio" name="fLevel" id="fLvIi" value="init"><label for="fLvIi">Iniciación</label></div>
-        <span class="date-human">De más a menos difícil. RX: con el peso y los movimientos oficiales. Toca otra vez para quitarlo.</span></div>
-      <div class="pair-box" id="pairBox">
-        <label class="switch"><input type="checkbox" id="fPair"><span class="sw"></span><span class="sw-l"><b>Entreno en pareja</b><small>Reparte el trabajo de cada ejercicio entre tú y tu pareja</small></span></label>
-        <div class="field" id="fPairNameF" hidden><label for="fPairName">Nombre de tu pareja</label><input id="fPairName" list="pairNames" placeholder="Ej. Laura" autocomplete="off" maxlength="30"><datalist id="pairNames"></datalist></div>
-      </div>
       <div class="field"><label for="fResult">Resultado</label><input id="fResult" placeholder="Ej. 4:32 · 5 rondas + 12 reps · 100 kg"></div>
-
       <div class="field"><label>Ejercicios</label></div>
       <div id="exRows" class="list"></div>
       <button type="button" class="btn ghost" id="addEx">+ Añadir ejercicio</button>
@@ -1114,11 +1146,21 @@ h2.view-title{text-wrap:balance}
       <div id="liftRows" class="list"></div>
       <button type="button" class="btn ghost lift-btn" id="addLift">+ Halterofilia · complex por %</button>
 
-      <div class="field"><label>Molestias</label></div>
+      <details class="more-opts" id="moreOpts"><summary><span id="moreOptsT">Más opciones</span><small id="moreOptsS">nivel, pareja, molestias y notas</small></summary><div class="mo-in">
+      <div class="field"><label>Nivel</label><div class="seg seg4" id="fLevelSeg"><input type="radio" name="fLevel" id="fLvRx" value="rx"><label for="fLvRx">RX</label><input type="radio" name="fLevel" id="fLvIn" value="inter"><label for="fLvIn">Intermedio</label><input type="radio" name="fLevel" id="fLvSc" value="scaled"><label for="fLvSc">Escalado</label><input type="radio" name="fLevel" id="fLvIi" value="init"><label for="fLvIi">Iniciación</label></div>
+        <span class="date-human">De más a menos difícil. RX: con el peso y los movimientos oficiales. Toca otra vez para quitarlo.</span></div>
+      <div class="pair-box" id="pairBox">
+        <label class="switch"><input type="checkbox" id="fPair"><span class="sw"></span><span class="sw-l"><b>Entreno en pareja</b><small>Reparte el trabajo de cada ejercicio entre tú y tu pareja</small></span></label>
+        <div class="field" id="fPairNameF" hidden><label for="fPairName">Nombre de tu pareja</label><input id="fPairName" list="pairNames" placeholder="Ej. Laura" autocomplete="off" maxlength="30"><datalist id="pairNames"></datalist></div>
+      </div>
+
+
+      <div class="field mo-sub"><label>Molestias</label></div>
       <div id="painRows" class="list"></div>
       <button type="button" class="btn ghost" id="addPain">+ Apuntar una molestia</button>
 
       <div class="field"><label for="fNotes">Notas</label><textarea id="fNotes" placeholder="Sensaciones, cómo te has visto…"></textarea></div>
+      </div></details>
       <p class="form-error" id="formErr" hidden></p>
       <div class="row-actions"><button class="btn primary" style="flex:1" type="submit" id="saveBtn">Guardar entreno</button><button class="btn" type="button" id="cancelBtn">Cancelar</button></div>
     </form>
@@ -1212,9 +1254,12 @@ h2.view-title{text-wrap:balance}
 <div class="sheet-bg" id="sheet" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
     <div class="sheet-group">
-      <div class="sheet-title" id="sheetTitle">¿Cómo quieres apuntar el entreno?</div>
-      <button class="sheet-opt" id="sheetPhoto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Con foto del entreno<small>Elige la foto de la pizarra y tenla a la vista mientras apuntas</small></span></button>
-      <button class="sheet-opt" id="sheetManual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg><span>Sin foto</span></button>
+      <div class="sheet-title" id="sheetTitle">¿Qué vas a apuntar?</div>
+      <button class="sheet-opt" id="sheetRepeat" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 14-5.3L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-14 5.3L4 15"/><path d="M4 20v-5h5"/></svg><span id="sheetRepeatT">Repetir el último</span></button>
+      <button class="sheet-opt" id="sheetWod"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>WOD de CrossFit<small>For Time, AMRAP, EMOM…</small></span></button>
+      <button class="sheet-opt" id="sheetLift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20"/><rect x="4" y="7" width="3" height="10" rx="1"/><rect x="17" y="7" width="3" height="10" rx="1"/><path d="M12 3v3"/></svg><span>Halterofilia<small>Complex con tu RM y series por %</small></span></button>
+      <button class="sheet-opt" id="sheetGym"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg><span>Sesión de gym<small>Series, repeticiones y peso</small></span></button>
+      <button class="sheet-opt" id="sheetPhoto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Con foto de la pizarra<small>Sube la foto y apunta encima</small></span></button>
     </div>
     <div class="sheet-group"><button class="sheet-opt sheet-cancel" id="sheetCancel">Cancelar</button></div>
   </div>
@@ -1434,7 +1479,7 @@ function newId(){return"w"+Date.now().toString(36)+Math.random().toString(36).sl
 function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2200)}
 /* ---------------- CrossFit y Gym ---------------- */
 /* Dos secciones: los entrenos de gym llevan kind:"gym"; los demás son de CrossFit. Los ejercicios de gym tienen categoría "y…"; algunos de CrossFit también salen en gym (campo y). */
-let mode="cf";try{if(localStorage.getItem("tochinuri-mode")==="gym")mode="gym"}catch(e){}
+let mode="cf",modeStored=false;try{const _m=localStorage.getItem("tochinuri-mode");modeStored=!!_m;if(_m==="gym")mode="gym"}catch(e){}
 let formKind="cf";
 const isGymCat=c=>c&&c[0]==="y";
 const exFor=k=>k==="gym"?EX.filter(e=>isGymCat(e.c)||e.y):EX.filter(e=>!isGymCat(e.c));
@@ -1738,7 +1783,7 @@ $("#meForm").addEventListener("submit",async ev=>{
   if(!sex)return err("Elige si eres mujer u hombre.");
   if(!store)return err("Tus datos aún se están cargando. Espera un momento.");
   const btn=$("#meSave");btn.disabled=true;
-  const np={...(profile||{}),name,sex,photo:mePhoto||null};
+  const np={...(profile||{}),name,sex,photo:mePhoto||null};if(meFirst&&!profile)np.tourPending=true;
   try{await store.saveProfile(np);profile=np;renderAll();toast(meFirst?`¡Hola, ${name}!`:"Perfil guardado");show("log")}
   catch(e){err("No se pudo guardar el perfil. Revisa la conexión e inténtalo de nuevo.")}
   finally{btn.disabled=false}
@@ -2756,7 +2801,6 @@ function startNew(){openSheet()}
 $("#sheetCancel").onclick=closeSheet;
 $("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet")closeSheet()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(!$("#sheet").hidden)closeSheet();if(!$("#viewer").hidden)closeViewer()}});
-$("#sheetManual").onclick=()=>{closeSheet();openForm(null)};
 $("#sheetPhoto").onclick=()=>{closeSheet();afterPick="new";$("#wodPhoto").value="";$("#wodPhoto").click()};
 $("#photoCta").onclick=()=>{afterPick="form";$("#wodPhoto").value="";$("#wodPhoto").click()};
 $("#photoChange").onclick=$("#photoCta").onclick;
@@ -3451,7 +3495,7 @@ async function quickCustomEx(name){
 /* Cambiar de sección (CrossFit / Gym) */
 function setMode(m){mode=m==="gym"?"gym":"cf";try{localStorage.setItem("tochinuri-mode",mode)}catch(e){}
   document.querySelectorAll("[name=mode],[name=libMode]").forEach(r=>r.checked=r.value===mode);
-  const mn=$("#modeNow");if(mn)mn.innerHTML=`Estás en <b>${mode==="gym"?"Gym":"CrossFit"}</b>`;
+  if(typeof paintModeSw==="function")paintModeSw();
   $("#libSearch").placeholder=mode==="gym"?"Buscar: press banca, jalón, hip thrust…":"Buscar: thruster, dominadas, remo…";
   paintRMBtn();renderLog();renderChips();renderLib()}
 /* La calculadora de RM solo existe en CrossFit */
@@ -3690,6 +3734,132 @@ async function renderUsers(){
 
 applyTheme(themePref());renderChips();renderLib();renderAll();
 initStore();
+
+/* ================= Mejoras de uso (cambio rápido, Más opciones, tipo de entreno, repetir, buscar, Progreso, Ponerlo ya, consejos) ================= */
+
+/* 1 · Cambiar de CrossFit a Gym en cualquier momento. La app recuerda la última sección y solo pregunta la primera vez. */
+function paintModeSw(){
+  const el=$("#modeNow");if(!el)return;
+  el.innerHTML=[["cf","CrossFit"],["gym","Gym"]].map(([k,l])=>`<button type="button" role="radio" aria-checked="${mode===k}" data-msw="${k}">${l}</button>`).join("");
+  el.querySelectorAll("[data-msw]").forEach(b=>b.onclick=()=>{if(b.dataset.msw!==mode){setMode(b.dataset.msw);toast(`Ahora estás en ${b.dataset.msw==="gym"?"Gym":"CrossFit"}`)}});
+}
+if(modeStored)modeAsked=true;
+
+/* 4 · Repetir el último entreno de la sección */
+function lastInMode(){return sorted().filter(inMode)[0]||null}
+function repeatWorkout(x){if(!x)return;openForm({...x,id:null,date:today(),result:"",duration:null,notes:"",photo:null,pains:[]})}
+function paintRepeat(){
+  const x=lastInMode(),b=$("#repeatLast"),s=$("#sheetRepeat");
+  if(b){b.hidden=!x;if(x){b.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-14 5.3L4 15"/><path d="M4 20v-5h5"/></svg><span>Repetir «${esc(x.name||"último")}»</span>`;b.onclick=()=>repeatWorkout(lastInMode())}}
+  if(s){s.hidden=!x;if(x)$("#sheetRepeatT").innerHTML=`Repetir «${esc(x.name||"el último")}»<small>Copia el del ${esc(humanDate(x.date))} para cambiar solo los pesos</small>`}
+}
+
+/* 3 · Al pulsar + se elige qué apuntar */
+openSheet=function(){paintRepeat();$("#sheetTitle").textContent="¿Qué vas a apuntar?";$("#sheet").hidden=false;($("#sheetRepeat").hidden?$("#sheetWod"):$("#sheetRepeat")).focus()};
+$("#sheetRepeat").onclick=()=>{closeSheet();repeatWorkout(lastInMode())};
+$("#sheetWod").onclick=()=>{closeSheet();if(mode!=="cf")setMode("cf");openForm({kind:"cf"})};
+$("#sheetGym").onclick=()=>{closeSheet();if(mode!=="gym")setMode("gym");openForm({kind:"gym",type:"Gym"})};
+$("#sheetLift").onclick=()=>{closeSheet();if(mode!=="cf")setMode("cf");openForm({kind:"cf",name:"Halterofilia",type:"EMOM",lifts:[{parts:[],sets:LIFT_DEF}]});
+  const c=document.querySelector("#liftRows .lift-card .lpn");if(c)setTimeout(()=>openPicker(c),60)};
+
+/* 2 · Más opciones del formulario: se abren solas si el entreno ya tiene algo dentro */
+function paintMoreOpts(w){
+  const d=$("#moreOpts");if(!d)return;const g=formKind==="gym";
+  $("#moreOptsS").textContent=g?"molestias y notas":"nivel, pareja, molestias y notas";
+  d.open=!!(w&&(w.level||w.pair||(w.pains||[]).length||w.notes));
+}
+{const _of=openForm;openForm=function(w){_of(w);paintMoreOpts(w);if(w&&!w.id&&w.kind&&!editingId){formKind=w.kind;paintFormKind();$("#formTitle").textContent=formKind==="gym"?"Nueva sesión de gym":(w.lifts?.length?"Nuevo entreno de halterofilia":"Nuevo entreno")}}}
+{const _pf=paintFormKind;paintFormKind=function(){_pf();const s=$("#moreOptsS");if(s)s.textContent=formKind==="gym"?"molestias y notas":"nivel, pareja, molestias y notas"}}
+$("#fPair").addEventListener("change",()=>{if($("#fPair").checked)$("#moreOpts").open=true});
+$("#addPain").addEventListener("click",()=>{$("#moreOpts").open=true});
+{const fe=$("#formErr");new MutationObserver(()=>{if(!fe.hidden&&/pareja|molestia/i.test(fe.textContent))$("#moreOpts").open=true}).observe(fe,{attributes:true,childList:true,subtree:true})}
+
+/* 5 · Buscador de entrenos */
+let logQ="";
+const wodText=x=>norm([x.name,x.type,x.result,x.notes,...(x.exercises||[]).map(e=>e.name),...(x.lifts||[]).flatMap(l=>l.parts||[])].filter(Boolean).join(" "));
+{const _rl=renderLog;renderLog=function(){
+  _rl();
+  const MW=workouts.filter(inMode),sb=$("#logSearchBox");if(sb)sb.hidden=MW.length<3;
+  paintRepeat();paintModeSw();
+  const q=norm(logQ.trim());if(!q||MW.length<3)return;
+  const box=$("#logList");let shown=0;
+  box.querySelectorAll(".wod").forEach(b=>{const x=workouts.find(w=>w.id===b.dataset.id);const ok=x&&wodText(x).includes(q);b.hidden=!ok;if(ok)shown++});
+  box.querySelectorAll(".eyebrow.month").forEach(h=>{let n=h.nextElementSibling,any=false;while(n&&!n.classList.contains("month")){if(n.classList.contains("wod")&&!n.hidden)any=true;n=n.nextElementSibling}h.hidden=!any});
+  box.insertAdjacentHTML("afterbegin",`<p class="muted log-found">${shown?`${shown} ${shown===1?"entreno":"entrenos"} con «${esc(logQ.trim())}»`:`No hay entrenos con «${esc(logQ.trim())}».`}</p>`);
+}}
+$("#logQ").addEventListener("input",()=>{logQ=$("#logQ").value;renderLog()});
+
+/* 6 · Progreso: Estadísticas, Calculadora RM y Mis pesos en un mismo sitio */
+const PROG_VIEWS={stats:()=>openMonth(),rm:()=>openRM(),weights:()=>openWeights()};
+function paintProgTabs(){
+  const n=$("#progTabs");if(!n)return;
+  const on=["stats","rm","weights"].includes(current)&&!(current==="rm"&&rmBack);n.hidden=!on;if(!on)return;
+  n.querySelectorAll("[data-prog]").forEach(b=>{const k=b.dataset.prog;b.hidden=k==="rm"&&mode==="gym";if(k===current)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+}
+$("#progTabs").querySelectorAll("[data-prog]").forEach(b=>b.onclick=()=>PROG_VIEWS[b.dataset.prog]());
+{const _sh=show;show=function(v){_sh(v);paintProgTabs();
+  if(v==="log"&&profileReady&&profile){if(!modeAsked)setTimeout(()=>{if(current==="log"&&!modeAsked)askMode()},50);else if(profile.tourPending)setTimeout(()=>{if(current==="log"&&!tourOn&&profile?.tourPending&&(!$("#modePick")||$("#modePick").hidden))startTour()},400)}}}
+{const _sn=setNav;setNav=function(title,back,fn){_sn(["stats","rm","weights"].includes(current)&&!(current==="rm"&&rmBack)?"Progreso":title,back,fn);paintProgTabs()}}
+$("#openProgBtn").onclick=()=>openMonth();
+paintRMBtn=function(){const b=$("#openRMBtn");if(b)b.hidden=true;paintProgTabs()};
+VIEW_NAME.stats="Progreso";VIEW_NAME.rm="Progreso";VIEW_NAME.weights="Progreso";
+
+/* 7 · Después de comprar un tema o un logo, ofrecer ponerlo ya */
+let justBought=null;
+function paintJustBought(){
+  const body=$("#v-shop .shop-body");if(!body||!justBought||shopTab==="coins")return;
+  const j=justBought,el=document.createElement("div");el.className="just-bought";el.setAttribute("role","status");
+  el.innerHTML=`<p><b>¡${esc(j.name)} ya es tuyo!</b> ¿Quieres ${j.kind==="skin"?"ponerte este tema":"poner este logo"} ahora?</p><div class="row-actions"><button type="button" class="btn primary" id="jbUse">Ponerlo ya</button><button type="button" class="btn" id="jbLater">Más tarde</button></div>`;
+  body.prepend(el);
+  $("#jbUse").onclick=async()=>{$("#jbUse").disabled=true;justBought=null;if(j.kind==="skin")await useSkin(j.id);else await useLogo(j.id);renderShop()};
+  $("#jbLater").onclick=()=>{justBought=null;renderShop()};
+}
+{const _rs=renderShop;renderShop=function(){
+  _rs();paintJustBought();
+}}
+/* Detecta la compra nueva comparando lo que tenías antes y después de guardar */
+{const _sp=saveProf;saveProf=async function(patch,msg){
+  const prev=new Set(ownedIds());const ok=await _sp(patch,msg);
+  if(ok&&patch&&patch.coins){const now=ownedIds();for(const id of now)if(!prev.has(id)){
+    const s=id.startsWith("t-")&&SKINS.find(x=>"t-"+x.id===id),L=id.startsWith("l-")&&LOGOS.find(x=>"l-"+x.id===id);
+    if(s)justBought={kind:"skin",id:s.id,name:"El tema «"+s.name+"»"};else if(L)justBought={kind:"logo",id:L.id,name:"El logo «"+L.name+"»"};
+    if(justBought)break}}
+  return ok}}
+
+/* 8 · Consejos de bienvenida: solo la primera vez, justo después de crear la cuenta */
+const TOUR=[
+  ["#tabNew","Apunta tu entreno","Toca + para apuntar un WOD, halterofilia, una sesión de gym o repetir el último."],
+  ["#modeNow","CrossFit o Gym","Cambia de sección cuando quieras. La app recuerda la última que usaste."],
+  ["#goalCard","Tu reto semanal","Elige cuántos días quieres entrenar a la semana y mantén la racha."],
+  ["#openProgBtn","Tu progreso","Estadísticas, calculadora de RM y tus últimos pesos de cada ejercicio."],
+  ['.tab[data-tab="lib"]',"Ejercicios","Cómo se hace cada ejercicio, con su animación. También puedes crear los tuyos."],
+  ["#topCoins","TochiCoins","Ganas monedas entrenando. Gástalas en la Tienda en temas y logos."]
+];
+let tourOn=false;
+function startTour(){
+  if(tourOn)return;tourOn=true;let i=0;
+  const ov=document.createElement("div");ov.className="tour";ov.innerHTML=`<div class="tour-spot"></div><div class="tour-tip" role="dialog" aria-modal="true" aria-labelledby="tourT"><span class="tour-n" id="tourN"></span><h3 id="tourT"></h3><p id="tourP"></p><div class="row-actions"><button type="button" class="btn" id="tourSkip">Saltar</button><button type="button" class="btn primary" id="tourNext">Siguiente</button></div></div>`;
+  document.body.appendChild(ov);
+  const end=async()=>{ov.remove();tourOn=false;if(profile?.tourPending)await saveProf({tourPending:false})};
+  const step=()=>{
+    while(i<TOUR.length){const t=document.querySelector(TOUR[i][0]);if(t&&t.getClientRects().length&&!t.hidden)break;i++}
+    if(i>=TOUR.length)return end();
+    const [sel,h,p]=TOUR[i],t=document.querySelector(sel);t.scrollIntoView({block:"center",behavior:"instant"});
+    const r=t.getBoundingClientRect(),pad=6,sp=ov.querySelector(".tour-spot"),tip=ov.querySelector(".tour-tip");
+    Object.assign(sp.style,{left:r.left-pad+"px",top:r.top-pad+"px",width:r.width+pad*2+"px",height:r.height+pad*2+"px"});
+    $("#tourN").textContent=`${i+1} de ${TOUR.length}`;$("#tourT").textContent=h;$("#tourP").textContent=p;
+    $("#tourNext").textContent=i===TOUR.length-1?"¡A entrenar!":"Siguiente";
+    const below=r.top+r.height/2<innerHeight/2;tip.style.top=below?Math.min(r.bottom+16,innerHeight-220)+"px":"";tip.style.bottom=below?"":Math.max(innerHeight-r.top+16,16)+"px";
+    $("#tourNext").focus()};
+  $("#tourNext").onclick=()=>{i++;step()};$("#tourSkip").onclick=end;
+  ov.addEventListener("keydown",e=>{if(e.key==="Escape")end()});
+  addEventListener("resize",()=>{if(tourOn)step()});
+  step();
+}
+{const _ra=renderAll;renderAll=function(){_ra();
+  if(profile?.tourPending&&!tourOn&&current==="log"){const mp=$("#modePick");if(!mp||mp.hidden)setTimeout(()=>{if(current==="log"&&!tourOn&&profile?.tourPending&&(!$("#modePick")||$("#modePick").hidden))startTour()},400)}}}
+document.addEventListener("click",e=>{if(e.target.closest("#modePick [data-m]")&&profile?.tourPending)setTimeout(()=>{if(!tourOn)startTour()},450)});
+
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

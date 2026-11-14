@@ -7,7 +7,7 @@ Copia de la web publicada en https://tochinuri.es.
 - `config.js`: conexión con Supabase. La clave es pública y segura de compartir.
 - `manifest.webmanifest`, `icons/`: para instalarla en el móvil.
 - `sw.js`: para que abra rápido y sin conexión.
-- `netlify.toml`: ajustes de Netlify.
+- `netlify.toml`: ajustes antiguos de Netlify (ya no se usa).
 - `supabase/schema.sql`: estructura de la base de datos.
 
-Se publica sola: cada cambio subido al repositorio de GitHub `almagrow/Tochinuri` lo publica Netlify (proyecto `tochinurii`).
+Se publica sola: cada cambio subido al repositorio de GitHub `almagrow/Tochinuri` lo publica Cloudflare Pages (proyecto `tochinuri`).

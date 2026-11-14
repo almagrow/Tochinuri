@@ -2440,7 +2440,7 @@ function renderRM(){
   v.querySelectorAll("[data-rmdel]").forEach(b=>b.onclick=async()=>{const r={...(profile.rms||{})};delete r[b.dataset.rmdel];await saveProf({rms:r},"RM borrado");renderRM()});
 }
 function rmSection(ex){
-  if(!["hal","fue","kb"].includes(ex.c))return"";
+  if(mode==="gym"||!["hal","fue","kb"].includes(ex.c))return"";
   const info=rmFor(ex.n);
   return`<div class="sec"><h3>Tu RM</h3><div class="pr-box">${info?`<div class="rm-mini"><div><span class="eyebrow">${info.saved?"1RM":"1RM estimado"}</span><b class="mono">${fmtKg(info.v)} kg</b></div>
     ${[60,70,80,90].map(p=>`<div><span class="eyebrow">${p} %</span><b class="mono">${fmtKg(info.v*p/100)}</b></div>`).join("")}</div>`:`<p class="muted" style="margin:0 0 8px">Aún no sé tu RM en este ejercicio.</p>`}
@@ -3269,7 +3269,7 @@ function mwListHtml(){
     return`<button type="button" class="mw-item" data-mw="${esc(o.key)}">
       <div class="mw-top"><b class="mw-n">${esc(o.name)}</b>${L?`<span class="mw-kg mono">${kg(L.w)}<small> kg</small></span>`:`<span class="mw-nokg muted">sin peso</span>`}</div>
       <div class="mw-sub muted">${L?`${esc(shortDate(L.date))}${det?" · "+det:""}${d?` · <span class="${d>0?"pos":"neg"}">${d>0?"+":"−"}${kg(Math.abs(d))} kg</span>`:d===0?" · igual":""}`:`Última vez ${esc(shortDate(o.last.date))}${exNums(o.last.e)?" · "+esc(exNums(o.last.e)):""}`}</div>
-      ${L?`<div class="mw-foot"><span class="mw-tag">Récord <b class="mono">${kg(o.best)} kg</b>${L.w>=o.best&&h.length>1?" ★":""}</span>${o.rm?`<span class="mw-tag">RM <b class="mono">${kg(o.rm)} kg</b></span>`:""}
+      ${L?`<div class="mw-foot"><span class="mw-tag">Récord <b class="mono">${kg(o.best)} kg</b>${L.w>=o.best&&h.length>1?" ★":""}</span>${o.rm&&mwK!=="gym"?`<span class="mw-tag">RM <b class="mono">${kg(o.rm)} kg</b></span>`:""}
         ${h.length>1?`<span class="mw-hist" aria-label="Últimos pesos">${h.map((r,k)=>`<span class="${k===h.length-1?"cur":""}">${kg(r.w)}</span>`).join("")}</span>`:""}</div>`:""}
     </button>`};
   if(!list.length)return`<p class="muted">No hay ejercicios que coincidan.</p>`;
@@ -3351,7 +3351,10 @@ function setMode(m){mode=m==="gym"?"gym":"cf";try{localStorage.setItem("tochinur
   document.querySelectorAll("[name=mode],[name=libMode]").forEach(r=>r.checked=r.value===mode);
   const mn=$("#modeNow");if(mn)mn.innerHTML=`Estás en <b>${mode==="gym"?"Gym":"CrossFit"}</b>`;
   $("#libSearch").placeholder=mode==="gym"?"Buscar: press banca, jalón, hip thrust…":"Buscar: thruster, dominadas, remo…";
-  renderLog();renderChips();renderLib()}
+  paintRMBtn();renderLog();renderChips();renderLib()}
+/* La calculadora de RM solo existe en CrossFit */
+function paintRMBtn(){const b=$("#openRMBtn");if(b)b.hidden=mode==="gym"}
+{const _ra=renderAll;renderAll=function(){_ra();paintRMBtn()}}
 document.querySelectorAll("[name=mode],[name=libMode]").forEach(r=>r.addEventListener("change",()=>setMode(r.value)));
 /* El formulario de gym no tiene formato, nivel, pareja ni resultado; las rondas se llaman series */
 function paintFormKind(){

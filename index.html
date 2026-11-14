@@ -247,6 +247,9 @@ nav.tabs .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:1f
 /* consentimientos */
 .au-checks{display:flex;flex-direction:column;gap:10px;margin-top:2px}
 .chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.45;color:var(--muted);cursor:pointer}
+.au-remember{font-size:14px;color:var(--ink);align-items:center}
+.me-out{margin:22px 0 6px}
+.me-out-btn{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,var(--line));gap:8px}
 .chk input{width:20px;height:20px;min-height:0;flex:none;margin-top:1px;accent-color:var(--brand)}
 .chk a{color:var(--brand)}
 .au-small{font-size:13px}
@@ -1119,7 +1122,16 @@ const PID="_profile";
 /* Cada usuario entra con su email. Sus entrenos y su perfil se guardan en la tabla "docs" (solo los ve él);
    el catálogo de la tienda va en "shop" y solo lo cambian las administradoras. */
 const CFG=window.TOCHI_CONFIG||{};
-const SB=(window.supabase&&CFG.supabaseUrl)?window.supabase.createClient(CFG.supabaseUrl,CFG.supabaseKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}):null;
+/* Sesión: por defecto se queda guardada en el dispositivo (localStorage) y no hay que volver a entrar.
+   Si al entrar se desmarca «Mantener la sesión iniciada», se guarda solo hasta cerrar el navegador (sessionStorage). */
+const REM_KEY="tochinuri-remember";
+const remember=()=>{try{return localStorage.getItem(REM_KEY)!=="0"}catch(e){return true}};
+const AUTH_STORE={
+  getItem:k=>{try{return localStorage.getItem(k)??sessionStorage.getItem(k)}catch(e){return null}},
+  setItem:(k,v)=>{try{if(remember()){localStorage.setItem(k,v);sessionStorage.removeItem(k)}else{sessionStorage.setItem(k,v);localStorage.removeItem(k)}}catch(e){}},
+  removeItem:k=>{try{localStorage.removeItem(k);sessionStorage.removeItem(k)}catch(e){}}
+};
+const SB=(window.supabase&&CFG.supabaseUrl)?window.supabase.createClient(CFG.supabaseUrl,CFG.supabaseKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storage:AUTH_STORE}}):null;
 let authUser=null,recovering=false,appStarted=false,authMode="login";
 const AUTH_ERR=e=>{const m=String(e?.message||e||"");
   if(/invalid login credentials/i.test(m))return"El email o la contraseña no son correctos.";
@@ -1137,6 +1149,7 @@ function showAuth(mode){
   const f=(id,lbl,type,ac,ph="")=>`<div class="field"><label for="${id}">${lbl}</label><input id="${id}" type="${type}" autocomplete="${ac}" placeholder="${ph}" ${type==="email"?'inputmode="email" autocapitalize="off"':""} required></div>`;
   let body="";
   if(authMode==="login")body=`<form id="authForm" novalidate>${f("auEmail","Email","email","email","tu@email.com")}${f("auPass","Contraseña","password","current-password")}
+      <label class="chk au-remember"><input type="checkbox" id="auRemember"${remember()?" checked":""}><span>Mantener la sesión iniciada en este dispositivo</span></label>
       <p class="form-error" id="auErr" hidden></p><button class="btn primary full" type="submit">Entrar</button></form>
       <button type="button" class="link-btn au-link" data-go="forgot">¿Olvidaste tu contraseña?</button>
       <p class="au-alt">¿No tienes cuenta? <button type="button" class="link-btn" data-go="signup">Regístrate</button></p>
@@ -1147,6 +1160,7 @@ function showAuth(mode){
         <label class="chk"><input type="checkbox" id="auAge"><span>Tengo 14 años o más.</span></label>
         <label class="chk"><input type="checkbox" id="auHealth"><span><b>Opcional:</b> doy mi consentimiento explícito para que se traten los datos de salud que yo decida apuntar (ciclo menstrual, días con la regla, molestias y lesiones). Puedo retirarlo cuando quiera en mi perfil. <a href="legal.html#salud" target="_blank" rel="noopener">Más información</a></span></label>
       </div>
+      <label class="chk au-remember"><input type="checkbox" id="auRemember"${remember()?" checked":""}><span>Mantener la sesión iniciada en este dispositivo</span></label>
       <p class="form-error" id="auErr" hidden></p><button class="btn primary full" type="submit">Crear cuenta</button></form>
       <p class="au-alt">¿Ya tienes cuenta? <button type="button" class="link-btn" data-go="login">Entra</button></p>`;
   else if(authMode==="forgot")body=`<p class="au-sub">Escribe el email de tu cuenta y te enviaremos un enlace para crear una contraseña nueva.</p>
@@ -1162,6 +1176,7 @@ function showAuth(mode){
   show("auth");
 }
 async function onAuthSubmit(ev){
+  {const rb=$("#auRemember");if(rb)try{localStorage.setItem(REM_KEY,rb.checked?"1":"0")}catch(e){}}
   ev.preventDefault();const err=m=>{const e=$("#auErr");e.textContent=m;e.hidden=false};
   const btn=ev.target.querySelector("button[type=submit]"),email=$("#auEmail")?.value.trim(),pass=$("#auPass")?.value,pass2=$("#auPass2")?.value;
   if($("#auEmail")&&!/^\S+@\S+\.\S+$/.test(email||""))return err("Escribe tu email.");
@@ -1186,6 +1201,7 @@ async function onAuthSubmit(ev){
 async function startApp(u){
   if(appStarted&&authUser&&authUser.id===u.id)return;
   authUser=u;appStarted=true;workouts=[];profile=null;profileReady=false;
+  try{navigator.storage?.persist?.().catch(()=>{})}catch(e){}
   $("#saveNote").textContent="Cargando tus datos…";show("log");
   const docs=SB.from("docs");
   store={
@@ -1228,15 +1244,28 @@ async function shopDelete(id){const{error}=await SB.from("shop").delete().eq("id
 function paintAccount(){
   const box=$("#meAccount");if(!box)return;
   box.innerHTML=authUser?`<div class="field"><label>Cuenta</label><div class="acct"><span class="acct-mail">${esc(authUser.email||"")}</span>
-    <button type="button" class="btn" id="acPassBtn">Cambiar contraseña</button><button type="button" class="btn ghost" id="acOut">Cerrar sesión</button></div>
+    <button type="button" class="btn" id="acPassBtn">Cambiar contraseña</button></div>
     <div id="acPassBox" hidden class="acct-pass"><input type="password" id="acP1" autocomplete="new-password" placeholder="Contraseña nueva (mínimo 6)" aria-label="Contraseña nueva"><input type="password" id="acP2" autocomplete="new-password" placeholder="Repite la contraseña" aria-label="Repite la contraseña">
       <p class="form-error" id="acErr" hidden></p><button type="button" class="btn primary" id="acSave">Guardar contraseña</button></div></div>`:"";
   if(!authUser)return;
   $("#acPassBtn").onclick=()=>{$("#acPassBox").hidden=!$("#acPassBox").hidden};
-  $("#acOut").onclick=async()=>{await SB.auth.signOut();signedOut()};
+  paintSignOut(box);
   $("#acSave").onclick=async()=>{const e=m=>{$("#acErr").textContent=m;$("#acErr").hidden=false},a=$("#acP1").value,b=$("#acP2").value;
     if(a.length<6)return e("La contraseña debe tener al menos 6 caracteres.");if(a!==b)return e("Las dos contraseñas no coinciden.");
     const{error}=await SB.auth.updateUser({password:a});if(error)return e(AUTH_ERR(error));$("#acPassBox").hidden=true;toast("Contraseña cambiada")};
+}
+
+/* Cerrar sesión: al final del perfil, con confirmación */
+function paintSignOut(box){
+  const form=box.closest("form")||box;let ob=$("#meOutBox");
+  if(!ob){ob=document.createElement("div");ob.id="meOutBox";ob.className="me-out";form.after(ob)}
+  ob.innerHTML=`<button type="button" class="btn full me-out-btn" id="acOut"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 17l-5-5 5-5M5 12h11"/></svg>Cerrar sesión</button>
+    <div class="confirm" id="acOutBox" hidden><b>¿Cerrar sesión en este dispositivo?</b><span class="muted">Tus datos siguen guardados en tu cuenta. Para volver tendrás que poner tu email y contraseña.</span>
+    <div class="row-actions"><button type="button" class="btn primary" id="acOutYes">Cerrar sesión</button><button type="button" class="btn" id="acOutNo">Cancelar</button></div></div>`;
+  ob.hidden=!authUser;
+  $("#acOut").onclick=()=>{$("#acOut").hidden=true;$("#acOutBox").hidden=false};
+  $("#acOutNo").onclick=()=>{$("#acOut").hidden=false;$("#acOutBox").hidden=true};
+  $("#acOutYes").onclick=async()=>{const b=$("#acOutYes");b.disabled=true;b.textContent="Cerrando…";try{await SB.auth.signOut()}catch(e){}AUTH_STORE.removeItem&&Object.keys(localStorage).filter(k=>/^sb-.*-auth-token/.test(k)).forEach(k=>AUTH_STORE.removeItem(k));signedOut();toast("Sesión cerrada")};
 }
 
 /* ---------------- Navegación ---------------- */

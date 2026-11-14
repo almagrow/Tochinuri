@@ -828,6 +828,73 @@ header.top.sub .top-coins{display:none}
 [data-skin="revista"] .tab[aria-current="page"]{color:#C6F432}
 [data-skin="revista"] .tab-new{border-radius:0;box-shadow:none}
 
+/* 11 · Llama clásica (estilo del icono) */
+:root[data-skin="llama"]{--bg:#FFFFFF;--surface:#FFFFFF;--surface-2:#F4EEFF;--ink:#2E1065;--muted:#5B21B6;--line:#2E1065;--accent:#A21CAF;--accent-ink:#FFFFFF;--brand:#C026D3;--f-display:"Lilita One","Nunito",sans-serif;--f-body:"Nunito",system-ui,sans-serif;
+  --p-red:#cf3a2f;--p-blue:#2b62c6;--p-yellow:#c99a0c;--p-green:#2c9452;--p-white:#7d8894;--danger:#c0352b;--drop:#d7263d;--star:#e0a100;color-scheme:light}
+[data-skin="llama"] body{font-weight:600}
+[data-skin="llama"] header.top{background:#EDE4FF;border-bottom:3px solid #2E1065}
+[data-skin="llama"] header.top.sub{border-bottom-color:#2E1065}
+[data-skin="llama"] .brand-word{display:flex;align-items:center;gap:8px}
+[data-skin="llama"] .brand-word::before{content:"";width:34px;height:34px;flex:none;border-radius:10px;border:2.5px solid #2E1065;background:url("icons/icon-192.png?v=2") center/cover}
+[data-skin="llama"] :is(.wod,.goal,.pr-box,.shop-card,.wallet,.confirm,.mw-item,.lift-card,.lift-view,.ex-card){border:3px solid #2E1065;border-radius:18px;box-shadow:4px 4px 0 #2E1065}
+[data-skin="llama"] :is(.stat,.tool){border:3px solid #2E1065;border-radius:16px}
+[data-skin="llama"] .stat{background:#EDE4FF}
+[data-skin="llama"] .empty{border:3px dashed #7C3AED;border-radius:18px}
+[data-skin="llama"] :is(.btn,input,select,textarea){border-width:2.5px;border-color:#2E1065;border-radius:14px}
+[data-skin="llama"] .btn.primary{box-shadow:3px 3px 0 #2E1065}
+[data-skin="llama"] :is(h2.view-title,.sec h3,.goal-txt h3,.empty h3,.stat b,.date b,.streak b){font-weight:400}
+[data-skin="llama"] .dot{height:14px;border:2px solid #2E1065}
+[data-skin="llama"] .dot.on{background:#D946EF;border-color:#2E1065}
+[data-skin="llama"] nav.tabs{background:#EDE4FF;border-top:3px solid #2E1065}
+[data-skin="llama"] .tab{color:#5B21B6;font-weight:800}
+[data-skin="llama"] .tab[aria-current="page"]{color:#2E1065}
+[data-skin="llama"] .tab-new{background:#D946EF;color:#FFFFFF;border:3px solid #2E1065;box-shadow:3px 3px 0 #2E1065}
+
+/* 12 · Lava */
+:root[data-skin="lava"]{--bg:#4C1D95;--surface:#5B21B6;--surface-2:#3F157E;--ink:#FFFFFF;--muted:#EBDDFF;--line:rgba(255,255,255,.22);--accent:#FDE68A;--accent-ink:#3B0764;--brand:#F0ABFC;--f-display:"Baloo 2",sans-serif;--f-body:"Baloo 2",system-ui,sans-serif;
+  --p-red:#ff8a7e;--p-blue:#9db8ff;--p-yellow:#FDE68A;--p-green:#7ee2a8;--p-white:#e3d9f5;--danger:#ffb4a8;--drop:#ff8aa0;--star:#FDE68A;color-scheme:dark}
+[data-skin="lava"] body{font-size:17px}
+[data-skin="lava"] body::before{content:"";position:fixed;width:280px;height:240px;right:-120px;top:38%;background:#C026D3;border-radius:42% 58% 60% 40%/45% 45% 55% 55%;z-index:-1;pointer-events:none;opacity:.55}
+[data-skin="lava"] body::after{content:"";position:fixed;width:220px;height:200px;left:-100px;bottom:90px;background:#6D28D9;border-radius:58% 42% 38% 62%/52% 40% 60% 48%;z-index:-1;pointer-events:none}
+[data-skin="lava"] :is(h2.view-title,.sec h3,.goal-txt h3,.empty h3){text-transform:none}
+[data-skin="lava"] :is(.wod,.pr-box,.shop-card,.wallet,.confirm,.mw-item,.lift-card,.lift-view,.ex-card,.empty){border:0;border-radius:26px}
+[data-skin="lava"] :is(.stat,.tool){border:0;border-radius:24px}
+[data-skin="lava"] .tool{background:#7C3AED}
+[data-skin="lava"] .goal{--ink:#3B0764;--muted:#5B21B6;--surface-2:#FFFFFF;--line:#E2B6F2;background:#F5D0FE;color:#3B0764;border:0;border-radius:38px 22px 40px 24px}
+[data-skin="lava"] .goal .dot.on{background:#C026D3;border-color:#C026D3}
+[data-skin="lava"] .goal-nums button[aria-pressed="true"]{background:#C026D3;border-color:#C026D3}
+[data-skin="lava"] .wod{--ink:#3B0764;--muted:#5B21B6;--line:#E9D5FF;--surface-2:#F3E8FF;background:#FFFFFF;color:#3B0764}
+[data-skin="lava"] .wod .date b{color:#A21CAF}
+[data-skin="lava"] :is(.btn,input,select,textarea){border-radius:18px}
+[data-skin="lava"] .btn.primary{border-radius:999px}
+[data-skin="lava"] nav.tabs{background:#2E1065;border-top:0}
+[data-skin="lava"] .tab{color:#E9D5FF}
+[data-skin="lava"] .tab[aria-current="page"]{color:#FDE68A}
+[data-skin="lava"] .tab-new{background:#C026D3;color:#FFFFFF;border-radius:42% 58% 60% 40%/45% 45% 55% 55%;border:4px solid #4C1D95;box-shadow:none}
+[data-skin="lava"] .brand-word span{color:#FDE68A}
+
+/* Letra más grande y legible en todos los temas */
+:where([data-skin]) body{font-size:16px}
+:where([data-skin]) .eyebrow{font-size:13px;letter-spacing:.06em}
+:where([data-skin]) :is(.wod .meta,.date-human,.mw-sub,.lift-total,.lv-tot,.pp,.chip,.tag,.trend,.xr-p){font-size:14px}
+:where([data-skin]) .date small{font-size:12px}
+:where([data-skin]) :is(.tool,.tab){font-size:13px}
+[data-skin="pizarra"] .eyebrow{font-size:16px}
+[data-skin="pizarra"] :is(.tool,.tab,.wod .meta,.date-human){font-size:16px}
+[data-skin="marcador"] .eyebrow{font-size:14px}
+[data-skin="marcador"] body{font-size:16px}
+[data-skin="arcade"] .eyebrow{font-size:18px}
+[data-skin="arcade"] :is(.tab,.wod .meta,.date-human,.chip,.tag,.mw-sub){font-size:19px}
+[data-skin="arcade"] .tool{font-size:17px;line-height:1.05;overflow-wrap:anywhere}
+[data-skin="arcade"] :is(.sec h3,.goal-txt h3,.empty h3){font-size:14px}
+[data-skin="arcade"] :is(.stat b,.date b,.streak b){font-size:17px}
+[data-skin="arcade"] .date small{font-size:16px}
+[data-skin="neon"] .eyebrow{font-size:13px;color:#BDB6E3}
+:root[data-skin="neon"]{--muted:#BDB6E3}
+:root[data-skin="industrial"]{--muted:#C2C0B8}
+:root[data-skin="marcador"]{--muted:#B6B8BD}
+:root[data-skin="arcade"]{--muted:#C9C9E6}
+
 /* Tienda: tarjetas de temas */
 .skin-prev{aspect-ratio:1;display:flex;flex-direction:column;justify-content:center;gap:9px;padding:14px;border-bottom:1px solid var(--line)}
 .skin-prev .sk-t{font-size:22px;line-height:1;white-space:nowrap;overflow:hidden}
@@ -1548,7 +1615,7 @@ function setNav(title,backLabel,fn){
   $("#brand").hidden=true;$("#navBack").hidden=false;$("#themeBtn").hidden=true;$("#navBackLabel").textContent=backLabel;
   $("#navTitle").textContent=title;$(".top").classList.add("sub");navBackFn=fn;
 }
-function clearNav(){$("#brand").hidden=false;$("#navBack").hidden=true;$("#themeBtn").hidden=false;$("#navTitle").textContent="";$(".top").classList.remove("sub");navBackFn=null}
+function clearNav(){$("#brand").hidden=false;$("#navBack").hidden=true;$("#themeBtn").hidden=document.documentElement.hasAttribute("data-skin");$("#navTitle").textContent="";$(".top").classList.remove("sub");navBackFn=null}
 $("#navBack").onclick=()=>navBackFn&&navBackFn();
 /* Tocar el logo de TochiNuri siempre vuelve a la página principal */
 function goHome(){const pk=$("#picker");if(pk&&!pk.hidden)closePicker();document.querySelectorAll(".viewer,.lightbox").forEach(x=>{if(!x.hidden&&x.id!=="modePick")x.hidden=true});
@@ -1774,6 +1841,8 @@ const SKINS=[
   {id:"gatitos",name:"Gatitos kawaii",price:200,ff:"Baloo 2",fonts:["Baloo+2:wght@500;600;700;800"],c:["#FFF1F5","#7B4FD0","#3B2A4A","#FFFFFF","#7B4FD0"]},
   {id:"marcador",name:"Marcador de estadio",price:200,ff:"Teko",fonts:["Teko:wght@500;600","Share+Tech+Mono"],c:["#0E0F11","#FF3B30","#E9E9EA","#000000","#FF3B30"]},
   {id:"comic",name:"Cómic",price:250,ff:"Bangers",fonts:["Comic+Neue:wght@400;700"],c:["#FFE14D","#9B5CF6","#111111","#FFFFFF","#2F6BFF"]},
+  {id:"llama",name:"Llama clásica",price:200,ff:"Lilita One",fonts:["Lilita+One","Nunito:wght@600;700;800;900"],c:["#FFFFFF","#C026D3","#2E1065","#EDE4FF","#A21CAF"]},
+  {id:"lava",name:"Lava",price:250,ff:"Baloo 2",fonts:["Baloo+2:wght@500;600;700;800"],c:["#4C1D95","#F0ABFC","#FFFFFF","#5B21B6","#FDE68A"]},
   {id:"arcade",name:"Arcade 8-bit",price:300,ff:"Press Start 2P",fonts:["Press+Start+2P","VT323"],c:["#10102A","#B07CFF","#F4F4F4","#17173A","#E83B3B"]},
 ];
 const skinItemId=id=>"t-"+id;

@@ -1031,7 +1031,7 @@ header.top.sub .top-coins{display:none}
 .more-opts summary small{font-weight:500;color:var(--muted);font-size:13px}
 .more-opts summary::after{content:"";position:absolute;right:16px;top:50%;width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-70%) rotate(45deg);transition:transform .2s}
 .more-opts[open] summary::after{transform:translateY(-30%) rotate(-135deg)}
-.more-opts .mo-in{padding:0 14px 14px;display:flex;flex-direction:column;gap:12px}
+.mo-flat{display:flex;flex-direction:column;gap:12px}
 .just-bought{background:color-mix(in srgb,var(--brand) 12%,var(--surface));border:1px solid var(--brand);border-radius:12px;padding:12px 14px;margin:0 0 14px}
 .just-bought p{margin:0 0 10px}
 .tour{position:fixed;inset:0;z-index:300}
@@ -1147,7 +1147,7 @@ h2.view-title{text-wrap:balance}
       <div id="liftRows" class="list"></div>
       <button type="button" class="btn ghost lift-btn" id="addLift">+ Halterofilia · complex por %</button>
 
-      <details class="more-opts" id="moreOpts"><summary><span id="moreOptsT">Más opciones</span><small id="moreOptsS">pareja, molestias y notas</small></summary><div class="mo-in">
+      <div id="moreOpts" class="mo-flat">
       <div class="pair-box" id="pairBox">
         <label class="switch"><input type="checkbox" id="fPair"><span class="sw"></span><span class="sw-l"><b>Entreno en pareja</b><small>Reparte el trabajo de cada ejercicio entre tú y tu pareja</small></span></label>
         <div class="field" id="fPairNameF" hidden><label for="fPairName">Nombre de tu pareja</label><input id="fPairName" list="pairNames" placeholder="Ej. Laura" autocomplete="off" maxlength="30"><datalist id="pairNames"></datalist></div>
@@ -1159,7 +1159,7 @@ h2.view-title{text-wrap:balance}
       <button type="button" class="btn ghost" id="addPain">+ Apuntar una molestia</button>
 
       <div class="field"><label for="fNotes">Notas</label><textarea id="fNotes" placeholder="Sensaciones, cómo te has visto…"></textarea></div>
-      </div></details>
+      </div>
       <p class="form-error" id="formErr" hidden></p>
       <div class="row-actions"><button class="btn primary" style="flex:1" type="submit" id="saveBtn">Guardar entreno</button><button class="btn" type="button" id="cancelBtn">Cancelar</button></div>
     </form>
@@ -3764,7 +3764,7 @@ $("#sheetLift").onclick=()=>{closeSheet();if(mode!=="cf")setMode("cf");openForm(
 /* 2 · Más opciones del formulario: se abren solas si el entreno ya tiene algo dentro */
 function paintMoreOpts(w){
   const d=$("#moreOpts");if(!d)return;const g=formKind==="gym";
-  $("#moreOptsS").textContent=g?"molestias y notas":"pareja, molestias y notas";
+
   d.open=!!(w&&(w.pair||(w.pains||[]).length||w.notes));
 }
 {const _of=openForm;openForm=function(w){_of(w);paintMoreOpts(w);if(w&&!w.id&&w.kind&&!editingId){formKind=w.kind;paintFormKind();$("#formTitle").textContent=formKind==="gym"?"Nueva sesión de gym":(w.lifts?.length?"Nuevo entreno de halterofilia":"Nuevo entreno")}}}

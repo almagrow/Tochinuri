@@ -1137,6 +1137,8 @@ h2.view-title{text-wrap:balance}
       <div class="cycle-hint" id="cycleHint" hidden></div>
       <div class="field"><label for="fName">Nombre del WOD</label><input id="fName" placeholder="Ej. Fran, Murph o WOD del box" autocomplete="off"></div>
       <div class="field"><label>Formato</label><div class="types" id="fType"></div></div>
+      <div class="field"><label>Nivel</label><div class="seg seg4" id="fLevelSeg"><input type="radio" name="fLevel" id="fLvRx" value="rx"><label for="fLvRx">RX</label><input type="radio" name="fLevel" id="fLvIn" value="inter"><label for="fLvIn">Intermedio</label><input type="radio" name="fLevel" id="fLvSc" value="scaled"><label for="fLvSc">Escalado</label><input type="radio" name="fLevel" id="fLvIi" value="init"><label for="fLvIi">Iniciación</label></div>
+        <span class="date-human">De más a menos difícil. RX: con el peso y los movimientos oficiales. Toca otra vez para quitarlo.</span></div>
       <div class="field"><label for="fResult">Resultado</label><input id="fResult" placeholder="Ej. 4:32 · 5 rondas + 12 reps · 100 kg"></div>
       <div class="field"><label>Ejercicios</label></div>
       <div id="exRows" class="list"></div>
@@ -1145,9 +1147,7 @@ h2.view-title{text-wrap:balance}
       <div id="liftRows" class="list"></div>
       <button type="button" class="btn ghost lift-btn" id="addLift">+ Halterofilia · complex por %</button>
 
-      <details class="more-opts" id="moreOpts"><summary><span id="moreOptsT">Más opciones</span><small id="moreOptsS">nivel, pareja, molestias y notas</small></summary><div class="mo-in">
-      <div class="field"><label>Nivel</label><div class="seg seg4" id="fLevelSeg"><input type="radio" name="fLevel" id="fLvRx" value="rx"><label for="fLvRx">RX</label><input type="radio" name="fLevel" id="fLvIn" value="inter"><label for="fLvIn">Intermedio</label><input type="radio" name="fLevel" id="fLvSc" value="scaled"><label for="fLvSc">Escalado</label><input type="radio" name="fLevel" id="fLvIi" value="init"><label for="fLvIi">Iniciación</label></div>
-        <span class="date-human">De más a menos difícil. RX: con el peso y los movimientos oficiales. Toca otra vez para quitarlo.</span></div>
+      <details class="more-opts" id="moreOpts"><summary><span id="moreOptsT">Más opciones</span><small id="moreOptsS">pareja, molestias y notas</small></summary><div class="mo-in">
       <div class="pair-box" id="pairBox">
         <label class="switch"><input type="checkbox" id="fPair"><span class="sw"></span><span class="sw-l"><b>Entreno en pareja</b><small>Reparte el trabajo de cada ejercicio entre tú y tu pareja</small></span></label>
         <div class="field" id="fPairNameF" hidden><label for="fPairName">Nombre de tu pareja</label><input id="fPairName" list="pairNames" placeholder="Ej. Laura" autocomplete="off" maxlength="30"><datalist id="pairNames"></datalist></div>
@@ -3764,11 +3764,11 @@ $("#sheetLift").onclick=()=>{closeSheet();if(mode!=="cf")setMode("cf");openForm(
 /* 2 · Más opciones del formulario: se abren solas si el entreno ya tiene algo dentro */
 function paintMoreOpts(w){
   const d=$("#moreOpts");if(!d)return;const g=formKind==="gym";
-  $("#moreOptsS").textContent=g?"molestias y notas":"nivel, pareja, molestias y notas";
-  d.open=!!(w&&(w.level||w.pair||(w.pains||[]).length||w.notes));
+  $("#moreOptsS").textContent=g?"molestias y notas":"pareja, molestias y notas";
+  d.open=!!(w&&(w.pair||(w.pains||[]).length||w.notes));
 }
 {const _of=openForm;openForm=function(w){_of(w);paintMoreOpts(w);if(w&&!w.id&&w.kind&&!editingId){formKind=w.kind;paintFormKind();$("#formTitle").textContent=formKind==="gym"?"Nueva sesión de gym":(w.lifts?.length?"Nuevo entreno de halterofilia":"Nuevo entreno")}}}
-{const _pf=paintFormKind;paintFormKind=function(){_pf();const s=$("#moreOptsS");if(s)s.textContent=formKind==="gym"?"molestias y notas":"nivel, pareja, molestias y notas"}}
+{const _pf=paintFormKind;paintFormKind=function(){_pf();const s=$("#moreOptsS");if(s)s.textContent=formKind==="gym"?"molestias y notas":"pareja, molestias y notas"}}
 $("#fPair").addEventListener("change",()=>{if($("#fPair").checked)$("#moreOpts").open=true});
 $("#addPain").addEventListener("click",()=>{$("#moreOpts").open=true});
 {const fe=$("#formErr");new MutationObserver(()=>{if(!fe.hidden&&/pareja|molestia/i.test(fe.textContent))$("#moreOpts").open=true}).observe(fe,{attributes:true,childList:true,subtree:true})}

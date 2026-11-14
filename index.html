@@ -1337,7 +1337,8 @@ function coinLedger(){
 }
 function coinBalance(){const earned=coinLedger().reduce((a,e)=>a+e.amt,0),spent=(coinsData().spent||[]).reduce((a,e)=>a+e.price,0);return{earned,spent,bal:Math.max(0,earned-spent)}}
 const allItems=()=>[...BUILTIN(),...SHOP];
-const ownedIds=()=>new Set(["b-start","b-win",...(coinsData().owned||[])]);
+/* La cuenta administradora tiene todo desbloqueado, sin gastar monedas */
+const ownedIds=()=>shopAdmin?new Set(["b-start","b-win",...SHOP.map(i=>i.id),...(typeof SKINS!=="undefined"?SKINS.map(x=>"t-"+x.id):[]),...(coinsData().owned||[])]):new Set(["b-start","b-win",...(coinsData().owned||[])]);
 function slotSrc(slot){const id=(coinsData().slots||{})[slot];const it=id&&allItems().find(i=>i.id===id);return it?it.src:(slot==="start"?GOAL_CAT:GOAL_CAT_WIN)}
 /* Aviso cuando ganas monedas nuevas (se recuerda en este navegador lo último que viste) */
 function checkNewCoins(){
@@ -1516,6 +1517,7 @@ function paintSkinShop(){
 }
 {const _rs=renderShop;renderShop=function(){_rs();paintSkinShop()}}
 {const _ra=renderAll;renderAll=function(){_ra();applySkin(skinPref())}}
+{const _is=initShop;initShop=async function(o){await _is(o);applySkin(skinPref());if(current==="shop")renderShop()}}
 
 let themeSynced=false;
 

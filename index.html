@@ -1110,7 +1110,7 @@ h2.view-title{text-wrap:balance}
 
   <!-- ENTRENOS -->
   <nav class="prog-tabs" id="progTabs" aria-label="Progreso" hidden>
-    <button type="button" data-prog="stats">Estadísticas</button><button type="button" data-prog="rm">Calculadora RM</button><button type="button" data-prog="weights">Mis pesos</button>
+    <button type="button" data-prog="maxes">Máximos</button><button type="button" data-prog="totals">Totales</button><button type="button" data-prog="stats">Estadísticas</button><button type="button" data-prog="rm">Calculadora RM</button><button type="button" data-prog="weights">Mis pesos</button>
   </nav>
   <section class="view" id="v-log">
     <div class="hello" id="hello" hidden></div>
@@ -1122,7 +1122,8 @@ h2.view-title{text-wrap:balance}
       <div class="stat"><span class="eyebrow">Total</span><b id="stTotal">0</b></div>
     </div>
     <div class="tools">
-      <button type="button" class="tool" id="openProgBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V5M16 20v-6M21 20H3"/></svg><span>Estadísticas</span></button>
+      <button type="button" class="tool" id="openMaxBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18"/><rect x="5" y="12" width="3" height="6" rx="1"/><rect x="16" y="12" width="3" height="6" rx="1"/><path d="M8 15h8"/><path d="M12 3v6M9 6l3-3 3 3"/></svg><span>Pesos máximos</span></button>
+      <button type="button" class="tool" id="openProgBtn" hidden></button>
       <button type="button" class="tool" id="openTotalsBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 5H6l6 7-6 7h12"/></svg><span>Totales</span></button>
       <button type="button" class="tool" id="openMonth" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Estadísticas</span></button>
       <button type="button" class="tool" id="openRMBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3M19 12h3"/><rect x="5" y="7" width="3" height="10" rx="1"/><rect x="16" y="7" width="3" height="10" rx="1"/><path d="M8 12h8"/></svg><span>Calculadora RM</span></button>
@@ -1207,6 +1208,7 @@ h2.view-title{text-wrap:balance}
   <section class="view" id="v-cex" hidden></section>
   <section class="view" id="v-weights" hidden></section>
   <section class="view" id="v-totals" hidden></section>
+  <section class="view" id="v-maxes" hidden></section>
   <section class="view" id="v-pain" hidden></section>
   <section class="view" id="v-cycle" hidden></section>
 
@@ -3167,8 +3169,8 @@ function openEx(ex){
   if(ex.custom){$("#cexEdit").onclick=()=>openCexForm(ex.n);$("#cexDel").onclick=()=>{$("#cexDelBox").hidden=false};$("#cexDelNo").onclick=()=>{$("#cexDelBox").hidden=true};
     $("#cexDelYes").onclick=async()=>{const ok=await saveCustomEx(cexList().filter(x=>norm(x.n)!==norm(ex.n)),`«${ex.n}» borrado de Otros`);if(ok)show("lib")}}
   const rb=$("#exRM");if(rb)rb.onclick=()=>openRM(ex.n,ex);
-  const fromWod=returnTo.startsWith("wod:")?returnTo.slice(4):null,fromMw=returnTo==="weights",fromTot=returnTo==="totals";
-  show("ex");setNav("Ejercicio",fromWod?"Entreno":fromMw?"Mis pesos":fromTot?"Totales":"Ejercicios",()=>{if(fromWod&&workouts.some(w=>w.id===fromWod))openWod(fromWod);else if(fromMw)openWeights();else if(fromTot)openTotals();else show("lib")});
+  const fromWod=returnTo.startsWith("wod:")?returnTo.slice(4):null,fromMw=returnTo==="weights",fromTot=returnTo==="totals",fromMx=returnTo==="maxes";
+  show("ex");setNav("Ejercicio",fromWod?"Entreno":fromMw?"Mis pesos":fromTot?"Totales":fromMx?"Pesos máximos":"Ejercicios",()=>{if(fromWod&&workouts.some(w=>w.id===fromWod))openWod(fromWod);else if(fromMw)openWeights();else if(fromTot)openTotals();else if(fromMx)openMaxes();else show("lib")});
 }
 
 
@@ -3808,16 +3810,16 @@ const wodText=x=>norm([x.name,x.type,x.result,x.notes,...(x.exercises||[]).map(e
 $("#logQ").addEventListener("input",()=>{logQ=$("#logQ").value;renderLog()});
 
 /* 6 · Progreso: Estadísticas, Calculadora RM y Mis pesos en un mismo sitio */
-const PROG_VIEWS={stats:()=>openMonth(),rm:()=>openRM(),weights:()=>openWeights()};
+const PROG_VIEWS={maxes:()=>openMaxes(),totals:()=>openTotals(),stats:()=>openMonth(),rm:()=>openRM(),weights:()=>openWeights()};
 function paintProgTabs(){
   const n=$("#progTabs");if(!n)return;
-  const on=["stats","rm","weights"].includes(current)&&!(current==="rm"&&rmBack);n.hidden=!on;if(!on)return;
+  const on=["maxes","totals","stats","rm","weights"].includes(current)&&!(current==="rm"&&rmBack);n.hidden=!on;if(!on)return;
   n.querySelectorAll("[data-prog]").forEach(b=>{const k=b.dataset.prog;b.hidden=k==="rm"&&mode==="gym";if(k===current)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
 }
 $("#progTabs").querySelectorAll("[data-prog]").forEach(b=>b.onclick=()=>PROG_VIEWS[b.dataset.prog]());
 {const _sh=show;show=function(v){_sh(v);paintProgTabs();
   if(v==="log"&&profileReady&&profile){if(!modeAsked)setTimeout(()=>{if(current==="log"&&!modeAsked)askMode()},50);else if(profile.tourPending)setTimeout(()=>{if(current==="log"&&!tourOn&&profile?.tourPending&&(!$("#modePick")||$("#modePick").hidden))startTour()},400)}}}
-{const _sn=setNav;setNav=function(title,back,fn){_sn(["stats","rm","weights"].includes(current)&&!(current==="rm"&&rmBack)?"Progreso":title,back,fn);paintProgTabs()}}
+{const _sn=setNav;setNav=function(title,back,fn){_sn(["maxes","totals","stats","rm","weights"].includes(current)&&!(current==="rm"&&rmBack)?"Progreso":title,back,fn);paintProgTabs()}}
 $("#openProgBtn").onclick=()=>openMonth();
 paintRMBtn=function(){const b=$("#openRMBtn");if(b)b.hidden=true;paintProgTabs()};
 VIEW_NAME.stats="Progreso";VIEW_NAME.rm="Progreso";VIEW_NAME.weights="Progreso";
@@ -3849,8 +3851,8 @@ const TOUR=[
   ["#tabNew","Apunta tu entreno","Toca + para apuntar un WOD, halterofilia, una sesión de gym o repetir el último."],
   ["#modeNow","CrossFit o Gym","Cambia de sección cuando quieras. La app recuerda la última que usaste."],
   ["#goalCard","Tu reto semanal","Elige cuántos días quieres entrenar a la semana y mantén la racha."],
-  ["#openProgBtn","Tus estadísticas","Estadísticas, calculadora de RM y tus últimos pesos de cada ejercicio."],
-  ["#openTotalsBtn","Totales","Todo lo que llevas hecho de cada ejercicio: veces, repeticiones y kilos."],
+  ["#openMaxBtn","Pesos máximos","El peso más alto que has cogido en cada ejercicio, para saber con cuánto volver."],
+  ["#openTotalsBtn","Totales","Todo lo que llevas de cada ejercicio. Desde aquí llegas también a estadísticas, RM y tus últimos pesos."],
   ['.tab[data-tab="lib"]',"Ejercicios","Cómo se hace cada ejercicio, con su animación. También puedes crear los tuyos."],
   ["#topStats","Insignias","Logros que vas subiendo de bronce a diamante al cumplir retos."],
   ["#topCoins","TochiCoins","Ganas monedas entrenando. Gástalas en la Tienda en temas y logos."]
@@ -3936,9 +3938,50 @@ function renderTotals(){
   paint();
 }
 function openTotals(){openTool("totals","Estadísticas totales",renderTotals)}
-VIEW_NAME.totals="Totales";
+
 $("#openTotalsBtn").onclick=()=>openTotals();
 $("#topStats").onclick=()=>openBadges();
+
+
+/* ---------------- Pesos máximos: el peso más alto cogido en cada ejercicio (sin sumar) ---------------- */
+let mxK=null,mxQ="";
+function maxesData(k){
+  const by=new Map();
+  for(const w of workouts){const kind=w.kind==="gym"?"gym":"cf";if(k!=="all"&&kind!==k)continue;
+    for(const e0 of(w.exercises||[])){if(!e0.name)continue;const e=myEx(e0),wt=num(e.weight);if(!wt)continue;
+      const key=exKey(e.name),f=findEx(e.name);
+      if(!by.has(key))by.set(key,{key,name:f?f.n:e.name,ex:f||null,kinds:new Set(),best:0,date:"",reps:null,sets:null,times:0});
+      const o=by.get(key);o.kinds.add(kind);o.times++;
+      if(wt>o.best||(wt===o.best&&(w.date||"")>o.date)){o.best=wt;o.date=w.date||"";o.reps=e.fromLift?null:num(e.reps);o.sets=e.fromLift?null:num(e.sets)}}}
+  return[...by.values()];
+}
+function renderMaxes(){
+  if(!mxK)mxK=mode==="gym"?"gym":"cf";
+  const v=$("#v-maxes"),all=maxesData(mxK);
+  v.innerHTML=`<h2 class="view-title">Pesos máximos</h2>
+    <p class="muted mw-intro">El peso más alto que has cogido en cada ejercicio, para saber con cuánto volver a empezar.</p>
+    <div class="seg mw-seg" role="radiogroup" aria-label="Sección" style="margin-bottom:12px">${[["all","Todo"],["cf","CrossFit"],["gym","Gym"]].map(([k,l])=>`<input type="radio" name="mxK" id="mxK_${k}" value="${k}"${mxK===k?" checked":""}><label for="mxK_${k}">${l}</label>`).join("")}</div>
+    ${all.length?`<input type="search" id="mxQ" placeholder="Buscar: press banca, sentadilla…" autocomplete="off" aria-label="Buscar ejercicio" value="${esc(mxQ)}" style="width:100%;margin-bottom:12px"><div class="mw-list" id="mxList"></div>`
+      :`<div class="empty"><h3>Aún no hay pesos</h3><p>Cuando apuntes un ejercicio con kilos, aquí verás el máximo que has cogido.</p></div>`}`;
+  v.querySelectorAll("[name=mxK]").forEach(r=>r.onchange=()=>{mxK=r.value;renderMaxes()});
+  if(!all.length)return;
+  const catOf=o=>{const k=mxK!=="all"?mxK:[...o.kinds].every(x=>x==="gym")?"gym":"cf";
+    if(o.ex)return catIn(o.ex,k)||o.ex.c;if(/ \+ /.test(o.name))return k==="gym"?"yot":"hal";return k==="gym"?"yot":"otr"};
+  const paint=()=>{const q=norm(mxQ),L=all.filter(o=>!q||norm(o.name).includes(q)).sort((a,b)=>a.name.localeCompare(b.name,"es"));
+    const groups=new Map(),order=Object.keys(CATS);for(const o of L){const c=catOf(o);if(!groups.has(c))groups.set(c,[]);groups.get(c).push(o)}
+    $("#mxList").innerHTML=[...groups.entries()].sort((a,b)=>order.indexOf(a[0])-order.indexOf(b[0])).map(([c,arr])=>{const C=CATS[c]||{n:"Otros",c:"var(--muted)"};
+      return`<details class="mw-grp" open><summary><span class="plate" style="--c:${C.c}"></span><b>${esc(C.n)}</b><span class="mw-cnt mono">${arr.length}</span></summary><div class="mw-gl">${arr.map(o=>`
+        <button type="button" class="mw-item mx-item" data-mx="${esc(o.key)}">
+          <div class="mw-top"><b class="mw-n">${esc(o.name)}</b><span class="mw-kg mono">${kg(o.best)}<small> kg</small></span></div>
+          <div class="mw-sub muted">${[o.reps?`${o.reps} reps`:"",o.sets?`${o.sets} ${o.sets===1?"serie":"series"}`:""].filter(Boolean).join(" × ")}${o.reps||o.sets?" · ":""}${esc(shortDate(o.date))}</div>
+        </button>`).join("")}</div></details>`}).join("")||`<p class="muted">No hay ejercicios que coincidan.</p>`};
+  $("#mxQ").addEventListener("input",()=>{mxQ=$("#mxQ").value;paint()});
+  $("#mxList").onclick=ev=>{const b=ev.target.closest("[data-mx]");if(!b)return;const o=all.find(x=>x.key===b.dataset.mx);if(o?.ex){returnTo="maxes";openEx(o.ex)}};
+  paint();
+}
+function openMaxes(){openTool("maxes","Pesos máximos",renderMaxes)}
+VIEW_NAME.maxes="Progreso";VIEW_NAME.totals="Progreso";
+$("#openMaxBtn").onclick=()=>openMaxes();
 
 </script>
 

@@ -1048,6 +1048,16 @@ header.top.sub .top-coins{display:none}
 /* Botones de añadir del formulario: que se vea claro que son botones */
 #wodForm .btn.ghost,#v-cex .btn.ghost{border:2px solid var(--brand);background:color-mix(in srgb,var(--brand) 9%,var(--surface));color:var(--brand);font-weight:800;box-shadow:0 2px 0 color-mix(in srgb,var(--brand) 35%,transparent)}
 #wodForm .btn.ghost:active{transform:translateY(1px);box-shadow:none}
+.nav-right{gap:8px;align-items:center}
+.top-stats{display:inline-flex;align-items:center;justify-content:center;height:36px;min-width:44px;padding:0 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--brand) 55%,var(--line));background:color-mix(in srgb,var(--brand) 12%,var(--surface));color:var(--brand);cursor:pointer}
+.top-stats svg{width:20px;height:20px}
+.tot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tot-row{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:4px}
+.tot-row span{display:flex;flex-direction:column;min-width:0}
+.tot-row small{font-size:12px;color:var(--muted)}
+.tot-row b{font-size:16px}
+@media (max-width:440px){header.top{grid-template-columns:auto minmax(0,1fr) auto}header.top .brand{justify-self:center}.top-stats{min-width:38px;padding:0 8px}.nav-right{gap:6px}}
+@media (max-width:360px){.brand{font-size:25px}.brand-bar{width:118px;margin-top:-11px}.lg-w{font-size:26px}.coin-chip.top-coins{padding:4px 8px 4px 5px;font-size:14px}}
 /* ---------------- Textos que nunca se salen de su recuadro (todos los temas, móvil y ordenador) ---------------- */
 .wod{grid-template-columns:52px minmax(0,1fr) auto}
 .wod>*{min-width:0}
@@ -1095,7 +1105,7 @@ h2.view-title{text-wrap:balance}
         </svg></div>
       <div class="nav-title" id="navTitle"></div>
     </div>
-    <div class="nav-right"><span class="admin-tag" id="adminTag" hidden>ADMIN</span><button type="button" class="coin-chip top-coins" id="topCoins" aria-label="Tienda de TochiCoins" hidden></button></div>
+    <div class="nav-right"><span class="admin-tag" id="adminTag" hidden>ADMIN</span><button type="button" class="top-stats" id="topStats" aria-label="Progreso y estadísticas" title="Progreso y estadísticas" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V11M10 20V5M16 20v-6M21 20H3"/></svg></button><button type="button" class="coin-chip top-coins" id="topCoins" aria-label="Tienda de TochiCoins" hidden></button></div>
   </header>
 
   <!-- ENTRENOS -->
@@ -1112,7 +1122,8 @@ h2.view-title{text-wrap:balance}
       <div class="stat"><span class="eyebrow">Total</span><b id="stTotal">0</b></div>
     </div>
     <div class="tools">
-      <button type="button" class="tool" id="openProgBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-8"/><path d="M15 8h5v5"/></svg><span>Progreso</span></button>
+      <button type="button" class="tool" id="openTotalsBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 5H6l6 7-6 7h12"/></svg><span>Totales</span></button>
+      <button type="button" class="tool" id="openProgBtn" hidden></button>
       <button type="button" class="tool" id="openMonth" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Estadísticas</span></button>
       <button type="button" class="tool" id="openRMBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3M19 12h3"/><rect x="5" y="7" width="3" height="10" rx="1"/><rect x="16" y="7" width="3" height="10" rx="1"/><path d="M8 12h8"/></svg><span>Calculadora RM</span></button>
       <button type="button" class="tool" id="openWeightsBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 8h11l2 12h-15z"/><circle cx="12" cy="5" r="2"/><path d="M10 13.5h4M12 11.5v4"/></svg><span>Mis pesos</span></button>
@@ -1195,6 +1206,7 @@ h2.view-title{text-wrap:balance}
   <section class="view" id="v-badges" hidden></section>
   <section class="view" id="v-cex" hidden></section>
   <section class="view" id="v-weights" hidden></section>
+  <section class="view" id="v-totals" hidden></section>
   <section class="view" id="v-pain" hidden></section>
   <section class="view" id="v-cycle" hidden></section>
 
@@ -1748,7 +1760,7 @@ const isWoman=()=>profile?.sex==="mujer"&&healthOK();
 function avatarInner(p){if(p?.photo)return`<img src="${p.photo}" alt="">`;const n=(p?.name||"").trim();return n?esc(n[0].toUpperCase()):"·"}
 function renderProfileBits(){
   /* Arriba a la derecha: tus TochiCoins (abren la tienda). Tu perfil se abre tocando tu foto en el saludo. */
-  const tc=$("#topCoins");if(profile){tc.innerHTML=`${COIN_SVG}<b class="mono">${coinBalance().bal}</b>`;tc.setAttribute("aria-label",`Tienda: ${coinBalance().bal} TochiCoins`);tc.hidden=false}else tc.hidden=true;
+  const tc=$("#topCoins");if(profile){tc.innerHTML=`${COIN_SVG}<b class="mono">${coinBalance().bal}</b>`;tc.setAttribute("aria-label",`Tienda: ${coinBalance().bal} TochiCoins`);tc.hidden=false}else tc.hidden=true;{const ts=$("#topStats");if(ts)ts.hidden=!profile}
   const h=$("#hello");
   if(profile?.name){h.innerHTML=`<button type="button" class="hello-me" id="helloMe" aria-label="Tu perfil" title="Tu perfil"><span class="avatar">${avatarInner(profile)}</span></button><span class="hello-t">Hola, <b>${esc(profile.name)}</b>. ¿A por el WOD de hoy?</span>`;h.hidden=false;$("#helloMe").onclick=()=>openMe(false)}else h.hidden=true;
 }
@@ -3155,8 +3167,8 @@ function openEx(ex){
   if(ex.custom){$("#cexEdit").onclick=()=>openCexForm(ex.n);$("#cexDel").onclick=()=>{$("#cexDelBox").hidden=false};$("#cexDelNo").onclick=()=>{$("#cexDelBox").hidden=true};
     $("#cexDelYes").onclick=async()=>{const ok=await saveCustomEx(cexList().filter(x=>norm(x.n)!==norm(ex.n)),`«${ex.n}» borrado de Otros`);if(ok)show("lib")}}
   const rb=$("#exRM");if(rb)rb.onclick=()=>openRM(ex.n,ex);
-  const fromWod=returnTo.startsWith("wod:")?returnTo.slice(4):null,fromMw=returnTo==="weights";
-  show("ex");setNav("Ejercicio",fromWod?"Entreno":fromMw?"Mis pesos":"Ejercicios",()=>{if(fromWod&&workouts.some(w=>w.id===fromWod))openWod(fromWod);else if(fromMw)openWeights();else show("lib")});
+  const fromWod=returnTo.startsWith("wod:")?returnTo.slice(4):null,fromMw=returnTo==="weights",fromTot=returnTo==="totals";
+  show("ex");setNav("Ejercicio",fromWod?"Entreno":fromMw?"Mis pesos":fromTot?"Totales":"Ejercicios",()=>{if(fromWod&&workouts.some(w=>w.id===fromWod))openWod(fromWod);else if(fromMw)openWeights();else if(fromTot)openTotals();else show("lib")});
 }
 
 
@@ -3837,7 +3849,8 @@ const TOUR=[
   ["#tabNew","Apunta tu entreno","Toca + para apuntar un WOD, halterofilia, una sesión de gym o repetir el último."],
   ["#modeNow","CrossFit o Gym","Cambia de sección cuando quieras. La app recuerda la última que usaste."],
   ["#goalCard","Tu reto semanal","Elige cuántos días quieres entrenar a la semana y mantén la racha."],
-  ["#openProgBtn","Tu progreso","Estadísticas, calculadora de RM y tus últimos pesos de cada ejercicio."],
+  ["#topStats","Tu progreso","Estadísticas, calculadora de RM y tus últimos pesos de cada ejercicio."],
+  ["#openTotalsBtn","Totales","Todo lo que llevas hecho de cada ejercicio: veces, repeticiones y kilos."],
   ['.tab[data-tab="lib"]',"Ejercicios","Cómo se hace cada ejercicio, con su animación. También puedes crear los tuyos."],
   ["#topCoins","TochiCoins","Ganas monedas entrenando. Gástalas en la Tienda en temas y logos."]
 ];
@@ -3865,6 +3878,66 @@ function startTour(){
 {const _ra=renderAll;renderAll=function(){_ra();
   if(profile?.tourPending&&!tourOn&&current==="log"){const mp=$("#modePick");if(!mp||mp.hidden)setTimeout(()=>{if(current==="log"&&!tourOn&&profile?.tourPending&&(!$("#modePick")||$("#modePick").hidden))startTour()},400)}}}
 document.addEventListener("click",e=>{if(e.target.closest("#modePick [data-m]")&&profile?.tourPending)setTimeout(()=>{if(!tourOn)startTour()},450)});
+
+
+/* ---------------- Estadísticas totales de todos los ejercicios ---------------- */
+let totK=null,totSort="veces",totQ="";
+function totalsData(k){
+  const by=new Map(),T={wods:0,reps:0,vol:0,time:0,dur:0,ex:0};
+  for(const w of workouts){const kind=w.kind==="gym"?"gym":"cf";if(k!=="all"&&kind!==k)continue;T.wods++;T.dur+=Number(w.duration)||0;
+    for(const e0 of(w.exercises||[])){if(!e0.name)continue;const e=myEx(e0),key=exKey(e.name),f=findEx(e.name);
+      if(!by.has(key))by.set(key,{key,name:f?f.n:e.name,ex:f||null,kinds:new Set(),times:0,sets:0,reps:0,vol:0,time:0,best:0,last:""});
+      const o=by.get(key),sets=num(e.sets)||1,reps=e.liftReps??((num(e.reps)||0)*sets),wt=num(e.weight)||0,vol=e.liftVol??(wt*reps);
+      o.kinds.add(kind);o.times++;o.sets+=e.liftReps!=null?0:(num(e.sets)||0);o.reps+=reps;o.vol+=vol;o.time+=Number(e.time)||0;if(wt>o.best)o.best=wt;if((w.date||"")>o.last)o.last=w.date||"";
+      T.reps+=reps;T.vol+=vol;T.time+=Number(e.time)||0}}
+  T.ex=by.size;return{T,list:[...by.values()]};
+}
+const fmtBig=n=>Math.round(n).toLocaleString("es-ES");
+const fmtHM=s=>{s=Math.round(s);const h=Math.floor(s/3600),m=Math.round((s%3600)/60);return h?`${h} h ${m} min`:`${m} min`};
+function renderTotals(){
+  if(!totK)totK=mode==="gym"?"gym":"cf";
+  const v=$("#v-totals"),{T,list}=totalsData(totK);
+  v.innerHTML=`<h2 class="view-title">Estadísticas totales</h2>
+    <div class="seg mw-seg" role="radiogroup" aria-label="Sección" style="margin-bottom:14px">${[["all","Todo"],["cf","CrossFit"],["gym","Gym"]].map(([k,l])=>`<input type="radio" name="totK" id="totK_${k}" value="${k}"${totK===k?" checked":""}><label for="totK_${k}">${l}</label>`).join("")}</div>
+    ${T.wods?`<div class="tot-grid">
+      <div class="mtile"><span class="eyebrow">Entrenos</span><b>${fmtBig(T.wods)}</b></div>
+      <div class="mtile"><span class="eyebrow">Ejercicios distintos</span><b>${fmtBig(T.ex)}</b></div>
+      <div class="mtile"><span class="eyebrow">Repeticiones</span><b>${fmtBig(T.reps)}</b></div>
+      <div class="mtile"><span class="eyebrow">Kg movidos</span><b>${fmtBig(T.vol)}</b></div>
+      <div class="mtile"><span class="eyebrow">Tiempo entrenando</span><b>${T.dur?fmtHM(T.dur):"—"}</b></div>
+      <div class="mtile"><span class="eyebrow">Tiempo en ejercicios</span><b>${T.time?fmtHM(T.time):"—"}</b></div>
+    </div>
+    <div class="mw-ctrl" style="margin-top:16px">
+      <input type="search" id="totQ" placeholder="Buscar ejercicio" autocomplete="off" aria-label="Buscar ejercicio" value="${esc(totQ)}">
+      <div class="mw-sort" role="group" aria-label="Ordenar">${[["veces","Más veces"],["kg","Más kg"],["reps","Más reps"],["az","A–Z"]].map(([k,l])=>`<button type="button" data-tots="${k}" aria-pressed="${totSort===k}">${l}</button>`).join("")}</div>
+    </div>
+    <div class="mw-list" id="totList"></div>`:`<div class="empty"><h3>Aún no hay datos</h3><p>Cuando apuntes entrenos verás aquí el total de cada ejercicio.</p></div>`}`;
+  v.querySelectorAll("[name=totK]").forEach(r=>r.onchange=()=>{totK=r.value;renderTotals()});
+  if(!T.wods)return;
+  const paint=()=>{const q=norm(totQ);
+    const S={veces:(a,b)=>b.times-a.times||b.vol-a.vol,kg:(a,b)=>b.vol-a.vol||b.times-a.times,reps:(a,b)=>b.reps-a.reps||b.times-a.times,az:(a,b)=>a.name.localeCompare(b.name,"es")};
+    const L=list.filter(o=>!q||norm(o.name).includes(q)).sort(S[totSort]);
+    $("#totList").innerHTML=L.map(o=>`<button type="button" class="mw-item" data-tot="${esc(o.key)}">
+      <div class="mw-top"><b class="mw-n">${esc(o.name)}</b><span class="mw-kg mono">${o.times}<small> ${o.times===1?"vez":"veces"}</small></span></div>
+      <div class="tot-row">
+        ${o.reps?`<span><small>Reps</small><b class="mono">${fmtBig(o.reps)}</b></span>`:""}
+        ${o.vol?`<span><small>Kg movidos</small><b class="mono">${fmtBig(o.vol)}</b></span>`:""}
+        ${o.best?`<span><small>Mejor peso</small><b class="mono">${kg(o.best)} kg</b></span>`:""}
+        ${o.time?`<span><small>Tiempo</small><b class="mono">${fmtHM(o.time)}</b></span>`:""}
+        ${o.sets?`<span><small>Series</small><b class="mono">${fmtBig(o.sets)}</b></span>`:""}
+      </div>
+      <div class="mw-sub muted">Última vez ${esc(shortDate(o.last))}</div>
+    </button>`).join("")||`<p class="muted">No hay ejercicios que coincidan.</p>`;
+    v.querySelectorAll("[data-tots]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.tots===totSort)))};
+  $("#totQ").addEventListener("input",()=>{totQ=$("#totQ").value;paint()});
+  v.querySelectorAll("[data-tots]").forEach(b=>b.onclick=()=>{totSort=b.dataset.tots;paint()});
+  $("#totList").onclick=ev=>{const b=ev.target.closest("[data-tot]");if(!b)return;const o=list.find(x=>x.key===b.dataset.tot);if(o?.ex){returnTo="totals";openEx(o.ex)}};
+  paint();
+}
+function openTotals(){openTool("totals","Estadísticas totales",renderTotals)}
+VIEW_NAME.totals="Totales";
+$("#openTotalsBtn").onclick=()=>openTotals();
+$("#topStats").onclick=()=>openMonth();
 
 </script>
 

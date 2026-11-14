@@ -841,6 +841,12 @@ header.top.sub .top-coins{display:none}
 .bd-steps li.ok{color:var(--ink)}
 .bd-steps li.ok i{background:var(--tc)}
 .bd-steps small{color:var(--muted)}
+.cex-add{margin:0 0 10px}
+.cex-form{display:flex;flex-direction:column;gap:14px}
+.cex-form textarea{font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);resize:vertical}
+.field-lbl{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.cex-form .seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.cex-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0 12px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -901,7 +907,7 @@ header.top.sub .top-coins{display:none}
       </div>
       <div class="grid2">
         <div class="field"><label for="fDate">Día del entreno</label><input type="date" id="fDate" required><span class="date-human" id="fDateHuman"></span></div>
-        <div class="field"><label for="fDur">Duración (mm:ss)</label><input class="num" id="fDur" inputmode="numeric" placeholder="20:00"></div>
+        <div class="field"><label for="fDur">Duración (mm:ss)</label><input class="num" id="fDur" inputmode="numeric" placeholder="2000 → 20:00"></div>
       </div>
       <div class="cycle-hint" id="cycleHint" hidden></div>
       <div class="field"><label for="fName">Nombre del WOD</label><input id="fName" placeholder="Ej. Fran, Murph o WOD del box" autocomplete="off"></div>
@@ -937,6 +943,7 @@ header.top.sub .top-coins{display:none}
     <h2 class="view-title">Ejercicios</h2>
     <div class="seg mode-seg" role="radiogroup" aria-label="Sección"><input type="radio" name="libMode" id="lmCf" value="cf"><label for="lmCf">CrossFit</label><input type="radio" name="libMode" id="lmGym" value="gym"><label for="lmGym">Gym</label></div>
     <div class="search"><input type="search" id="libSearch" placeholder="Buscar: thruster, dominadas, remo…" aria-label="Buscar ejercicio"></div>
+    <button type="button" class="btn ghost full cex-add" id="addCexBtn">+ Crear ejercicio propio</button>
     <div class="chips" id="libChips" role="group" aria-label="Filtrar por categoría"></div>
     <p class="count-note" id="libCount"></p>
     <div class="list" id="libList"></div>
@@ -948,6 +955,7 @@ header.top.sub .top-coins{display:none}
   <section class="view" id="v-rm" hidden></section>
   <section class="view" id="v-shop" hidden></section>
   <section class="view" id="v-badges" hidden></section>
+  <section class="view" id="v-cex" hidden></section>
   <section class="view" id="v-pain" hidden></section>
   <section class="view" id="v-cycle" hidden></section>
 
@@ -1028,6 +1036,7 @@ const CATS = {
   gim:{n:"Gimnásticos", c:"var(--p-yellow)"},
   mon:{n:"Cardio", c:"var(--p-green)"},
   kb:{n:"Kettlebell y material", c:"var(--p-white)"},
+  otr:{n:"Otros", c:"var(--muted)"},
   /* Gym */
   ype:{n:"Pecho", c:"var(--p-red)"},
   yes:{n:"Espalda", c:"var(--p-blue)"},
@@ -1037,7 +1046,8 @@ const CATS = {
   ybi:{n:"Bíceps", c:"#e07a1f"},
   ytr:{n:"Tríceps", c:"#0e9aa7"},
   yco:{n:"Core", c:"var(--p-white)"},
-  yca:{n:"Cardio", c:"var(--muted)"}
+  yca:{n:"Cardio", c:"var(--muted)"},
+  yot:{n:"Otros", c:"var(--ink)"}
 };
 const EX = [
 // Halterofilia
@@ -1870,7 +1880,7 @@ function addRow(e={}){
       <div class="field"><label for="exs${i}">${formKind==="gym"?"Series":"Rondas"}</label><input class="num exs" id="exs${i}" inputmode="numeric" value="${esc(e.sets||"")}"></div>
       <div class="field"><label for="exr${i}">Reps</label><input class="num exr" id="exr${i}" inputmode="numeric" value="${esc(e.reps||"")}"></div>
       <div class="field"><label for="exw${i}">Kg</label><input class="num exw" id="exw${i}" inputmode="decimal" value="${esc(e.weight||"")}"></div>
-      <div class="field"><label for="ext${i}">Tiempo</label><input class="num ext" id="ext${i}" inputmode="numeric" placeholder="m:ss" value="${e.time?fmtTime(e.time):""}"></div>
+      <div class="field"><label for="ext${i}">Tiempo</label><input class="num ext" id="ext${i}" inputmode="numeric" placeholder="1:42" value="${e.time?fmtTime(e.time):""}"></div>
     </div>
     <div class="share-row" ${$("#fPair")?.checked?"":"hidden"}>
       <div class="share-top"><span class="eyebrow">Reparto</span><span class="share-txt"></span></div>
@@ -1904,10 +1914,10 @@ function addRow(e={}){
 $("#addEx").onclick=()=>{const cards=document.querySelectorAll("#exRows .ex-card"),last=cards[cards.length-1];
   const p=!!last&&last.querySelector(".drop-btn")?.getAttribute("aria-pressed")==="true";
   openPicker(addRow({period:p}).querySelector(".exn"))};
-const VIEW_NAME={log:"Entrenos",lib:"Ejercicios",wod:"Entreno",ex:"Ejercicio",stats:"Estadísticas",rm:"Calculadora",pain:"Molestias",cycle:"Ciclo",shop:"Tienda",badges:"Insignias"};
+const VIEW_NAME={log:"Entrenos",lib:"Ejercicios",wod:"Entreno",ex:"Ejercicio",stats:"Estadísticas",rm:"Calculadora",pain:"Molestias",cycle:"Ciclo",shop:"Tienda",badges:"Insignias",cex:"Nuevo ejercicio"};
 
 $("#openRMBtn").onclick=()=>openRM();$("#openPainBtn").onclick=()=>openPain();$("#openCycleBtn").onclick=()=>openCycle();
-$("#openMonth").onclick=()=>openMonth();$("#openBadgesBtn").onclick=()=>openBadges();
+$("#openMonth").onclick=()=>openMonth();$("#addCexBtn").onclick=()=>openCexForm();$("#openBadgesBtn").onclick=()=>openBadges();
 let formBack=()=>show("log"),formBackLabel="Entrenos",lastEx=null,lastWodId=null;
 function openForm(w){
   const prev=current,exAtOpen=lastEx,wodAtOpen=lastWodId;
@@ -2432,7 +2442,7 @@ function renderPicker(){
   const PX=exFor(formKind);
   const item=e=>`<div class="picker-row"><button type="button" class="picker-item${e.n===cur?" sel":""}" data-pick="${esc(e.n)}"><span class="plate" style="--c:${CATS[catIn(e,formKind)].c}"></span>${esc(e.n)}</button><button type="button" class="star-btn" data-pfav="${esc(e.n)}" aria-pressed="${F.has(e.n)}" aria-label="${F.has(e.n)?"Quitar de favoritos":"Añadir a favoritos"}: ${esc(e.n)}">${STAR(F.has(e.n))}</button></div>`;
   let h="";
-  if(raw&&!PX.some(e=>norm(e.n)===q))h+=`<button type="button" class="picker-item custom" data-pick="${esc(raw)}">+ Usar «${esc(raw)}»</button>`;
+  if(raw&&!PX.some(e=>norm(e.n)===q))h+=`<button type="button" class="picker-item custom" data-pick="${esc(raw)}">+ Usar «${esc(raw)}» solo esta vez</button><button type="button" class="picker-item custom" data-cexq="${esc(raw)}">+ Crear «${esc(raw)}» en Otros y usarlo</button>`;
   if(pickerCat==="fav"){
     const fl=PX.filter(e=>F.has(e.n)&&match(e));
     if(fl.length)h+=fl.map(item).join("");
@@ -2448,6 +2458,7 @@ function renderPicker(){
   if(cur&&!q)h=`<button type="button" class="picker-item custom" data-pick="">Quitar ejercicio elegido</button>`+h;
   $("#pickerList").innerHTML=h;
   $("#pickerList").querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>pickExercise(b.dataset.pick));
+  $("#pickerList").querySelectorAll("[data-cexq]").forEach(b=>b.onclick=()=>quickCustomEx(b.dataset.cexq));
   $("#pickerList").querySelectorAll("[data-pfav]").forEach(b=>b.onclick=async()=>{const top=$("#pickerList").scrollTop;await toggleFav(b.dataset.pfav);renderPickerChips();renderPicker();$("#pickerList").scrollTop=top});
   requestAnimationFrame(syncRail);
 }
@@ -2815,16 +2826,20 @@ function openEx(ex){
     <div class="ex-anim" id="exAnim"></div>
     <p class="lead">${esc(ex.d)}</p>
     ${painAlertFor(ex.n)}
-    <div class="sec"><h3>Puntos clave</h3><ul>${ex.k.map(k=>`<li>${esc(k)}</li>`).join("")}</ul></div>
-    <div class="sec"><h3>Músculos</h3><div class="muscles">${ex.m.map(m=>`<span class="tag">${esc(m)}</span>`).join("")}</div></div>
-    <div class="sec"><h3>${isGymCat(ex.c)?"Variantes y alternativas":"Cómo escalarlo"}</h3><p style="margin:0;max-width:65ch">${esc(ex.e)}</p></div>
+    ${ex.custom?`<div class="cex-actions"><span class="tag">Creado por ti · ${ex.kind==="both"?"CrossFit y Gym":ex.kind==="gym"?"Gym":"CrossFit"}</span><button type="button" class="btn" id="cexEdit">Editar</button><button type="button" class="btn ghost" id="cexDel">Borrar</button></div>
+      <div class="confirm" id="cexDelBox" hidden><b>¿Borrar «${esc(ex.n)}» de Otros?</b><span class="muted">Los entrenos donde lo apuntaste no se borran.</span><div class="row-actions"><button type="button" class="btn danger" id="cexDelYes">Borrar</button><button type="button" class="btn" id="cexDelNo">Cancelar</button></div></div>`:""}
+    ${ex.k.length?`<div class="sec"><h3>Puntos clave</h3><ul>${ex.k.map(k=>`<li>${esc(k)}</li>`).join("")}</ul></div>`:""}
+    ${ex.m.length?`<div class="sec"><h3>Músculos</h3><div class="muscles">${ex.m.map(m=>`<span class="tag">${esc(m)}</span>`).join("")}</div></div>`:""}
+    ${ex.e?`<div class="sec"><h3>${isGymCat(ex.c)?"Variantes y alternativas":"Cómo escalarlo"}</h3><p style="margin:0;max-width:65ch">${esc(ex.e)}</p></div>`:""}
     ${rmSection(ex)}
     <div class="sec"><h3>Tu progreso</h3>${arr.length?`<div class="pr-box">${statsBlock(arr)}${table(arr)}</div>`
       :`<div class="empty" style="padding:18px"><p style="margin:0 0 12px">${arrP.length?"Aún no lo has hecho ningún día sin la regla.":"Aún no lo has apuntado en ningún entreno."}</p><button class="btn" id="eLog">Apuntar con este ejercicio</button></div>`}</div>
     ${periodSec}`;
   const el=$("#eLog");if(el)el.onclick=()=>openForm({exercises:[{name:ex.n}]});
   paintExStar();$("#exStar").onclick=()=>toggleFav(ex.n);
-  try{mountAnim($("#exAnim"),ex)}catch(e){$("#exAnim").remove()}
+  if(ex.custom)$("#exAnim").remove();else try{mountAnim($("#exAnim"),ex)}catch(e){$("#exAnim").remove()}
+  if(ex.custom){$("#cexEdit").onclick=()=>openCexForm(ex.n);$("#cexDel").onclick=()=>{$("#cexDelBox").hidden=false};$("#cexDelNo").onclick=()=>{$("#cexDelBox").hidden=true};
+    $("#cexDelYes").onclick=async()=>{const ok=await saveCustomEx(cexList().filter(x=>norm(x.n)!==norm(ex.n)),`«${ex.n}» borrado de Otros`);if(ok)show("lib")}}
   const rb=$("#exRM");if(rb)rb.onclick=()=>openRM(ex.n,ex);
   const fromWod=returnTo.startsWith("wod:")?returnTo.slice(4):null;
   show("ex");setNav("Ejercicio",fromWod?"Entreno":"Ejercicios",()=>{if(fromWod&&workouts.some(w=>w.id===fromWod))openWod(fromWod);else show("lib")});
@@ -2899,7 +2914,7 @@ const BADGES=[
 const TIER=[{n:"Sin nivel",c:"var(--muted)"},{n:"Bronce",c:"#b8733e"},{n:"Plata",c:"#8a97a4"},{n:"Oro",c:"#d4a017"},{n:"Diamante",c:"#2fa8d5"}];
 const fmtN=n=>Math.round(n).toLocaleString("es-ES");
 const fmtT=s=>`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,"0")}`;
-function parseTime(w){const r=String(w.result||"").match(/(\d{1,2}):(\d{2})/);if(r)return(+r[1])*60+(+r[2]);return num(w.duration)||0}
+function franTime(w){const r=String(w.result||"").match(/(\d{1,2}):(\d{2})/);if(r)return(+r[1])*60+(+r[2]);return num(w.duration)||0}
 function weekKey(d){const x=dObj(d);x.setDate(x.getDate()-((x.getDay()+6)%7));return x.getFullYear()+"-"+(x.getMonth()+1)+"-"+x.getDate()}
 function badgeStats(){
   const ws=workouts,cf=ws.filter(w=>w.kind!=="gym"),gym=ws.filter(w=>w.kind==="gym");
@@ -2915,7 +2930,7 @@ function badgeStats(){
     if(leg)legs++}
   /* Fran: 1 si lo has hecho; si hay tiempo, el mejor tiempo en segundos */
   const frans=cf.filter(w=>matchN("fran")(norm(w.name)));let fran=0;
-  if(frans.length){const ts=frans.map(parseTime).filter(t=>t>0);fran=ts.length?Math.min(...ts):Infinity}
+  if(frans.length){const ts=frans.map(franTime).filter(t=>t>0);fran=ts.length?Math.min(...ts):Infinity}
   /* Racha de WODs seguidos en RX */
   let rxRun=0,cur=0;for(const w of[...cf].sort((a,b)=>(a.date||"").localeCompare(b.date||"")||(a.createdAt||0)-(b.createdAt||0))){if(w.level==="rx"){cur++;rxRun=Math.max(rxRun,cur)}else cur=0}
   const byMonth=new Map();for(const w of ws)if(w.date){const k=w.date.slice(0,7);byMonth.set(k,(byMonth.get(k)||0)+1)}
@@ -2969,6 +2984,52 @@ async function checkBadges(){
 function openBadges(){openTool("badges","Insignias",renderBadges)}
 {const _ra=renderAll;renderAll=function(){_ra();checkBadges();if(current==="badges")renderBadges();
   if(!modeAsked&&profileReady&&profile&&current==="log")askMode()}}
+
+/* Campos de tiempo: 142 → 1:42, 2000 → 20:00 */
+document.addEventListener("input",ev=>{const t=ev.target;if(!(t instanceof HTMLInputElement)||!(t.classList.contains("ext")||t.id==="fDur"))return;
+  const d=t.value.replace(/\D/g,"").replace(/^0+(?=\d{3})/,"").slice(0,6);t.value=d.length>2?d.slice(0,-2)+":"+d.slice(-2):d});
+
+/* ---------------- Ejercicios propios («Otros») ----------------
+   Cada persona puede crear sus ejercicios. Se guardan en el perfil (customEx) y se añaden a la biblioteca
+   en la categoría «Otros» de CrossFit, de Gym o de las dos. Tienen progreso y récords igual que los demás. */
+function syncCustomEx(){
+  for(let i=EX.length-1;i>=0;i--)if(EX[i].custom)EX.splice(i,1);
+  for(const c of(profile?.customEx||[])){if(!c?.n||EX.some(e=>norm(e.n)===norm(c.n)))continue;
+    const k=c.k||"both";EX.push({n:c.n,c:k==="gym"?"yot":"otr",y:k==="both"?"yot":undefined,d:c.d||"Ejercicio creado por ti.",k:[],m:[],e:"",custom:true,kind:k})}
+}
+function cexList(){return Array.isArray(profile?.customEx)?profile.customEx:[]}
+async function saveCustomEx(list,msg){const ok=await saveProf({customEx:list},msg);syncCustomEx();renderChips();renderLib();return ok}
+let cexEditing=null;
+function renderCexForm(){
+  const v=$("#v-cex"),c=cexEditing?cexList().find(x=>norm(x.n)===norm(cexEditing)):null,k=c?.k||(mode==="gym"?"gym":"cf");
+  v.innerHTML=`<h2 class="view-title">${c?"Editar ejercicio":"Nuevo ejercicio"}</h2>
+    <p class="muted" style="margin:0 0 14px;font-size:14px">Se guardará en «Otros». Tendrá su progreso y sus récords como cualquier otro ejercicio.</p>
+    <form id="cexForm" class="cex-form" novalidate>
+      <div class="field"><label for="cexN">Nombre</label><input id="cexN" maxlength="60" autocomplete="off" placeholder="Ej. Sentadilla con pausa" value="${esc(c?.n||"")}" ${c?"readonly":""}></div>
+      <div class="field"><label for="cexD">Descripción (opcional)</label><textarea id="cexD" rows="3" maxlength="400" placeholder="Cómo se hace, material, notas…">${esc(c?.d||"")}</textarea></div>
+      <div class="field"><span class="field-lbl" id="cexKLbl">Sección</span><div class="seg" role="radiogroup" aria-labelledby="cexKLbl">
+        ${[["cf","CrossFit"],["gym","Gym"],["both","Las dos"]].map(([val,l])=>`<input type="radio" name="cexK" id="cexK_${val}" value="${val}"${k===val?" checked":""}><label for="cexK_${val}">${l}</label>`).join("")}</div></div>
+      <p class="form-error" id="cexErr" hidden></p>
+      <button class="btn primary full" type="submit">${c?"Guardar cambios":"Crear ejercicio"}</button>
+    </form>`;
+  $("#cexForm").onsubmit=async ev=>{ev.preventDefault();
+    const n=$("#cexN").value.trim().replace(/\s+/g," "),d=$("#cexD").value.trim(),kk=(document.querySelector("[name=cexK]:checked")||{}).value||"both",err=m=>{$("#cexErr").textContent=m;$("#cexErr").hidden=false};
+    if(!n)return err("Ponle un nombre al ejercicio.");
+    if(!c&&EX.some(e=>norm(e.n)===norm(n)))return err("Ya existe un ejercicio con ese nombre. Búscalo en la biblioteca.");
+    const list=cexList().filter(x=>!c||norm(x.n)!==norm(c.n));list.push({n,d,k:kk,at:c?.at||today()});
+    const ok=await saveCustomEx(list,c?"Ejercicio actualizado":`«${n}» añadido a Otros`);if(!ok)return;
+    if(!c&&kk!=="both"&&kk!==mode)setMode(kk);
+    libCat=kk==="gym"||(kk==="both"&&mode==="gym")?"yot":"otr";renderChips();renderLib();
+    const ex=EX.find(e=>norm(e.n)===norm(n));cexEditing=null;if(ex)openEx(ex);else show("lib")};
+}
+function openCexForm(name){cexEditing=name||null;const t=name?"Editar ejercicio":"Nuevo ejercicio";openTool("cex",t,renderCexForm,()=>show("lib"));setNav(t,"Ejercicios",()=>show("lib"))}
+/* Crear desde el selector de ejercicios sin salir del entreno */
+async function quickCustomEx(name){
+  name=name.trim().replace(/\s+/g," ");if(!name)return;
+  if(!EX.some(e=>norm(e.n)===norm(name))){const list=[...cexList(),{n:name,d:"",k:formKind==="gym"?"gym":"cf",at:today()}];await saveCustomEx(list,`«${name}» añadido a Otros`)}
+  pickExercise(name);
+}
+{const _ra=renderAll;renderAll=function(){syncCustomEx();_ra()}}
 
 /* Cambiar de sección (CrossFit / Gym) */
 function setMode(m){mode=m==="gym"?"gym":"cf";try{localStorage.setItem("tochinuri-mode",mode)}catch(e){}

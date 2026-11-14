@@ -135,6 +135,14 @@ input.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 .mw-sort button{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer}
 .mw-sort button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .mw-list{display:flex;flex-direction:column;gap:8px}
+.mw-grp{display:flex;flex-direction:column}
+.mw-grp summary{list-style:none;display:flex;align-items:center;gap:8px;padding:10px 2px 8px;cursor:pointer;font-size:13px;text-transform:uppercase;letter-spacing:.07em}
+.mw-grp summary::-webkit-details-marker{display:none}
+.mw-grp summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s}
+.mw-grp:not([open]) summary::after{transform:rotate(-45deg)}
+.mw-cnt{font-size:12px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:1px 8px;letter-spacing:0}
+.mw-gl{display:flex;flex-direction:column;gap:8px;padding-bottom:6px}
+.mw-list{gap:4px!important}
 .mw-item{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;color:var(--ink)}
 .mw-item:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .mw-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
@@ -3155,7 +3163,7 @@ $("#addLift").onclick=()=>{const c=addLift();openPicker(c.querySelector(".lpn"))
 /* ---------------- Mis pesos ----------------
    Todos los ejercicios que has apuntado alguna vez, con el último peso registrado,
    tu récord, tu RM guardado y los últimos pesos para ver la tendencia. */
-let mwQ="",mwK="all",mwSort="recent";
+let mwQ="",mwK=null,mwSort="recent";
 function weightsData(){
   const by=new Map();
   for(const w of workouts)(w.exercises||[]).forEach((e0,i)=>{if(!e0.name)return;const e=myEx(e0),key=exKey(e.name),f=findEx(e.name);
@@ -3185,7 +3193,18 @@ function mwListHtml(){
       ${L?`<div class="mw-foot"><span class="mw-tag">Récord <b class="mono">${kg(o.best)} kg</b>${L.w>=o.best&&h.length>1?" ★":""}</span>${o.rm?`<span class="mw-tag">RM <b class="mono">${kg(o.rm)} kg</b></span>`:""}
         ${h.length>1?`<span class="mw-hist" aria-label="Últimos pesos">${h.map((r,k)=>`<span class="${k===h.length-1?"cur":""}">${kg(r.w)}</span>`).join("")}</span>`:""}</div>`:""}
     </button>`};
-  return list.length?list.map(item).join(""):`<p class="muted">No hay ejercicios que coincidan.</p>`;
+  if(!list.length)return`<p class="muted">No hay ejercicios que coincidan.</p>`;
+  /* Agrupados por grupo de ejercicios (Halterofilia, Fuerza… o Pecho, Espalda…) */
+  const catOf=o=>{const k=mwK!=="all"?mwK:[...o.kinds].every(x=>x==="gym")?"gym":"cf";
+    if(o.ex){const c=catIn(o.ex,k)||o.ex.c;return c}
+    if(/ \+ /.test(o.name))return k==="gym"?"yot":"hal";
+    return k==="gym"?"yot":"otr"};
+  const groups=new Map(),order=Object.keys(CATS);
+  for(const o of list){const c=catOf(o);if(!groups.has(c))groups.set(c,[]);groups.get(c).push(o)}
+  const dup=c=>mwK==="all"&&(c==="yca"||c==="yot"||c==="mon"||c==="otr");
+  return[...groups.entries()].sort((a,b)=>order.indexOf(a[0])-order.indexOf(b[0])).map(([c,arr])=>{const C=CATS[c]||{n:"Otros",c:"var(--muted)"};
+    const nm=C.n+(dup(c)?(isGymCat(c)?" · Gym":" · CrossFit"):"");
+    return`<details class="mw-grp" open><summary><span class="plate" style="--c:${C.c}"></span><b>${esc(nm)}</b><span class="mw-cnt mono">${arr.length}</span></summary><div class="mw-gl">${arr.map(item).join("")}</div></details>`}).join("");
 }
 function renderWeights(){
   const v=$("#v-weights"),all=MW=weightsData(),withW=all.filter(o=>o.lastW).length;
@@ -3207,7 +3226,7 @@ function renderWeights(){
     if(o.ex){returnTo="weights";openEx(o.ex)}else if(o.last.wid){returnTo="log";openWod(o.last.wid)}};
   paint();
 }
-function openWeights(){openTool("weights","Mis pesos",renderWeights)}
+function openWeights(){if(!mwK)mwK=mode==="gym"?"gym":"cf";openTool("weights","Mis pesos",renderWeights)}
 
 function syncCustomEx(){
   for(let i=EX.length-1;i>=0;i--)if(EX[i].custom)EX.splice(i,1);

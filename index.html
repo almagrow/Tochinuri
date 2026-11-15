@@ -1446,6 +1446,53 @@ header.top.sub .top-coins{display:none}
 .sc-card.on{background:color-mix(in srgb,var(--star) 14%,var(--surface));border:1px solid var(--star)}
 .sc-i{font-size:24px}.sc-card b{font-size:15px;overflow-wrap:anywhere}.sc-card small{font-size:12px;overflow-wrap:anywhere}
 @media (prefers-reduced-motion:reduce){.pet-svg.jump,.rest-bar.done{animation:none}}
+/* ---------------- Perfil: cuerpo, agua y avisos ---------------- */
+.me-health{display:flex;flex-direction:column;gap:8px;margin:4px 0}
+.me-hl{display:flex;flex-direction:column;gap:8px}
+.me-hb{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--ink);font:inherit;cursor:pointer;min-height:58px}
+.me-hb:hover{border-color:var(--brand)}
+.me-hb svg{width:24px;height:24px;flex:none;color:var(--brand)}
+.me-hb span{display:flex;flex-direction:column;min-width:0}.me-hb b{font-size:16px}.me-hb small{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.me-hb::after{content:"›";margin-left:auto;font-size:22px;color:var(--muted)}
+.body-grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.body-grid3 label{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.body-grid3 label small{text-transform:none;letter-spacing:0;font-weight:500}
+@media (max-width:360px){.body-grid3{grid-template-columns:1fr 1fr}}
+.bd-more summary{cursor:pointer;font-size:14px;color:var(--brand);font-weight:700;padding:4px 0}
+.bd-more .field{margin-top:8px;max-width:160px}
+.bd-help{font-size:13px;margin:0}
+.bd-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:4px 0 10px}
+.bd-tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.bd-tile:first-child{grid-column:1/-1;border:2px solid var(--brand)}
+.bd-tile:first-child b{font-size:38px}
+.bd-tile span{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.bd-tile b{font-size:24px;font-weight:800}
+.bd-tile small{font-size:13px;color:var(--muted)}
+.bd-tile.ok small{color:var(--p-green);font-weight:700}.bd-tile.warn small,.bd-tile.mid small{color:var(--star);font-weight:700}.bd-tile.bad small{color:var(--danger);font-weight:700}
+.bd-ape{margin:0 0 8px;font-size:14px;background:color-mix(in srgb,var(--brand) 9%,var(--surface));border-radius:10px;padding:8px 12px}
+.bd-note{font-size:12px;margin:0 0 12px}
+.wt-now{display:flex;align-items:center;gap:18px;justify-content:center;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+.wt-glass{width:96px;height:auto;flex:none}
+.wt-glass rect,.wt-glass path:nth-of-type(1){transition:all .4s ease}
+.wt-num{display:flex;flex-direction:column;gap:2px;min-width:0}.wt-num b{font-size:36px;font-weight:800;color:#0EA5E9}.wt-num span{color:var(--muted)}.wt-num small{font-size:14px;font-weight:700}
+.wt-btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:8px}
+.wt-btns .btn{display:flex;flex-direction:column;min-height:64px;font-size:16px;font-weight:800}
+.wt-btns .btn small{font-size:12px;font-weight:600;color:var(--muted)}
+.wt-btns .btn.pop{animation:wtPop .3s ease}
+@keyframes wtPop{50%{transform:scale(.94)}}
+.wt-row{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.wt-custom{display:flex;gap:8px}.wt-custom input{flex:1;min-width:0}
+.wt-streak{font-weight:700;color:var(--star)}
+.wt-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;align-items:end;height:130px;margin-top:8px}
+.wt-day{display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
+.wt-bar{position:relative;flex:1;width:70%;max-width:28px;background:var(--surface-2);border-radius:8px;overflow:hidden;display:flex;align-items:flex-end}
+.wt-bar i{display:block;width:100%;background:#7DD3FC;border-radius:8px}
+.wt-day.ok .wt-bar i{background:#0EA5E9}
+.wt-bar em{position:absolute;left:0;right:0;height:2px;background:var(--ink);opacity:.5}
+.wt-day small{font-size:12px;font-weight:700;color:var(--muted)}
+.wt-leg{font-size:12px;margin:6px 0 0}
+.wt-goal{display:flex;flex-direction:column;gap:6px}.wt-goal p{margin:0;font-size:13px}
+@media (prefers-reduced-motion:reduce){.wt-btns .btn.pop{animation:none}}
 /* ---------------- Textos que nunca se salen de su recuadro (todos los temas, móvil y ordenador) ---------------- */
 .wod{grid-template-columns:52px minmax(0,1fr) auto}
 .wod>*{min-width:0}
@@ -5308,6 +5355,108 @@ function checkSecrets(){if(!profileReady||!profile)return;let seen=null;try{seen
   const pt=$("#progTabs");[["goals","Objetivos"],["muscles","Músculos"],["summary","Resumen"]].forEach(([k,l])=>{const b=document.createElement("button");b.type="button";b.dataset.prog=k;b.textContent=l;b.onclick=()=>PROG_VIEWS[k]();pt.appendChild(b)})}
 {const _ra=renderAll;renderAll=function(){_ra();try{paintSumCard();paintPet();checkSecrets();bootFriends();if(current==="goals"&&!goalForm)renderGoals();if(current==="muscles")renderMuscles()}catch(e){}}}
 paintSumCard();paintPet();
+
+
+/* ================= Perfil: Cuerpo (peso, altura, envergadura y grasa estimada), Agua y Avisos ================= */
+const F4_IC={drop:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s-6 7-6 11a6 6 0 0 0 12 0c0-4-6-11-6-11z"/><path d="M9.5 15a2.5 2.5 0 0 0 2.5 2.5"/></svg>`};
+const fromMe=(view,title,render)=>{openTool(view,title,render);setNav(title,"Perfil",()=>openMe())};
+const num1=n=>String(Math.round(n*10)/10).replace(".",",");
+/* Estimación de grasa corporal a partir del IMC (fórmula de Deurenberg). Es orientativa, no una medición. */
+function bodyCalc(){const w=bodyWeight(),h=f2num(profile?.height),ws=f2num(profile?.wingspan),age=f2num(profile?.age),male=profile?.sex==="hombre";
+  const out={w,h,ws,age};if(w&&h){const m=h/100;out.bmi=w/(m*m);const a=age||30;out.fat=Math.max(3,Math.min(60,1.2*out.bmi+0.23*a-10.8*(male?1:0)-5.4));out.fatKg=w*out.fat/100;out.lean=w-out.fatKg}
+  if(ws&&h)out.ape=ws/h;return out}
+function bmiCat(b){return b<18.5?["Bajo peso","warn"]:b<25?["Normal","ok"]:b<30?["Sobrepeso","warn"]:["Obesidad","bad"]}
+function fatCat(f){const male=profile?.sex==="hombre",r=male?[6,14,18,25]:[14,21,25,32];return f<r[0]?["Muy bajo","warn"]:f<r[1]?["Atlético","ok"]:f<r[2]?["En forma","ok"]:f<r[3]?["Normal","mid"]:["Alto","bad"]}
+function apeTxt(a){return a>=1.03?"Brazos largos: ventaja en dominadas, remo y peso muerto; el press banca te cuesta un poco más.":a<=0.98?"Brazos cortos: ventaja en press banca, fondos y press militar (menos recorrido).":"Proporción equilibrada entre brazos y altura."}
+let bodyChart="weight";
+renderBody=function(){
+  const v=$("#v-body"),L=bodyList().filter(x=>x.weight),cur=L.find(x=>x.date===today()),C=bodyCalc(),p=profile||{};
+  const pts=bodyChart==="weight"?L.map(x=>({d:x.date,v:x.weight})):(C.h?L.map(x=>{const b=x.weight/((C.h/100)**2);return{d:x.date,v:Math.max(3,1.2*b+0.23*(C.age||30)-10.8*(p.sex==="hombre"?1:0)-5.4)}}):[]);
+  const first=L[0],last=L[L.length-1],diff=first&&last&&L.length>1?last.weight-first.weight:null;
+  const tile=(l,val,sub,cls="")=>`<div class="bd-tile ${cls}"><span>${l}</span><b class="mono">${val}</b>${sub?`<small>${sub}</small>`:""}</div>`;
+  v.innerHTML=`<h2 class="view-title">Cuerpo</h2>
+  <form id="bodyForm" class="body-form">
+   <div class="body-grid3">
+    <div class="field"><label for="bd_weight">Peso <small>(kg)</small></label><input class="num" id="bd_weight" inputmode="decimal" placeholder="75" value="${cur?kg(cur.weight):""}"></div>
+    <div class="field"><label for="bd_height">Altura <small>(cm)</small></label><input class="num" id="bd_height" inputmode="decimal" placeholder="175" value="${p.height?kg(p.height):""}"></div>
+    <div class="field"><label for="bd_ws">Envergadura <small>(cm)</small></label><input class="num" id="bd_ws" inputmode="decimal" placeholder="178" value="${p.wingspan?kg(p.wingspan):""}"></div>
+   </div>
+   <details class="bd-more"${p.age?" open":""}><summary>Afinar el cálculo con tu edad</summary><div class="field"><label for="bd_age">Edad <small>(años)</small></label><input class="num" id="bd_age" inputmode="numeric" placeholder="30" value="${p.age||""}"></div></details>
+   <p class="muted bd-help">La envergadura es la distancia de punta a punta de los dedos con los brazos en cruz. El peso se guarda con la fecha de hoy para ver tu evolución.</p>
+   <button class="btn primary full" type="submit">Guardar</button></form>
+  ${C.bmi?`<div class="bd-tiles">
+    ${tile("Grasa corporal",num1(C.fat)+" %",fatCat(C.fat)[0],fatCat(C.fat)[1])}
+    ${tile("IMC",num1(C.bmi),bmiCat(C.bmi)[0],bmiCat(C.bmi)[1])}
+    ${tile("Masa grasa",num1(C.fatKg)+" kg","")}
+    ${tile("Masa magra",num1(C.lean)+" kg","músculo, huesos y agua")}
+    ${C.ape?tile("Índice de envergadura",String(Math.round(C.ape*100)/100).replace(".",","),C.ws-C.h>0?`+${kg(C.ws-C.h)} cm sobre tu altura`:C.ws-C.h<0?`${kg(C.ws-C.h)} cm bajo tu altura`:"igual que tu altura"):""}
+   </div>
+   ${C.ape?`<p class="bd-ape">${apeTxt(C.ape)}</p>`:""}
+   <p class="muted bd-note">Grasa estimada con tu IMC${C.age?", edad":" (edad 30 si no la pones)"} y sexo (fórmula de Deurenberg). Es orientativa: en personas muy musculadas suele salir más alta de lo real.</p>`
+   :`<div class="empty"><h3>Pon tu peso y tu altura</h3><p>Con eso calculo tu grasa corporal estimada, tu IMC y tu masa magra.</p></div>`}
+  ${L.length?`<div class="sec body-chart"><div class="seg bd-seg" role="radiogroup" aria-label="Gráfica">${[["weight","Peso"],["fat","Grasa %"]].map(([k,l])=>`<input type="radio" name="bdC" id="bdC_${k}" value="${k}"${bodyChart===k?" checked":""}><label for="bdC_${k}">${l}</label>`).join("")}</div>
+   ${bodyChart==="weight"&&diff!=null?`<p class="bd-now"><b class="mono">${kg(last.weight)} kg</b> <span class="bd-diff ${diff<0?"down":diff>0?"up":""}">${diff>0?"+":diff<0?"−":"±"}${kg(Math.abs(diff))} kg desde ${shortDate(first.date)}</span></p>`:""}
+   ${lineChart(pts,bodyChart==="weight"?"kg":"%",{label:bodyChart==="weight"?"peso":"grasa"})}</div>
+   <div class="sec"><span class="eyebrow">Historial de peso</span><ul class="bd-hist">${L.slice().reverse().map(x=>`<li><b>${esc(shortDate(x.date))}</b><span class="muted">${kg(x.weight)} kg</span><button type="button" class="icon-btn" data-bdel="${x.date}" aria-label="Borrar el peso del ${esc(shortDate(x.date))}">×</button></li>`).join("")}</ul></div>`:""}
+  <div class="sec"><span class="eyebrow">Sueño y energía</span>${sleepInsights()}</div>`;
+  v.querySelectorAll("[name=bdC]").forEach(r=>r.onchange=()=>{bodyChart=r.value;renderBody()});
+  $("#bodyForm").onsubmit=async ev=>{ev.preventDefault();const w=f2num($("#bd_weight").value),h=f2num($("#bd_height").value),ws=f2num($("#bd_ws").value),age=f2num($("#bd_age").value);
+    if(h&&(h<100||h>250)){toast("La altura va en centímetros (ej. 175)");return}if(ws&&(ws<100||ws>260)){toast("La envergadura va en centímetros (ej. 178)");return}if(w&&(w<25||w>300)){toast("Revisa el peso");return}
+    const patch={};if(h)patch.height=h;if(ws)patch.wingspan=ws;if(age)patch.age=Math.round(age);
+    if(w){const list=bodyList().filter(x=>x.date!==today());list.push({...(bodyList().find(x=>x.date===today())||{}),date:today(),weight:w});patch.body=list}
+    if(!Object.keys(patch).length){toast("Escribe al menos un dato");return}await saveProf(patch,"Guardado");renderBody()};
+  v.querySelectorAll("[data-bdel]").forEach(b=>b.onclick=async()=>{await saveProf({body:bodyList().filter(x=>x.date!==b.dataset.bdel)},"Peso borrado");renderBody()});
+};
+openBody=function(){fromMe("body","Cuerpo",renderBody)};
+
+/* ---------- Agua ---------- */
+const waterLog=()=>profile?.water&&typeof profile.water==="object"?profile.water:{};
+const waterGoal=()=>{const g=f2num(profile?.waterGoal);if(g)return g;const w=bodyWeight();return w?Math.round(w*35/250)*250:2000};
+const ml=n=>n>=1000?`${String(Math.round(n/10)/100).replace(".",",")} L`:`${Math.round(n)} ml`;
+let wPend=null,wT=null;
+function addWater(d){const t=today(),now=Math.max(0,((wPend??waterLog()[t])||0)+d);wPend=now;paintWater();clearTimeout(wT);
+  wT=setTimeout(async()=>{const W={...waterLog(),[t]:wPend};const keep=Object.keys(W).sort().slice(-120),o={};keep.forEach(k=>o[k]=W[k]);const val=wPend;await saveProf({water:o});if(wPend===val)wPend=null;
+    if(val>=waterGoal()&&val-d<waterGoal())toast("¡Objetivo de agua cumplido! 💧")},600)}
+function glassSVG(pct){const h=Math.max(0,Math.min(1,pct)),y=18+108*(1-h);
+  return`<svg class="wt-glass" viewBox="0 0 100 140" aria-hidden="true"><defs><clipPath id="wtc"><path d="M14 14 L86 14 L78 128 Q77 134 70 134 L30 134 Q23 134 22 128 Z"/></clipPath></defs>
+   <g clip-path="url(#wtc)"><rect x="0" y="${y}" width="100" height="140" fill="#38BDF8"/><path d="M0 ${y} q12 -6 25 0 t25 0 t25 0 t25 0 v8 h-100z" fill="#7DD3FC"/></g>
+   <path d="M14 14 L86 14 L78 128 Q77 134 70 134 L30 134 Q23 134 22 128 Z" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/><path d="M24 26 L28 118" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".5"/></svg>`}
+function paintWater(){const v=$("#v-water");if(!v||current!=="water")return;const t=today(),got=(wPend??waterLog()[t])||0,g=waterGoal(),pct=got/g;
+  const box=$("#wtNow");if(!box)return;box.innerHTML=`${glassSVG(pct)}<div class="wt-num"><b class="mono">${ml(got)}</b><span>de ${ml(g)}</span><small>${pct>=1?"¡Objetivo cumplido! 💧":`Te faltan ${ml(g-got)}`}</small></div>`;
+  $("#wtLess").disabled=got<=0}
+function renderWater(){const v=$("#v-water"),g=waterGoal(),W=waterLog(),days=[...Array(7)].map((_,i)=>isoD(addDays(new Date(),i-6)));
+  let streak=0;for(let i=0;i<400;i++){const d=isoD(addDays(new Date(),-i)),val=(d===today()?(wPend??W[d]):W[d])||0;if(val>=g)streak++;else if(i>0)break}
+  const mx=Math.max(g,...days.map(d=>W[d]||0));
+  v.innerHTML=`<h2 class="view-title">Agua</h2><p class="muted mw-intro">Apunta lo que bebes cada día. Toca un botón cada vez que te bebas algo.</p>
+   <div class="wt-now" id="wtNow"></div>
+   <div class="wt-btns"><button type="button" class="btn" data-wa="250">💧 Vaso<small>250 ml</small></button><button type="button" class="btn" data-wa="330">🥫 Lata<small>330 ml</small></button><button type="button" class="btn" data-wa="500">🍼 Botella<small>500 ml</small></button><button type="button" class="btn" data-wa="750">🧴 Shaker<small>750 ml</small></button></div>
+   <div class="wt-row"><button type="button" class="btn" id="wtLess">− Quitar 250 ml</button><form id="wtCustom" class="wt-custom"><input class="num" id="wtMl" inputmode="numeric" placeholder="Otra cantidad (ml)" aria-label="Otra cantidad en mililitros"><button class="btn" type="submit">Añadir</button></form></div>
+   <div class="sec"><div class="ch-sh"><span class="eyebrow">Últimos 7 días</span>${streak?`<span class="wt-streak">🔥 ${streak} día${streak>1?"s":""} cumpliendo</span>`:""}</div>
+    <div class="wt-week">${days.map(d=>{const val=(d===today()?(wPend??W[d]):W[d])||0;return`<div class="wt-day${val>=g?" ok":""}"><span class="wt-bar"><i style="height:${Math.round(val/mx*100)}%"></i><em style="bottom:${Math.round(g/mx*100)}%"></em></span><small>${"DLMXJVS"[dObj(d).getDay()]}</small></div>`}).join("")}</div>
+    <p class="muted wt-leg">La raya marca tu objetivo diario.</p></div>
+   <form class="sec wt-goal" id="wtGoalF"><label for="wtGoal" class="eyebrow">Objetivo diario (ml)</label><div class="fr-cr"><input class="num" id="wtGoal" inputmode="numeric" value="${g}"><button class="btn" type="submit">Guardar</button></div>
+    <p class="muted">${profile?.waterGoal?"Lo has puesto tú.":bodyWeight()?`Calculado con tu peso: 35 ml por kilo (${kg(bodyWeight())} kg).`:"Por defecto 2 litros. Si pones tu peso en Cuerpo lo calculo a tu medida."} Entrenando, bebe un poco más.</p></form>`;
+  v.querySelectorAll("[data-wa]").forEach(b=>b.onclick=()=>{addWater(Number(b.dataset.wa));b.classList.remove("pop");void b.offsetWidth;b.classList.add("pop")});
+  $("#wtLess").onclick=()=>addWater(-250);
+  $("#wtCustom").onsubmit=ev=>{ev.preventDefault();const n=Math.round(f2num($("#wtMl").value)||0);if(!n||n>3000){toast("Pon una cantidad entre 1 y 3000 ml");return}addWater(n);$("#wtMl").value=""};
+  $("#wtGoalF").onsubmit=async ev=>{ev.preventDefault();const n=Math.round(f2num($("#wtGoal").value)||0);if(n<500||n>8000){toast("Pon un objetivo entre 500 y 8000 ml");return}await saveProf({waterGoal:n},"Objetivo de agua guardado");renderWater()};
+  paintWater()}
+function openWater(){fromMe("water","Agua",renderWater)}
+openReminders=function(){fromMe("reminders","Avisos",()=>{});renderReminders()};
+
+/* ---------- Enganches: fuera de la portada, dentro de Mi perfil ---------- */
+["#openBodyBtn","#openRemBtn"].forEach(s=>$(s)?.remove());
+{if(!$("#v-water")){const s=document.createElement("section");s.className="view";s.id="v-water";s.hidden=true;$("#v-maxes").insertAdjacentElement("afterend",s)}
+  Object.assign(VIEW_NAME,{water:"Agua",body:"Cuerpo",reminders:"Avisos"});
+  const box=document.createElement("div");box.className="me-health";box.id="meHealth";
+  box.innerHTML=`<span class="eyebrow">Tu cuerpo y tu día a día</span><div class="me-hl">
+    <button type="button" class="me-hb" id="meBody">${F2_IC.body}<span><b>Cuerpo</b><small id="meBodyS">Peso, altura y grasa</small></span></button>
+    <button type="button" class="me-hb" id="meWater">${F4_IC.drop}<span><b>Agua</b><small id="meWaterS">Lo que bebes cada día</small></span></button>
+    <button type="button" class="me-hb" id="meRem">${F3_IC.bell}<span><b>Avisos</b><small>Recordatorios en el móvil</small></span></button></div>`;
+  $("#themeSeg").closest(".field").insertAdjacentElement("afterend",box);
+  $("#meBody").onclick=()=>openBody();$("#meWater").onclick=()=>openWater();$("#meRem").onclick=()=>openReminders()}
+{const _om=openMe;openMe=function(first){_om(first);$("#meHealth").hidden=!!first||!profile;try{const C=bodyCalc();$("#meBodyS").textContent=C.fat?`${kg(C.w)} kg · ${num1(C.fat)} % grasa`:"Peso, altura y grasa";
+  const got=waterLog()[today()]||0;$("#meWaterS").textContent=got?`Hoy ${ml(got)} de ${ml(waterGoal())}`:"Lo que bebes cada día"}catch(e){}}}
 
 </script>
 

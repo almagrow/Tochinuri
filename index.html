@@ -1528,6 +1528,15 @@ h2.view-title{text-wrap:balance}
 .tools .tool,:root[data-skin] .tools .tool{min-width:0;padding:10px 6px;hyphens:manual!important;-webkit-hyphens:manual!important;overflow-wrap:normal!important;word-break:normal!important}
 .tools .tool[hidden]{display:none}
 .tools .tool>span{display:block}
+.tools .tool[data-off]{display:none!important}
+.me-tools{display:flex;flex-direction:column;gap:8px;margin:6px 0}
+.me-tl-help{margin:0;font-size:13px}
+.me-tl{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.me-tc{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;min-height:48px;font-weight:600;font-size:15px}
+.me-tc input{width:20px;height:20px;flex:none;accent-color:var(--brand)}
+.me-tc:has(input:not(:checked)){opacity:.6}
+.me-ti svg{width:20px;height:20px;color:var(--brand);display:block}
+.me-tc small{font-weight:500;color:var(--muted)}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -5472,6 +5481,23 @@ openReminders=function(){fromMe("reminders","Avisos",()=>{});renderReminders()};
   $("#mePet").onchange=async ev=>{const on=ev.target.checked;const ok=await saveProf({petOn:on},on?"¡Miau! Nuri ya está en tu portada 🐱":"Mascota desactivada");if(ok===false)ev.target.checked=!on}}
 {const _om=openMe;openMe=function(first){_om(first);$("#meHealth").hidden=!!first||!profile;$("#mePet").checked=!!profile?.petOn;try{const C=bodyCalc();$("#meBodyS").textContent=C.fat?`${kg(C.w)} kg · ${num1(C.fat)} % grasa`:"Peso, altura y grasa";
   const got=waterLog()[today()]||0;$("#meWaterS").textContent=got?`Hoy ${ml(got)} de ${ml(waterGoal())}`:"Lo que bebes cada día"}catch(e){}}}
+
+/* ================= Elegir qué botones salen en el inicio (desde Mi perfil) ================= */
+const offTools=()=>Array.isArray(profile?.hiddenTools)?profile.hiddenTools:[];
+function applyToolPrefs(){const off=new Set(offTools());document.querySelectorAll(".tools .tool").forEach(b=>{if(b.id)b.toggleAttribute("data-off",off.has(b.id))})}
+function toolLabel(b){const s=b.querySelector("span");if(!s)return b.textContent.trim();const c=s.cloneNode(true);c.querySelectorAll("small").forEach(x=>x.remove());return c.textContent.trim()}
+function paintToolPicker(){const box=$("#meTools");if(!box)return;const off=new Set(offTools());
+  const list=[...document.querySelectorAll(".tools .tool")].filter(b=>b.id&&(!b.hidden||b.dataset.gymOnly));
+  box.innerHTML=`<span class="eyebrow">Botones del inicio</span><p class="muted me-tl-help">Elige qué botones quieres ver en la portada. Quitar uno solo lo oculta: no se borra nada y lo puedes volver a poner cuando quieras.</p>
+   <div class="me-tl">${list.map(b=>`<label class="me-tc"><input type="checkbox" data-tool="${b.id}"${off.has(b.id)?"":" checked"}><span class="me-ti" aria-hidden="true">${b.querySelector("svg")?.outerHTML||""}</span><span>${esc(toolLabel(b))}${b.dataset.gymOnly?` <small>(gym)</small>`:""}</span></label>`).join("")}</div>
+   ${off.size?`<button type="button" class="link-btn" id="meToolsAll">Mostrar todos</button>`:""}`;
+  box.querySelectorAll("[data-tool]").forEach(c=>c.onchange=async()=>{const s=new Set(offTools());c.checked?s.delete(c.dataset.tool):s.add(c.dataset.tool);
+    const ok=await saveProf({hiddenTools:[...s]});if(ok===false){c.checked=!c.checked;return}applyToolPrefs();paintToolPicker();toast(c.checked?"Botón añadido al inicio":"Botón quitado del inicio")});
+  const all=$("#meToolsAll");if(all)all.onclick=async()=>{await saveProf({hiddenTools:[]},"Todos los botones en el inicio");applyToolPrefs();paintToolPicker()}}
+{const box=document.createElement("div");box.className="me-tools";box.id="meTools";$("#meHealth").insertAdjacentElement("afterend",box)}
+{const _om=openMe;openMe=function(first){_om(first);$("#meTools").hidden=!!first||!profile;if(!first&&profile)paintToolPicker()}}
+{const _ra=renderAll;renderAll=function(){_ra();try{applyToolPrefs()}catch(e){}}}
+applyToolPrefs();
 
 </script>
 

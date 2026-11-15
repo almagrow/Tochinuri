@@ -5517,24 +5517,24 @@ function slSync(el){const box=el.querySelector(".sl-box");if(!box)return;const n
   for(let k=have;k<n;k++){const r=document.createElement("div");r.className="sl-row";const id=`${el.querySelector(".exs").id}_s${k}`;
     r.innerHTML=`<span class="sl-n">${k+1}ª</span><label class="sl-f"><input class="num sl-r" id="${id}r" inputmode="numeric" aria-label="Repeticiones de la serie ${k+1}"><small>reps</small></label><span class="sl-x" aria-hidden="true">×</span><label class="sl-f"><input class="num sl-w" id="${id}w" inputmode="decimal" aria-label="Kilos de la serie ${k+1}"><small>kg</small></label>`;rows.appendChild(r)}
   while(rows.children.length>n)rows.lastElementChild.remove();
-  rows.querySelectorAll(".sl-r").forEach(i=>i.placeholder=gr||"–");rows.querySelectorAll(".sl-w").forEach(i=>i.placeholder=gw||"–");
+  rows.querySelectorAll(".sl-r").forEach(i=>{i.placeholder=gr||"–";if(!i.dataset.manual)i.value=gr});rows.querySelectorAll(".sl-w").forEach(i=>i.placeholder=gw||"–");
   box.hidden=n<1;const d=el._slDone||0;[...rows.children].forEach((r,k)=>r.classList.toggle("done",k<d))}
 function readSetList(c){const box=c.querySelector(".sl-box");if(!box||box.hidden)return{};const rows=[...box.querySelectorAll(".sl-row")];
-  if(!rows.some(r=>r.querySelector(".sl-r").value.trim()||r.querySelector(".sl-w").value.trim()))return{};
   const gr=num(c.querySelector(".exr").value)||null,gw=f2num(c.querySelector(".exw").value)||null;
+  if(!rows.some(r=>(num(r.querySelector(".sl-r").value)||gr)!==gr||r.querySelector(".sl-w").value.trim()))return{};
   const sl=rows.map(r=>({reps:num(r.querySelector(".sl-r").value)||gr,kg:f2num(r.querySelector(".sl-w").value)||gw}));
   const ks=sl.map(s=>s.kg).filter(Boolean),out={sl};if(ks.length)out.weight=Math.max(...ks);return out}
 {const _ar=addRow;addRow=function(e={}){const el=_ar(e);try{if(formKind==="gym"){
     const box=document.createElement("div");box.className="sl-box";box.hidden=true;
-    box.innerHTML=`<div class="sl-h"><span class="eyebrow">Cada serie</span><small class="muted">Si cambias de peso o de reps, apúntalo aquí. Lo que dejes vacío usa lo de arriba.</small></div><div class="sl-rows"></div>`;
+    box.innerHTML=`<div class="sl-h"><span class="eyebrow">Cada serie</span><small class="muted">Las reps salen de arriba; cámbialas si alguna serie fue distinta. Pon el peso de cada serie (vacío = el de arriba).</small></div><div class="sl-rows"></div>`;
     el.querySelector(".ex-nums").insertAdjacentElement("afterend",box);
     ["input","change"].forEach(t=>["exs","exr","exw"].forEach(c=>el.querySelector("."+c).addEventListener(t,()=>slSync(el))));
     slSync(el);
     if(Array.isArray(e.sl)&&e.sl.length){if(!el.querySelector(".exs").value)el.querySelector(".exs").value=e.sl.length;slSync(el);
       const gr=String(e.reps??""),gw=String(e.weight??"");box.querySelectorAll(".sl-row").forEach((r,k)=>{const s=e.sl[k]||{};
-        if(s.reps!=null&&String(s.reps)!==gr)r.querySelector(".sl-r").value=s.reps;if(s.kg!=null&&String(s.kg)!==gw)r.querySelector(".sl-w").value=kg(s.kg)})}
+        if(s.reps!=null&&String(s.reps)!==gr){const i=r.querySelector(".sl-r");i.value=s.reps;i.dataset.manual="1"}if(s.kg!=null&&String(s.kg)!==gw)r.querySelector(".sl-w").value=kg(s.kg)})}
     /* Al apuntar el peso de una serie, el de arriba pasa a ser el máximo para que cuenten los récords */
-    box.addEventListener("input",ev=>{if(!ev.target.classList.contains("sl-w"))return;const ks=[...box.querySelectorAll(".sl-w")].map(i=>f2num(i.value)||f2num(el.querySelector(".exw").value)).filter(Boolean);
+    box.addEventListener("input",ev=>{if(ev.target.classList.contains("sl-r")){if(ev.target.value.trim())ev.target.dataset.manual="1";else delete ev.target.dataset.manual}if(!ev.target.classList.contains("sl-w"))return;const ks=[...box.querySelectorAll(".sl-w")].map(i=>f2num(i.value)||f2num(el.querySelector(".exw").value)).filter(Boolean);
       const top=el.querySelector(".exw");top.dataset.max=ks.length?Math.max(...ks):""});
     const sb=el.querySelector(".ex-set");if(sb){sb.addEventListener("click",()=>{el._slDone=(el._slDone||0)+1;slSync(el)});sb.addEventListener("contextmenu",()=>{el._slDone=Math.max(0,(el._slDone||0)-1);slSync(el)})}
   }}catch(x){}return el}}

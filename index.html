@@ -1078,6 +1078,7 @@ header.top.sub .top-coins{display:none}
 .animal-card>div{min-width:0}
 .animal-t{margin:2px 0 0;font-size:17px;line-height:1.35}
 .animal-n{margin:6px 0 0;font-size:13px}
+.animal-s{margin:6px 0 0;font-size:16px;font-weight:600;color:var(--brand)}
 /* ---------------- Textos que nunca se salen de su recuadro (todos los temas, móvil y ordenador) ---------------- */
 .wod{grid-template-columns:52px minmax(0,1fr) auto}
 .wod>*{min-width:0}
@@ -4048,6 +4049,12 @@ const ANIMALS=[
   {n:"un caballo",p:"caballos",e:"🐎",kg:500},{n:"un bisonte",p:"bisontes",e:"🦬",kg:900},{n:"una jirafa",p:"jirafas",e:"🦒",kg:1200},
   {n:"un hipopótamo",p:"hipopótamos",e:"🦛",kg:1500},{n:"un rinoceronte",p:"rinocerontes",e:"🦏",kg:2300},{n:"un elefante africano",p:"elefantes africanos",e:"🐘",kg:6000},
   {n:"un tiranosaurio",p:"tiranosaurios",e:"🦖",kg:8000},{n:"una ballena jorobada",p:"ballenas jorobadas",e:"🐋",kg:30000},{n:"una ballena azul",p:"ballenas azules",e:"🐳",kg:150000}];
+/* Fuerza aproximada de cada animal: lo que es capaz de arrastrar, cargar o levantar (cifras divulgativas) */
+const STRONG=[
+  {n:"un águila",e:"🦅",kg:5},{n:"un perro husky",e:"🐺",kg:80},{n:"un lobo",e:"🐺",kg:120},{n:"un león",e:"🦁",kg:250},
+  {n:"un tigre",e:"🐅",kg:400},{n:"un oso grizzly",e:"🐻",kg:500},{n:"un gorila",e:"🦍",kg:800},{n:"un caballo de tiro",e:"🐴",kg:1000},
+  {n:"un buey",e:"🐂",kg:1500},{n:"un rinoceronte",e:"🦏",kg:3000},{n:"un elefante",e:"🐘",kg:9000},{n:"una ballena azul",e:"🐳",kg:50000}];
+function strongFor(t){let a=null;for(const A of STRONG)if(A.kg<=t)a=A;return a}
 function wodVolume(x){let t=0;for(const e0 of(x.exercises||[])){if(!e0.name)continue;const e=myEx(e0);if(e.liftVol){t+=e.liftVol;continue}const w=num(e.weight)||0,r=num(e.reps)||0,st=num(e.sets)||1;t+=w*r*st}return t}
 function animalFor(t){let a=null;for(const A of ANIMALS)if(A.kg<=t)a=A;return a}
 function animalCard(x){
@@ -4057,6 +4064,7 @@ function animalCard(x){
   return`<div class="sec animal-card"><span class="animal-e" aria-hidden="true">${a.e}</span><div>
     <span class="eyebrow">Fuerza animal</span>
     <p class="animal-t">Hoy has movido <b class="mono">${Math.round(t).toLocaleString("es-ES")} kg</b>: como levantar <b>${esc(cnt)}</b>.</p>
+    ${(()=>{const st=strongFor(t);return st?`<p class="animal-s">Equivale a la fuerza de <b>${esc(st.n)}</b> ${st.e}</p>`:""})()}
     ${nx?`<p class="muted animal-n">Te faltan ${Math.round(nx.kg-t).toLocaleString("es-ES")} kg para mover ${esc(nx.n)} ${nx.e}</p>`:""}
   </div></div>`;
 }

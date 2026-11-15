@@ -852,7 +852,8 @@ header.top.sub .top-coins{display:none}
 .lg-sub{font-size:8.5px;letter-spacing:3px;color:#C4B5FD;margin-top:2px}
 .lg-esc{width:60px;height:60px;box-sizing:border-box;border-radius:50%;background:#FFFFFF;border:2.5px solid #2E1065;box-shadow:2px 2px 0 #2E1065;justify-content:center;line-height:.95;color:#2E1065}
 .lg-esc .lg-t{font-size:15px}
-.lg-esc .lg-n{font-size:19px;color:#C026D3}
+.lg-esc .lg-n{font-size:19px;color:#C026D3;margin-top:5px}
+.lg-esc .lg-i svg{bottom:.6em;width:.4em;height:.5em}
 .lg-esc .lg-i svg{transform:translateX(-50%)}
 .lg-normal{font-family:var(--f-display);font-size:26px}.lg-normal span{color:var(--brand)}
 .lg-prev{height:110px;display:flex;align-items:center;justify-content:center;background:var(--surface-2);border-radius:10px 10px 0 0;overflow:hidden}
@@ -2151,10 +2152,10 @@ const FLAME_IN="M12 13c.9 2.6 4.2 3.8 4.2 7.4a4.2 4.2 0 0 1-8.4 0c0-2 1.2-3.2 2.
 const flameI=(fill,stroke,inner)=>`<span class="lg-i">ı<svg viewBox="0 0 24 30" aria-hidden="true"><path d="${FLAME_OUT}" fill="${fill}"${stroke?` stroke="${stroke}" stroke-width="2.2" stroke-linejoin="round"`:""}/>${inner?`<path d="${FLAME_IN}" fill="${inner}"${stroke?` stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"`:""}/>`:""}</svg></span>`;
 const LOGO_BAR=`<svg class="lg-bar" viewBox="0 0 210 20" aria-hidden="true"><path d="M8 14 Q105 0 202 14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><rect x="22" y="2" width="10" height="18" rx="3" fill="#C026D3" stroke="currentColor" stroke-width="2"/><rect x="178" y="2" width="10" height="18" rx="3" fill="#C026D3" stroke="currentColor" stroke-width="2"/></svg>`;
 const LOGOS=[
-  {id:"viva",name:"Llama viva",price:150,html:()=>`<span class="lg lg-viva"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("#D946EF","currentColor","#FDE047")}</span></span>${LOGO_BAR}</span>`},
-  {id:"pegatina",name:"Pegatina",price:200,html:()=>`<span class="lg lg-peg"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("#D946EF","#2E1065")}</span></span></span>`},
-  {id:"noche",name:"Noche",price:200,html:()=>`<span class="lg lg-noche"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("#E879F9","","#FDE68A")}</span></span><span class="lg-sub">CROSSFIT · GYM</span></span>`},
-  {id:"escudo",name:"Escudo",price:250,html:()=>`<span class="lg lg-esc"><span class="lg-t">Tochi</span><span class="lg-n">Nur${flameI("#D946EF","#2E1065")}</span></span>`}
+  {id:"viva",name:"Llama viva",price:150,html:()=>`<span class="lg lg-viva"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("currentColor","#2E1065")}</span></span>${LOGO_BAR}</span>`},
+  {id:"pegatina",name:"Pegatina",price:200,html:()=>`<span class="lg lg-peg"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("currentColor","#2E1065")}</span></span></span>`},
+  {id:"noche",name:"Noche",price:200,html:()=>`<span class="lg lg-noche"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("currentColor","")}</span></span><span class="lg-sub">CROSSFIT · GYM</span></span>`},
+  {id:"escudo",name:"Escudo",price:250,html:()=>`<span class="lg lg-esc"><span class="lg-t">Tochi</span><span class="lg-n">Nur${flameI("currentColor","#2E1065")}</span></span>`}
 ];
 const logoItemId=id=>"l-"+id;
 const logoOwned=id=>ownedIds().has(logoItemId(id));

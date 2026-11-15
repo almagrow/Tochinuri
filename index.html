@@ -1745,6 +1745,10 @@ html{background:linear-gradient(var(--safe-band,var(--bg)) 0 env(safe-area-inset
 .pet-svg.jump .pt-bob{animation:ptJump .6s ease}
 @keyframes ptJump{40%{transform:translateY(-12px) scale(1.04)}}
 @media (prefers-reduced-motion:reduce){.pet-svg *{animation:none!important}}
+/* Historial: separación entre tarjetas para que no se solapen */
+#logList{display:flex;flex-direction:column;gap:10px}
+#logList>.eyebrow.month{margin:10px 0 0}
+#logList>.eyebrow.month:first-child{margin-top:0}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>

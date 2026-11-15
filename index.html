@@ -4605,6 +4605,8 @@ function paintModeSw(){
   el.querySelectorAll("[data-msw]").forEach(b=>b.onclick=()=>{if(b.dataset.msw!==mode){setMode(b.dataset.msw);toast(`Ahora estás en ${b.dataset.msw==="gym"?"Gym":"CrossFit"}`)}});
 }
 if(modeStored)modeAsked=true;
+/* Ya no se pregunta «¿Qué toca hoy?» al entrar: se queda la última sección (CrossFit por defecto) y se cambia con el selector */
+askMode=function(){modeAsked=true;const el=$("#modePick");if(el)el.hidden=true;if(profile?.tourPending)setTimeout(()=>{if(current==="log"&&!tourOn&&profile?.tourPending)startTour()},400)};
 
 /* 4 · Repetir el último entreno de la sección */
 function lastInMode(){return sorted().filter(inMode)[0]||null}

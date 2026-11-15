@@ -1189,6 +1189,35 @@ header.top.sub .top-coins{display:none}
 .animal-t{margin:2px 0 0;font-size:17px;line-height:1.35}
 .animal-n{margin:6px 0 0;font-size:13px}
 .animal-s{margin:6px 0 0;font-size:16px;font-weight:600;color:var(--brand)}
+/* ---------- Extras de la tienda ---------- */
+.title-chip{display:inline-block;font-size:12px;font-weight:800;padding:2px 9px;border-radius:999px;background:var(--brand);color:#fff;vertical-align:2px;white-space:nowrap}
+.ph-prev{font-size:13px;line-height:1.35;padding:0 12px;text-align:center;color:var(--ink);font-style:italic}
+.xt-prev{flex-direction:column;gap:8px}
+.xf-prev{width:56px;height:56px;font-size:22px}
+.rfx-prev{font-size:28px;letter-spacing:4px;color:var(--brand);font-weight:900}
+.rfx-try{min-height:34px;padding:4px 14px;font-size:13px}
+.xp-prev{position:static!important;margin:0!important;transform:none}
+.freeze-card{display:flex;align-items:center;gap:12px;padding:12px}
+.freeze-ico{font-size:42px;line-height:1}
+.freeze-bar{display:flex;flex-direction:column;gap:8px;margin-top:12px;padding:12px;border-radius:12px;background:color-mix(in srgb,var(--brand) 10%,var(--surface));border:1px dashed var(--brand);font-size:14px}
+/* Marcos de foto */
+:root[data-frame="fuego"] .avatar,.xf-prev[data-fr="fuego"]{box-shadow:0 0 0 3px #FF7A1A,0 0 0 6px #D946EF,0 0 14px 4px rgba(255,122,26,.65)}
+:root[data-frame="neon"] .avatar,.xf-prev[data-fr="neon"]{box-shadow:0 0 0 2px #22D3EE,0 0 10px 2px #22D3EE,0 0 22px 4px rgba(255,46,147,.7)}
+:root[data-frame="oro"] .avatar,.xf-prev[data-fr="oro"]{box-shadow:0 0 0 3px #F5C400,0 0 0 6px #8A6A00,0 0 0 8px #F5C400}
+:root[data-frame="pegatina"] .avatar,.xf-prev[data-fr="pegatina"]{box-shadow:0 0 0 4px #FFFFFF,0 0 0 6px #2E1065,4px 4px 0 6px #2E1065;transform:rotate(-5deg)}
+:root[data-frame="manga"] .avatar,.xf-prev[data-fr="manga"]{box-shadow:0 0 0 3px #111111,5px 5px 0 3px #E11D48}
+/* Botón + especial */
+:root[data-plus] nav.tabs .tab-new,.xp-prev[data-pl]{clip-path:none}
+:root[data-plus="disco"] nav.tabs .tab-new,.xp-prev[data-pl="disco"]{border-radius:50%;background:radial-gradient(circle,#111827 0 22%,#DC2626 23% 70%,#7F1D1D 71% 77%,#DC2626 78%);color:#fff;border:3px solid #111827;box-shadow:0 4px 0 #111827;animation:plusSpin 6s linear infinite}
+:root[data-plus="disco"] nav.tabs .tab-new svg,.xp-prev[data-pl="disco"] svg{animation:plusSpin 6s linear infinite reverse}
+:root[data-plus="llama"] nav.tabs .tab-new,.xp-prev[data-pl="llama"]{border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:linear-gradient(180deg,#FDE047,#FF7A1A 45%,#D946EF);color:#fff;border:0;box-shadow:0 0 18px rgba(255,122,26,.7);clip-path:path("M30 0C33 12 52 20 52 38a22 22 0 0 1-44 0c0-10 6-15 11-20 1 7 4 10 8 11C24 21 23 10 30 0z");animation:plusFlick 1.4s ease-in-out infinite}
+:root[data-plus="estrella"] nav.tabs .tab-new,.xp-prev[data-pl="estrella"]{border-radius:0;background:#FACC15;color:#111;border:0;box-shadow:none;clip-path:polygon(50% 0,61% 30%,95% 22%,72% 48%,100% 70%,64% 70%,58% 100%,42% 76%,14% 96%,26% 64%,0 52%,30% 40%,14% 10%,42% 28%);animation:plusPop 1.8s ease-in-out infinite}
+:root[data-plus="latido"] nav.tabs .tab-new,.xp-prev[data-pl="latido"]{animation:plusBeat 1.2s ease-in-out infinite}
+@keyframes plusSpin{to{transform:rotate(360deg)}}
+@keyframes plusFlick{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.06,1.1) rotate(2deg)}}
+@keyframes plusPop{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.1) rotate(12deg)}}
+@keyframes plusBeat{0%,40%,100%{transform:scale(1)}20%{transform:scale(1.14)}60%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){:root[data-plus] nav.tabs .tab-new,.xp-prev,.xp-prev svg,:root[data-plus] nav.tabs .tab-new svg{animation:none!important}}
 /* ---------------- Textos que nunca se salen de su recuadro (todos los temas, móvil y ordenador) ---------------- */
 .wod{grid-template-columns:52px minmax(0,1fr) auto}
 .wod>*{min-width:0}
@@ -1905,7 +1934,7 @@ function renderProfileBits(){
   /* Arriba a la derecha: tus TochiCoins (abren la tienda). Tu perfil se abre tocando tu foto en el saludo. */
   const tc=$("#topCoins");if(profile){tc.innerHTML=`${COIN_SVG}<b class="mono">${coinBalance().bal}</b>`;tc.setAttribute("aria-label",`Tienda: ${coinBalance().bal} TochiCoins`);tc.hidden=false}else tc.hidden=true;{const ts=$("#topStats");if(ts)ts.hidden=!profile}
   const h=$("#hello");
-  if(profile?.name){h.innerHTML=`<button type="button" class="hello-me" id="helloMe" aria-label="Tu perfil" title="Tu perfil"><span class="avatar">${avatarInner(profile)}</span></button><span class="hello-t">Hola, <b>${esc(profile.name)}</b>. ${mode==="gym"?"¿A por el entreno de hoy? Y menos charla entre series, que se enfría el músculo.":"¿A por el WOD de hoy? Y menos charla entre rondas, que se enfría el músculo."}</span>`;h.hidden=false;$("#helloMe").onclick=()=>openMe(false)}else h.hidden=true;
+  if(profile?.name){h.innerHTML=`<button type="button" class="hello-me" id="helloMe" aria-label="Tu perfil" title="Tu perfil"><span class="avatar">${avatarInner(profile)}</span></button><span class="hello-t">Hola, <b>${esc(profile.name)}</b>${typeof titleChip==="function"?titleChip():""}. ${typeof greetLine==="function"?greetLine():(mode==="gym"?"¿A por el entreno de hoy? Y menos charla entre series, que se enfría el músculo.":"¿A por el WOD de hoy? Y menos charla entre rondas, que se enfría el músculo.")}</span>`;h.hidden=false;$("#helloMe").onclick=()=>openMe(false)}else h.hidden=true;
 }
 let mePhoto=null,meFirst=false;
 function paintMePreview(){$("#mePreview").innerHTML=mePhoto?`<img src="${mePhoto}" alt="">`:(($("#meName").value.trim()[0]||"+").toUpperCase());$("#meRemovePhoto").hidden=!mePhoto}
@@ -1971,7 +2000,7 @@ function coinBalance(){const earned=coinLedger().reduce((a,e)=>a+e.amt,0),spent=
 const allItems=()=>[...BUILTIN(),...SHOP];
 /* La cuenta administradora tiene todo desbloqueado, sin gastar monedas */
 let shopFree=false;
-const ownedIds=()=>(shopAdmin||shopFree)?new Set(["b-start","b-win",...SHOP.map(i=>i.id),...(typeof SKINS!=="undefined"?SKINS.map(x=>"t-"+x.id):[]),...(typeof LOGOS!=="undefined"?LOGOS.map(x=>"l-"+x.id):[]),...(coinsData().owned||[])]):new Set(["b-start","b-win",...(coinsData().owned||[])]);
+const ownedIds=()=>(shopAdmin||shopFree)?new Set(["b-start","b-win",...SHOP.map(i=>i.id),...(typeof SKINS!=="undefined"?SKINS.map(x=>"t-"+x.id):[]),...(typeof LOGOS!=="undefined"?LOGOS.map(x=>"l-"+x.id):[]),...(typeof EXTRA_CATS!=="undefined"?EXTRA_CATS.flatMap(c=>c.items.map(it=>c.pfx+it.id)):[]),...(coinsData().owned||[])]):new Set(["b-start","b-win",...(coinsData().owned||[])]);
 function slotSrc(slot){const id=(coinsData().slots||{})[slot];const it=id&&allItems().find(i=>i.id===id);return it?it.src:(slot==="start"?GOAL_CAT:GOAL_CAT_WIN)}
 /* Aviso cuando ganas monedas nuevas (se recuerda en este navegador lo último que viste) */
 function checkNewCoins(){
@@ -4141,7 +4170,7 @@ function findWeightRecords(w,skipId){
     if(pv>0&&v>pv&&(!out.has(k)||v>out.get(k).v))out.set(k,{name:(findEx(e.name)||{}).n||e.name,v,pv})}
   return[...out.values()];
 }
-function showRecordPop(recs){
+function showRecordPop(recs,fxArg){const fx=fxArg??(typeof recFxPref==="function"?recFxPref():"");
   document.querySelector(".rec-pop")?.remove();
   const el=document.createElement("div");el.className="rec-pop";el.setAttribute("role","dialog");el.setAttribute("aria-modal","true");el.setAttribute("aria-labelledby","recT");
   el.innerHTML=`<canvas class="rec-confetti" aria-hidden="true"></canvas><div class="rec-card">
@@ -4158,11 +4187,22 @@ function showRecordPop(recs){
   const cv=el.querySelector("canvas"),ctx=cv.getContext("2d"),dpr=Math.min(2,devicePixelRatio||1);
   const size=()=>{cv.width=innerWidth*dpr;cv.height=innerHeight*dpr};size();
   const cs=getComputedStyle(document.documentElement),cols=[cs.getPropertyValue("--brand"),cs.getPropertyValue("--star"),"#D946EF","#22C55E","#3B82F6","#F97316","#FFFFFF"].map(c=>c.trim()||"#D946EF");
-  const P=[];const burst=(x,n)=>{for(let i=0;i<n;i++){const a=-Math.PI/2+(Math.random()-.5)*1.6,sp=7+Math.random()*9;P.push({x:x*cv.width,y:cv.height*.62,vx:Math.cos(a)*sp*dpr,vy:Math.sin(a)*sp*dpr,w:(6+Math.random()*6)*dpr,h:(3+Math.random()*4)*dpr,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[i%cols.length],life:0})}};
-  burst(.2,70);burst(.8,70);setTimeout(()=>burst(.5,90),280);
+  const FX={discos:["#111827","#DC2626","#2563EB","#16A34A","#EAB308"],fuego:["#FF7A1A","#FDBA35","#EF4444","#FDE68A","#D946EF"],estrellas:["#FACC15","#FDE68A","#F59E0B","#FFFFFF"],manga:["#111111","#E11D48","#FACC15"]};
+  const pal=FX[fx]||cols;
+  const P=[];const burst=(x,n)=>{for(let i=0;i<n;i++){
+    if(fx==="fuego"){P.push({x:Math.random()*cv.width,y:cv.height+20*dpr,vx:(Math.random()-.5)*2*dpr,vy:-(6+Math.random()*9)*dpr,w:(10+Math.random()*16)*dpr,h:0,r:0,vr:0,c:pal[i%pal.length],life:0,g:-.04});continue}
+    if(fx==="discos"){P.push({x:Math.random()*cv.width,y:-40*dpr-Math.random()*cv.height*.4,vx:(Math.random()-.5)*1.5*dpr,vy:(2+Math.random()*3)*dpr,w:(14+Math.random()*16)*dpr,h:0,r:Math.random()*6,vr:(Math.random()-.5)*.08,c:pal[i%pal.length],life:0,g:.18});continue}
+    const a=-Math.PI/2+(Math.random()-.5)*1.6,sp=7+Math.random()*9;P.push({x:x*cv.width,y:cv.height*.62,vx:Math.cos(a)*sp*dpr,vy:Math.sin(a)*sp*dpr,w:(fx==="estrellas"?10+Math.random()*10:fx==="manga"?22+Math.random()*16:6+Math.random()*6)*dpr,h:(3+Math.random()*4)*dpr,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:pal[i%pal.length],life:0,g:.28,t:["ドン!","!!","バン","ゴゴ"][i%4]})}};
+  const n1=fx==="manga"?14:fx==="discos"?26:70;burst(.2,n1);burst(.8,n1);setTimeout(()=>burst(.5,fx==="manga"?18:fx==="discos"?20:90),280);
+  const star=(c,r)=>{c.beginPath();for(let k=0;k<10;k++){const rr=k%2?r*.45:r,a=k*Math.PI/5-Math.PI/2;c.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}c.closePath();c.fill()};
   const t0=performance.now();
   const tick=t=>{ctx.clearRect(0,0,cv.width,cv.height);
-    for(const p of P){p.life++;p.vy+=.28*dpr;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.life*.15)));ctx.restore()}
+    for(const p of P){p.life++;p.vy+=(p.g??.28)*dpr;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;
+      if(fx==="fuego"){const s=Math.max(0,1-p.life/90);ctx.globalAlpha=s;ctx.beginPath();ctx.arc(0,0,p.w*(.4+s*.6),0,Math.PI*2);ctx.fill()}
+      else if(fx==="discos"){ctx.beginPath();ctx.arc(0,0,p.w,0,Math.PI*2);ctx.fill();ctx.fillStyle="rgba(255,255,255,.25)";ctx.beginPath();ctx.arc(0,0,p.w*.72,0,Math.PI*2);ctx.fill();ctx.fillStyle="#E5E7EB";ctx.beginPath();ctx.arc(0,0,p.w*.18,0,Math.PI*2);ctx.fill()}
+      else if(fx==="estrellas"){star(ctx,p.w)}
+      else if(fx==="manga"){ctx.font=`900 ${p.w}px "Dela Gothic One",Impact,sans-serif`;ctx.lineWidth=3*dpr;ctx.strokeStyle="#FFFFFF";ctx.strokeText(p.t,0,0);ctx.fillText(p.t,0,0)}
+      else ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.life*.15)));ctx.restore()}
     if(t-t0<4200&&document.body.contains(el))raf=requestAnimationFrame(tick);else ctx.clearRect(0,0,cv.width,cv.height)};
   raf=requestAnimationFrame(tick);
 }
@@ -4211,6 +4251,136 @@ function paintStatusBar(){
 {const _at=applyTheme;applyTheme=function(t){_at(t);requestAnimationFrame(paintStatusBar)}}
 try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>requestAnimationFrame(paintStatusBar))}catch(e){}
 requestAnimationFrame(paintStatusBar);
+
+
+/* ================= Tienda: extras (comodín de racha, celebraciones, marcos, títulos, frases y botón +) ================= */
+const FREEZE_PRICE=120;
+const PHRASES={
+  base:{cf:["¿A por el WOD de hoy? Y menos charla entre rondas, que se enfría el músculo."],gym:["¿A por el entreno de hoy? Y menos charla entre series, que se enfría el músculo."]},
+  coach:{cf:["Menos excusas y más rondas. El reloj no espera.","Hoy no se negocia: calienta y a darlo todo.","Si fuera fácil, lo haría todo el mundo. Al box."],gym:["Las series no se hacen solas. Arriba.","Sin excusas: hoy toca mover hierro.","El músculo no crece en el sofá. Vamos."]},
+  gatito:{cf:["¿Hacemos un WOD bonito hoy? Tú puedes, miau.","Un poquito de esfuerzo y luego mimitos.","Hoy brillas, aunque sea entre burpees."],gym:["Una serie más y te ganas una siesta, miau.","Hoy entrenas suave pero con ganas.","Tus músculos te mandan un ronroneo."]},
+  box:{cf:["¿Unbroken o qué? Hoy toca RX.","3, 2, 1… ¡go! Que no te pille el cap.","Chalk en las manos y a por el PR."],gym:["Hoy toca pump, nada de cardio de pasillo.","Cargando la barra: hoy cae un PR.","Series al fallo y que suene la música."]},
+  anime:{cf:["¡Libera tu poder! El WOD te espera.","Este es tu arco de entrenamiento. ¡No te rindas!","¡Más allá! ¡Plus Ultra de burpees!"],gym:["Tu poder sube a más de 9000.","El entrenamiento del héroe empieza hoy.","¡Rompe tus límites, serie a serie!"]}
+};
+const EXTRA_CATS=[
+  {key:"recfx",pfx:"r-",prof:"recFx",title:"Celebraciones de récord",mine:"Celebración de récord",desc:"Cambia la animación que sale cuando bates tu peso máximo.",normal:"Confeti",
+   items:[{id:"discos",name:"Lluvia de discos",price:120},{id:"fuego",name:"Explosión de fuego",price:150},{id:"estrellas",name:"Estrellas doradas",price:150},{id:"manga",name:"Impacto manga",price:180}]},
+  {key:"frame",pfx:"f-",prof:"frame",title:"Marcos para tu foto",mine:"Marco de tu foto",desc:"Un aro alrededor de tu foto de perfil.",normal:"Sin marco",
+   items:[{id:"fuego",name:"Llamas",price:100},{id:"neon",name:"Neón",price:100},{id:"oro",name:"Oro de campeón",price:150},{id:"pegatina",name:"Pegatina",price:80},{id:"manga",name:"Manga",price:120}]},
+  {key:"title",pfx:"n-",prof:"title",title:"Títulos",mine:"Tu título",desc:"Un apodo que sale junto a tu nombre en el saludo.",normal:"Sin título",
+   items:[{id:"bestia",name:"Bestia del WOD",price:80},{id:"burpee",name:{m:"Rey del Burpee",f:"Reina del Burpee"},price:100},{id:"hierro",name:"Máquina de hierro",price:80},{id:"barras",name:{m:"Señor de las barras",f:"Señora de las barras"},price:100},{id:"ninja",name:"Ninja de las dominadas",price:100},{id:"snatch",name:{m:"Dios del Snatch",f:"Diosa del Snatch"},price:150},{id:"leyenda",name:"Leyenda del box",price:200}]},
+  {key:"phrases",pfx:"p-",prof:"phrases",title:"Packs de frases",mine:"Frases del saludo",desc:"Cambia las frases con las que te saluda la app cada día.",normal:"Normal",
+   items:[{id:"coach",name:"Coach duro",price:80},{id:"gatito",name:"Gatito cariñoso",price:80},{id:"box",name:"Jerga de box",price:80},{id:"anime",name:"Modo anime",price:100}]},
+  {key:"plus",pfx:"x-",prof:"plusBtn",title:"Botón + especial",mine:"Botón +",desc:"Cambia la forma y la animación del botón para apuntar entrenos.",normal:"Normal",
+   items:[{id:"disco",name:"Disco de pesas",price:120},{id:"llama",name:"Llama",price:150},{id:"estrella",name:"Estrella de impacto",price:150},{id:"latido",name:"Latido",price:100}]}
+];
+const exName=it=>typeof it.name==="string"?it.name:(profile?.sex==="mujer"?it.name.f:it.name.m);
+const extraOwned=(c,id)=>ownedIds().has(c.pfx+id);
+const extraPref=c=>{const v=profile?.[c.prof]||"";const it=c.items.find(x=>x.id===v);return it&&extraOwned(c,v)?v:""};
+function extraPreview(c,it){
+  const id=it?it.id:"";
+  if(c.key==="frame")return`<span class="avatar xf-prev" data-fr="${id}">${avatarInner(profile)}</span>`;
+  if(c.key==="title")return`<span class="title-chip">${esc(it?exName(it):"—")}</span>`;
+  if(c.key==="phrases")return`<span class="ph-prev">«${esc((PHRASES[id||"base"]||PHRASES.base).cf[0])}»</span>`;
+  if(c.key==="plus")return`<span class="tab-new xp-prev" data-pl="${id}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>`;
+  if(c.key==="recfx")return`<span class="rfx-prev" data-fx="${id}" aria-hidden="true">${{"":"✦ ✧ ✦","discos":"◎ ◉ ◎","fuego":"🔥","estrellas":"★ ✦ ★","manga":"ドン!"}[id]}</span><button type="button" class="btn rfx-try" data-fxtry="${id}">Ver</button>`;
+  return"";
+}
+/* Aplicar lo elegido */
+function applyExtras(){
+  const r=document.documentElement;
+  const fr=extraPref(EXTRA_CATS[1]),pl=extraPref(EXTRA_CATS[4]);
+  if(fr)r.setAttribute("data-frame",fr);else r.removeAttribute("data-frame");
+  if(pl)r.setAttribute("data-plus",pl);else r.removeAttribute("data-plus");
+}
+function titleChip(){const c=EXTRA_CATS[2],v=extraPref(c);if(!v)return"";const it=c.items.find(x=>x.id===v);return` <span class="title-chip">${esc(exName(it))}</span>`}
+function greetLine(){const c=EXTRA_CATS[3],v=extraPref(c)||"base",P=PHRASES[v]||PHRASES.base,arr=mode==="gym"?P.gym:P.cf;
+  const d=new Date(),n=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);return arr[n%arr.length]}
+function recFxPref(){return extraPref(EXTRA_CATS[0])||""}
+async function useExtra(key,id){const c=EXTRA_CATS.find(x=>x.key===key);if(!c)return;const it=c.items.find(x=>x.id===id);
+  const ok=await saveProf({[c.prof]:id||""},id?`${c.mine}: ${exName(it)}`:`${c.mine}: ${c.normal}`);applyExtras();renderProfileBits&&renderProfileBits();return ok}
+
+/* Comodín de racha: salva una semana en la que no llegaste al reto */
+const freezeBought=()=>(coinsData().spent||[]).filter(e=>e.id==="c-freeze").length;
+const freezeUsed=()=>(profile?.freezes||[]).length;
+const freezeLeft=()=>(shopAdmin||shopFree)?99:Math.max(0,freezeBought()-freezeUsed());
+const frozenSet=()=>new Set(profile?.freezes||[]);
+function freezeCandidate(){
+  if(!profile)return null;const cnt=weekCounts(),prev=isoD(addDays(mondayOf(new Date()),-7)),g=goalFor(prev);
+  if(!g||(cnt[prev]||0)>=g||frozenSet().has(prev))return null;
+  /* Solo merece la pena si había racha antes de esa semana */
+  const before=isoD(addDays(mondayOf(new Date()),-14)),gb=goalFor(before);if(!gb||((cnt[before]||0)<gb&&!frozenSet().has(before)))return null;
+  return prev;
+}
+function paintFreeze(){
+  const box=$("#goalCard");if(!box||!profile)return;box.querySelector(".freeze-bar")?.remove();
+  const wk=freezeCandidate();if(!wk)return;const left=freezeLeft();
+  const el=document.createElement("div");el.className="freeze-bar";
+  el.innerHTML=left?`<span>La semana pasada no llegaste al reto. Usa un comodín y tu racha sigue viva.</span><button type="button" class="btn primary" id="useFreeze">Usar comodín (${left===99?"∞":left})</button>`
+    :`<span>La semana pasada no llegaste al reto y la racha se ha cortado. Con un comodín de racha la habrías salvado.</span><button type="button" class="btn" id="buyFreezeGo">Ver en la tienda</button>`;
+  box.appendChild(el);
+  const u=$("#useFreeze");if(u)u.onclick=async()=>{u.disabled=true;await saveProf({freezes:[...(profile.freezes||[]),wk]},"¡Racha salvada con un comodín!")};
+  const g=$("#buyFreezeGo");if(g)g.onclick=()=>{shopTab="shop";openShop("shop");setTimeout(()=>$("#freezeBuy")?.scrollIntoView({block:"center"}),100)};
+}
+/* La racha y las monedas tienen en cuenta las semanas salvadas */
+streakInfo=function(){
+  const cnt=weekCounts(),now=mondayOf(new Date()),curK=isoD(now),goal=goalFor(curK),done=cnt[curK]||0,met=goal>0&&done>=goal,F=frozenSet();
+  let s=0,p=addDays(now,-7);
+  for(let i=0;i<520;i++){const k=isoD(p),g=goalFor(k);if(F.has(k)){p=addDays(p,-7);continue}if(!g||(cnt[k]||0)<g)break;s++;p=addDays(p,-7)}
+  const streak=s+(met?1:0);
+  const first=(profile?.goals||[]).map(h=>h.from).sort()[0];let best=0,run=0;
+  if(first)for(let d=dObj(first);d<=now;d=addDays(d,7)){const k=isoD(d),g=goalFor(k);if(F.has(k))continue;if(g&&(cnt[k]||0)>=g){run++;best=Math.max(best,run)}else if(k!==curK)run=0}
+  const lost=!met&&s===0&&goalFor(isoD(addDays(now,-7)))>0&&!F.has(isoD(addDays(now,-7)));
+  return{goal,done,met,streak,best,lost};
+};
+
+/* Tienda: secciones de extras */
+function paintExtrasShop(){
+  const sec=$("#v-shop .skins-sec");if(!sec||shopTab==="coins")return;
+  const B=coinBalance(),box=document.createElement("div");box.className="extras-sec";
+  if(shopTab==="shop"){
+    const short=FREEZE_PRICE-B.bal;
+    let html=`<h3 style="margin-top:18px">Comodín de racha</h3><p class="muted">Salva tu racha una semana en la que no llegues al reto (vacaciones, lesión…). Se usa desde el recuadro del reto.</p>
+      <div class="shop-card freeze-card"><div class="freeze-ico" aria-hidden="true">🛡️</div><div class="sc-b"><b>Comodín de racha</b><span class="muted" style="font-size:13px">Tienes ${freezeLeft()===99?"∞":freezeLeft()}</span><span class="price">${COIN_SVG}<span class="mono">${FREEZE_PRICE}</span></span>
+      ${buying==="c-freeze"?`<div class="buy-confirm"><span>¿Comprar por ${FREEZE_PRICE}?</span><div class="row-actions"><button type="button" class="btn primary" id="freezeOk">Sí</button><button type="button" class="btn" data-buyno>No</button></div></div>`
+        :`<button type="button" class="btn ${short>0?"":"primary"}" id="freezeBuy" ${short>0?"disabled":""}>${short>0?`Te faltan ${short}`:"Comprar"}</button>`}</div></div>`;
+    for(const c of EXTRA_CATS){
+      html+=`<h3 style="margin-top:18px">${c.title}</h3><p class="muted">${c.desc}</p><div class="shop-grid">${c.items.map(it=>{const iid=c.pfx+it.id,has=extraOwned(c,it.id),sh=it.price-B.bal;
+        return`<div class="shop-card${has?" owned":""}"><div class="lg-prev xt-prev">${extraPreview(c,it)}</div><div class="sc-b"><b>${esc(exName(it))}</b><span class="price">${COIN_SVG}<span class="mono">${it.price}</span></span>
+          ${has?`<span class="tag">Ya es tuyo</span>`:buying===iid?`<div class="buy-confirm"><span>¿Comprar por ${it.price}?</span><div class="row-actions"><button type="button" class="btn primary" data-xok="${c.key}|${it.id}">Sí</button><button type="button" class="btn" data-buyno>No</button></div></div>`
+          :`<button type="button" class="btn ${sh>0?"":"primary"}" data-xbuy="${iid}" ${sh>0?"disabled":""}>${sh>0?`Te faltan ${sh}`:"Comprar"}</button>`}</div></div>`}).join("")}</div>`;
+    }
+    box.innerHTML=html;
+  }else{
+    let html=`<h3 style="margin-top:18px">Comodines de racha</h3><p class="muted">Te quedan <b>${freezeLeft()===99?"∞":freezeLeft()}</b>. Se usan desde el recuadro del reto cuando una semana no llegas.</p>`;
+    for(const c of EXTRA_CATS){const cur=extraPref(c),mine=[null,...c.items.filter(it=>extraOwned(c,it.id))];
+      html+=`<h3 style="margin-top:18px">${c.mine}</h3>${mine.length>1?"":`<p class="muted">Compra en la pestaña «Tienda» para tener más opciones.</p>`}<div class="shop-grid">${mine.map(it=>{const id=it?it.id:"",on=cur===id;
+        return`<div class="shop-card owned"><div class="lg-prev xt-prev">${extraPreview(c,it)}</div><div class="sc-b"><b>${esc(it?exName(it):c.normal)}</b><button type="button" class="btn ${on?"on":"primary"}" data-xuse="${c.key}|${id}" ${on?'aria-pressed="true"':""}>${on?"✓ En uso":"Usar"}</button></div></div>`}).join("")}</div>`}
+    box.innerHTML=html;
+  }
+  const last=[...sec.querySelectorAll(":scope > h3")].pop();sec.insertBefore(box,last);
+  box.querySelectorAll("[data-buyno]").forEach(b=>b.onclick=()=>{buying=null;renderShop()});
+  const fb=$("#freezeBuy");if(fb)fb.onclick=()=>{buying="c-freeze";renderShop()};
+  const fo=$("#freezeOk");if(fo)fo.onclick=async()=>{fo.disabled=true;if(coinBalance().bal<FREEZE_PRICE){toast("No tienes suficientes TochiCoins.");buying=null;renderShop();return}
+    const c=coinsData();await saveProf({coins:{...c,spent:[...(c.spent||[]),{id:"c-freeze",name:"Comodín de racha",price:FREEZE_PRICE,date:today()}]}},"¡Comodín de racha comprado!");buying=null;renderShop()};
+  box.querySelectorAll("[data-xbuy]").forEach(b=>b.onclick=()=>{buying=b.dataset.xbuy;renderShop()});
+  box.querySelectorAll("[data-xok]").forEach(b=>b.onclick=async()=>{const[k,id]=b.dataset.xok.split("|"),c=EXTRA_CATS.find(x=>x.key===k),it=c.items.find(x=>x.id===id);
+    if(coinBalance().bal<it.price){toast("No tienes suficientes TochiCoins.");buying=null;renderShop();return}
+    b.disabled=true;const cd=coinsData(),iid=c.pfx+id;
+    const ok=await saveProf({coins:{...cd,owned:[...(cd.owned||[]),iid],spent:[...(cd.spent||[]),{id:iid,name:exName(it),price:it.price,date:today()}]}},`¡Has comprado «${exName(it)}»!`);
+    buying=null;if(ok)justBought={kind:"extra",cat:k,id,name:`«${exName(it)}»`};renderShop()});
+  box.querySelectorAll("[data-xuse]").forEach(b=>b.onclick=async()=>{const[k,id]=b.dataset.xuse.split("|");b.disabled=true;await useExtra(k,id);renderShop()});
+  box.querySelectorAll("[data-fxtry]").forEach(b=>b.onclick=()=>showRecordPop([{name:"Ejemplo",v:100,pv:95}],b.dataset.fxtry||"confeti"));
+}
+{const _rs=renderShop;renderShop=function(){_rs();paintExtrasShop()}}
+{const _ra=renderAll;renderAll=function(){_ra();applyExtras()}}
+{const _rg=renderGoal;renderGoal=function(){_rg();paintFreeze()}}
+/* «Ponerlo ya» también para los extras */
+{const _pj=paintJustBought;paintJustBought=function(){
+  if(justBought&&justBought.kind==="extra"){const body=$("#v-shop .shop-body");if(!body||shopTab==="coins")return;const j=justBought,el=document.createElement("div");el.className="just-bought";el.setAttribute("role","status");
+    el.innerHTML=`<p><b>¡${esc(j.name)} ya es tuyo!</b> ¿Quieres ponerlo ahora?</p><div class="row-actions"><button type="button" class="btn primary" id="jbUse">Ponerlo ya</button><button type="button" class="btn" id="jbLater">Más tarde</button></div>`;
+    body.prepend(el);$("#jbUse").onclick=async()=>{$("#jbUse").disabled=true;justBought=null;await useExtra(j.cat,j.id);renderShop()};$("#jbLater").onclick=()=>{justBought=null;renderShop()};return}
+  _pj()}}
 
 </script>
 

@@ -1537,6 +1537,17 @@ h2.view-title{text-wrap:balance}
 .me-tc:has(input:not(:checked)){opacity:.6}
 .me-ti svg{width:20px;height:20px;color:var(--brand);display:block}
 .me-tc small{font-weight:500;color:var(--muted)}
+.sl-box{display:flex;flex-direction:column;gap:6px;background:color-mix(in srgb,var(--brand) 5%,var(--surface));border:1px dashed var(--line);border-radius:12px;padding:10px}
+.sl-h{display:flex;flex-direction:column;gap:2px}.sl-h small{font-size:12px}
+.sl-rows{display:flex;flex-direction:column;gap:6px}
+.sl-row{display:grid;grid-template-columns:34px minmax(0,1fr) 14px minmax(0,1fr);align-items:center;gap:6px;border-radius:10px;padding:2px 4px}
+.sl-row.done{background:color-mix(in srgb,var(--p-green) 14%,transparent)}
+.sl-row.done .sl-n{color:var(--p-green)}
+.sl-n{font-weight:800;font-size:15px;text-align:center;color:var(--muted)}
+.sl-f{position:relative;display:block;min-width:0}
+.sl-f input{width:100%;min-width:0;padding-right:38px;min-height:42px}
+.sl-f small{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);pointer-events:none}
+.sl-x{text-align:center;color:var(--muted);font-weight:700}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -2766,7 +2777,7 @@ $("#wodForm").addEventListener("submit",async ev=>{
     const period=c.querySelector(".drop-btn")?.getAttribute("aria-pressed")==="true"||(!c.querySelector(".drop-btn")&&!!c.dataset.period);
     if(!name&&!sets&&!reps&&!wt&&!tt&&!nt&&!feel)return;
     const share=$("#fPair").checked?Number(c.querySelector(".share-r").value):null;
-    exercises.push({name,sets:sets?Number(sets)||sets:null,reps:reps?Number(reps)||reps:null,weight:wt?Number(wt)||wt:null,time:ts,notes:nt,feel,period:!!period,share,...(c.dataset.ss==="1"?{ss:true}:{})});
+    exercises.push({name,sets:sets?Number(sets)||sets:null,reps:reps?Number(reps)||reps:null,weight:wt?Number(wt)||wt:null,time:ts,notes:nt,feel,period:!!period,share,...(c.dataset.ss==="1"?{ss:true}:{}),...(typeof readSetList==="function"?readSetList(c):{})});
   });
   if(bad)return err(`El tiempo de ${bad} debe tener el formato m:ss.`);
   const lifts=readLifts();if(lifts.some(l=>!l.parts.length))return err("Elige al menos un ejercicio en la cabecera del complex.");
@@ -4545,7 +4556,7 @@ const STRONG=[
   {n:"un tigre",e:"🐅",kg:400},{n:"un oso grizzly",e:"🐻",kg:500},{n:"un gorila",e:"🦍",kg:800},{n:"un caballo de tiro",e:"🐴",kg:1000},
   {n:"un buey",e:"🐂",kg:1500},{n:"un rinoceronte",e:"🦏",kg:3000},{n:"un elefante",e:"🐘",kg:9000},{n:"una ballena azul",e:"🐳",kg:50000}];
 function strongFor(t){let a=null;for(const A of STRONG)if(A.kg<=t)a=A;return a}
-function wodVolume(x){let t=0;for(const e0 of(x.exercises||[])){if(!e0.name)continue;const e=myEx(e0);if(e.liftVol){t+=e.liftVol;continue}const w=num(e.weight)||0,r=num(e.reps)||0,st=num(e.sets)||1;t+=w*r*st}return t}
+function wodVolume(x){let t=0;for(const e0 of(x.exercises||[])){if(!e0.name)continue;const e=myEx(e0);if(e.liftVol){t+=e.liftVol;continue}if(Array.isArray(e.sl)&&e.sl.length){t+=e.sl.reduce((a,q)=>a+(num(q.kg)||0)*(num(q.reps)||0),0);continue}const w=num(e.weight)||0,r=num(e.reps)||0,st=num(e.sets)||1;t+=w*r*st}return t}
 function animalFor(t){let a=null;for(const A of ANIMALS)if(A.kg<=t)a=A;return a}
 function animalCard(x){
   const t=wodVolume(x);if(t<4)return"";const a=animalFor(t),n=t/a.kg,nr=n>=10?Math.round(n):Math.round(n*10)/10;
@@ -4748,7 +4759,7 @@ function stopRest(){clearInterval(restT);restT=null;const b=$("#restBar");if(b)b
 function exActions(el){
   if(el.querySelector(".ex-acts"))return;const gym=formKind==="gym";
   const row=document.createElement("div");row.className="ex-acts";
-  row.innerHTML=`${gym?`<button type="button" class="btn ex-set">${F2_IC.check}<span>Serie hecha <b class="mono">0</b></span></button><button type="button" class="btn ex-rest">${F2_IC.timer}<span>Descanso</span></button>`:""}<button type="button" class="btn ex-plates">${F2_IC.plates}<span>Discos</span></button>`;
+  row.innerHTML=`<button type="button" class="btn ex-plates">${F2_IC.plates}<span>Discos</span></button>`;
   const anchor=el.querySelector(".feel-wrap");el.insertBefore(row,anchor);
   const setB=row.querySelector(".ex-set");
   if(setB){let done=0;const paint=()=>{const tot=Number(el.querySelector(".exs").value)||0;setB.querySelector("b").textContent=tot?`${done}/${tot}`:String(done);setB.classList.toggle("all",tot>0&&done>=tot)};
@@ -5498,6 +5509,36 @@ function paintToolPicker(){const box=$("#meTools");if(!box)return;const off=new 
 {const _om=openMe;openMe=function(first){_om(first);$("#meTools").hidden=!!first||!profile;if(!first&&profile)paintToolPicker()}}
 {const _ra=renderAll;renderAll=function(){_ra();try{applyToolPrefs()}catch(e){}}}
 applyToolPrefs();
+
+/* ================= Gym: peso y reps de cada serie ================= */
+const SL_MAX=12;
+function slSync(el){const box=el.querySelector(".sl-box");if(!box)return;const n=Math.max(0,Math.min(SL_MAX,parseInt(el.querySelector(".exs").value)||0));
+  const gr=el.querySelector(".exr").value.trim(),gw=el.querySelector(".exw").value.trim(),rows=box.querySelector(".sl-rows"),have=rows.children.length;
+  for(let k=have;k<n;k++){const r=document.createElement("div");r.className="sl-row";const id=`${el.querySelector(".exs").id}_s${k}`;
+    r.innerHTML=`<span class="sl-n">${k+1}ª</span><label class="sl-f"><input class="num sl-r" id="${id}r" inputmode="numeric" aria-label="Repeticiones de la serie ${k+1}"><small>reps</small></label><span class="sl-x" aria-hidden="true">×</span><label class="sl-f"><input class="num sl-w" id="${id}w" inputmode="decimal" aria-label="Kilos de la serie ${k+1}"><small>kg</small></label>`;rows.appendChild(r)}
+  while(rows.children.length>n)rows.lastElementChild.remove();
+  rows.querySelectorAll(".sl-r").forEach(i=>i.placeholder=gr||"–");rows.querySelectorAll(".sl-w").forEach(i=>i.placeholder=gw||"–");
+  box.hidden=n<1;const d=el._slDone||0;[...rows.children].forEach((r,k)=>r.classList.toggle("done",k<d))}
+function readSetList(c){const box=c.querySelector(".sl-box");if(!box||box.hidden)return{};const rows=[...box.querySelectorAll(".sl-row")];
+  if(!rows.some(r=>r.querySelector(".sl-r").value.trim()||r.querySelector(".sl-w").value.trim()))return{};
+  const gr=num(c.querySelector(".exr").value)||null,gw=f2num(c.querySelector(".exw").value)||null;
+  const sl=rows.map(r=>({reps:num(r.querySelector(".sl-r").value)||gr,kg:f2num(r.querySelector(".sl-w").value)||gw}));
+  const ks=sl.map(s=>s.kg).filter(Boolean),out={sl};if(ks.length)out.weight=Math.max(...ks);return out}
+{const _ar=addRow;addRow=function(e={}){const el=_ar(e);try{if(formKind==="gym"){
+    const box=document.createElement("div");box.className="sl-box";box.hidden=true;
+    box.innerHTML=`<div class="sl-h"><span class="eyebrow">Cada serie</span><small class="muted">Si cambias de peso o de reps, apúntalo aquí. Lo que dejes vacío usa lo de arriba.</small></div><div class="sl-rows"></div>`;
+    el.querySelector(".ex-nums").insertAdjacentElement("afterend",box);
+    ["input","change"].forEach(t=>["exs","exr","exw"].forEach(c=>el.querySelector("."+c).addEventListener(t,()=>slSync(el))));
+    slSync(el);
+    if(Array.isArray(e.sl)&&e.sl.length){if(!el.querySelector(".exs").value)el.querySelector(".exs").value=e.sl.length;slSync(el);
+      const gr=String(e.reps??""),gw=String(e.weight??"");box.querySelectorAll(".sl-row").forEach((r,k)=>{const s=e.sl[k]||{};
+        if(s.reps!=null&&String(s.reps)!==gr)r.querySelector(".sl-r").value=s.reps;if(s.kg!=null&&String(s.kg)!==gw)r.querySelector(".sl-w").value=kg(s.kg)})}
+    /* Al apuntar el peso de una serie, el de arriba pasa a ser el máximo para que cuenten los récords */
+    box.addEventListener("input",ev=>{if(!ev.target.classList.contains("sl-w"))return;const ks=[...box.querySelectorAll(".sl-w")].map(i=>f2num(i.value)||f2num(el.querySelector(".exw").value)).filter(Boolean);
+      const top=el.querySelector(".exw");top.dataset.max=ks.length?Math.max(...ks):""});
+    const sb=el.querySelector(".ex-set");if(sb){sb.addEventListener("click",()=>{el._slDone=(el._slDone||0)+1;slSync(el)});sb.addEventListener("contextmenu",()=>{el._slDone=Math.max(0,(el._slDone||0)-1);slSync(el)})}
+  }}catch(x){}return el}}
+{const _en=exNums;exNums=function(e){if(Array.isArray(e?.sl)&&e.sl.length){const t=e.sl.map(s=>`${s.reps??"?"}×${s.kg!=null?kg(s.kg):"–"}`).join(" · ");return`${e.sl.length} series: ${t} kg${e.time?" · "+fmtTime(e.time):""}`}return _en(e)}}
 
 </script>
 

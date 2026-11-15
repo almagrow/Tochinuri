@@ -1785,7 +1785,7 @@ function renderProfileBits(){
   /* Arriba a la derecha: tus TochiCoins (abren la tienda). Tu perfil se abre tocando tu foto en el saludo. */
   const tc=$("#topCoins");if(profile){tc.innerHTML=`${COIN_SVG}<b class="mono">${coinBalance().bal}</b>`;tc.setAttribute("aria-label",`Tienda: ${coinBalance().bal} TochiCoins`);tc.hidden=false}else tc.hidden=true;{const ts=$("#topStats");if(ts)ts.hidden=!profile}
   const h=$("#hello");
-  if(profile?.name){h.innerHTML=`<button type="button" class="hello-me" id="helloMe" aria-label="Tu perfil" title="Tu perfil"><span class="avatar">${avatarInner(profile)}</span></button><span class="hello-t">Hola, <b>${esc(profile.name)}</b>. ${mode==="gym"?"¿A por el entreno de hoy? Y menos charla entre series, que se enfría el músculo.":"¿A por el WOD de hoy?"}</span>`;h.hidden=false;$("#helloMe").onclick=()=>openMe(false)}else h.hidden=true;
+  if(profile?.name){h.innerHTML=`<button type="button" class="hello-me" id="helloMe" aria-label="Tu perfil" title="Tu perfil"><span class="avatar">${avatarInner(profile)}</span></button><span class="hello-t">Hola, <b>${esc(profile.name)}</b>. ${mode==="gym"?"¿A por el entreno de hoy? Y menos charla entre series, que se enfría el músculo.":"¿A por el WOD de hoy? Menos chapa entre rondas, que el reloj no para: 3, 2, 1… ¡go!"}</span>`;h.hidden=false;$("#helloMe").onclick=()=>openMe(false)}else h.hidden=true;
 }
 let mePhoto=null,meFirst=false;
 function paintMePreview(){$("#mePreview").innerHTML=mePhoto?`<img src="${mePhoto}" alt="">`:(($("#meName").value.trim()[0]||"+").toUpperCase());$("#meRemovePhoto").hidden=!mePhoto}

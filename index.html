@@ -1357,6 +1357,8 @@ header.top.sub .top-coins{display:none}
 .fr-x{flex:none}
 .fr-solo{text-align:center;margin:10px 0}
 .fr-off{display:block;margin:18px auto 0;color:var(--muted)}
+/* Cabecera con amigos, insignias y monedas en móviles estrechos */
+@media (max-width:370px){.nav-right{gap:4px}.top-stats,.top-coins{height:32px;min-width:0;padding:0 6px;gap:2px;font-size:13px}.top-stats svg,.top-coins svg{width:16px;height:16px}header.top .brand{transform:scale(.86);transform-origin:left center}}
 /* ---------------- Textos que nunca se salen de su recuadro (todos los temas, móvil y ordenador) ---------------- */
 .wod{grid-template-columns:52px minmax(0,1fr) auto}
 .wod>*{min-width:0}
@@ -1963,7 +1965,7 @@ async function startApp(u){
   authUser=u;appStarted=true;workouts=[];profile=null;profileReady=false;
   if(isTestUser(u)){let done=false;try{done=sessionStorage.getItem("tochinuri-fresh")===u.id}catch(e){}
     if(!done){try{await SB.from("docs").delete().eq("user_id",u.id)}catch(e){}try{await SB.rpc("friends_disable")}catch(e){}
-      try{["tochinuri-mode","tochinuri-skin","tochinuri-logo","tochinuri-theme","tochinuri-rest","tochinuri-bar","tochinuri-collar"].forEach(k=>localStorage.removeItem(k));sessionStorage.setItem("tochinuri-fresh",u.id)}catch(e){}
+      try{["tochinuri-mode","tochinuri-skin","tochinuri-logo","tochinuri-theme","tochinuri-rest","tochinuri-bar","tochinuri-collar","tochinuri-frn"].forEach(k=>localStorage.removeItem(k));sessionStorage.setItem("tochinuri-fresh",u.id)}catch(e){}
       modeStored=false;modeAsked=false;try{mode="cf"}catch(e){}document.documentElement.removeAttribute("data-skin")}}
   try{navigator.storage?.persist?.().catch(()=>{})}catch(e){}
   $("#saveNote").textContent="Cargando tus datos…";show("log");
@@ -4814,9 +4816,10 @@ function myPublicStats(){const mon=mondayOf(new Date()),from=isoD(mon),to=isoD(a
   const W=workouts.filter(w=>w.date&&w.date>=from&&w.date<=to),M=workouts.filter(w=>w.date&&w.date>=mf&&w.date<=today());
   let ch=0;try{ch=challengeState().wk.filter(c=>c.ok).length}catch(e){}
   return{week:new Set(W.map(w=>w.date)).size,month:new Set(M.map(w=>w.date)).size,streak:streakInfo().streak||0,kg:Math.round(W.reduce((a,w)=>a+wodVolume(w),0)),ch,wk:from}}
+function paintFriendsN(){const n=$("#topFriendsN");if(!n)return;const c=lsGet("tochinuri-frn","");n.textContent=c;n.hidden=c==="";$("#topFriends").setAttribute("aria-label",c?`Amigos: ${c}`:"Amigos")}
 let pubT=null;function publishStats(){if(!FRIENDS_API||!frMe?.code)return;clearTimeout(pubT);pubT=setTimeout(()=>FRIENDS_API.publish(profile?.name||"",myPublicStats()).catch(()=>{}),800)}
 const FR_SORT=[["week","Semana","días"],["streak","Racha","sem."],["month","Mes","días"],["kg","Kg semana","kg"]];
-async function loadFriends(){if(!FRIENDS_API)return;frBusy=true;try{frMe=await FRIENDS_API.me();if(frMe?.code){await FRIENDS_API.publish(profile?.name||"",myPublicStats());frBoard=await FRIENDS_API.board()}else frBoard=null}catch(e){frBoard=null;frMe=frMe||{error:true}}frBusy=false}
+async function loadFriends(){if(!FRIENDS_API)return;frBusy=true;try{frMe=await FRIENDS_API.me();if(frMe?.code){await FRIENDS_API.publish(profile?.name||"",myPublicStats());frBoard=await FRIENDS_API.board();lsSet("tochinuri-frn",String(Math.max(0,frBoard.length-1)))}else{frBoard=null;lsSet("tochinuri-frn","")}paintFriendsN()}catch(e){frBoard=null;frMe=frMe||{error:true}}frBusy=false}
 async function renderFriends(load){const v=$("#v-friends");
   if(!FRIENDS_API){v.innerHTML=`<h2 class="view-title">Amigos</h2><div class="empty"><h3>Hace falta tu cuenta</h3><p>Los amigos y el ranking funcionan en tochinuri.es al entrar con tu cuenta.</p></div>`;return}
   if(load!==false){v.innerHTML=`<h2 class="view-title">Amigos</h2><p class="muted">Cargando…</p>`;await loadFriends()}
@@ -4855,8 +4858,13 @@ function openFriends(){openTool("friends","Amigos",()=>{});renderFriends()}
   const first=$("#openMaxBtn");
   tools.insertBefore(mk("openTableBtn",F2_IC.table,"Tabla",true),first);
   tools.insertBefore(mk("openChBtn",F2_IC.goal,`Retos <small id="chCount" class="bd-count"></small>`),first);
-  [mk("openPlatesBtn",F2_IC.plates,"Discos"),mk("openBodyBtn",F2_IC.body,"Cuerpo"),mk("openFriendsBtn",F2_IC.friends,"Amigos")].forEach(b=>tools.insertBefore(b,$("#openPainBtn")));
-  $("#openTableBtn").onclick=()=>openTable("week");$("#openChBtn").onclick=()=>openChallenges();$("#openPlatesBtn").onclick=()=>openPlates();$("#openBodyBtn").onclick=()=>openBody();$("#openFriendsBtn").onclick=()=>openFriends();
+  [mk("openPlatesBtn",F2_IC.plates,"Discos"),mk("openBodyBtn",F2_IC.body,"Cuerpo")].forEach(b=>tools.insertBefore(b,$("#openPainBtn")));
+  $("#openTableBtn").onclick=()=>openTable("week");$("#openChBtn").onclick=()=>openChallenges();$("#openPlatesBtn").onclick=()=>openPlates();$("#openBodyBtn").onclick=()=>openBody();
+  /* Amigos va arriba, junto a las insignias y con su mismo tamaño */
+  const ts=$("#topStats"),tf=document.createElement("button");tf.type="button";tf.className="top-stats top-friends";tf.id="topFriends";tf.title="Amigos";tf.setAttribute("aria-label","Amigos");
+  tf.innerHTML=F2_IC.friends.replace("<svg ",'<svg aria-hidden="true" ')+`<b class="mono" id="topFriendsN"></b>`;tf.hidden=ts.hidden;ts.insertAdjacentElement("beforebegin",tf);
+  new MutationObserver(()=>{tf.hidden=ts.hidden}).observe(ts,{attributes:true,attributeFilter:["hidden"]});
+  tf.onclick=()=>openFriends();paintFriendsN();
   const card=document.createElement("div");card.id="planCard";$("#v-log .stats").insertAdjacentElement("afterend",card);
   ["table","plates","body","challenges","friends"].forEach(id=>{if(!$("#v-"+id)){const s=document.createElement("section");s.className="view";s.id="v-"+id;s.hidden=true;$("#v-maxes").insertAdjacentElement("afterend",s)}});
   Object.assign(VIEW_NAME,{table:"Tabla",plates:"Discos",body:"Cuerpo",challenges:"Retos",friends:"Amigos"});

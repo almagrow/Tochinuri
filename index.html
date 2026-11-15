@@ -1058,6 +1058,21 @@ header.top.sub .top-coins{display:none}
 .tot-row b{font-size:16px}
 @media (max-width:440px){header.top{grid-template-columns:auto minmax(0,1fr) auto}header.top .brand{justify-self:center}.top-stats{min-width:38px;padding:0 8px}.nav-right{gap:6px}}
 @media (max-width:360px){.brand{font-size:25px}.brand-bar{width:118px;margin-top:-11px}.lg-w{font-size:26px}.coin-chip.top-coins{padding:4px 8px 4px 5px;font-size:14px}}
+.rec-pop{position:fixed;inset:0;z-index:400;background:rgba(10,6,25,.55);display:flex;align-items:center;justify-content:center;padding:16px;animation:recFade .25s ease}
+.rec-confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+.rec-card{position:relative;background:var(--surface);color:var(--ink);border-radius:20px;padding:22px 20px 18px;width:min(360px,100%);text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.35);animation:recPop .45s cubic-bezier(.2,1.4,.4,1)}
+.rec-trophy{width:84px;height:84px;margin:-58px auto 4px;display:block;filter:drop-shadow(0 6px 10px rgba(0,0,0,.25))}
+.rec-card h2{margin:0;font-family:var(--f-display);font-size:42px;line-height:1;color:var(--brand);letter-spacing:.02em}
+.rec-card>p{margin:4px 0 12px}
+.rec-list{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:8px;text-align:left}
+.rec-list li{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface-2);border-radius:12px;padding:10px 12px}
+.rec-list li>b{min-width:0;overflow-wrap:anywhere}
+.rec-list li>span{display:flex;flex-direction:column;align-items:flex-end;flex:none}
+.rec-new{font-size:22px;font-weight:800;color:var(--ink)}
+.rec-list small{font-size:12px;color:var(--muted)}
+@keyframes recPop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes recFade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.rec-pop,.rec-card{animation:none}}
 /* ---------------- Textos que nunca se salen de su recuadro (todos los temas, móvil y ordenador) ---------------- */
 .wod{grid-template-columns:52px minmax(0,1fr) auto}
 .wod>*{min-width:0}
@@ -2306,7 +2321,8 @@ $("#wodForm").addEventListener("submit",async ev=>{
   if(lifts.length)w.lifts=lifts;
   if(!store)return err("Tus datos aún se están cargando. Espera un momento y vuelve a guardar.");
   const btn=$("#saveBtn");btn.disabled=true;
-  try{await store.save(w);toast(editingId?"Cambios guardados":gym?"Sesión guardada":"Entreno guardado");if(!editingId&&(w.kind==="gym")!==(mode==="gym"))setMode(w.kind==="gym"?"gym":"cf");openWod(w.id)}
+  const recs=findWeightRecords(w,editingId);
+  try{await store.save(w);toast(editingId?"Cambios guardados":gym?"Sesión guardada":"Entreno guardado");if(!editingId&&(w.kind==="gym")!==(mode==="gym"))setMode(w.kind==="gym"?"gym":"cf");openWod(w.id);if(recs.length)setTimeout(()=>showRecordPop(recs),250)}
   catch(e){err(e&&e.code==="quota_exceeded"?"No queda espacio para más entrenos. Borra alguno antiguo.":"No se pudo guardar. Revisa la conexión e inténtalo de nuevo.")}
   finally{btn.disabled=false}
 });
@@ -3982,6 +3998,42 @@ function renderMaxes(){
 function openMaxes(){openTool("maxes","Pesos máximos",renderMaxes)}
 VIEW_NAME.maxes="Progreso";VIEW_NAME.totals="Progreso";
 $("#openMaxBtn").onclick=()=>openMaxes();
+
+
+/* ---------------- ¡Récord! Pop-up con confeti cuando superas tu peso máximo en un ejercicio ---------------- */
+function findWeightRecords(w,skipId){
+  const prev=new Map();
+  for(const x of workouts){if(x.id===skipId||x.id===w.id)continue;for(const e0 of(x.exercises||[])){if(!e0.name)continue;const e=myEx(e0),v=num(e.weight);if(!v)continue;const k=exKey(e.name);if(v>(prev.get(k)||0))prev.set(k,v)}}
+  const out=new Map();
+  for(const e0 of(w.exercises||[])){if(!e0.name)continue;const e=myEx(e0),v=num(e.weight);if(!v)continue;const k=exKey(e.name),pv=prev.get(k)||0;
+    if(pv>0&&v>pv&&(!out.has(k)||v>out.get(k).v))out.set(k,{name:(findEx(e.name)||{}).n||e.name,v,pv})}
+  return[...out.values()];
+}
+function showRecordPop(recs){
+  document.querySelector(".rec-pop")?.remove();
+  const el=document.createElement("div");el.className="rec-pop";el.setAttribute("role","dialog");el.setAttribute("aria-modal","true");el.setAttribute("aria-labelledby","recT");
+  el.innerHTML=`<canvas class="rec-confetti" aria-hidden="true"></canvas><div class="rec-card">
+    <svg class="rec-trophy" viewBox="0 0 64 64" aria-hidden="true"><path d="M18 8h28v14a14 14 0 0 1-28 0z" fill="var(--star)" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/><path d="M18 13H9v5a9 9 0 0 0 9 9M46 13h9v5a9 9 0 0 1-9 9" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/><path d="M28 36h8v8h-8z" fill="var(--star)" stroke="var(--ink)" stroke-width="3"/><rect x="20" y="44" width="24" height="9" rx="2" fill="var(--brand)" stroke="var(--ink)" stroke-width="3"/><path d="M32 14l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" fill="#fff"/></svg>
+    <h2 id="recT">¡RÉCORD!</h2>
+    <p class="muted">${recs.length===1?"Nuevo peso máximo":"Nuevos pesos máximos"}</p>
+    <ul class="rec-list">${recs.map(r=>`<li><b>${esc(r.name)}</b><span><span class="mono rec-new">${kg(r.v)} kg</span><small>antes ${kg(r.pv)} kg · +${kg(r05(r.v-r.pv)||Math.round((r.v-r.pv)*10)/10)} kg</small></span></li>`).join("")}</ul>
+    <button type="button" class="btn primary full" id="recOk">¡Vamos!</button></div>`;
+  document.body.appendChild(el);
+  const close=()=>{el.remove();cancelAnimationFrame(raf)};
+  $("#recOk").onclick=close;el.addEventListener("click",e=>{if(e.target===el)close()});el.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+  $("#recOk").focus();try{navigator.vibrate&&navigator.vibrate([60,40,120])}catch(e){}
+  let raf=0;if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const cv=el.querySelector("canvas"),ctx=cv.getContext("2d"),dpr=Math.min(2,devicePixelRatio||1);
+  const size=()=>{cv.width=innerWidth*dpr;cv.height=innerHeight*dpr};size();
+  const cs=getComputedStyle(document.documentElement),cols=[cs.getPropertyValue("--brand"),cs.getPropertyValue("--star"),"#D946EF","#22C55E","#3B82F6","#F97316","#FFFFFF"].map(c=>c.trim()||"#D946EF");
+  const P=[];const burst=(x,n)=>{for(let i=0;i<n;i++){const a=-Math.PI/2+(Math.random()-.5)*1.6,sp=7+Math.random()*9;P.push({x:x*cv.width,y:cv.height*.62,vx:Math.cos(a)*sp*dpr,vy:Math.sin(a)*sp*dpr,w:(6+Math.random()*6)*dpr,h:(3+Math.random()*4)*dpr,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[i%cols.length],life:0})}};
+  burst(.2,70);burst(.8,70);setTimeout(()=>burst(.5,90),280);
+  const t0=performance.now();
+  const tick=t=>{ctx.clearRect(0,0,cv.width,cv.height);
+    for(const p of P){p.life++;p.vy+=.28*dpr;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.life*.15)));ctx.restore()}
+    if(t-t0<4200&&document.body.contains(el))raf=requestAnimationFrame(tick);else ctx.clearRect(0,0,cv.width,cv.height)};
+  raf=requestAnimationFrame(tick);
+}
 
 </script>
 

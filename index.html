@@ -1729,6 +1729,7 @@ html{background:linear-gradient(var(--safe-band,var(--bg)) 0 env(safe-area-inset
 .pet-svg .pt-bi{animation:ptBi 1.4s ease-in-out infinite}
 @keyframes ptBi{50%{transform:scale(1.18)}}
 .pet-svg .pt-press{animation:ptPress 2s ease-in-out infinite}
+.pet-svg .pt-spark{transform-box:view-box}
 @keyframes ptPress{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
 .pet-svg .pt-sweat{animation:ptTear 1.4s ease-in infinite}
 .pet-svg .pt-spark{animation:ptSpark 1.6s ease-in-out infinite}
@@ -6067,6 +6068,51 @@ petSVG=function(lv,mood){
       ${gold?`<path d="M47 ${hy-hr-1}l4 7 9-10 9 10 4-7-2 10H49z" fill="#F5C400" stroke="#8A6A00" stroke-width="1.3" stroke-linejoin="round"/>${sparkle(12,40,1)}${sparkle(108,90,.8,"#FFD84D","pt-spark pt-d2")}${sparkle(18,96,.7,"#FFF3B0","pt-spark pt-d3")}`
       :`<path d="M${60-hr+3} ${hy-12}q${hr-3} -9 ${2*hr-6} 0l-1 5q-${hr-4} -8 -${2*hr-8} 0z" fill="#E11D48" stroke="${dk}" stroke-width="1.2"/><path d="M${60+hr-4} ${hy-10}l8-3-3 6 6 1-10 1" fill="#E11D48" stroke="${dk}" stroke-width="1"/>`}`}
   return`<svg class="pet-svg pt-${mood} pt-lv${lv}" viewBox="0 0 120 120" aria-hidden="true">${defs}${back}<g class="pt-bob">${tail}${body}${head}${front}</g></svg>`};
+
+
+/* ================= Tochi kawaii: gato redondito, ojos enormes con brillos, en color y animado ================= */
+petSVG=function(lv,mood){
+  const u="k"+(++petUid),O="#2A1E1A",fur="#FFC995",fur2="#FFE2C2",pink="#FF9FB5",bean="#FF8FA8";
+  const sad=mood==="sad",happy=mood==="happy",ow=2.8;
+  const defs=`<defs><linearGradient id="${u}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${fur2}"/><stop offset="1" stop-color="${fur}"/></linearGradient>
+    ${lv>=4?`<radialGradient id="${u}g"><stop offset="0" stop-color="#FFE58A" stop-opacity=".9"/><stop offset="1" stop-color="#FFE58A" stop-opacity="0"/></radialGradient>`:""}</defs>`;
+  const F=`fill="url(#${u}f)" stroke="${O}" stroke-width="${ow}" stroke-linejoin="round"`;
+  const spark=(x,y,s,cls="")=>`<path class="pt-spark ${cls}" style="transform-origin:${x}px ${y}px" d="M${x} ${y-6*s}C${x+.6*s} ${y-1.4*s} ${x+1.4*s} ${y-.6*s} ${x+6*s} ${y}C${x+1.4*s} ${y+.6*s} ${x+.6*s} ${y+1.4*s} ${x} ${y+6*s}C${x-.6*s} ${y+1.4*s} ${x-1.4*s} ${y+.6*s} ${x-6*s} ${y}C${x-1.4*s} ${y-.6*s} ${x-.6*s} ${y-1.4*s} ${x} ${y-6*s}z" fill="${lv>=4?"#FFD54A":"#fff"}" stroke="${O}" stroke-width="1.4" stroke-linejoin="round"/>`;
+  const dot=(x,y,r,cls="")=>`<circle class="pt-spark ${cls}" style="transform-origin:${x}px ${y}px" cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="${O}" stroke-width="1.3"/>`;
+  const fx=`${spark(10,40,1)}${dot(13,26,2,"pt-d2")}${spark(110,30,.9,"pt-d3")}${dot(108,48,2.2)}${spark(106,70,.7,"pt-d2")}`;
+  /* Ojos enormes: negro con dos brillos grandes (parpadean) */
+  const eye=(cx,cy)=>`<g class="pt-blink" style="transform-origin:${cx}px ${cy}px"><circle cx="${cx}" cy="${cy}" r="10.5" fill="#1B1414"/><circle class="pt-shine" cx="${cx-3.4}" cy="${cy-3.6}" r="4.3" fill="#fff"/><circle cx="${cx+3.8}" cy="${cy+3.8}" r="2.3" fill="#fff"/>${sad?`<path d="M${cx-6} ${cy+7}q6-3.5 12 0" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/>`:""}</g>`;
+  const brows=sad?`<path d="M35 31l8-3M85 31l-8-3" stroke="${O}" stroke-width="2.4" stroke-linecap="round"/>`:lv>=3&&!happy?`<path d="M35 30l9 2.5M85 30l-9 2.5" stroke="${O}" stroke-width="2.6" stroke-linecap="round"/>`:"";
+  const mouth=happy?`<path d="M53.5 58.5q3 4 6.5 0q3.5 4 6.5 0" stroke="${O}" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M55.5 60.5q4.5 9 9 0z" fill="#7A2335" stroke="${O}" stroke-width="2" stroke-linejoin="round"/><path d="M57.3 63.6q2.7 2.4 5.4 0" fill="${pink}"/>`
+    :sad?`<path d="M55 63q5-4 10 0" stroke="${O}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`
+    :`<path d="M53.5 58.5q3 4.5 6.5 0q3.5 4.5 6.5 0" stroke="${O}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+  const tear=sad?`<path class="pt-tear" d="M38 55q-3 5 0 8q3-3 0-8z" fill="#7FD4FF" stroke="${O}" stroke-width="1"/>`:"";
+  const head=`<g class="pt-head">
+    <g class="pt-ear-l" style="transform-origin:36px 26px"><path d="M27 38C24 24 26 13 33 11C39 12 46 18 49 23" ${F}/><path d="M31 31C30 23 31 18 34 17C37 18 41 21 43 24" fill="${pink}"/></g>
+    <g class="pt-ear-r" style="transform-origin:84px 26px"><path d="M93 38C96 24 94 13 87 11C81 12 74 18 71 23" ${F}/><path d="M89 31C90 23 89 18 86 17C83 18 79 21 77 24" fill="${pink}"/></g>
+    <path d="M60 19C82 19 99 27 100 46C101 64 86 76 60 76C34 76 19 64 20 46C21 27 38 19 60 19Z" ${F}/>
+    <path d="M52 22q8-3 16 0" stroke="${O}" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".5"/>
+    <ellipse cx="31" cy="58" rx="6" ry="3.4" fill="${pink}" opacity=".7"/><ellipse cx="89" cy="58" rx="6" ry="3.4" fill="${pink}" opacity=".7"/>
+    ${eye(42,46)}${eye(78,46)}${brows}${tear}
+    <path d="M57.6 53.2q2.4-1.4 4.8 0q-.6 2.4-2.4 2.8q-1.8-.4-2.4-2.8z" fill="#1B1414"/>${mouth}
+    <path d="M24 52h-7M24 56l-6 2.5M96 52h7M96 56l6 2.5" stroke="${O}" stroke-width="2" stroke-linecap="round"/></g>`;
+  const body=`<path d="M32 108C27 92 31 78 44 72L76 72C89 78 93 92 88 108Z" ${F}/><ellipse cx="60" cy="96" rx="12" ry="10" fill="#FFF3E4" opacity=".9"/>`;
+  const paws=`<path d="M48 108c-2-7 1-11 5-11s6 4 5 11" ${F}/><path d="M62 108c-1-7 1-11 5-11s7 4 5 11" ${F}/>`;
+  const back=`<g><ellipse cx="85" cy="101" rx="10" ry="8" ${F}/><ellipse cx="87" cy="103" rx="3" ry="2.4" fill="${bean}"/><circle cx="82.6" cy="98.6" r="1.4" fill="${bean}"/><circle cx="86" cy="97.2" r="1.4" fill="${bean}"/><circle cx="89.4" cy="98.6" r="1.4" fill="${bean}"/></g>`;
+  const tail=`<g class="pt-tail" style="transform-origin:88px 100px"><path d="M88 102C104 100 106 84 98 80" stroke="${O}" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M88 102C104 100 106 84 98 80" stroke="${fur}" stroke-width="5.6" fill="none" stroke-linecap="round"/></g>`;
+  const mat=`<ellipse cx="60" cy="110" rx="44" ry="6" fill="${lv>=4?"#F5C400":"#C9B8FF"}" opacity=".45"/>`;
+  const band=c=>`<path d="M23 36q37-14 74 0l-1 6q-36-13-72 0z" fill="${c}" stroke="${O}" stroke-width="1.6" stroke-linejoin="round"/><path d="M95 37l9-4-3 6 6 2-11 0" fill="${c}" stroke="${O}" stroke-width="1.3" stroke-linejoin="round"/>`;
+  const db=(x,y,c,s=1)=>`<g transform="translate(${x} ${y}) scale(${s})"><rect x="-10" y="-1.8" width="20" height="3.6" rx="1.5" fill="#6B7280" stroke="${O}" stroke-width="1.2"/><rect x="-13" y="-6" width="5" height="12" rx="2" fill="${c}" stroke="${O}" stroke-width="1.5"/><rect x="8" y="-6" width="5" height="12" rx="2" fill="${c}" stroke="${O}" stroke-width="1.5"/></g>`;
+  let behind="",front="",pressHead=false,under="";
+  if(lv<=0){front=`<g class="pt-yarn" style="transform-origin:20px 100px"><circle cx="20" cy="100" r="9" fill="#F472B6" stroke="${O}" stroke-width="2.2"/><path d="M13 97q7 3 14 0M12 102q8 3 16-1M16 93q3 8 1 16" stroke="#BE185D" stroke-width="1.3" fill="none"/></g>`}
+  else if(lv===1){front=`${band("#38BDF8")}<g class="pt-curl" style="transform-origin:60px 104px">${db(60,98,"#2563EB",.9)}</g>`}
+  else if(lv===2){front=`${band("#EF4444")}<g class="pt-bi" style="transform-origin:26px 86px"><ellipse cx="27" cy="86" rx="7" ry="9" ${F} transform="rotate(-20 27 86)"/>${db(20,76,"#EF4444",.8)}</g><g class="pt-bi" style="transform-origin:94px 86px"><ellipse cx="93" cy="86" rx="7" ry="9" ${F} transform="rotate(20 93 86)"/>${db(100,76,"#EF4444",.8)}</g>`}
+  else{const gold=lv>=4,pc=gold?"#F5C400":"#DC2626";pressHead=true;
+    under=gold?`<circle class="pt-glow" cx="60" cy="62" r="58" fill="url(#${u}g)"/><path class="pt-cape" style="transform-origin:60px 74px" d="M38 74q-14 20-10 36h64q4-16-10-36z" fill="#DC2626" stroke="${O}" stroke-width="2" stroke-linejoin="round"/>`:"";
+    behind=`<rect x="4" y="66" width="112" height="5" rx="2.5" fill="#6B7280" stroke="${O}" stroke-width="1.4"/><rect x="2" y="52" width="9" height="33" rx="3" fill="${pc}" stroke="${O}" stroke-width="1.8"/><rect x="11" y="56" width="6" height="25" rx="2" fill="${pc}" stroke="${O}" stroke-width="1.5"/><rect x="109" y="52" width="9" height="33" rx="3" fill="${pc}" stroke="${O}" stroke-width="1.8"/><rect x="103" y="56" width="6" height="25" rx="2" fill="${pc}" stroke="${O}" stroke-width="1.5"/>`;
+    front=`<ellipse cx="24" cy="70" rx="7" ry="6" ${F}/><ellipse cx="96" cy="70" rx="7" ry="6" ${F}/>${gold?`<path d="M44 21l5 9 11-12 11 12 5-9-2 12H46z" fill="#F5C400" stroke="#8A6A00" stroke-width="1.8" stroke-linejoin="round" transform="translate(0 -8)"/>`:band("#E11D48")}${!sad?`<path class="pt-sweat" d="M98 40q2.6 5 0 7.6q-2.6-2.6 0-7.6z" fill="#60A5FA" stroke="${O}" stroke-width="1"/>`:""}`}
+  const top=pressHead?`<g class="pt-press">${behind}${head}${front}</g>`:`${head}${front}`;
+  return`<svg class="pet-svg pt-${mood} pt-lv${lv}" viewBox="0 0 120 120" aria-hidden="true">${defs}${fx}<g class="pt-bob">${mat}${under}${tail}${body}${back}${paws}${top}</g></svg>`};
 
 
 /* ================= TochiNuri v2 (versión de prueba): portada con «¿Qué vas a entrenar hoy?», accesos rápidos y estética deportiva premium ================= */

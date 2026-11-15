@@ -1702,6 +1702,11 @@ h2.view-title{text-wrap:balance}
 :root[data-skin="cristal"][data-night]{color-scheme:dark}
 html{background:linear-gradient(var(--safe-band,var(--bg)) 0 env(safe-area-inset-top,0px),var(--bg) env(safe-area-inset-top,0px))}
 #safeTop{z-index:30}
+/* Marcos de foto: dejar sitio alrededor para que el marco no se corte (sobresale un 47 % por cada lado) */
+:root[data-frame] .hello .avatar{margin:17px 17px 17px 17px}
+:root[data-frame] .hello{margin-top:4px}
+:root[data-frame] .photo-pick{margin:58px auto 58px}
+:root[data-frame] .photo-pick .cam{z-index:2}
 /* ================= TochiNuri v2 ================= */
 /* Tema por defecto: deportivo premium, limpio y sobrio */
 :root.v2:not([data-skin]){--bg:#F4F4F1;--surface:#FFFFFF;--surface-2:#EEEEEA;--ink:#0F1012;--muted:#6A6D73;--line:#E3E3DF;--accent:#0F1012;--accent-ink:#FFFFFF;--brand:#FF4D1F;--volt:#D9FF3F;--star:#E0A100;--p-green:#1E9E5A;--danger:#D2362B}
@@ -1833,6 +1838,7 @@ html{background:linear-gradient(var(--safe-band,var(--bg)) 0 env(safe-area-inset
 .v2-hero p{margin:0;font-size:15px;line-height:1.45;color:var(--ink)}
 @media (prefers-reduced-motion:reduce){.play.ic2 *{animation:none!important}}
 .qa-i:focus-visible{outline:none}.qa-i:focus-visible .qa-ic{outline:2px solid var(--brand);outline-offset:2px}
+:root.v2[data-frame] .hello .avatar,:root.v2[data-frame] .hello-me .avatar{margin:26px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>

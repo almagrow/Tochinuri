@@ -2570,7 +2570,7 @@ async function initShop(on){
   try{const{data}=await SB.from("shop").select("id,data,created_at").order("created_at");SHOP=(data||[]).map(r=>({...r.data,id:r.id}))}catch(e){SHOP=[]}
   try{const{data}=await SB.rpc("is_admin");shopAdmin=!!data}catch(e){shopAdmin=false}
   try{const{data}=await SB.rpc("has_free_shop");shopFree=!!data}catch(e){shopFree=false}
-  if(shopFree||shopAdmin)applySkin(skinPref());
+  if(shopFree||shopAdmin){applySkin(skinPref());try{applyExtras();renderAll()}catch(e){}}
   if(current==="shop")renderShop();renderGoal();
 }
 async function shopSave(item){const{id,...b}=item;const{error}=await SB.from("shop").upsert({id,data:b});if(error)throw error;const i=SHOP.findIndex(x=>x.id===id);if(i>=0)SHOP[i]=item;else SHOP.push(item)}
@@ -5035,7 +5035,7 @@ function greetLine(){const c=EXTRA_CATS[3],v=extraPref(c)||"base",P=PHRASES[v]||
   const d=new Date(),n=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);return arr[n%arr.length]}
 function recFxPref(){return extraPref(EXTRA_CATS[0])||""}
 async function useExtra(key,id){const c=EXTRA_CATS.find(x=>x.key===key);if(!c)return;const it=c.items.find(x=>x.id===id);
-  const ok=await saveProf({[c.prof]:id||""},id?`${c.mine}: ${exName(it)}`:`${c.mine}: ${c.normal}`);applyExtras();renderProfileBits&&renderProfileBits();return ok}
+  const ok=await saveProf({[c.prof]:id||""},id?`${c.mine}: ${exName(it)}`:`${c.mine}: ${c.normal}`);applyExtras();renderProfileBits&&renderProfileBits();if(ok!==false&&key==="recfx"&&id)setTimeout(()=>showRecordPop([{name:"Press banca",v:100,pv:95}],id),350);return ok}
 
 /* Comodín de racha: salva una semana en la que no llegaste al reto */
 const freezeBought=()=>(coinsData().spent||[]).filter(e=>e.id==="c-freeze").length;

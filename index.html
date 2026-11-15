@@ -1702,6 +1702,81 @@ h2.view-title{text-wrap:balance}
 :root[data-skin="cristal"][data-night]{color-scheme:dark}
 html{background:linear-gradient(var(--safe-band,var(--bg)) 0 env(safe-area-inset-top,0px),var(--bg) env(safe-area-inset-top,0px))}
 #safeTop{z-index:30}
+/* ================= TochiNuri v2 ================= */
+/* Tema por defecto: deportivo premium, limpio y sobrio */
+:root.v2:not([data-skin]){--bg:#F4F4F1;--surface:#FFFFFF;--surface-2:#EEEEEA;--ink:#0F1012;--muted:#6A6D73;--line:#E3E3DF;--accent:#0F1012;--accent-ink:#FFFFFF;--brand:#FF4D1F;--volt:#D9FF3F;--star:#E0A100;--p-green:#1E9E5A;--danger:#D2362B}
+@media (prefers-color-scheme:dark){:root.v2:not([data-skin]):not([data-theme="light"]){--bg:#0B0C0D;--surface:#151618;--surface-2:#1D1E21;--ink:#F3F3EF;--muted:#9B9EA4;--line:#28292D;--accent:#F3F3EF;--accent-ink:#0B0C0D;--brand:#FF6A3D;--volt:#D9FF3F;--p-green:#4BD488;--danger:#FF6B5E;color-scheme:dark}}
+:root.v2:not([data-skin])[data-theme="dark"]{--bg:#0B0C0D;--surface:#151618;--surface-2:#1D1E21;--ink:#F3F3EF;--muted:#9B9EA4;--line:#28292D;--accent:#F3F3EF;--accent-ink:#0B0C0D;--brand:#FF6A3D;--volt:#D9FF3F;--p-green:#4BD488;--danger:#FF6B5E;color-scheme:dark}
+:root.v2:not([data-skin]) body{letter-spacing:-.005em}
+:root.v2:not([data-skin]) header.top{background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line)}
+:root.v2:not([data-skin]) :is(.wod,.stat,.goal,.pet-card,.sec,.ex-card,.mtile,.pr-box,.wallet,.shop-card,.empty){border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+:root.v2:not([data-skin]) .btn{border-radius:12px;border:1px solid var(--line)}
+:root.v2:not([data-skin]) .btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+:root.v2:not([data-skin]) .tag{background:var(--surface-2);color:var(--ink);border:0;border-radius:6px;font-weight:600}
+:root.v2:not([data-skin]) .stat b{font-family:var(--f-display);font-size:34px;font-weight:700;letter-spacing:-.01em}
+:root.v2:not([data-skin]) nav.tabs{background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+:root.v2:not([data-skin]) .tab-new{background:var(--ink);color:var(--bg);box-shadow:0 6px 18px rgba(0,0,0,.18)}
+:root.v2:not([data-skin]) .tab[aria-current="page"]{color:var(--ink)}
+:root.v2:not([data-skin]) .mode-sw{background:var(--surface-2);border:0;border-radius:14px}
+:root.v2:not([data-skin]) .mode-sw button[aria-checked="true"]{background:var(--ink);color:var(--bg)}
+/* Saludo un poco más grande */
+.v2 .hello{font-size:17px;gap:14px;margin:6px 0 16px;color:var(--ink)}
+.v2 .hello .avatar,.v2 .hello-me .avatar{width:54px;height:54px;font-size:21px}
+.v2 .hello-t{line-height:1.4}
+.v2 .hello-t b{font-size:19px}
+/* Sin botones de herramientas en la portada (están en Accesos) y sin la tarjeta «Hoy toca» (va en la de hoy) */
+.v2 #v-log .tools,.v2 #planCard{display:none!important}
+.v2-sec{font-family:var(--f-display);font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin:22px 0 10px}
+/* Tarjeta de hoy */
+#todayCard{margin:0 0 16px}
+.td.todo{display:flex;flex-direction:column;gap:8px;width:100%;text-align:left;border:0;cursor:pointer;background:var(--ink);color:var(--bg);border-radius:24px;padding:22px 20px 20px;font:inherit;position:relative;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.16)}
+.td.todo::after{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--brand) 55%,transparent),transparent 70%);pointer-events:none}
+.td-k{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;opacity:.75;display:inline-flex;align-items:center;gap:6px}
+.td-k svg{width:16px;height:16px}
+.td-q{font-family:var(--f-display);font-size:38px;line-height:1;font-weight:700;letter-spacing:-.005em;text-transform:uppercase;max-width:15ch}
+.td-s{font-size:15px;opacity:.8;max-width:32ch}
+.td-cta{align-self:flex-start;margin-top:8px;display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:#fff;font-weight:800;font-size:16px;border-radius:999px;padding:12px 18px;position:relative;z-index:1}
+:root.v2:not([data-skin]) .td-cta{background:var(--volt);color:#0F1012}
+.td-cta svg{width:18px;height:18px}
+.td.todo:hover .td-cta svg{transform:translateX(3px);transition:transform .15s}
+.td.todo:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
+.td-alt{display:block;margin:8px auto 0;background:none;border:0;color:var(--muted);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;padding:6px}
+.td.done{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.td.done .td-h{display:flex;justify-content:space-between;align-items:center}
+.td.done .td-k{color:var(--p-green);opacity:1}
+.td-w{display:flex;flex-direction:column;gap:8px;width:100%;text-align:left;background:var(--surface-2);border:0;border-radius:18px;padding:14px;font:inherit;color:var(--ink);cursor:pointer}
+.td-wt{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.td-wt b{font-family:var(--f-display);font-size:26px;text-transform:uppercase;line-height:1.05}
+.td-stats{display:flex;gap:18px;flex-wrap:wrap}
+.td-stats span{display:flex;flex-direction:column}.td-stats b{font-size:22px;font-weight:700}.td-stats small{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.td-ex{margin:0;font-size:14px;color:var(--muted)}
+.td-go{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:14px;color:var(--brand)}.td-go svg{width:16px;height:16px}
+.td-more{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:none;border:1px dashed var(--line);border-radius:14px;padding:10px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer}.td-more svg{width:16px;height:16px}
+/* Esta semana */
+.wk{display:flex;flex-direction:column;gap:10px;margin:0 0 6px}
+.wk-h{display:flex;align-items:baseline;justify-content:space-between}.wk-h .v2-sec{margin:14px 0 0}
+.wk-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.wk-d{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.wk-d small{font-size:11px;font-weight:700;color:var(--muted)}.wk-d b{font-size:17px;font-family:var(--f-display)}
+.wk-d.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}.wk-d.on small{color:inherit;opacity:.7}
+.wk-d.now{outline:2px solid var(--brand);outline-offset:1px}
+.wk-list{display:flex;flex-direction:column;gap:8px}
+.wk-w{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 14px;font:inherit;color:var(--ink);cursor:pointer}
+.wk-dt{display:flex;flex-direction:column;align-items:center}.wk-dt small{font-size:11px;color:var(--muted);text-transform:uppercase}.wk-dt b{font-family:var(--f-display);font-size:22px}
+.wk-t{display:flex;flex-direction:column;min-width:0}.wk-t b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.wk-t small{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wk-r{font-weight:700;font-size:14px}
+.wk-empty{margin:0;font-size:14px}
+/* Accesos rápidos */
+.qa-sheet{padding:16px 16px calc(18px + env(safe-area-inset-bottom,0px));background:var(--bg);border-radius:24px 24px 0 0;max-height:86vh;overflow:auto}
+.qa-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.qa-h h2{margin:0;font-family:var(--f-display);font-size:24px;text-transform:uppercase}
+.qa-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:360px){.qa-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.qa-i{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;padding:6px 2px;font:inherit;color:var(--ink);cursor:pointer;position:relative;min-width:0}
+.qa-ic{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);color:var(--brand);transition:transform .12s}
+.qa-ic svg{width:26px;height:26px}
+.qa-i:active .qa-ic{transform:scale(.94)}
+.qa-i:focus-visible .qa-ic{outline:2px solid var(--brand);outline-offset:2px}
+.qa-l{font-size:12.5px;font-weight:600;text-align:center;line-height:1.2;overflow-wrap:normal;word-break:normal;hyphens:manual}
+.qa-x{position:absolute;top:2px;right:8px;background:var(--brand);color:#fff;border-radius:999px;font-size:10px;padding:1px 5px;font-weight:700}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -5840,6 +5915,75 @@ paintStatusBar=function(){const hdr=document.querySelector("header.top"),root=do
   if(lumOf(c)>.35){tmp.style.color=getComputedStyle(root).getPropertyValue("--ink").trim()||"#17202a";document.body.appendChild(tmp);c=getComputedStyle(tmp).color;tmp.remove();if(lumOf(c)>.2)c="rgb(17,17,17)"}
   document.querySelectorAll('meta[name="theme-color"]').forEach(m=>m.setAttribute("content",c));const st=$("#safeTop");if(st)st.style.background=c;root.style.setProperty("--safe-band",c)};
 requestAnimationFrame(paintStatusBar);
+
+/* ================= TochiNuri v2 (versión de prueba): portada con «¿Qué vas a entrenar hoy?», accesos rápidos y estética deportiva premium ================= */
+document.documentElement.classList.add("v2");
+const V2_IC={
+  grid:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg>`,
+  lib:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h3M19 12h3"/><rect x="5" y="7" width="3" height="10" rx="1"/><rect x="16" y="7" width="3" height="10" rx="1"/><path d="M8 12h8"/></svg>`,
+  arrow:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`,
+  plus:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`,
+  check:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`
+};
+/* ---------- Portada: orden nuevo ---------- */
+{const hello=$("#hello"),mk=id=>{const d=document.createElement("div");d.id=id;return d};
+  const todayC=mk("todayCard"),weekC=mk("weekCard");
+  let ref=hello;for(const el of [todayC,$("#sumCard"),$("#petCard"),weekC,$("#goalCard"),$("#cycleCard"),$(".stats")]){if(!el)continue;ref.after(el);ref=el}
+  const h=document.createElement("h3");h.className="v2-sec";h.id="histTitle";h.textContent="Historial";$(".log-bar").before(h)}
+const todays=()=>sorted().filter(w=>w.date===today());
+function renderToday(){const c=$("#todayCard");if(!c)return;if(!profile){c.innerHTML="";return}
+  const T=todays(),gym=mode==="gym",plan=gym&&typeof routineOf==="function"?routineOf(todayDow()):null;
+  if(T.length){
+    c.innerHTML=`<div class="td done"><div class="td-h"><span class="td-k">${V2_IC.check} Hoy has entrenado</span><span class="td-n mono">${T.length>1?T.length+" sesiones":""}</span></div>
+     ${T.map(w=>{const ex=(w.exercises||[]).filter(e=>e.name),vol=wodVolume(w),pr=(w.exercises||[]).filter((e,i)=>e.name&&cmpFor(w.id,i)?.pr).length;
+       return`<button type="button" class="td-w" data-wid="${esc(w.id)}"><div class="td-wt"><b>${esc(w.name||(w.kind==="gym"?"Sesión de gym":"WOD"))}</b><span class="tag">${esc(w.type||"")}</span></div>
+        <div class="td-stats">${w.duration?`<span><b class="mono">${fmtTime(w.duration)}</b><small>tiempo</small></span>`:""}<span><b class="mono">${ex.length}</b><small>ejercicios</small></span>${vol?`<span><b class="mono">${fmtBig(vol)}</b><small>kg movidos</small></span>`:""}${pr?`<span><b class="mono">${pr}</b><small>récord${pr>1?"s":""}</small></span>`:""}${w.result?`<span><b class="mono">${esc(w.result)}</b><small>resultado</small></span>`:""}</div>
+        <p class="td-ex">${ex.slice(0,5).map(e=>esc(e.name)).join(" · ")}${ex.length>5?` · +${ex.length-5}`:""}</p><span class="td-go">Ver entreno ${V2_IC.arrow}</span></button>`}).join("")}
+     <button type="button" class="td-more" id="tdMore">${V2_IC.plus} Apuntar otra sesión</button></div>`;
+    c.querySelectorAll("[data-wid]").forEach(b=>b.onclick=()=>openWod(b.dataset.wid));$("#tdMore").onclick=()=>startNew();
+  }else{
+    const d=new Date(),day=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"][d.getDay()];
+    c.innerHTML=`<button type="button" class="td todo" id="tdGo"><span class="td-k">${day.charAt(0).toUpperCase()+day.slice(1)} ${d.getDate()} de ${MESL[d.getMonth()].toLowerCase()}</span>
+      <b class="td-q">¿Qué vas a entrenar hoy?</b>
+      <span class="td-s">${plan?`Hoy toca <b>${esc(plan.name)}</b> · ${plan.ex.length} ejercicios de tu tabla`:gym?"Apunta tu sesión de gym: ejercicios, series y pesos":"Apunta tu WOD: ejercicios, reps, peso y tiempo"}</span>
+      <span class="td-cta">${plan?"Empezar "+esc(plan.name):"Registrar entreno"} ${V2_IC.arrow}</span></button>
+      ${plan?`<button type="button" class="td-alt" id="tdOther">Prefiero otro entreno</button>`:""}`;
+    $("#tdGo").onclick=()=>plan?startRoutine(plan):startNew();const o=$("#tdOther");if(o)o.onclick=()=>startNew()}}
+/* ---------- Esta semana ---------- */
+function renderWeek(){const c=$("#weekCard");if(!c)return;if(!profile){c.innerHTML="";return}
+  const mon=mondayOf(new Date()),days=[...Array(7)].map((_,i)=>isoD(addDays(mon,i))),W=sorted().filter(w=>w.date>=days[0]&&w.date<=days[6]&&inMode(w)),g=goalFor(days[0])||0,n=new Set(W.map(w=>w.date)).size;
+  c.innerHTML=`<div class="wk"><div class="wk-h"><h3 class="v2-sec">Esta semana</h3><span class="muted mono">${n}${g?` / ${g}`:""} día${n===1?"":"s"}</span></div>
+   <div class="wk-days">${days.map(d=>{const has=W.some(w=>w.date===d),t=d===today();return`<span class="wk-d${has?" on":""}${t?" now":""}"><small>${"LMXJVSD"[(dObj(d).getDay()+6)%7]}</small><b>${dObj(d).getDate()}</b></span>`}).join("")}</div>
+   ${W.length?`<div class="wk-list">${W.map(w=>{const d=dObj(w.date),ex=(w.exercises||[]).filter(e=>e.name);return`<button type="button" class="wk-w" data-wid="${esc(w.id)}"><span class="wk-dt"><small>${DIA[d.getDay()]}</small><b>${d.getDate()}</b></span><span class="wk-t"><b>${esc(w.name||(w.kind==="gym"?"Sesión de gym":"WOD"))}</b><small>${esc(ex.slice(0,3).map(e=>e.name).join(" · "))}${ex.length>3?` · +${ex.length-3}`:""}</small></span><span class="wk-r mono">${esc(w.result||(w.duration?fmtTime(w.duration):""))||(wodVolume(w)?fmtBig(wodVolume(w))+" kg":"")}</span></button>`}).join("")}</div>`
+   :`<p class="muted wk-empty">Aún no has entrenado esta semana. ¡Hoy es buen día!</p>`}</div>`;
+  c.querySelectorAll("[data-wid]").forEach(b=>b.onclick=()=>openWod(b.dataset.wid))}
+{const _ra=renderAll;renderAll=function(){_ra();try{renderToday();renderWeek()}catch(e){}}}
+{const _sm=setMode;setMode=function(m){_sm(m);try{renderToday();renderWeek()}catch(e){}}}
+
+/* ---------- Accesos rápidos (botón de abajo a la derecha) ---------- */
+const QA=[["lib","Ejercicios",V2_IC.lib,()=>show("lib")],["openTableBtn","Tabla"],["openChBtn","Retos"],["openMaxBtn","Pesos máximos"],["openPlatesBtn","Discos"],["openGoalsBtn","Objetivos"],["openMuscleBtn","Músculos"],["openSumBtn","Resumen"],["openTotalsBtn","Totales"],["openRMBtn","Calculadora RM"],["openCycleBtn","Ciclo"],["openPainBtn","Molestias"]];
+function qaItems(){return QA.map(([id,label,ic,fn])=>{if(id==="lib")return{id,label,ic,fn};const b=document.getElementById(id);if(!b)return null;
+    if(id==="openTableBtn"&&mode!=="gym")return null;
+    if(id==="openRMBtn"&&mode==="gym")return null;
+    if((id==="openCycleBtn"||id==="openPainBtn")&&b.dataset.v2Avail!=="1")return null;
+    return{id,label,ic:b.querySelector("svg")?.outerHTML||"",fn:()=>b.click(),extra:id==="openChBtn"?($("#chCount")?.textContent||""):""}}).filter(Boolean)}
+/* Ciclo y Molestias solo salen si están disponibles (consentimiento de salud / perfil) */
+function qaAvail(){["openCycleBtn","openPainBtn"].forEach(id=>{const b=document.getElementById(id);if(b)b.dataset.v2Avail=b.hidden?"0":"1"})}
+{const s=document.createElement("div");s.className="sheet-bg";s.id="qaSheet";s.hidden=true;
+  s.innerHTML=`<div class="sheet qa-sheet" role="dialog" aria-modal="true" aria-labelledby="qaTitle"><div class="qa-h"><h2 id="qaTitle">Accesos rápidos</h2><button type="button" class="icon-btn" id="qaClose" aria-label="Cerrar">×</button></div><div class="qa-grid" id="qaGrid"></div></div>`;
+  document.body.appendChild(s);s.addEventListener("click",e=>{if(e.target===s)closeQA()});$("#qaClose").onclick=()=>closeQA()}
+function openQA(){qaAvail();const g=$("#qaGrid");g.innerHTML=qaItems().map((q,i)=>`<button type="button" class="qa-i" data-qa="${i}"><span class="qa-ic">${q.ic}</span><span class="qa-l">${esc(q.label)}</span>${q.extra?`<small class="qa-x mono">${esc(q.extra)}</small>`:""}</button>`).join("");
+  const items=qaItems();g.querySelectorAll("[data-qa]").forEach(b=>b.onclick=()=>{closeQA();items[Number(b.dataset.qa)].fn()});$("#qaSheet").hidden=false;g.querySelector("button")?.focus()}
+function closeQA(){$("#qaSheet").hidden=true}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#qaSheet").hidden)closeQA()});
+{const t=document.querySelector('.tab[data-tab="lib"]');t.innerHTML=`${V2_IC.grid}Accesos`;t.setAttribute("aria-label","Accesos rápidos");t.setAttribute("aria-haspopup","dialog");
+  t.onclick=ev=>{ev.preventDefault();openQA()}}
+/* Que la pestaña de abajo se quede marcada en Entrenos aunque abras otra cosa desde los accesos */
+{const _sh=show;show=function(v){_sh(v);if(v==="lib")document.querySelectorAll(".tab").forEach(b=>b.toggleAttribute("aria-current",b.dataset.tab==="lib"))}}
+/* La lista de botones de la portada ya no hace falta en Mi perfil */
+{const _om=openMe;openMe=function(f){_om(f);const t=$("#meTools");if(t)t.hidden=true}}
+qaAvail();try{renderToday();renderWeek()}catch(e){}
+
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

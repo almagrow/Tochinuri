@@ -1915,6 +1915,17 @@ body.kb-open nav.tabs,body.kb-open .toast{display:none}
 body.kb-open main{padding-bottom:24px}
 /* Móvil en horizontal: contenido centrado y barra fina */
 @media (orientation:landscape) and (max-height:500px){:root{--tabbar-h:52px}.td-q{font-size:28px}.v2 .hello .avatar{width:40px;height:40px}}
+/* Historial en carrusel por meses: se desliza de derecha a izquierda */
+.v2 #logList{gap:6px}
+.lg-mh{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px}
+.lg-mh .eyebrow.month{margin:0}
+.lg-mh small{font-size:12px;color:var(--muted);font-weight:600}
+.lg-row{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;padding:2px 2px 10px;margin:0 -2px;scrollbar-width:thin}
+.lg-row::-webkit-scrollbar{height:4px}.lg-row::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+.lg-row>.wod{flex:0 0 min(82%,340px);scroll-snap-align:start;align-self:stretch}
+.lg-row>.wod .meta{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+button.wk-d{font:inherit;cursor:pointer}
+button.wk-d:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -6192,9 +6203,8 @@ function renderToday(){const c=$("#todayCard");if(!c)return;if(!profile){c.inner
 function renderWeek(){const c=$("#weekCard");if(!c)return;if(!profile){c.innerHTML="";return}
   const mon=mondayOf(new Date()),days=[...Array(7)].map((_,i)=>isoD(addDays(mon,i))),W=sorted().filter(w=>w.date>=days[0]&&w.date<=days[6]&&inMode(w)),g=goalFor(days[0])||0,n=new Set(W.map(w=>w.date)).size;
   c.innerHTML=`<div class="wk"><div class="wk-h"><h3 class="v2-sec">Esta semana</h3><span class="muted mono">${n}${g?` / ${g}`:""} día${n===1?"":"s"}</span></div>
-   <div class="wk-days">${days.map(d=>{const has=W.some(w=>w.date===d),t=d===today();return`<span class="wk-d${has?" on":""}${t?" now":""}"><small>${"LMXJVSD"[(dObj(d).getDay()+6)%7]}</small><b>${dObj(d).getDate()}</b></span>`}).join("")}</div>
-   ${W.length?`<div class="wk-list">${W.map(w=>{const d=dObj(w.date),ex=(w.exercises||[]).filter(e=>e.name);return`<button type="button" class="wk-w" data-wid="${esc(w.id)}"><span class="wk-dt"><small>${DIA[d.getDay()]}</small><b>${d.getDate()}</b></span><span class="wk-t"><b>${esc(w.name||(w.kind==="gym"?"Sesión de gym":"WOD"))}</b><small>${esc(ex.slice(0,3).map(e=>e.name).join(" · "))}${ex.length>3?` · +${ex.length-3}`:""}</small></span><span class="wk-r mono">${esc(w.result||(w.duration?fmtTime(w.duration):""))||(wodVolume(w)?fmtBig(wodVolume(w))+" kg":"")}</span></button>`}).join("")}</div>`
-   :`<p class="muted wk-empty">Aún no has entrenado esta semana. ¡Hoy es buen día!</p>`}</div>`;
+   <div class="wk-days">${days.map(d=>{const ws=W.filter(w=>w.date===d),t=d===today(),lbl=`${["domingo","lunes","martes","miércoles","jueves","viernes","sábado"][dObj(d).getDay()]} ${dObj(d).getDate()}`;return ws.length?`<button type="button" class="wk-d on${t?" now":""}" data-wid="${esc(ws[0].id)}" aria-label="${lbl}: ${esc(ws.map(w=>w.name||"entreno").join(", "))}. Ver entreno"><small>${"LMXJVSD"[(dObj(d).getDay()+6)%7]}</small><b>${dObj(d).getDate()}</b></button>`:`<span class="wk-d${t?" now":""}"><small>${"LMXJVSD"[(dObj(d).getDay()+6)%7]}</small><b>${dObj(d).getDate()}</b></span>`}).join("")}</div>
+   ${W.length?"":`<p class="muted wk-empty">Aún no has entrenado esta semana. ¡Hoy es buen día!</p>`}</div>`;
   c.querySelectorAll("[data-wid]").forEach(b=>b.onclick=()=>openWod(b.dataset.wid))}
 {const _ra=renderAll;renderAll=function(){_ra();try{renderToday();renderWeek()}catch(e){}}}
 {const _sm=setMode;setMode=function(m){_sm(m);try{renderToday();renderWeek()}catch(e){}}}
@@ -6287,6 +6297,15 @@ const QA_KEY={lib:"lib",openTableBtn:"table",openChBtn:"challenges",openMaxBtn:"
 {const isField=el=>el&&(el.matches?.('input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=button]),textarea,select')&&!el.readOnly);let kbT=null;
   document.addEventListener("focusin",e=>{if(isField(e.target)&&matchMedia("(pointer:coarse)").matches){clearTimeout(kbT);document.body.classList.add("kb-open")}});
   document.addEventListener("focusout",()=>{clearTimeout(kbT);kbT=setTimeout(()=>{if(!isField(document.activeElement))document.body.classList.remove("kb-open")},120)})}
+
+/* Historial en carrusel: cada mes en una fila que se desliza de lado */
+{const _rl=renderLog;renderLog=function(){_rl();const box=$("#logList");if(!box||!box.querySelector(".wod"))return;
+  const kids=[...box.children],frag=document.createDocumentFragment();let row=null,head=null,n=0;
+  const close=()=>{if(head){const c=document.createElement("small");c.textContent=`${n} entreno${n===1?"":"s"}${n>1?" · desliza →":""}`;head.appendChild(c)}};
+  for(const el of kids){if(el.classList.contains("month")){close();head=document.createElement("div");head.className="lg-mh";head.appendChild(el);frag.appendChild(head);row=document.createElement("div");row.className="lg-row";row.setAttribute("role","list");frag.appendChild(row);n=0}
+    else if(el.classList.contains("wod")&&row){el.setAttribute("role","listitem");row.appendChild(el);n++}else frag.appendChild(el)}
+  close();box.innerHTML="";box.appendChild(frag)}}
+renderAll();
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

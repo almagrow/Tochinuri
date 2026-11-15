@@ -1200,12 +1200,15 @@ header.top.sub .top-coins{display:none}
 .freeze-card{display:flex;align-items:center;gap:12px;padding:12px}
 .freeze-ico{font-size:42px;line-height:1}
 .freeze-bar{display:flex;flex-direction:column;gap:8px;margin-top:12px;padding:12px;border-radius:12px;background:color-mix(in srgb,var(--brand) 10%,var(--surface));border:1px dashed var(--brand);font-size:14px}
-/* Marcos de foto */
-:root[data-frame="fuego"] .avatar,.xf-prev[data-fr="fuego"]{box-shadow:0 0 0 3px #FF7A1A,0 0 0 6px #D946EF,0 0 14px 4px rgba(255,122,26,.65)}
-:root[data-frame="neon"] .avatar,.xf-prev[data-fr="neon"]{box-shadow:0 0 0 2px #22D3EE,0 0 10px 2px #22D3EE,0 0 22px 4px rgba(255,46,147,.7)}
-:root[data-frame="oro"] .avatar,.xf-prev[data-fr="oro"]{box-shadow:0 0 0 3px #F5C400,0 0 0 6px #8A6A00,0 0 0 8px #F5C400}
-:root[data-frame="pegatina"] .avatar,.xf-prev[data-fr="pegatina"]{box-shadow:0 0 0 4px #FFFFFF,0 0 0 6px #2E1065,4px 4px 0 6px #2E1065;transform:rotate(-5deg)}
-:root[data-frame="manga"] .avatar,.xf-prev[data-fr="manga"]{box-shadow:0 0 0 3px #111111,5px 5px 0 3px #E11D48}
+/* Marcos de foto (las vistas previas de la tienda llevan su propio marco y no se contagian del elegido) */
+.avatar.xf-prev{box-shadow:none;transform:none}
+:root[data-frame="fuego"] .avatar:not(.xf-prev),.avatar.xf-prev[data-fr="fuego"]{box-shadow:0 0 0 3px #FF7A1A,0 0 0 6px #D946EF,0 0 14px 4px rgba(255,122,26,.65)}
+:root[data-frame="neon"] .avatar:not(.xf-prev),.avatar.xf-prev[data-fr="neon"]{box-shadow:0 0 0 2px #22D3EE,0 0 10px 2px #22D3EE,0 0 22px 4px rgba(255,46,147,.7)}
+:root[data-frame="oro"] .avatar:not(.xf-prev),.avatar.xf-prev[data-fr="oro"]{box-shadow:0 0 0 3px #F5C400,0 0 0 6px #8A6A00,0 0 0 8px #F5C400}
+:root[data-frame="pegatina"] .avatar:not(.xf-prev),.avatar.xf-prev[data-fr="pegatina"]{box-shadow:0 0 0 4px #FFFFFF,0 0 0 6px #2E1065,4px 4px 0 6px #2E1065;transform:rotate(-5deg)}
+:root[data-frame="manga"] .avatar:not(.xf-prev),.avatar.xf-prev[data-fr="manga"]{box-shadow:0 0 0 3px #111111,5px 5px 0 3px #E11D48}
+:root[data-frame="icono"] .avatar:not(.xf-prev),.avatar.xf-prev[data-fr="icono"]{padding:4px;border:0;background:radial-gradient(circle closest-side,color-mix(in srgb,var(--brand) 18%,var(--surface)) 0 76%,transparent 77%),url("icons/icon-192.png?v=2") center/170%;box-shadow:0 0 0 2px #6D28D9,0 0 14px 3px rgba(217,70,239,.55)}
+:root[data-frame="icono"] .avatar:not(.xf-prev) img,.avatar.xf-prev[data-fr="icono"] img{border-radius:50%}
 /* Botón + especial */
 :root[data-plus] nav.tabs .tab-new,.xp-prev[data-pl]{clip-path:none}
 :root[data-plus="disco"] nav.tabs .tab-new,.xp-prev[data-pl="disco"]{border-radius:50%;background:radial-gradient(circle,#111827 0 22%,#DC2626 23% 70%,#7F1D1D 71% 77%,#DC2626 78%);color:#fff;border:3px solid #111827;box-shadow:0 4px 0 #111827;animation:plusSpin 6s linear infinite}
@@ -4266,7 +4269,7 @@ const EXTRA_CATS=[
   {key:"recfx",pfx:"r-",prof:"recFx",title:"Celebraciones de récord",mine:"Celebración de récord",desc:"Cambia la animación que sale cuando bates tu peso máximo.",normal:"Confeti",
    items:[{id:"discos",name:"Lluvia de discos",price:120},{id:"fuego",name:"Explosión de fuego",price:150},{id:"estrellas",name:"Estrellas doradas",price:150},{id:"manga",name:"Impacto manga",price:180}]},
   {key:"frame",pfx:"f-",prof:"frame",title:"Marcos para tu foto",mine:"Marco de tu foto",desc:"Un aro alrededor de tu foto de perfil.",normal:"Sin marco",
-   items:[{id:"fuego",name:"Llamas",price:100},{id:"neon",name:"Neón",price:100},{id:"oro",name:"Oro de campeón",price:150},{id:"pegatina",name:"Pegatina",price:80},{id:"manga",name:"Manga",price:120}]},
+   items:[{id:"fuego",name:"Llamas",price:100},{id:"neon",name:"Neón",price:100},{id:"oro",name:"Oro de campeón",price:150},{id:"pegatina",name:"Pegatina",price:80},{id:"manga",name:"Manga",price:120},{id:"icono",name:"Llamas TochiNuri",price:200}]},
   {key:"title",pfx:"n-",prof:"title",title:"Títulos",mine:"Tu título",desc:"Un apodo que sale junto a tu nombre en el saludo.",normal:"Sin título",
    items:[{id:"bestia",name:"Bestia del WOD",price:80},{id:"burpee",name:{m:"Rey del Burpee",f:"Reina del Burpee"},price:100},{id:"hierro",name:"Máquina de hierro",price:80},{id:"barras",name:{m:"Señor de las barras",f:"Señora de las barras"},price:100},{id:"ninja",name:"Ninja de las dominadas",price:100},{id:"snatch",name:{m:"Dios del Snatch",f:"Diosa del Snatch"},price:150},{id:"leyenda",name:"Leyenda del box",price:200}]},
   {key:"phrases",pfx:"p-",prof:"phrases",title:"Packs de frases",mine:"Frases del saludo",desc:"Cambia las frases con las que te saluda la app cada día.",normal:"Normal",

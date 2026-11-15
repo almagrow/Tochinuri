@@ -51,10 +51,11 @@ img{max-width:100%}
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
+html{background:var(--bg);overscroll-behavior-y:none}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
   padding-bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom,0px) + 24px)}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+#safeTop{position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);pointer-events:none}
 .wrap{max-width:640px;margin:0 auto}
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -1200,6 +1201,7 @@ h2.view-title{text-wrap:balance}
 
 
 <div class="wrap">
+  <div id="safeTop" aria-hidden="true"></div>
   <header class="top">
     <div class="nav-left">
       <button class="theme-btn" id="themeBtn" aria-label="Cambiar a modo noche"><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/></svg><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></button>
@@ -4176,6 +4178,21 @@ function animalCard(x){
 }
 {const _ow=openWod;openWod=function(id){_ow(id);const x=workouts.find(w=>w.id===id);if(!x)return;const html=animalCard(x);if(!html)return;
   const v=$("#v-wod"),acts=v.querySelector(".sec.row-actions");if(acts)acts.insertAdjacentHTML("beforebegin",html);else v.insertAdjacentHTML("beforeend",html)}}
+
+
+/* Barra de estado del móvil (iOS y Android): mismo color que la cabecera de cada tema, sin franjas ni bordes arriba */
+function solidColor(c){const m=/rgba?\(([^)]+)\)/.exec(c||"");if(!m)return c||"";const a=m[1].split(",").map(x=>parseFloat(x));return a.length>3&&a[3]<.95?null:`rgb(${a[0]},${a[1]},${a[2]})`}
+function paintStatusBar(){
+  const hdr=document.querySelector("header.top"),cs=getComputedStyle(document.body);
+  let c=hdr?solidColor(getComputedStyle(hdr).backgroundColor):null;
+  if(!c)c=solidColor(cs.backgroundColor)||getComputedStyle(document.documentElement).getPropertyValue("--bg").trim()||"#eceff2";
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m=>m.setAttribute("content",c));
+  const st=$("#safeTop");if(st)st.style.background=c;
+}
+{const _as=applySkin;applySkin=function(id){_as(id);requestAnimationFrame(paintStatusBar)}}
+{const _at=applyTheme;applyTheme=function(t){_at(t);requestAnimationFrame(paintStatusBar)}}
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>requestAnimationFrame(paintStatusBar))}catch(e){}
+requestAnimationFrame(paintStatusBar);
 
 </script>
 

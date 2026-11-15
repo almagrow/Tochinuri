@@ -1707,6 +1707,43 @@ html{background:linear-gradient(var(--safe-band,var(--bg)) 0 env(safe-area-inset
 :root[data-frame] .hello{margin-top:4px}
 :root[data-frame] .photo-pick{margin:58px auto 58px}
 :root[data-frame] .photo-pick .cam{z-index:2}
+/* Tochi anime: animaciones */
+.pet-svg *{transform-box:view-box}
+.pet-svg .pt-bob{animation:ptBob 3s ease-in-out infinite;transform-origin:60px 112px}
+@keyframes ptBob{50%{transform:translateY(-1.6px) scaleY(1.015)}}
+.pet-svg .pt-blink{animation:ptBlink 4.2s infinite}
+@keyframes ptBlink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+.pet-svg .pt-shine{animation:ptShine 2.4s ease-in-out infinite}
+@keyframes ptShine{50%{opacity:.6}}
+.pet-svg .pt-tail{animation:ptTail 1.8s ease-in-out infinite}
+@keyframes ptTail{50%{transform:rotate(-12deg)}}
+.pet-svg .pt-ear-l{transform-origin:40px 30px;animation:ptEar 5s infinite}
+.pet-svg .pt-ear-r{transform-origin:80px 30px;animation:ptEar 5s 2.5s infinite}
+@keyframes ptEar{0%,88%,100%{transform:rotate(0)}92%{transform:rotate(-9deg)}96%{transform:rotate(4deg)}}
+.pet-svg .pt-tear{animation:ptTear 1.6s ease-in infinite}
+@keyframes ptTear{0%{transform:translateY(-2px);opacity:0}30%{opacity:1}100%{transform:translateY(9px);opacity:0}}
+.pet-svg .pt-yarn{animation:ptRoll 3s ease-in-out infinite}
+@keyframes ptRoll{50%{transform:translateX(-3px) rotate(-40deg)}}
+.pet-svg .pt-curl{animation:ptCurl 1.6s ease-in-out infinite}
+@keyframes ptCurl{50%{transform:rotate(-14deg)}}
+.pet-svg .pt-bi{animation:ptBi 1.4s ease-in-out infinite}
+@keyframes ptBi{50%{transform:scale(1.18)}}
+.pet-svg .pt-press{animation:ptPress 2s ease-in-out infinite}
+@keyframes ptPress{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+.pet-svg .pt-sweat{animation:ptTear 1.4s ease-in infinite}
+.pet-svg .pt-spark{animation:ptSpark 1.6s ease-in-out infinite}
+.pet-svg .pt-d2{animation-delay:.5s}.pet-svg .pt-d3{animation-delay:1s}
+@keyframes ptSpark{0%,100%{transform:scale(.4);opacity:.3}50%{transform:scale(1.15) rotate(20deg);opacity:1}}
+.pet-svg .pt-glow{animation:ptGlow 2.4s ease-in-out infinite;transform-origin:60px 62px}
+@keyframes ptGlow{50%{opacity:.6;transform:scale(.94)}}
+.pet-svg .pt-cape{animation:ptCape 2.2s ease-in-out infinite}
+@keyframes ptCape{50%{transform:skewX(-6deg)}}
+.pet-svg.pt-sad .pt-bob{animation-duration:4.5s}
+.pet-svg.pt-happy .pt-bob{animation:ptHop 1.8s ease-in-out infinite}
+@keyframes ptHop{0%,60%,100%{transform:none}75%{transform:translateY(-4px)}}
+.pet-svg.jump .pt-bob{animation:ptJump .6s ease}
+@keyframes ptJump{40%{transform:translateY(-12px) scale(1.04)}}
+@media (prefers-reduced-motion:reduce){.pet-svg *{animation:none!important}}
 /* ================= TochiNuri v2 ================= */
 /* Tema por defecto: deportivo premium, limpio y sobrio */
 :root.v2:not([data-skin]){--bg:#F4F4F1;--surface:#FFFFFF;--surface-2:#EEEEEA;--ink:#0F1012;--muted:#6A6D73;--line:#E3E3DF;--accent:#0F1012;--accent-ink:#FFFFFF;--brand:#FF4D1F;--volt:#D9FF3F;--star:#E0A100;--p-green:#1E9E5A;--danger:#D2362B}
@@ -5977,6 +6014,60 @@ paintStatusBar=function(){const hdr=document.querySelector("header.top"),root=do
   if(lumOf(c)>.35){tmp.style.color=getComputedStyle(root).getPropertyValue("--ink").trim()||"#17202a";document.body.appendChild(tmp);c=getComputedStyle(tmp).color;tmp.remove();if(lumOf(c)>.2)c="rgb(17,17,17)"}
   document.querySelectorAll('meta[name="theme-color"]').forEach(m=>m.setAttribute("content",c));const st=$("#safeTop");if(st)st.style.background=c;root.style.setProperty("--safe-band",c)};
 requestAnimationFrame(paintStatusBar);
+
+/* ================= Tochi estilo anime: ojos grandes y brillantes, animado ================= */
+let petUid=0;
+petSVG=function(lv,mood){
+  const u="t"+(++petUid),fur="#F6B26B",fur2="#F9C98E",dk="#3A2418",st="#E08A44",pink="#FF8FA3",belly="#FFF1DE";
+  const sad=mood==="sad",happy=mood==="happy";
+  const hy=lv>=3?52:48,hr=25;
+  const E=(cx,cy,rx,ry,f=fur,rot=0,cls="")=>`<ellipse${cls?` class="${cls}"`:""} cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${f}" stroke="${dk}" stroke-width="1.8"${rot?` transform="rotate(${rot} ${cx} ${cy})"`:""}/>`;
+  const defs=`<defs><radialGradient id="${u}i" cx=".5" cy=".35" r=".75"><stop offset="0" stop-color="#9BE7FF"/><stop offset=".45" stop-color="#3F8CFF"/><stop offset="1" stop-color="#22237A"/></radialGradient>
+    <linearGradient id="${u}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${fur2}"/><stop offset="1" stop-color="${fur}"/></linearGradient>
+    ${lv>=4?`<radialGradient id="${u}g"><stop offset="0" stop-color="#FFE58A" stop-opacity=".95"/><stop offset="1" stop-color="#FFE58A" stop-opacity="0"/></radialGradient>`:""}</defs>`;
+  /* Ojos de anime: grandes, con iris degradado y dos brillos; parpadean */
+  const eye=(cx,cy)=>`<g class="pt-blink" style="transform-origin:${cx}px ${cy}px"><ellipse cx="${cx}" cy="${cy}" rx="8.6" ry="${sad?11.2:10.6}" fill="${dk}"/><ellipse cx="${cx}" cy="${cy+1.4}" rx="6.9" ry="${sad?9.2:8.7}" fill="url(#${u}i)"/>
+      <ellipse cx="${cx}" cy="${cy+2.4}" rx="3.1" ry="4" fill="#120F3A"/><circle class="pt-shine" cx="${cx-2.8}" cy="${cy-3.8}" r="3.1" fill="#fff"/><circle cx="${cx+3}" cy="${cy+4}" r="1.5" fill="#fff"/>${happy?`<path class="pt-spark" style="transform-origin:${cx+2.6}px ${cy-4.6}px" d="M${cx+2.6} ${cy-7}l.8 1.8 1.8.8-1.8.8-.8 1.8-.8-1.8-1.8-.8 1.8-.8z" fill="#fff"/>`:""}${sad?`<path d="M${cx-5} ${cy+6}q5 3 10 0" stroke="#BDEBFF" stroke-width="1.6" fill="none" opacity=".9"/>`:""}</g>`;
+  const ex=11.8,ey=hy+3;
+  const _b=0,brows=sad?`<path d="M${60-ex-7} ${ey-12}l9 -3.5M${60+ex+7} ${ey-12}l-9 -3.5" stroke="${dk}" stroke-width="2" stroke-linecap="round"/>`:lv>=3&&!happy?`<path d="M${60-ex-6} ${ey-13}l9 2.5M${60+ex+6} ${ey-13}l-9 2.5" stroke="${dk}" stroke-width="2.2" stroke-linecap="round"/>`:"";
+  const my=hy+16,mouth=sad?`<path d="M56 ${my+2}q4-3 8 0" stroke="${dk}" stroke-width="1.8" fill="none" stroke-linecap="round"/>`
+    :happy?`<path d="M55 ${my-1}q5 7 10 0z" fill="#C2405A" stroke="${dk}" stroke-width="1.4" stroke-linejoin="round"/><path d="M57.5 ${my+2.4}q2.5 2 5 0" fill="${pink}"/>`
+    :`<path d="M55 ${my}q2.5 3 5 0q2.5 3 5 0" stroke="${dk}" stroke-width="1.8" fill="none" stroke-linecap="round"/>`;
+  const tear=sad?`<path class="pt-tear" d="M${60-ex-3} ${ey+9}q-2.5 5 0 7q2.5-2 0-7z" fill="#7FD4FF"/>`:"";
+  const head=`<g class="pt-head">
+    <g class="pt-ear-l"><path d="M${60-hr*.95} ${hy-hr*.35}L${60-hr*1.05} ${hy-hr*1.25}L${60-hr*.3} ${hy-hr*.9}z" fill="url(#${u}f)" stroke="${dk}" stroke-width="1.8" stroke-linejoin="round"/><path d="M${60-hr*.85} ${hy-hr*.5}L${60-hr*.92} ${hy-hr*1.05}L${60-hr*.48} ${hy-hr*.82}z" fill="${pink}"/></g>
+    <g class="pt-ear-r"><path d="M${60+hr*.95} ${hy-hr*.35}L${60+hr*1.05} ${hy-hr*1.25}L${60+hr*.3} ${hy-hr*.9}z" fill="url(#${u}f)" stroke="${dk}" stroke-width="1.8" stroke-linejoin="round"/><path d="M${60+hr*.85} ${hy-hr*.5}L${60+hr*.92} ${hy-hr*1.05}L${60+hr*.48} ${hy-hr*.82}z" fill="${pink}"/></g>
+    <ellipse cx="60" cy="${hy}" rx="${hr+2}" ry="${hr}" fill="url(#${u}f)" stroke="${dk}" stroke-width="1.8"/>
+    <path d="M54 ${hy-hr+2}l2 6M66 ${hy-hr+2}l-2 6M60 ${hy-hr+1}v7" stroke="${st}" stroke-width="2.2" stroke-linecap="round"/>
+    <ellipse cx="${60-ex-7}" cy="${ey+11}" rx="4.6" ry="2.6" fill="${pink}" opacity=".6"/><ellipse cx="${60+ex+7}" cy="${ey+11}" rx="4.6" ry="2.6" fill="${pink}" opacity=".6"/>
+    ${eye(60-ex,ey)}${eye(60+ex,ey)}${brows}${tear}<path d="M58.6 ${my-4}h2.8l-1.4 1.6z" fill="${pink}"/>${mouth}
+    <path d="M${60-hr+3} ${my-3}h-8M${60-hr+3} ${my}l-7 2.5M${60+hr-3} ${my-3}h8M${60+hr-3} ${my}l7 2.5" stroke="${dk}" stroke-width="1" stroke-linecap="round" opacity=".7"/></g>`;
+  const tail=`<g class="pt-tail" style="transform-origin:${lv>=2?76:72}px 104px"><path d="M${lv>=2?76:72} 104q22 2 15-22" stroke="${fur}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M${lv>=2?76:72} 104q22 2 15-22" stroke="${dk}" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".35"/></g>`;
+  const sparkle=(x,y,s=1,c="#FFD84D",cls="pt-spark")=>`<path class="${cls}" style="transform-origin:${x}px ${y}px" d="M${x} ${y-5*s}l${1.3*s} ${3.7*s} ${3.7*s} ${1.3*s}-${3.7*s} ${1.3*s}-${1.3*s} ${3.7*s}-${1.3*s}-${3.7*s}-${3.7*s}-${1.3*s} ${3.7*s}-${1.3*s}z" fill="${c}"/>`;
+  let back="",body="",front="";
+  if(lv<=0){
+    body=`${E(60,96,15,14,`url(#${u}f)`)}<ellipse cx="60" cy="99" rx="8" ry="8" fill="${belly}"/>${E(52,108,5,3.5)}${E(68,108,5,3.5)}`;
+    front=`<g class="pt-yarn" style="transform-origin:95px 104px"><circle cx="95" cy="104" r="8.5" fill="#F472B6" stroke="${dk}" stroke-width="1.6"/><path d="M88 101q7 3 14 0M87 106q8 3 16-1M91 97q3 8 1 16" stroke="#BE185D" stroke-width="1.1" fill="none"/></g>`}
+  else if(lv===1){
+    body=`${E(60,92,17,16,`url(#${u}f)`)}<path d="M45 86q15-7 30 0l-2 17q-13 5-26 0z" fill="#38BDF8" stroke="${dk}" stroke-width="1.5"/><text x="60" y="98" text-anchor="middle" font-size="8" font-weight="900" font-family="Arial,sans-serif" fill="#fff">TN</text>
+      ${E(43,92,5,9,fur,20)}<rect x="38" y="97" width="8" height="3.6" rx="1.4" fill="#FACC15" stroke="${dk}" stroke-width=".9"/>${E(52,108,6,3.8)}${E(68,108,6,3.8)}`;
+    front=`<g class="pt-curl" style="transform-origin:76px 88px">${E(80,80,5,10,fur,-35)}<g transform="translate(86 70)"><rect x="-9" y="-1.5" width="18" height="3" rx="1.2" fill="#555"/><rect x="-11" y="-5" width="4" height="10" rx="1.5" fill="#2563EB" stroke="${dk}"/><rect x="7" y="-5" width="4" height="10" rx="1.5" fill="#2563EB" stroke="${dk}"/></g></g>`}
+  else if(lv===2){
+    body=`${E(60,92,21,17,`url(#${u}f)`)}<path d="M41 84q19-8 38 0l-3 20q-16 6-32 0z" fill="#EF4444" stroke="${dk}" stroke-width="1.5"/>${E(51,108,7,4)}${E(69,108,7,4)}`;
+    front=`<g class="pt-flex">${E(31,84,10,6)}${E(89,84,10,6)}<g class="pt-bi" style="transform-origin:25px 72px">${E(25,72,6.5,11)}</g><g class="pt-bi" style="transform-origin:95px 72px">${E(95,72,6.5,11)}</g>${E(25,60,5.5,4.5)}${E(95,60,5.5,4.5)}</g>${sparkle(14,52,.8)}${sparkle(106,52,.8)}`}
+  else{
+    const gold=lv>=4,pc=gold?"#F5C400":"#DC2626";
+    back=gold?`<circle class="pt-glow" cx="60" cy="62" r="58" fill="url(#${u}g)"/><path class="pt-cape" style="transform-origin:60px 80px" d="M40 80q-12 22-8 36h56q4-14-8-36z" fill="#DC2626" stroke="${dk}" stroke-width="1.6" stroke-linejoin="round"/>`:"";
+    body=`<path d="M38 82q22-10 44 0l-6 26q-16 6-32 0z" fill="url(#${u}f)" stroke="${dk}" stroke-width="1.8" stroke-linejoin="round"/><path d="M48 90q6 4 11 0M61 90q6 4 11 0M60 96v10M54 99h12" stroke="${st}" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      ${gold?`<rect x="43" y="100" width="34" height="7" rx="2" fill="#F5C400" stroke="#8A6A00" stroke-width="1.3"/><rect x="55" y="98.5" width="10" height="10" rx="2" fill="#FDE047" stroke="#8A6A00" stroke-width="1.3"/>`:`<rect x="44" y="101" width="32" height="5" rx="2" fill="#374151"/>`}${E(50,112,7,4)}${E(70,112,7,4)}`;
+    const plate=(x)=>`<rect x="${x}" y="2" width="7" height="24" rx="2" fill="${pc}" stroke="${dk}" stroke-width="1.1"/><rect x="${x+(x<60?7:-4.5)}" y="6" width="4.5" height="16" rx="1.5" fill="${pc}" stroke="${dk}" stroke-width=".9"/>`;
+    front=`<g class="pt-press"><path d="M42 86Q22 70 22 46Q23 28 26 15M78 86Q98 70 98 46Q97 28 94 15" stroke="${dk}" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M42 86Q22 70 22 46Q23 28 26 15M78 86Q98 70 98 46Q97 28 94 15" stroke="${fur}" stroke-width="9.4" fill="none" stroke-linecap="round"/>
+      ${E(23,56,8,11,fur,12)}${E(97,56,8,11,fur,-12)}<rect x="6" y="12" width="108" height="4" rx="2" fill="#6B7280" stroke="${dk}" stroke-width=".9"/>${plate(4)}${plate(109)}${E(26,14,4.6,4.2)}${E(94,14,4.6,4.2)}</g>
+      ${!sad?`<path class="pt-sweat" d="M86 46q2 4 0 6q-2-2 0-6z" fill="#60A5FA"/>`:""}
+      ${gold?`<path d="M47 ${hy-hr-1}l4 7 9-10 9 10 4-7-2 10H49z" fill="#F5C400" stroke="#8A6A00" stroke-width="1.3" stroke-linejoin="round"/>${sparkle(12,40,1)}${sparkle(108,90,.8,"#FFD84D","pt-spark pt-d2")}${sparkle(18,96,.7,"#FFF3B0","pt-spark pt-d3")}`
+      :`<path d="M${60-hr+3} ${hy-12}q${hr-3} -9 ${2*hr-6} 0l-1 5q-${hr-4} -8 -${2*hr-8} 0z" fill="#E11D48" stroke="${dk}" stroke-width="1.2"/><path d="M${60+hr-4} ${hy-10}l8-3-3 6 6 1-10 1" fill="#E11D48" stroke="${dk}" stroke-width="1"/>`}`}
+  return`<svg class="pet-svg pt-${mood} pt-lv${lv}" viewBox="0 0 120 120" aria-hidden="true">${defs}${back}<g class="pt-bob">${tail}${body}${head}${front}</g></svg>`};
+
 
 /* ================= TochiNuri v2 (versión de prueba): portada con «¿Qué vas a entrenar hoy?», accesos rápidos y estética deportiva premium ================= */
 document.documentElement.classList.add("v2");

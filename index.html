@@ -5651,6 +5651,49 @@ renderMuscles=function(){const v=$("#v-muscles"),sc=muscleScores(),mx=Math.max(1
   v.querySelectorAll(".mu-p").forEach(g=>{g.onclick=()=>pick(g.dataset.mu);g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(g.dataset.mu)}}});
   v.querySelectorAll("[data-mul]").forEach(li=>li.onclick=()=>pick(li.dataset.mul))};
 
+/* ================= Tochi rediseñado: cada nivel con un aspecto muy distinto ================= */
+petSVG=function(lv,mood){
+  const fur="#F4A35C",dk="#2B2420",st="#D9783A",belly="#FCE3C8",pink="#E8607A";
+  const head=(cx,cy,r,brows)=>{const ey=cy-r*.08,ex=r*.42,eyes=mood==="happy"?`<path d="M${cx-ex-4} ${ey}q4-5 8 0M${cx+ex-4} ${ey}q4-5 8 0" stroke="${dk}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`
+      :mood==="sad"?`<path d="M${cx-ex-4} ${ey-3}l8 2M${cx+ex+4} ${ey-3}l-8 2" stroke="${dk}" stroke-width="2.2" stroke-linecap="round"/><circle cx="${cx-ex}" cy="${ey+3}" r="2.3" fill="${dk}"/><circle cx="${cx+ex}" cy="${ey+3}" r="2.3" fill="${dk}"/><path d="M${cx-ex-1} ${ey+7}q-2 5 0 7q2-2 0-7" fill="#5BB8F0"/>`
+      :`<circle cx="${cx-ex}" cy="${ey}" r="2.8" fill="${dk}"/><circle cx="${cx+ex}" cy="${ey}" r="2.8" fill="${dk}"/><circle cx="${cx-ex+1}" cy="${ey-1}" r=".9" fill="#fff"/><circle cx="${cx+ex+1}" cy="${ey-1}" r=".9" fill="#fff"/>`;
+    const br=brows&&mood!=="sad"?`<path d="M${cx-ex-5} ${ey-7}l9 3M${cx+ex+5} ${ey-7}l-9 3" stroke="${dk}" stroke-width="2.4" stroke-linecap="round"/>`:"";
+    const my=cy+r*.38,mouth=mood==="sad"?`<path d="M${cx-5} ${my+3}q5-4 10 0" stroke="${dk}" stroke-width="2" fill="none" stroke-linecap="round"/>`:`<path d="M${cx-6} ${my}q3 4 6 0q3 4 6 0" stroke="${dk}" stroke-width="2" fill="none" stroke-linecap="round"/>${mood==="happy"?`<path d="M${cx-3} ${my+2}q3 6 6 0z" fill="${pink}"/>`:""}`;
+    return`<path d="M${cx-r*.92} ${cy-r*.45}l-2-${r*.75} ${r*.62} ${r*.4}zM${cx+r*.92} ${cy-r*.45}l2-${r*.75} -${r*.62} ${r*.4}z" fill="${fur}" stroke="${dk}" stroke-width="2" stroke-linejoin="round"/><path d="M${cx-r*.78} ${cy-r*.62}l-1-${r*.42} ${r*.36} ${r*.24}zM${cx+r*.78} ${cy-r*.62}l1-${r*.42} -${r*.36} ${r*.24}z" fill="#F7B9A8"/>
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="${fur}" stroke="${dk}" stroke-width="2"/><path d="M${cx-4} ${cy-r+2}l1.5 6M${cx+4} ${cy-r+2}l-1.5 6M${cx} ${cy-r+1}v7" stroke="${st}" stroke-width="2" stroke-linecap="round"/>
+      ${eyes}${br}<path d="M${cx-2.2} ${my-4}h4.4l-2.2 2.4z" fill="${pink}"/>${mouth}<path d="M${cx-r*.55} ${my-2}h-${r*.45}M${cx-r*.55} ${my+1}l-${r*.4} 3M${cx+r*.55} ${my-2}h${r*.45}M${cx+r*.55} ${my+1}l${r*.4} 3" stroke="${dk}" stroke-width="1.1" stroke-linecap="round"/>`};
+  const db=(x,y,s=1,c="#7C3AED")=>`<g transform="translate(${x} ${y}) scale(${s})"><rect x="-9" y="-1.6" width="18" height="3.2" rx="1.2" fill="#555"/><rect x="-11" y="-5" width="4" height="10" rx="1.5" fill="${c}" stroke="${dk}" stroke-width="1"/><rect x="7" y="-5" width="4" height="10" rx="1.5" fill="${c}" stroke="${dk}" stroke-width="1"/></g>`;
+  const tail=(x,y,big)=>`<path d="M${x} ${y}q${big?24:18} 2 ${big?16:12}-${big?22:16}" stroke="${fur}" stroke-width="${big?8:6}" fill="none" stroke-linecap="round"/><path d="M${x} ${y}q${big?24:18} 2 ${big?16:12}-${big?22:16}" stroke="${dk}" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".35"/>`;
+  const E=(cx,cy,rx,ry,f=fur,rot=0)=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${f}" stroke="${dk}" stroke-width="2"${rot?` transform="rotate(${rot} ${cx} ${cy})"`:""}/>`;
+  let g="";
+  if(lv<=0){ /* Gatito: pequeño, sentado, con su ovillo */
+    g=`${tail(72,104,false)}${E(60,96,14,15)}<ellipse cx="60" cy="100" rx="8" ry="9" fill="${belly}"/>${E(52,110,5,3.5)}${E(68,110,5,3.5)}${head(60,66,22)}
+     <circle cx="94" cy="104" r="9" fill="#F472B6" stroke="${dk}" stroke-width="1.8"/><path d="M87 100q7 3 14 0M86 106q8 3 16-1M90 96q3 8 1 17" stroke="#BE185D" stroke-width="1.2" fill="none"/><path d="M85 108q-6 4-10 2" stroke="#F472B6" stroke-width="1.6" fill="none"/>`}
+  else if(lv===1){ /* En forma: camiseta deportiva, muñequera y una mancuerna */
+    g=`${tail(74,100,false)}${E(60,88,17,19)}<path d="M45 80q15-8 30 0l-2 22q-13 6-26 0z" fill="#38BDF8" stroke="${dk}" stroke-width="1.6"/><text x="60" y="95" text-anchor="middle" font-size="8" font-weight="900" font-family="Arial,sans-serif" fill="#fff">TN</text>
+     ${E(42,86,5,11,fur,20)}<rect x="37" y="92" width="8" height="4" rx="1.5" fill="#FACC15" stroke="${dk}" stroke-width="1"/>${E(80,74,5,11,fur,-35)}${db(86,62,.9,"#2563EB")}${E(52,106,6,4)}${E(68,106,6,4)}${head(60,50,20)}`}
+  else if(lv===2){ /* Fuerte: camiseta roja y doble bíceps */
+    g=`${tail(78,98,true)}${E(60,86,22,20)}<path d="M40 76q20-10 40 0l-3 24q-17 7-34 0z" fill="#EF4444" stroke="${dk}" stroke-width="1.6"/><path d="M52 88q8 4 16 0" stroke="#B91C1C" stroke-width="1.6" fill="none"/>
+     ${E(30,76,11,7)}${E(90,76,11,7)}${E(23,62,6,11)}${E(97,62,6,11)}<path d="M26 72q4-7 10-3M94 72q-4-7-10-3" stroke="${st}" stroke-width="1.6" fill="none"/>${E(23,49,6,5)}${E(97,49,6,5)}
+     ${E(50,106,7,4.5)}${E(70,106,7,4.5)}${head(60,46,19,true)}`}
+  else{ /* Bestia y Leyenda: torso enorme, barra por encima de la cabeza */
+    const leg=lv>=4;
+    const glow=leg?`<defs><radialGradient id="tglow"><stop offset="0" stop-color="#FDE68A" stop-opacity=".95"/><stop offset="1" stop-color="#FDE68A" stop-opacity="0"/></radialGradient></defs><circle cx="60" cy="62" r="58" fill="url(#tglow)"/>`:"";
+    const cape=leg?`<path d="M38 70q-10 30-6 46h56q4-16-6-46z" fill="#DC2626" stroke="${dk}" stroke-width="1.8" stroke-linejoin="round"/>`:"";
+    const plate=(x,c)=>`<rect x="${x}" y="2" width="8" height="26" rx="2" fill="${c}" stroke="${dk}" stroke-width="1.2"/><rect x="${x+(x<60?8:-5)}" y="6" width="5" height="18" rx="1.5" fill="${c}" stroke="${dk}" stroke-width="1"/>`;
+    g=`${glow}${cape}${tail(80,104,true)}
+     <path d="M34 74q26-12 52 0l-8 34q-18 8-36 0z" fill="${fur}" stroke="${dk}" stroke-width="2" stroke-linejoin="round"/>
+     <path d="M46 82q7 5 13 0M61 82q7 5 13 0M60 90v14M53 94h14M54 100h12" stroke="${st}" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+     ${leg?`<rect x="41" y="98" width="38" height="8" rx="2" fill="#F5C400" stroke="#8A6A00" stroke-width="1.4"/><rect x="54" y="96" width="12" height="12" rx="2" fill="#FDE047" stroke="#8A6A00" stroke-width="1.4"/>`:`<rect x="42" y="99" width="36" height="5" rx="2" fill="#374151"/>`}
+     <path d="M40 78Q20 62 22 40Q24 26 26 16M80 78Q100 62 98 40Q96 26 94 16" stroke="${dk}" stroke-width="14" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M40 78Q20 62 22 40Q24 26 26 16M80 78Q100 62 98 40Q96 26 94 16" stroke="${fur}" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+     ${E(25,52,9,12,fur,15)}${E(95,52,9,12,fur,-15)}<path d="M20 50q5-6 11-2M100 50q-5-6-11-2" stroke="${st}" stroke-width="1.6" fill="none"/>
+     <rect x="6" y="13" width="108" height="4" rx="2" fill="#6B7280" stroke="${dk}" stroke-width="1"/>${plate(4,leg?"#F5C400":"#DC2626")}${plate(108,leg?"#F5C400":"#DC2626")}${E(26,15,5,4.5)}${E(94,15,5,4.5)}
+     ${E(48,112,8,5)}${E(72,112,8,5)}${head(60,50,17,true)}
+     <path d="M44 44q16-8 32 0l-1 5q-15-7-30 0z" fill="#E11D48" stroke="${dk}" stroke-width="1.3"/><path d="M75 46l8-3-3 6 6 1-10 1" fill="#E11D48" stroke="${dk}" stroke-width="1.1"/>
+     ${mood!=="sad"?`<path d="M80 54q2 4 0 6q-2-2 0-6zM40 58q2 4 0 6q-2-2 0-6z" fill="#60A5FA"/>`:""}
+     ${leg?`<path d="M48 34l4 7 8-10 8 10 4-7-2 10h-20z" fill="#F5C400" stroke="#8A6A00" stroke-width="1.4" stroke-linejoin="round"/><path d="M14 46l1.5 3.5 3.5 1.5-3.5 1.5L14 56l-1.5-3.5L9 51l3.5-1.5zM106 84l1.2 3 3 1.2-3 1.2-1.2 3-1.2-3-3-1.2 3-1.2z" fill="#FBBF24"/>`:""}`}
+  return`<svg class="pet-svg" viewBox="0 0 120 120" aria-hidden="true">${g}</svg>`};
+
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

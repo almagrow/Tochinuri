@@ -1745,6 +1745,10 @@ html{background:linear-gradient(var(--safe-band,var(--bg)) 0 env(safe-area-inset
 .pet-svg.jump .pt-bob{animation:ptJump .6s ease}
 @keyframes ptJump{40%{transform:translateY(-12px) scale(1.04)}}
 @media (prefers-reduced-motion:reduce){.pet-svg *{animation:none!important}}
+/* Historial: separación entre tarjetas para que no se solapen */
+#logList{display:flex;flex-direction:column;gap:10px}
+#logList>.eyebrow.month{margin:10px 0 0}
+#logList>.eyebrow.month:first-child{margin-top:0}
 /* ================= TochiNuri v2 ================= */
 /* Tema por defecto: deportivo premium, limpio y sobrio */
 :root.v2:not([data-skin]){--bg:#F4F4F1;--surface:#FFFFFF;--surface-2:#EEEEEA;--ink:#0F1012;--muted:#6A6D73;--line:#E3E3DF;--accent:#0F1012;--accent-ink:#FFFFFF;--brand:#FF4D1F;--volt:#D9FF3F;--star:#E0A100;--p-green:#1E9E5A;--danger:#D2362B}

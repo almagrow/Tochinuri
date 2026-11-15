@@ -1548,6 +1548,29 @@ h2.view-title{text-wrap:balance}
 .sl-f input{width:100%;min-width:0;padding-right:38px;min-height:42px}
 .sl-f small{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);pointer-events:none}
 .sl-x{text-align:center;color:var(--muted);font-weight:700}
+.pet-art{position:relative}
+.pet-lv{position:absolute;right:-4px;bottom:-4px;min-width:26px;height:26px;border-radius:999px;background:var(--brand);color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center;border:2px solid var(--surface);padding:0 4px}
+.pet-xp{height:8px;border-radius:9px;background:var(--surface-2);overflow:hidden;margin:4px 0 2px}
+.pet-xp i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--star));border-radius:9px}
+.pet-help{margin:-8px 0 14px;font-size:13px;background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:10px 12px}
+:root{--mu0:color-mix(in srgb,var(--ink) 9%,var(--surface));--mu1:color-mix(in srgb,var(--brand) 32%,var(--surface));--mu2:color-mix(in srgb,var(--brand) 64%,var(--surface));--mu3:var(--brand)}
+.mu-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 12px 10px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px}
+.mu-card .mu-figs{background:none;border:0;padding:0;margin:0;gap:4px}
+.mu-fig svg{width:100%;max-width:150px;height:auto;overflow:visible}
+.mu-base{fill:color-mix(in srgb,var(--ink) 6%,var(--surface));stroke:color-mix(in srgb,var(--ink) 18%,transparent);stroke-width:1}
+.mu-p{cursor:pointer;outline:none}
+.mu-p path{stroke:color-mix(in srgb,var(--ink) 30%,transparent);stroke-width:1.1;stroke-linejoin:round;transition:filter .15s}
+.mu-p[data-lv="3"] path{stroke:color-mix(in srgb,var(--brand) 70%,#000)}
+.mu-p:hover path,.mu-p:focus-visible path{filter:brightness(1.1)}
+.mu-p.sel path{stroke:var(--ink);stroke-width:2.4}
+.mu-leg{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);font-weight:600}
+.mu-leg span{display:inline-flex;align-items:center;gap:5px}.mu-leg i{width:14px;height:14px;border-radius:4px;border:1px solid var(--line)}
+.mu-tip{margin:0;text-align:center;font-size:14px;color:var(--muted)}.mu-tip b{color:var(--ink)}
+.mu-sum{margin:0 0 10px;font-size:15px}
+.mu-all{margin:0 0 10px;font-weight:700;color:var(--p-green)}
+.mu-list li{cursor:pointer;border-radius:8px;padding:2px 4px}
+.mu-list li.sel{background:color-mix(in srgb,var(--brand) 12%,transparent)}
+.mu-bar{height:10px;border-radius:9px;background:var(--surface-2);overflow:hidden}.mu-bar i{display:block;height:100%;border-radius:9px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -5539,6 +5562,94 @@ function readSetList(c){const box=c.querySelector(".sl-box");if(!box||box.hidden
     const sb=el.querySelector(".ex-set");if(sb){sb.addEventListener("click",()=>{el._slDone=(el._slDone||0)+1;slSync(el)});sb.addEventListener("contextmenu",()=>{el._slDone=Math.max(0,(el._slDone||0)-1);slSync(el)})}
   }}catch(x){}return el}}
 {const _en=exNums;exNums=function(e){if(Array.isArray(e?.sl)&&e.sl.length){const t=e.sl.map(s=>`${s.reps??"?"}×${s.kg!=null?kg(s.kg):"–"}`).join(" · ");return`${e.sl.length} series: ${t} kg${e.time?" · "+fmtTime(e.time):""}`}return _en(e)}}
+
+/* ================= Tochi sube de nivel con tus logros y da monedas ================= */
+const PET_XP={badge:10,secret:20,challenge:5,month:15,goal:25};
+const petNeed=L=>25*L*(L+1); /* XP total para llegar al nivel L: 50, 150, 300, 500… */
+const petCoins=L=>20+10*L;
+function petXP(){let badge=0,secret=0,ch=0,mo=0,goal=0;
+  try{const s=badgeStats(),got=badgeLevels();badge=BADGES.reduce((a,b)=>a+Math.max(badgeLevel(b,s),Object.keys(got[b.id]||{}).length),0)}catch(e){}
+  try{secret=secretsState().filter(x=>x.date).length}catch(e){}
+  try{const now=mondayOf(new Date());for(let d=dObj(CH_START);d<=now;d=addDays(d,7)){const f=isoD(d),t=isoD(addDays(d,6));ch+=weekChallenges(f).filter(c=>chProgress(c,f,t).ok).length}
+    const st=dObj(CH_START),n=new Date();for(let y=st.getFullYear(),m=st.getMonth();y<n.getFullYear()||(y===n.getFullYear()&&m<=n.getMonth());m===11?(y++,m=0):m++){const mc=monthChallenge(y,m);if(chProgress(mc,isoD(new Date(y,m,1)),isoD(new Date(y,m+1,0))).ok)mo++}}catch(e){}
+  try{goal=kgGoals().filter(g=>goalDone(g)).length}catch(e){}
+  const xp=badge*PET_XP.badge+secret*PET_XP.secret+ch*PET_XP.challenge+mo*PET_XP.month+goal*PET_XP.goal;
+  let L=0;while(petNeed(L+1)<=xp&&L<99)L++;return{xp,L,parts:{badge,secret,ch,mo,goal}}}
+const PET_ST2=[{n:"Gatito",min:0},{n:"Gato en forma",min:2},{n:"Gato fuerte",min:4},{n:"Gato bestia",min:6},{n:"Gato leyenda",min:9}];
+petState=function(){const X=petXP();let lv=0;PET_ST2.forEach((p,i)=>{if(X.L>=p.min)lv=i});
+  const si=streakInfo(),last=sorted().find(w=>w.date&&w.date<=today()),idle=last?Math.round((dObj(today())-dObj(last.date))/864e5):99;
+  const mood=si.lost||idle>=6?"sad":idle<=1?"happy":"ok";return{...X,lv,mood,idle,stage:PET_ST2[lv],nextStage:PET_ST2[lv+1]||null}};
+const petLog=()=>Array.isArray(profile?.petLog)?profile.petLog:[];
+{const _cl=coinLedger;coinLedger=function(){const out=_cl();try{for(const e of petLog())out.push({date:e.date,amt:e.amt,why:`Tochi sube a nivel ${e.lv}`})}catch(e){}return out.sort((a,b)=>(b.date||"").localeCompare(a.date||""))}}
+let petBusy=false;
+async function checkPetLevel(){if(petBusy||!profileReady||!profile||!profile.petOn)return;const X=petXP(),known=petLog().reduce((a,e)=>Math.max(a,e.lv),0);if(X.L<=known)return;
+  petBusy=true;const add=[];for(let L=known+1;L<=X.L;L++)add.push({lv:L,date:today(),amt:petCoins(L)});const tot=add.reduce((a,e)=>a+e.amt,0);
+  const ok=await saveProf({petLog:[...petLog(),...add]});petBusy=false;
+  if(ok!==false)setTimeout(()=>toast(`🐱 ¡Tochi sube a nivel ${X.L}! +${tot} TochiCoins`),900)}
+paintPet=function(){const c=$("#petCard");if(!c)return;if(!profile||!profile.petOn){c.innerHTML="";return}const P=petState(),nm=profile.petName||"Tochi";
+  const a=petNeed(P.L),b=petNeed(P.L+1),pct=Math.round((P.xp-a)/(b-a)*100);
+  const msg=P.mood==="sad"?(P.idle<99?`Lleva ${P.idle} días esperándote… ¡vuelve a entrenar!`:"Está esperando tu primer entreno."):P.mood==="happy"?"¡Está feliz, has entrenado hace nada!":"Está bien, pero quiere más hierro.";
+  c.innerHTML=`<div class="pet-card ${P.mood}"><button type="button" class="pet-art" id="petTap" aria-label="${esc(nm)}: ${esc(P.stage.n)}, nivel ${P.L}">${petSVG(P.lv,P.mood)}<span class="pet-lv mono">${P.L}</span></button>
+   <div class="pet-t"><span class="eyebrow">${esc(nm)} · Nivel ${P.L} · ${esc(P.stage.n)}</span><b>${esc(msg)}</b>
+    <div class="pet-xp" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}" aria-label="Experiencia hasta el nivel ${P.L+1}"><i style="width:${pct}%"></i></div>
+    <span class="muted">${P.xp-a} / ${b-a} XP · al nivel ${P.L+1} te da <b>${petCoins(P.L+1)} monedas</b>${P.nextStage?` · con nivel ${P.nextStage.min} será ${P.nextStage.n}`:""}</span></div>
+   <button type="button" class="icon-btn pet-x" id="petX" aria-label="Ocultar mascota">×</button></div>
+   <div class="pet-help" id="petHelp" hidden><b>¿Cómo sube Tochi?</b> Con tus logros: cada nivel de insignia +${PET_XP.badge} XP, reto semanal +${PET_XP.challenge}, reto del mes +${PET_XP.month}, logro secreto +${PET_XP.secret} y objetivo cumplido +${PET_XP.goal}. Ahora llevas ${P.parts.badge} niveles de insignia, ${P.parts.ch} retos, ${P.parts.secret} secretos y ${P.parts.goal} objetivos.</div>`;
+  $("#petTap").onclick=()=>{const s=$("#petTap svg");s.classList.remove("jump");void s.getBBox();s.classList.add("jump");const h=$("#petHelp");h.hidden=!h.hidden};
+  $("#petX").onclick=async()=>{await saveProf({petOn:false},"Mascota desactivada. Puedes volver a activarla en Tu perfil.")}};
+{const _ra=renderAll;renderAll=function(){_ra();try{checkPetLevel()}catch(e){}}}
+{const sm=document.querySelector(".me-pet small");if(sm)sm.textContent="Un gatito en la portada que sube de nivel con tus logros y te da monedas"}
+/* Los guardados del perfil van en fila, para que dos cambios seguidos no se pisen */
+{const _sp=saveProf;let q=Promise.resolve();saveProf=function(patch,msg){const r=q.then(()=>_sp(patch,msg));q=r.catch(()=>{});return r}}
+
+/* ================= Músculos: figura anatómica más clara, con niveles de intensidad ================= */
+const MU_PATHS={
+ front:{
+  hombros:"M72 80C60 80 50 90 50 104c0 8 3 14 8 18c4-12 10-22 20-28z",
+  pecho:"M100 86v40c-12 5-26 4-34-4c-4-12 0-26 12-32c8-4 15-5 22-4z",
+  biceps:"M55 124c-6 12-8 26-6 40c6 4 12 2 14-4c2-14 2-26-2-38z",
+  antebrazo:"M48 168c-6 16-8 32-6 48c4 2 8 2 11 0c4-16 7-32 7-48z",
+  abdomen:"M86 132h28l2 62c-6 9-26 9-32 0zM66 126c4 24 10 50 18 70l2-64z",
+  cuadriceps:"M74 212c-8 26-10 56-6 86c8 6 20 4 26-2c4-28 4-58 2-82z"
+ },
+ back:{
+  trapecio:"M100 62c-8 8-20 16-30 20c12 8 22 16 30 34z",
+  hombros:"M72 80C60 80 50 90 50 104c0 8 3 14 8 18c4-12 10-22 20-28z",
+  espalda:"M100 118c-8-14-20-22-30-22c-4 16-2 36 6 54c8 10 16 16 24 20z",
+  triceps:"M55 124c-6 12-8 26-6 40c6 4 12 2 14-4c2-14 2-26-2-38z",
+  antebrazo:"M48 168c-6 16-8 32-6 48c4 2 8 2 11 0c4-16 7-32 7-48z",
+  lumbar:"M88 166h12v34h-14z",
+  gluteo:"M100 204c-12-2-26 2-30 18c0 16 12 26 26 24c4-6 4-26 4-42z",
+  isquios:"M72 250c-6 20-6 40-2 52c8 4 20 2 26-2c2-18 2-36 0-50z",
+  gemelos:"M70 318c-6 18-4 38 4 54c8 2 14 0 16-6c2-16 0-34-2-48z"
+ }};
+const MU_BASE=`<ellipse cx="100" cy="40" rx="19" ry="24"/><path d="M90 60h20l2 14H88z"/><circle cx="44" cy="226" r="8"/><circle cx="156" cy="226" r="8"/><path d="M70 196h60l2 18H68z"/><ellipse cx="82" cy="308" rx="12" ry="9"/><ellipse cx="118" cy="308" rx="12" ry="9"/><path d="M70 318c-4 20-2 40 4 56h16c4-18 4-38 0-56zM130 318c4 20 2 40-4 56h-16c-4-18-4-38 0-56z"/><path d="M72 376h20l2 10H66zM108 376h20l6 10h-28z"/><path d="M66 126c4 24 10 50 18 70H70c-6-20-8-44-4-70zM134 126c-4 24-10 50-18 70h14c6-20 8-44 4-70z"/>`;
+function muLevel(v,mx){if(!v)return 0;const f=v/mx;return f>.66?3:f>.33?2:1}
+bodySVG=function(sc,back){const mx=Math.max(1,...Object.values(sc)),side=back?"back":"front",P=MU_PATHS[side];
+  const fill=lv=>lv?`var(--mu${lv})`:"var(--mu0)";
+  const parts=Object.entries(P).map(([k,d])=>{const lv=muLevel(sc[k]||0,mx),n=MUSC.find(m=>m[0]===k)[1];
+    return`<g class="mu-p" data-mu="${k}" data-lv="${lv}" tabindex="0" role="button" aria-label="${n}: ${Math.round(sc[k]||0)} series"><path d="${d}" fill="${fill(lv)}"/><path d="${d}" fill="${fill(lv)}" transform="matrix(-1 0 0 1 200 0)"/></g>`}).join("");
+  const abs=!back?`<path d="M86 152h28M86 172h28M100 132v64" stroke="var(--bg)" stroke-width="1.6" fill="none" opacity=".7"/>`:"";
+  const spine=back?`<path d="M100 66v134" stroke="var(--bg)" stroke-width="1.6" opacity=".7"/>`:"";
+  return`<figure class="mu-fig"><svg viewBox="40 10 120 384" role="img" aria-label="Músculos trabajados, vista ${back?"de espalda":"de frente"}"><g class="mu-base">${MU_BASE}</g>${parts}${abs}${spine}</svg><figcaption>${back?"Espalda":"Frente"}</figcaption></figure>`};
+renderMuscles=function(){const v=$("#v-muscles"),sc=muscleScores(),mx=Math.max(1,...Object.values(sc)),L=MUSC.map(([k,n])=>({k,n,v:sc[k],lv:muLevel(sc[k],mx)})).sort((a,b)=>b.v-a.v);
+  const used=L.filter(x=>x.v),forgot=L.filter(x=>!x.v),per=muRange==="week"?"esta semana":"en los últimos 30 días";
+  const top=used.slice(0,3).map(x=>x.n.toLowerCase());
+  v.innerHTML=`<h2 class="view-title">Músculos</h2>
+   <div class="seg mu-seg" role="radiogroup" aria-label="Periodo">${[["week","Esta semana"],["30","Últimos 30 días"]].map(([k,l])=>`<input type="radio" name="muR" id="muR_${k}" value="${k}"${muRange===k?" checked":""}><label for="muR_${k}">${l}</label>`).join("")}</div>
+   ${used.length?`<p class="mu-sum">Lo que más has trabajado ${per}: <b>${top.join(", ").replace(/, ([^,]*)$/," y $1")}</b>.</p>`:""}
+   <div class="mu-card"><div class="mu-figs">${bodySVG(sc,false)}${bodySVG(sc,true)}</div>
+    <div class="mu-leg" aria-hidden="true"><span><i style="background:var(--mu0)"></i>Nada</span><span><i style="background:var(--mu1)"></i>Poco</span><span><i style="background:var(--mu2)"></i>Medio</span><span><i style="background:var(--mu3)"></i>Mucho</span></div>
+    <p class="mu-tip" id="muTip" aria-live="polite">Toca un músculo para ver cuántas series le has dado.</p></div>
+   ${!used.length?`<div class="empty"><h3>Sin entrenos ${per}</h3><p>Cuando apuntes ejercicios se irá coloreando el cuerpo.</p></div>`:
+   `${forgot.length?`<div class="sec mu-forgot"><span class="eyebrow">Te tienen olvidados</span><p>${forgot.map(x=>`<span class="mu-chip">${esc(x.n)}</span>`).join("")}</p></div>`:`<p class="mu-all">💪 Has tocado todos los grupos musculares ${per}.</p>`}
+    <ul class="mu-list">${used.map(x=>`<li data-mul="${x.k}"><span>${esc(x.n)}</span><div class="mu-bar"><i style="width:${x.v/mx*100}%;background:var(--mu${x.lv})"></i></div><b class="mono">${Math.round(x.v)}</b></li>`).join("")}</ul>
+    <p class="muted mu-note">Series aproximadas de cada grupo. El músculo principal de cada ejercicio cuenta entero y los secundarios cuentan algo menos.</p>`}`;
+  v.querySelectorAll("[name=muR]").forEach(r=>r.onchange=()=>{muRange=r.value;renderMuscles()});
+  const pick=k=>{v.querySelectorAll(".mu-p").forEach(g=>g.classList.toggle("sel",g.dataset.mu===k));v.querySelectorAll("[data-mul]").forEach(li=>li.classList.toggle("sel",li.dataset.mul===k));
+    const m=L.find(x=>x.k===k);$("#muTip").innerHTML=m.v?`<b>${esc(m.n)}</b>: ${Math.round(m.v)} series ${per}`:`<b>${esc(m.n)}</b>: sin trabajar ${per}`};
+  v.querySelectorAll(".mu-p").forEach(g=>{g.onclick=()=>pick(g.dataset.mu);g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(g.dataset.mu)}}});
+  v.querySelectorAll("[data-mul]").forEach(li=>li.onclick=()=>pick(li.dataset.mul))};
 
 </script>
 

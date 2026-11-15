@@ -1073,6 +1073,11 @@ header.top.sub .top-coins{display:none}
 @keyframes recPop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes recFade{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.rec-pop,.rec-card{animation:none}}
+.animal-card{display:flex;align-items:center;gap:14px;background:var(--surface);border:2px solid var(--brand);border-radius:16px;padding:14px}
+.animal-e{font-size:52px;line-height:1;flex:none}
+.animal-card>div{min-width:0}
+.animal-t{margin:2px 0 0;font-size:17px;line-height:1.35}
+.animal-n{margin:6px 0 0;font-size:13px}
 /* ---------------- Textos que nunca se salen de su recuadro (todos los temas, móvil y ordenador) ---------------- */
 .wod{grid-template-columns:52px minmax(0,1fr) auto}
 .wod>*{min-width:0}
@@ -4034,6 +4039,29 @@ function showRecordPop(recs){
     if(t-t0<4200&&document.body.contains(el))raf=requestAnimationFrame(tick);else ctx.clearRect(0,0,cv.width,cv.height)};
   raf=requestAnimationFrame(tick);
 }
+
+
+/* ---------------- Peso total movido comparado con un animal ---------------- */
+const ANIMALS=[
+  {n:"un gato",p:"gatos",e:"🐈",kg:4},{n:"un perro labrador",p:"perros labradores",e:"🐕",kg:30},{n:"un canguro",p:"canguros",e:"🦘",kg:55},
+  {n:"un panda gigante",p:"pandas gigantes",e:"🐼",kg:110},{n:"un león",p:"leones",e:"🦁",kg:190},{n:"un oso pardo",p:"osos pardos",e:"🐻",kg:300},
+  {n:"un caballo",p:"caballos",e:"🐎",kg:500},{n:"un bisonte",p:"bisontes",e:"🦬",kg:900},{n:"una jirafa",p:"jirafas",e:"🦒",kg:1200},
+  {n:"un hipopótamo",p:"hipopótamos",e:"🦛",kg:1500},{n:"un rinoceronte",p:"rinocerontes",e:"🦏",kg:2300},{n:"un elefante africano",p:"elefantes africanos",e:"🐘",kg:6000},
+  {n:"un tiranosaurio",p:"tiranosaurios",e:"🦖",kg:8000},{n:"una ballena jorobada",p:"ballenas jorobadas",e:"🐋",kg:30000},{n:"una ballena azul",p:"ballenas azules",e:"🐳",kg:150000}];
+function wodVolume(x){let t=0;for(const e0 of(x.exercises||[])){if(!e0.name)continue;const e=myEx(e0);if(e.liftVol){t+=e.liftVol;continue}const w=num(e.weight)||0,r=num(e.reps)||0,st=num(e.sets)||1;t+=w*r*st}return t}
+function animalFor(t){let a=null;for(const A of ANIMALS)if(A.kg<=t)a=A;return a}
+function animalCard(x){
+  const t=wodVolume(x);if(t<4)return"";const a=animalFor(t),n=t/a.kg,nr=n>=10?Math.round(n):Math.round(n*10)/10;
+  const cnt=nr<1.15?`${a.n}`:`${String(nr).replace(".",",")} ${a.p}`;
+  const nx=ANIMALS[ANIMALS.indexOf(a)+1];
+  return`<div class="sec animal-card"><span class="animal-e" aria-hidden="true">${a.e}</span><div>
+    <span class="eyebrow">Fuerza animal</span>
+    <p class="animal-t">Hoy has movido <b class="mono">${Math.round(t).toLocaleString("es-ES")} kg</b>: como levantar <b>${esc(cnt)}</b>.</p>
+    ${nx?`<p class="muted animal-n">Te faltan ${Math.round(nx.kg-t).toLocaleString("es-ES")} kg para mover ${esc(nx.n)} ${nx.e}</p>`:""}
+  </div></div>`;
+}
+{const _ow=openWod;openWod=function(id){_ow(id);const x=workouts.find(w=>w.id===id);if(!x)return;const html=animalCard(x);if(!html)return;
+  const v=$("#v-wod"),acts=v.querySelector(".sec.row-actions");if(acts)acts.insertAdjacentHTML("beforebegin",html);else v.insertAdjacentHTML("beforeend",html)}}
 
 </script>
 

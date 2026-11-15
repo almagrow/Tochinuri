@@ -4875,8 +4875,8 @@ function paintPlanCard(){const c=$("#planCard");if(!c)return;if(mode!=="gym"||!p
   const r=routineOf(todayDow()),day=DAYS7.find(([d])=>d===todayDow())[1];
   c.innerHTML=r?`<div class="plan-card"><div class="pc-t"><span class="eyebrow">Hoy toca · ${day.toLowerCase()}</span><b>${esc(r.name)}</b><span class="muted">${r.ex.slice(0,4).map(e=>esc(e.name)).join(" · ")}${r.ex.length>4?` · +${r.ex.length-4}`:""}</span></div><div class="pc-a"><button type="button" class="btn primary" id="pcGo">Empezar</button><button type="button" class="btn" id="pcTab">Ver tabla</button></div></div>`
    :routines().length&&Object.values(planMap()).some(Boolean)?`<div class="plan-card rest"><div class="pc-t"><span class="eyebrow">Hoy · ${day.toLowerCase()}</span><b>Día de descanso</b><span class="muted">Recupera, que mañana se vuelve.</span></div><div class="pc-a"><button type="button" class="btn" id="pcTab">Ver tabla</button></div></div>`
-   :`<div class="plan-card new"><div class="pc-t"><span class="eyebrow">Tabla de gym</span><b>Organiza tu semana</b><span class="muted">Crea rutinas y ponlas en cada día.</span></div><div class="pc-a"><button type="button" class="btn primary" id="pcTab">Crear mi tabla</button></div></div>`;
-  $("#pcGo")&&($("#pcGo").onclick=()=>startRoutine(r));$("#pcTab").onclick=()=>openTable("week")}
+   :"";
+  $("#pcGo")&&($("#pcGo").onclick=()=>startRoutine(r));$("#pcTab")&&($("#pcTab").onclick=()=>openTable("week"))}
 
 /* ---------- 4 · Peso corporal y medidas ---------- */
 const BODY_F=[["weight","Peso","kg"],["waist","Cintura","cm"],["chest","Pecho","cm"],["arm","Brazo","cm"],["thigh","Muslo","cm"],["hip","Cadera","cm"],["fat","Grasa","%"]];

@@ -1946,6 +1946,7 @@ button.rm-cell[aria-expanded="true"]{border:2px solid var(--brand);background:co
 .rm-pl>*{overflow:hidden;min-height:0}
 .rm-pl-h{display:flex;align-items:center;justify-content:space-between}
 .rm-side{margin:0;font-size:15px}
+.log-bar.mode-top{margin:0 0 12px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -2372,7 +2373,8 @@ const isGymCat=c=>c&&c[0]==="y";
 const exFor=k=>k==="gym"?EX.filter(e=>isGymCat(e.c)||e.y):EX.filter(e=>!isGymCat(e.c));
 const catIn=(e,k)=>k==="gym"?(isGymCat(e.c)?e.c:e.y):e.c;
 const catsFor=k=>Object.entries(CATS).filter(([c])=>isGymCat(c)===(k==="gym"));
-const inMode=x=>(x.kind==="gym")===(mode==="gym");
+var LOG_ALL=false;
+const inMode=x=>LOG_ALL||(x.kind==="gym")===(mode==="gym");
 function findEx(name){const n=norm(name);return EX.find(e=>norm(e.n)===n)||EX.find(e=>norm(e.n).split(" (")[0]===n)}
 
 /* ---------------- Progreso por ejercicio ---------------- */
@@ -6352,6 +6354,12 @@ function rmPlatesHtml(total){const bar=Number(lsGet("tochinuri-bar",isWoman()?"1
     pl.querySelectorAll("[name=rmBar]").forEach(x=>x.onchange=()=>{lsSet("tochinuri-bar",x.value);paint()})};
   $("#rmVal")?.addEventListener("input",()=>setTimeout(paint));paint()}}
 /* Sin la fila de pestañas de Progreso arriba: todo se abre desde el Menú */
+
+/* Entrenos: datos y estadísticas de CrossFit y Gym juntos (el selector solo decide qué apuntas) */
+{const _rl=renderLog;renderLog=function(){LOG_ALL=true;try{_rl()}finally{LOG_ALL=false}}}
+{const _rw=renderWeek;renderWeek=function(){LOG_ALL=true;try{_rw()}finally{LOG_ALL=false}}}
+{const bar=$(".log-bar"),tc=$("#todayCard");if(bar&&tc){tc.before(bar);bar.classList.add("mode-top")}}
+renderAll();
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

@@ -1933,13 +1933,19 @@ button.wk-d:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 .rm-cell b{font-size:24px;font-weight:800}
 .rm-cell b small{font-size:13px;font-weight:600;color:var(--muted);margin-left:2px}
 button.rm-cell{font:inherit;color:var(--ink);cursor:pointer;text-align:left;width:100%}
-button.rm-cell[aria-pressed="true"]{border:2px solid var(--brand);background:color-mix(in srgb,var(--brand) 12%,var(--surface))}
+button.rm-cell[aria-expanded="true"]{border:2px solid var(--brand);background:color-mix(in srgb,var(--brand) 12%,var(--surface))}
 .rm-tabs{margin:0}
 .rm-plates{display:flex;flex-direction:column;gap:8px;background:var(--surface-2);border-radius:12px;padding:12px}
 .rm-plates h4{margin:0;font-size:16px}
 .rm-plates .pl-list li{font-size:15px}
 .rm-bar-seg{margin:0;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))}
 #progTabs{display:none!important}
+.rm-hint{margin:0 0 -4px;font-size:13px}
+.rm-pl{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease}
+.rm-pl.open{grid-template-rows:1fr}
+.rm-pl>*{overflow:hidden;min-height:0}
+.rm-pl-h{display:flex;align-items:center;justify-content:space-between}
+.rm-side{margin:0;font-size:15px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -5167,9 +5173,13 @@ function exActions(el){
 
 /* ---------- 2 · Calculadora de discos ---------- */
 const kg2=n=>String(Math.round(n*100)/100).replace(".",",");
-const PLATES=[{kg:25,c:"#D32F2F",h:100},{kg:20,c:"#1E5BD8",h:100},{kg:15,c:"#F2C200",h:92},{kg:10,c:"#2E9E4F",h:84},{kg:5,c:"#F2F2F2",h:66},{kg:2.5,c:"#E53935",h:54},{kg:1.25,c:"#9AA3AD",h:46},{kg:.5,c:"#C9CED4",h:38}];
-function platesFor(total,bar,collar){let side=(total-bar-collar*2)/2;if(side<0)return null;const out=[];let left=Math.round(side*100)/100;
-  for(const p of PLATES){while(left+1e-9>=p.kg){out.push(p);left=Math.round((left-p.kg)*100)/100}}return{side:Math.round(side*100)/100,list:out,left}}
+const PLATES=[{kg:25,c:"#D32F2F",h:100},{kg:20,c:"#1E5BD8",h:100},{kg:15,c:"#F2C200",h:92},{kg:10,c:"#2E9E4F",h:84},{kg:5,c:"#F2F2F2",h:66},{kg:2.5,c:"#E53935",h:54},{kg:2,c:"#2B6CE0",h:50},{kg:1.5,c:"#F2C94C",h:46},{kg:1.25,c:"#9AA3AD",h:44},{kg:1,c:"#3FB06A",h:42},{kg:.5,c:"#E7EAEE",h:38}];
+/* Discos por lado con el menor número posible de discos (si no sale exacto, lo más cerca por debajo) */
+function platesFor(total,bar,collar){const side=(total-bar-collar*2)/2;if(side<0)return null;const U=Math.round(side*4),P=PLATES.map(p=>({p,u:Math.round(p.kg*4)}));
+  const best=new Array(U+1).fill(null);best[0]=[];
+  for(let x=1;x<=U;x++){let b=null;for(const q of P){if(q.u>x||!best[x-q.u])continue;const c=[...best[x-q.u],q.p];if(!b||c.length<b.length)b=c}best[x]=b}
+  let x=U;while(x>0&&!best[x])x--;const list=(best[x]||[]).slice().sort((a,b)=>b.kg-a.kg);
+  return{side:Math.round(side*100)/100,list,left:Math.round((U-x)/4*100)/100}}
 function barSVG(list){const W=320,H=120,cx=W/2;let x=cx+40,h="";
   const bar=`<rect x="8" y="56" width="${W-16}" height="8" rx="3" fill="var(--muted)"/><rect x="${cx-36}" y="54" width="72" height="12" rx="3" fill="var(--ink)" opacity=".75"/>`;
   const plates=list.map(p=>{const w=p.kg>=10?13:p.kg>=2.5?9:6,r=`<rect x="${x}" y="${60-p.h/2}" width="${w}" height="${p.h}" rx="2.5" fill="${p.c}" stroke="#111" stroke-width="1.2"/><rect x="${W-x-w}" y="${60-p.h/2}" width="${w}" height="${p.h}" rx="2.5" fill="${p.c}" stroke="#111" stroke-width="1.2"/>`;x+=w+1.5;return r}).join("");
@@ -6321,25 +6331,25 @@ const QA_KEY={lib:"lib",openTableBtn:"table",openChBtn:"challenges",openMaxBtn:"
   close();box.innerHTML="";box.appendChild(frag)}}
 renderAll();
 
-/* Calculadora RM: pestañas «Porcentajes» / «Mídelo en discos» */
-let rmTab="pct",rmPick=75;
+/* Calculadora RM: al tocar un porcentaje se despliega debajo la tabla de discos */
+let rmPick=null;
 function rmPlatesHtml(total){const bar=Number(lsGet("tochinuri-bar",isWoman()?"15":"20")),col=lsGet("tochinuri-collar","0")==="1"?2.5:0,r=platesFor(total,bar,col);
   const seg=`<div class="seg rm-bar-seg" role="radiogroup" aria-label="Barra">${[[20,"Barra 20"],[15,"Barra 15"],[10,"Barra 10"]].map(([b,l])=>`<input type="radio" name="rmBar" id="rmBar${b}" value="${b}"${bar===b?" checked":""}><label for="rmBar${b}">${l}</label>`).join("")}</div>`;
-  if(!r)return`<div class="rm-plates"><h4>${kg2(total)} kg</h4>${seg}<p class="muted" style="margin:0">Con la barra${col?" y los cierres":""} ya llevas ${kg2(bar+col*2)} kg.</p></div>`;
+  const head=`<div class="rm-pl-h"><h4>${rmPick} % · ${kg2(total)} kg</h4><button type="button" class="icon-btn" id="rmPlX" aria-label="Cerrar discos">×</button></div>`;
+  if(!r)return`<div class="rm-plates">${head}${seg}<p class="muted" style="margin:0">Con la barra${col?" y los cierres":""} ya llevas ${kg2(bar+col*2)} kg.</p></div>`;
   const grp=[];r.list.forEach(p=>{const g=grp.find(x=>x.p===p);if(g)g.n++;else grp.push({p,n:1})});
-  return`<div class="rm-plates"><h4>${rmPick} % = ${kg2(total)} kg · en cada lado ${kg2(r.side)} kg</h4>${seg}${barSVG(r.list)}
+  return`<div class="rm-plates">${head}<p class="rm-side">En cada lado: <b>${kg2(r.side)} kg</b>${r.list.length?` · ${r.list.length} disco${r.list.length>1?"s":""}`:""}</p>${seg}${barSVG(r.list)}
    ${grp.length?`<ul class="pl-list">${grp.map(g=>`<li><span class="pl-dot" style="--c:${g.p.c}"></span><b class="mono">${g.n} ×</b> disco de ${kg2(g.p.kg)} kg</li>`).join("")}</ul>`:`<p class="muted" style="margin:0">Solo la barra.</p>`}
-   ${r.left>0?`<p class="pl-warn" style="margin:0">No sale exacto: te quedas en ${kg2(total-r.left*2)} kg.</p>`:""}</div>`}
+   ${r.left>0?`<p class="pl-warn" style="margin:0">No sale exacto con discos normales: te quedas en ${kg2(total-r.left*2)} kg.</p>`:""}</div>`}
 {const _r=renderRM;renderRM=function(){_r();const t=$("#rmTable");if(!t)return;
-  const tabs=document.createElement("div");tabs.className="seg rm-tabs";tabs.setAttribute("role","radiogroup");tabs.setAttribute("aria-label","Vista de la tabla");
-  tabs.innerHTML=[["pct","Porcentajes"],["disc","Mídelo en discos"]].map(([k,l])=>`<input type="radio" name="rmTab" id="rmTab_${k}" value="${k}"${rmTab===k?" checked":""}><label for="rmTab_${k}">${l}</label>`).join("");
-  t.before(tabs);const pl=document.createElement("div");pl.id="rmPl";t.after(pl);
+  const hint=document.createElement("p");hint.className="muted rm-hint";hint.textContent="Toca un porcentaje para ver qué discos poner.";t.before(hint);
+  const pl=document.createElement("div");pl.id="rmPl";pl.className="rm-pl";t.after(pl);
   const paint=()=>{const k=Number(String($("#rmVal")?.value||"").replace(",","."));if(!(k>0))return;const pcts=[40,45,50,55,60,65,70,75,80,85,90,95,100];
-    t.innerHTML=pcts.map(q=>rmTab==="disc"?`<button type="button" class="rm-cell${q>=90?" hi":q>=75?" mid":""}" data-rmp="${q}" aria-pressed="${q===rmPick}"><span>${q} %</span><b class="mono">${fmtKg(k*q/100)}<small>kg</small></b></button>`:`<div class="rm-cell${q>=90?" hi":q>=75?" mid":""}"><span>${q} %</span><b class="mono">${fmtKg(k*q/100)}<small>kg</small></b></div>`).join("");
-    pl.innerHTML=rmTab==="disc"?rmPlatesHtml(Math.round(k*rmPick/100*2)/2):"";
-    t.querySelectorAll("[data-rmp]").forEach(b=>b.onclick=()=>{rmPick=Number(b.dataset.rmp);paint();pl.scrollIntoView({block:"nearest",behavior:"smooth"})});
+    t.innerHTML=pcts.map(q=>`<button type="button" class="rm-cell${q>=90?" hi":q>=75?" mid":""}" data-rmp="${q}" aria-expanded="${q===rmPick}" aria-controls="rmPl"><span>${q} %</span><b class="mono">${fmtKg(k*q/100)}<small>kg</small></b></button>`).join("");
+    pl.innerHTML=rmPick?rmPlatesHtml(Math.round(k*rmPick/100*2)/2):"";pl.classList.toggle("open",!!rmPick);
+    t.querySelectorAll("[data-rmp]").forEach(b=>b.onclick=()=>{const q=Number(b.dataset.rmp);rmPick=rmPick===q?null:q;paint();if(rmPick)setTimeout(()=>pl.scrollIntoView({block:"nearest",behavior:"smooth"}),80)});
+    const x=$("#rmPlX");if(x)x.onclick=()=>{rmPick=null;paint()};
     pl.querySelectorAll("[name=rmBar]").forEach(x=>x.onchange=()=>{lsSet("tochinuri-bar",x.value);paint()})};
-  tabs.querySelectorAll("[name=rmTab]").forEach(x=>x.onchange=()=>{rmTab=x.value;paint()});
   $("#rmVal")?.addEventListener("input",()=>setTimeout(paint));paint()}}
 /* Sin la fila de pestañas de Progreso arriba: todo se abre desde el Menú */
 </script>

@@ -1453,7 +1453,15 @@ header.top.sub .top-coins{display:none}
 .me-hb:hover{border-color:var(--brand)}
 .me-hb svg{width:24px;height:24px;flex:none;color:var(--brand)}
 .me-hb span{display:flex;flex-direction:column;min-width:0}.me-hb b{font-size:16px}.me-hb small{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
-.me-hb::after{content:"›";margin-left:auto;font-size:22px;color:var(--muted)}
+.me-hb:not(.me-pet)::after{content:"›";margin-left:auto;font-size:22px;color:var(--muted)}
+.me-pet-art{width:34px;height:34px;flex:none;display:block}.me-pet-art svg{width:34px;height:34px}
+.me-pet-in{position:absolute;opacity:0;width:1px;height:1px}
+.me-pet-sw{margin-left:auto;flex:none;width:46px;height:28px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);position:relative;transition:background .2s}
+.me-pet-sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+.me-pet-in:checked~.me-pet-sw{background:var(--brand);border-color:var(--brand)}
+.me-pet-in:checked~.me-pet-sw::after{transform:translateX(18px)}
+.me-pet-in:focus-visible~.me-pet-sw{outline:2px solid var(--accent);outline-offset:2px}
+.me-pet{position:relative}
 .body-grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .body-grid3 label{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .body-grid3 label small{text-transform:none;letter-spacing:0;font-weight:500}
@@ -5305,12 +5313,12 @@ function petSVG(lv,mood){const bw=17+lv*3,arm=4+lv*2.2,fur="#F4A35C",dk="#2B2420
    <path d="M41 36l-3-17 14 9zM79 36l3-17-14 9z" fill="${fur}" stroke="${dk}" stroke-width="2" stroke-linejoin="round"/><circle cx="60" cy="48" r="21" fill="${fur}" stroke="${dk}" stroke-width="2"/>
    <path d="M56 30l2 6M64 30l-2 6M60 29v7" stroke="${st}" stroke-width="2" stroke-linecap="round"/>${eyes}<path d="M58 52l2 2 2-2z" fill="#E8607A"/>${mouth}
    <path d="M40 54h-9M40 57l-8 3M80 54h9M80 57l8 3" stroke="${dk}" stroke-width="1.2" stroke-linecap="round"/>${band}${crown}${db}${arms}</svg>`}
-function paintPet(){const c=$("#petCard");if(!c)return;if(!profile||profile.petHidden){c.innerHTML="";return}const P=petState(),nm=profile.petName||"Nuri",s=PET_ST[P.lv];
+function paintPet(){const c=$("#petCard");if(!c)return;if(!profile||!profile.petOn){c.innerHTML="";return}const P=petState(),nm=profile.petName||"Nuri",s=PET_ST[P.lv];
   const msg=P.mood==="sad"?(P.idle<99?`Lleva ${P.idle} días esperándote… ¡vuelve a entrenar!`:"Está esperando tu primer entreno."):P.mood==="happy"?"¡Está feliz, has entrenado hace nada!":"Está bien, pero quiere más hierro.";
   c.innerHTML=`<div class="pet-card ${P.mood}"><button type="button" class="pet-art" id="petTap" aria-label="${esc(nm)}: ${esc(s.n)}">${petSVG(P.lv,P.mood)}</button><div class="pet-t"><span class="eyebrow">${esc(nm)} · ${esc(s.n)}</span><b>${esc(msg)}</b>
     <span class="muted">${P.next?`Con una racha de ${P.next.min} semana${P.next.min>1?"s":""} se convierte en ${P.next.n} (vas por ${P.st}).`:"¡Nivel máximo! Es una leyenda."}</span></div><button type="button" class="icon-btn pet-x" id="petX" aria-label="Ocultar mascota">×</button></div>`;
   $("#petTap").onclick=()=>{const a=$("#petTap svg");a.classList.remove("jump");void a.getBBox();a.classList.add("jump");toast(["¡Miau! 💪","Una serie más y te doy un abrazo","Prrr… ¿hoy toca pierna?","¡Dame un PR!"][Math.floor(Math.random()*4)])};
-  $("#petX").onclick=async()=>{await saveProf({petHidden:true},"Mascota oculta. Puedes volver a verla en Insignias.")}}
+  $("#petX").onclick=async()=>{await saveProf({petOn:false},"Mascota desactivada. Puedes volver a activarla en Tu perfil.")}}
 
 /* ---------- 9 · Logros secretos ---------- */
 const SECRETS=[
@@ -5337,7 +5345,7 @@ function secretsState(){const k=workouts.length+"|"+(workouts[0]?.id||"")+"|"+(p
 {const _rb=renderBadges;renderBadges=function(){_rb();const S=secretsState(),n=S.filter(s=>s.date).length;
   $("#v-badges").insertAdjacentHTML("beforeend",`<h3 class="sec-title">Logros secretos · ${n}/${S.length}</h3><p class="muted" style="margin:0 0 10px;font-size:14px">Cada uno da 25 TochiCoins. Las pistas te ayudan a descubrirlos.</p>
    <div class="sc-grid">${S.map(s=>s.date?`<div class="sc-card on"><span class="sc-i" aria-hidden="true">🔓</span><b>${esc(s.n)}</b><small>${esc(s.d)}</small><small class="muted">${fmtD(s.date)}</small></div>`:`<div class="sc-card"><span class="sc-i" aria-hidden="true">🔒</span><b>???</b><small class="muted">${esc(s.h)}</small></div>`).join("")}</div>
-   ${profile?.petHidden?`<button type="button" class="btn full" id="petShow" style="margin-top:14px">Volver a mostrar a ${esc(profile.petName||"Nuri")} en la portada</button>`:""}`);
+   ${false?`<button type="button" class="btn full" id="petShow" style="margin-top:14px">Volver a mostrar a ${esc(profile.petName||"Nuri")} en la portada</button>`:""}`);
   const ps=$("#petShow");if(ps)ps.onclick=async()=>{await saveProf({petHidden:false},"¡Miau! Ha vuelto 🐱")}}}
 function checkSecrets(){if(!profileReady||!profile)return;let seen=null;try{seen=JSON.parse(localStorage.getItem("tochinuri-secrets")||"null")}catch(e){}
   const got=secretsState().filter(s=>s.date).map(s=>s.id);
@@ -5452,10 +5460,12 @@ openReminders=function(){fromMe("reminders","Avisos",()=>{});renderReminders()};
   box.innerHTML=`<span class="eyebrow">Tu cuerpo y tu día a día</span><div class="me-hl">
     <button type="button" class="me-hb" id="meBody">${F2_IC.body}<span><b>Cuerpo</b><small id="meBodyS">Peso, altura y grasa</small></span></button>
     <button type="button" class="me-hb" id="meWater">${F4_IC.drop}<span><b>Agua</b><small id="meWaterS">Lo que bebes cada día</small></span></button>
-    <button type="button" class="me-hb" id="meRem">${F3_IC.bell}<span><b>Avisos</b><small>Recordatorios en el móvil</small></span></button></div>`;
+    <button type="button" class="me-hb" id="meRem">${F3_IC.bell}<span><b>Avisos</b><small>Recordatorios en el móvil</small></span></button>
+    <label class="me-hb me-pet"><span class="me-pet-art" aria-hidden="true">${petSVG(2,"happy")}</span><span><b>Mascota Nuri</b><small>Un gatito en la portada que crece con tu racha</small></span><input type="checkbox" id="mePet" class="me-pet-in"><span class="me-pet-sw" aria-hidden="true"></span></label></div>`;
   $("#themeSeg").closest(".field").insertAdjacentElement("afterend",box);
-  $("#meBody").onclick=()=>openBody();$("#meWater").onclick=()=>openWater();$("#meRem").onclick=()=>openReminders()}
-{const _om=openMe;openMe=function(first){_om(first);$("#meHealth").hidden=!!first||!profile;try{const C=bodyCalc();$("#meBodyS").textContent=C.fat?`${kg(C.w)} kg · ${num1(C.fat)} % grasa`:"Peso, altura y grasa";
+  $("#meBody").onclick=()=>openBody();$("#meWater").onclick=()=>openWater();$("#meRem").onclick=()=>openReminders();
+  $("#mePet").onchange=async ev=>{const on=ev.target.checked;const ok=await saveProf({petOn:on},on?"¡Miau! Nuri ya está en tu portada 🐱":"Mascota desactivada");if(ok===false)ev.target.checked=!on}}
+{const _om=openMe;openMe=function(first){_om(first);$("#meHealth").hidden=!!first||!profile;$("#mePet").checked=!!profile?.petOn;try{const C=bodyCalc();$("#meBodyS").textContent=C.fat?`${kg(C.w)} kg · ${num1(C.fat)} % grasa`:"Peso, altura y grasa";
   const got=waterLog()[today()]||0;$("#meWaterS").textContent=got?`Hoy ${ml(got)} de ${ml(waterGoal())}`:"Lo que bebes cada día"}catch(e){}}}
 
 </script>

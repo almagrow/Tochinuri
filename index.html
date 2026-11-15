@@ -5321,7 +5321,7 @@ function duelsHtml(){const cur=isoD(mondayOf(new Date())),bal=coinBalance().bal;
 /* Al abrir la app se cargan tus datos de amigos para mantener al día el ranking y los retos */
 let frBoot=false;async function bootFriends(){if(frBoot||!FRIENDS_API||!profile)return;frBoot=true;try{frMe=await FRIENDS_API.me();if(frMe?.code){publishStats();await loadDuels()}}catch(e){frBoot=false}}
 
-/* ---------- 8 · Mascota: Nuri, el gatito que crece con tu racha ---------- */
+/* ---------- 8 · Mascota: Tochi, el gatito que crece con tu racha ---------- */
 const PET_ST=[{n:"Gatito",min:0},{n:"Gato en forma",min:1},{n:"Gato fuerte",min:3},{n:"Gato bestia",min:6},{n:"Gato leyenda",min:10}];
 function petState(){const si=streakInfo(),st=si.streak||0;let lv=0;PET_ST.forEach((p,i)=>{if(st>=p.min)lv=i});
   const last=sorted().find(w=>w.date&&w.date<=today()),idle=last?Math.round((dObj(today())-dObj(last.date))/864e5):99;
@@ -5338,7 +5338,7 @@ function petSVG(lv,mood){const bw=17+lv*3,arm=4+lv*2.2,fur="#F4A35C",dk="#2B2420
    <path d="M41 36l-3-17 14 9zM79 36l3-17-14 9z" fill="${fur}" stroke="${dk}" stroke-width="2" stroke-linejoin="round"/><circle cx="60" cy="48" r="21" fill="${fur}" stroke="${dk}" stroke-width="2"/>
    <path d="M56 30l2 6M64 30l-2 6M60 29v7" stroke="${st}" stroke-width="2" stroke-linecap="round"/>${eyes}<path d="M58 52l2 2 2-2z" fill="#E8607A"/>${mouth}
    <path d="M40 54h-9M40 57l-8 3M80 54h9M80 57l8 3" stroke="${dk}" stroke-width="1.2" stroke-linecap="round"/>${band}${crown}${db}${arms}</svg>`}
-function paintPet(){const c=$("#petCard");if(!c)return;if(!profile||!profile.petOn){c.innerHTML="";return}const P=petState(),nm=profile.petName||"Nuri",s=PET_ST[P.lv];
+function paintPet(){const c=$("#petCard");if(!c)return;if(!profile||!profile.petOn){c.innerHTML="";return}const P=petState(),nm=profile.petName||"Tochi",s=PET_ST[P.lv];
   const msg=P.mood==="sad"?(P.idle<99?`Lleva ${P.idle} días esperándote… ¡vuelve a entrenar!`:"Está esperando tu primer entreno."):P.mood==="happy"?"¡Está feliz, has entrenado hace nada!":"Está bien, pero quiere más hierro.";
   c.innerHTML=`<div class="pet-card ${P.mood}"><button type="button" class="pet-art" id="petTap" aria-label="${esc(nm)}: ${esc(s.n)}">${petSVG(P.lv,P.mood)}</button><div class="pet-t"><span class="eyebrow">${esc(nm)} · ${esc(s.n)}</span><b>${esc(msg)}</b>
     <span class="muted">${P.next?`Con una racha de ${P.next.min} semana${P.next.min>1?"s":""} se convierte en ${P.next.n} (vas por ${P.st}).`:"¡Nivel máximo! Es una leyenda."}</span></div><button type="button" class="icon-btn pet-x" id="petX" aria-label="Ocultar mascota">×</button></div>`;
@@ -5370,7 +5370,7 @@ function secretsState(){const k=workouts.length+"|"+(workouts[0]?.id||"")+"|"+(p
 {const _rb=renderBadges;renderBadges=function(){_rb();const S=secretsState(),n=S.filter(s=>s.date).length;
   $("#v-badges").insertAdjacentHTML("beforeend",`<h3 class="sec-title">Logros secretos · ${n}/${S.length}</h3><p class="muted" style="margin:0 0 10px;font-size:14px">Cada uno da 25 TochiCoins. Las pistas te ayudan a descubrirlos.</p>
    <div class="sc-grid">${S.map(s=>s.date?`<div class="sc-card on"><span class="sc-i" aria-hidden="true">🔓</span><b>${esc(s.n)}</b><small>${esc(s.d)}</small><small class="muted">${fmtD(s.date)}</small></div>`:`<div class="sc-card"><span class="sc-i" aria-hidden="true">🔒</span><b>???</b><small class="muted">${esc(s.h)}</small></div>`).join("")}</div>
-   ${false?`<button type="button" class="btn full" id="petShow" style="margin-top:14px">Volver a mostrar a ${esc(profile.petName||"Nuri")} en la portada</button>`:""}`);
+   ${false?`<button type="button" class="btn full" id="petShow" style="margin-top:14px">Volver a mostrar a ${esc(profile.petName||"Tochi")} en la portada</button>`:""}`);
   const ps=$("#petShow");if(ps)ps.onclick=async()=>{await saveProf({petHidden:false},"¡Miau! Ha vuelto 🐱")}}}
 function checkSecrets(){if(!profileReady||!profile)return;let seen=null;try{seen=JSON.parse(localStorage.getItem("tochinuri-secrets")||"null")}catch(e){}
   const got=secretsState().filter(s=>s.date).map(s=>s.id);
@@ -5486,10 +5486,10 @@ openReminders=function(){fromMe("reminders","Avisos",()=>{});renderReminders()};
     <button type="button" class="me-hb" id="meBody">${F2_IC.body}<span><b>Cuerpo</b><small id="meBodyS">Peso, altura y grasa</small></span></button>
     <button type="button" class="me-hb" id="meWater">${F4_IC.drop}<span><b>Agua</b><small id="meWaterS">Lo que bebes cada día</small></span></button>
     <button type="button" class="me-hb" id="meRem">${F3_IC.bell}<span><b>Avisos</b><small>Recordatorios en el móvil</small></span></button>
-    <label class="me-hb me-pet"><span class="me-pet-art" aria-hidden="true">${petSVG(2,"happy")}</span><span><b>Mascota Nuri</b><small>Un gatito en la portada que crece con tu racha</small></span><input type="checkbox" id="mePet" class="me-pet-in"><span class="me-pet-sw" aria-hidden="true"></span></label></div>`;
+    <label class="me-hb me-pet"><span class="me-pet-art" aria-hidden="true">${petSVG(2,"happy")}</span><span><b>Mascota Tochi</b><small>Un gatito en la portada que crece con tu racha</small></span><input type="checkbox" id="mePet" class="me-pet-in"><span class="me-pet-sw" aria-hidden="true"></span></label></div>`;
   $("#themeSeg").closest(".field").insertAdjacentElement("afterend",box);
   $("#meBody").onclick=()=>openBody();$("#meWater").onclick=()=>openWater();$("#meRem").onclick=()=>openReminders();
-  $("#mePet").onchange=async ev=>{const on=ev.target.checked;const ok=await saveProf({petOn:on},on?"¡Miau! Nuri ya está en tu portada 🐱":"Mascota desactivada");if(ok===false)ev.target.checked=!on}}
+  $("#mePet").onchange=async ev=>{const on=ev.target.checked;const ok=await saveProf({petOn:on},on?"¡Miau! Tochi ya está en tu portada 🐱":"Mascota desactivada");if(ok===false)ev.target.checked=!on}}
 {const _om=openMe;openMe=function(first){_om(first);$("#meHealth").hidden=!!first||!profile;$("#mePet").checked=!!profile?.petOn;try{const C=bodyCalc();$("#meBodyS").textContent=C.fat?`${kg(C.w)} kg · ${num1(C.fat)} % grasa`:"Peso, altura y grasa";
   const got=waterLog()[today()]||0;$("#meWaterS").textContent=got?`Hoy ${ml(got)} de ${ml(waterGoal())}`:"Lo que bebes cada día"}catch(e){}}}
 

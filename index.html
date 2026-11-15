@@ -901,6 +901,97 @@ header.top.sub .top-coins{display:none}
 [data-skin="lava"] .tab-new{background:#C026D3;color:#FFFFFF;border-radius:42% 58% 60% 40%/45% 45% 55% 55%;border:4px solid #4C1D95;box-shadow:none}
 [data-skin="lava"] .brand-word span{color:#FDE68A}
 
+/* 13 · Cristal líquido */
+:root[data-skin="cristal"]{--bg:#DCE4F7;--surface:rgba(255,255,255,.55);--surface-2:rgba(255,255,255,.4);--ink:#111827;--muted:#3F4756;--line:rgba(255,255,255,.85);--accent:#7C3AED;--accent-ink:#FFFFFF;--brand:#6D28D9;--f-display:"Inter",sans-serif;--f-body:"Inter",system-ui,sans-serif;--p-red:#cf3a2f;--p-blue:#2b62c6;--p-yellow:#c99a0c;--p-green:#2c9452;--p-white:#7d8894;--danger:#c0352b;--drop:#d7263d;--star:#e0a100;color-scheme:light}
+[data-skin="cristal"] body::before{content:"";position:fixed;width:340px;height:340px;left:-120px;top:10%;border-radius:50%;background:#A78BFA;filter:blur(60px);opacity:.75;z-index:-1;pointer-events:none}
+[data-skin="cristal"] body::after{content:"";position:fixed;width:320px;height:320px;right:-120px;bottom:12%;border-radius:50%;background:#F472B6;filter:blur(65px);opacity:.6;z-index:-1;pointer-events:none}
+[data-skin="cristal"] :is(.wod,.goal,.pr-box,.shop-card,.wallet,.confirm,.mw-item,.lift-card,.lift-view,.ex-card,.stat,.tool,.empty,.mtile){background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.85);border-radius:22px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 8px 26px rgba(30,27,75,.12),inset 0 1px 0 rgba(255,255,255,.9)}
+[data-skin="cristal"] header.top{background:rgba(220,228,247,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+[data-skin="cristal"] nav.tabs{background:rgba(255,255,255,.55);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,.85)}
+[data-skin="cristal"] :is(h2.view-title,.sec h3,.goal-txt h3,.empty h3){text-transform:none;letter-spacing:-.5px;font-weight:800}
+[data-skin="cristal"] :is(.btn,input,select,textarea){border-radius:16px;background:rgba(255,255,255,.6);border-color:rgba(255,255,255,.9)}
+[data-skin="cristal"] .btn.primary{background:#7C3AED;color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(124,58,237,.35)}
+[data-skin="cristal"] .tab-new{background:#7C3AED;color:#fff;box-shadow:0 6px 20px rgba(124,58,237,.5)}
+
+/* 14 · K-pop neón */
+:root[data-skin="kpop"]{--bg:#0B0620;--surface:#150B30;--surface-2:#1E1140;--ink:#F8F4FF;--muted:#CBBFF2;--line:#3B2470;--accent:#FF2E93;--accent-ink:#FFFFFF;--brand:#FF6BB5;--f-display:"Unbounded",sans-serif;--f-body:"Outfit",system-ui,sans-serif;--p-red:#ff8a7e;--p-blue:#9db8ff;--p-yellow:#FDE68A;--p-green:#7ee2a8;--p-white:#e3d9f5;--danger:#ff9b8f;--drop:#ff8aa0;--star:#FDE68A;color-scheme:dark}
+[data-skin="kpop"] body::before{content:"";position:fixed;left:-60px;top:-60px;width:240px;height:110vh;background:linear-gradient(170deg,rgba(255,46,147,.28),rgba(255,46,147,0) 70%);transform:rotate(-16deg);z-index:-1;pointer-events:none}
+[data-skin="kpop"] body::after{content:"";position:fixed;right:-80px;top:-60px;width:240px;height:110vh;background:linear-gradient(190deg,rgba(34,211,238,.22),rgba(34,211,238,0) 70%);transform:rotate(16deg);z-index:-1;pointer-events:none}
+[data-skin="kpop"] :is(.wod,.goal,.pr-box,.shop-card,.wallet,.confirm,.mw-item,.lift-card,.lift-view,.ex-card,.stat,.tool,.empty,.mtile){border:1px solid #3B2470;border-radius:18px}
+[data-skin="kpop"] .goal{border:2px solid #8B5CF6;box-shadow:0 0 22px rgba(139,92,246,.45);background:rgba(139,92,246,.14)}
+[data-skin="kpop"] .brand-word{color:#fff;text-shadow:0 0 12px #FF2E93,0 0 24px #8B5CF6}
+[data-skin="kpop"] :is(h2.view-title,.sec h3,.goal-txt h3,.empty h3){font-weight:700;text-transform:uppercase;letter-spacing:.02em}
+[data-skin="kpop"] .dot.on{background:linear-gradient(90deg,#FF2E93,#8B5CF6);box-shadow:0 0 10px #FF2E93;border-color:transparent}
+[data-skin="kpop"] .btn.primary{background:linear-gradient(90deg,#FF2E93,#8B5CF6);border:0;box-shadow:0 0 16px rgba(255,46,147,.55)}
+[data-skin="kpop"] .mode-sw button[aria-checked="true"]{background:linear-gradient(90deg,#FF2E93,#8B5CF6);box-shadow:0 0 14px rgba(255,46,147,.6)}
+[data-skin="kpop"] nav.tabs{background:#0E0828;border-top:1px solid #3B2470}
+[data-skin="kpop"] .tab[aria-current="page"]{color:#FF6BB5}
+[data-skin="kpop"] .tab-new{background:linear-gradient(135deg,#FF2E93,#8B5CF6);color:#fff;box-shadow:0 0 24px #FF2E93}
+
+/* 15 · Nube blanca */
+:root[data-skin="nube"]{--bg:#F0EEE9;--surface:#FAF9F6;--surface-2:#E9E5DD;--ink:#2D2A26;--muted:#6B6257;--line:#D5CFC4;--accent:#2D2A26;--accent-ink:#F0EEE9;--brand:#7D6E5B;--f-display:"Fraunces",Georgia,serif;--f-body:"Inter",system-ui,sans-serif;--p-red:#cf3a2f;--p-blue:#2b62c6;--p-yellow:#c99a0c;--p-green:#2c9452;--p-white:#7d8894;--danger:#c0352b;--drop:#d7263d;--star:#e0a100;color-scheme:light}
+[data-skin="nube"] :is(.wod,.goal,.pr-box,.shop-card,.wallet,.confirm,.mw-item,.lift-card,.lift-view,.ex-card,.stat,.tool,.empty,.mtile){border:0;border-radius:20px;box-shadow:0 1px 2px rgba(45,42,38,.06),0 8px 24px rgba(45,42,38,.06)}
+[data-skin="nube"] :is(h2.view-title,.sec h3,.goal-txt h3,.empty h3){text-transform:none;font-weight:500;letter-spacing:-.3px}
+[data-skin="nube"] :is(.stat b,.date b,.streak b,.mtile b){font-weight:500}
+[data-skin="nube"] .brand-word span{font-style:italic}
+[data-skin="nube"] header.top{background:#F0EEE9}
+[data-skin="nube"] nav.tabs{background:#F0EEE9;border-top:1px solid #D5CFC4}
+[data-skin="nube"] .tab-new{background:#2D2A26;color:#F0EEE9;box-shadow:none}
+[data-skin="nube"] .mode-sw button[aria-checked="true"]{background:#FAF9F6;color:#2D2A26;box-shadow:0 1px 3px rgba(45,42,38,.15)}
+
+/* 16 · Anime de gimnasio */
+:root[data-skin="anime"]{--bg:#FFFFFF;--surface:#FFFFFF;--surface-2:#F3F3F3;--ink:#111111;--muted:#404040;--line:#111111;--accent:#E11D48;--accent-ink:#FFFFFF;--brand:#E11D48;--f-display:"Dela Gothic One",sans-serif;--f-body:"M PLUS Rounded 1c",system-ui,sans-serif;--p-red:#cf3a2f;--p-blue:#2b62c6;--p-yellow:#c99a0c;--p-green:#2c9452;--p-white:#7d8894;--danger:#c0352b;--drop:#d7263d;--star:#e0a100;color-scheme:light}
+[data-skin="anime"] body::before{content:"";position:fixed;left:50%;top:30%;width:180vmax;height:180vmax;transform:translate(-50%,-50%);background:repeating-conic-gradient(from 0deg,#111 0deg 1.2deg,transparent 1.2deg 9deg);opacity:.06;border-radius:50%;z-index:-1;pointer-events:none}
+[data-skin="anime"] body{font-weight:500}
+[data-skin="anime"] :is(.wod,.goal,.pr-box,.shop-card,.wallet,.confirm,.mw-item,.lift-card,.lift-view,.ex-card,.stat,.tool,.empty,.mtile){border:3px solid #111;border-radius:6px;box-shadow:4px 4px 0 #111}
+[data-skin="anime"] .stat{background-image:radial-gradient(#11111122 1.2px,transparent 1.3px);background-size:6px 6px}
+[data-skin="anime"] .goal{background:#111;color:#fff;--ink:#fff;--muted:#FDA4AF;--surface-2:#2a2a2a;--line:#555;box-shadow:5px 5px 0 #E11D48;transform:rotate(-.6deg)}
+[data-skin="anime"] :is(h2.view-title,.sec h3,.goal-txt h3,.empty h3){font-weight:400}
+[data-skin="anime"] :is(.stat b,.date b,.streak b,.mtile b){font-weight:400}
+[data-skin="anime"] .brand-word{display:inline-block;transform:skewX(-8deg)}
+[data-skin="anime"] :is(.btn,input,select,textarea){border:3px solid #111;border-radius:6px}
+[data-skin="anime"] .btn.primary{box-shadow:4px 4px 0 #111}
+[data-skin="anime"] header.top{border-bottom:4px solid #111}
+[data-skin="anime"] nav.tabs{border-top:4px solid #111;background:#fff}
+[data-skin="anime"] .tab-new{background:#E11D48;color:#fff;border:4px solid #111;box-shadow:4px 4px 0 #111}
+[data-skin="anime"] .mode-sw{border:3px solid #111;border-radius:6px;padding:0}
+[data-skin="anime"] .mode-sw button{border-radius:0;font-family:"Dela Gothic One",sans-serif;font-weight:400}
+
+/* 17 · Brutalista */
+:root[data-skin="bruto"]{--bg:#F2F2EC;--surface:#F2F2EC;--surface-2:#E6E6DE;--ink:#000000;--muted:#333333;--line:#000000;--accent:#1D4ED8;--accent-ink:#FFFFFF;--brand:#1D4ED8;--f-display:"Archivo Black",sans-serif;--f-body:"IBM Plex Mono",ui-monospace,monospace;--p-red:#cf3a2f;--p-blue:#2b62c6;--p-yellow:#c99a0c;--p-green:#2c9452;--p-white:#7d8894;--danger:#c0352b;--drop:#d7263d;--star:#e0a100;color-scheme:light}
+[data-skin="bruto"] *{border-radius:0!important}
+[data-skin="bruto"] :is(.wod,.goal,.pr-box,.shop-card,.wallet,.confirm,.mw-item,.lift-card,.lift-view,.ex-card,.stat,.tool,.empty,.mtile){border:2px solid #000;box-shadow:none}
+[data-skin="bruto"] :is(.btn,input,select,textarea){border:2px solid #000}
+[data-skin="bruto"] :is(h2.view-title,.sec h3,.goal-txt h3,.empty h3){font-weight:400;text-transform:uppercase;letter-spacing:-1px}
+[data-skin="bruto"] :is(.stat b,.date b,.streak b,.mtile b){font-weight:400}
+[data-skin="bruto"] header.top{border-bottom:2px solid #000}
+[data-skin="bruto"] nav.tabs{border-top:2px solid #000;background:#F2F2EC}
+[data-skin="bruto"] .tab-new{background:#1D4ED8;color:#fff;box-shadow:none;border:2px solid #000}
+[data-skin="bruto"] .top-coins,[data-skin="bruto"] .coin-chip{background:#FFE600;border:2px solid #000}
+[data-skin="bruto"] .mode-sw{border:2px solid #000;padding:0}
+[data-skin="bruto"] .mode-sw button{font-family:"Archivo Black",sans-serif;font-weight:400;text-transform:uppercase}
+[data-skin="bruto"] .mode-sw button[aria-checked="true"]{background:#000;color:#F2F2EC}
+
+/* 18 · Colores de subidón */
+:root[data-skin="subidon"]{--bg:#FFF6EA;--surface:#FFFFFF;--surface-2:#FFF0DA;--ink:#1A1033;--muted:#5B4B7A;--line:#E8D9C4;--accent:#FF7A1A;--accent-ink:#1A1033;--brand:#7C3AED;--f-display:"Bricolage Grotesque",sans-serif;--f-body:"Bricolage Grotesque",system-ui,sans-serif;--p-red:#cf3a2f;--p-blue:#2b62c6;--p-yellow:#c99a0c;--p-green:#2c9452;--p-white:#7d8894;--danger:#c0352b;--drop:#d7263d;--star:#e0a100;color-scheme:light}
+[data-skin="subidon"] :is(.wod,.goal,.pr-box,.shop-card,.wallet,.confirm,.mw-item,.lift-card,.lift-view,.ex-card,.stat,.tool,.empty,.mtile){border:0;border-radius:24px}
+[data-skin="subidon"] .goal{background:#FF7A1A;--ink:#1A1033;--muted:#3A2560;--surface-2:#FFC08A;--line:#E0640E;--brand:#1A1033;--accent:#1A1033;--accent-ink:#FFF6EA}
+[data-skin="subidon"] .stat:nth-child(3n+1){background:#C4A1FF}
+[data-skin="subidon"] .stat:nth-child(3n+2){background:#FF6FB5}
+[data-skin="subidon"] .stat:nth-child(3n){background:#C6F432}
+[data-skin="subidon"] .stat :is(.eyebrow,small,span){color:#1A1033}
+[data-skin="subidon"] .tool{border:3px solid #1A1033}
+[data-skin="subidon"] :is(h2.view-title,.sec h3,.goal-txt h3,.empty h3){text-transform:none;font-weight:800;letter-spacing:-.5px}
+[data-skin="subidon"] .brand-word span{background:#C6F432;color:#1A1033;padding:0 6px;border-radius:10px}
+[data-skin="subidon"] .btn.primary{background:#FF7A1A;color:#1A1033;border:0;border-radius:999px}
+[data-skin="subidon"] .mode-sw{background:#1A1033;border:0}
+[data-skin="subidon"] .mode-sw button{color:#FFF6EA}
+[data-skin="subidon"] .mode-sw button[aria-checked="true"]{background:#C6F432;color:#1A1033}
+[data-skin="subidon"] nav.tabs{background:#1A1033;border-top:0}
+[data-skin="subidon"] .tab{color:#FFF6EA}
+[data-skin="subidon"] .tab[aria-current="page"]{color:#C6F432}
+[data-skin="subidon"] .tab-new{background:#FF7A1A;color:#1A1033;box-shadow:none}
+
 /* Letra más grande y legible en todos los temas */
 :where([data-skin]) body{font-size:16px}
 :where([data-skin]) .eyebrow{font-size:13px;letter-spacing:.06em}
@@ -1992,6 +2083,12 @@ const SKINS=[
   {id:"comic",name:"Cómic",price:250,ff:"Bangers",fonts:["Comic+Neue:wght@400;700"],c:["#FFE14D","#9B5CF6","#111111","#FFFFFF","#2F6BFF"]},
   {id:"llama",name:"Llama clásica",price:200,ff:"Lilita One",fonts:["Lilita+One","Nunito:wght@600;700;800;900"],c:["#FFFFFF","#C026D3","#2E1065","#EDE4FF","#A21CAF"]},
   {id:"lava",name:"Lava",price:250,ff:"Baloo 2",fonts:["Baloo+2:wght@500;600;700;800"],c:["#4C1D95","#F0ABFC","#FFFFFF","#5B21B6","#FDE68A"]},
+  {id:"nube",name:"Nube blanca",price:150,ff:"Fraunces",fonts:["Fraunces:opsz,wght@9..144,500;9..144,600","Inter:wght@400;500;600;700"],c:["#F0EEE9","#7D6E5B","#2D2A26","#FAF9F6","#2D2A26"]},
+  {id:"bruto",name:"Brutalista",price:200,ff:"Archivo Black",fonts:["Archivo+Black","IBM+Plex+Mono:wght@400;500;700"],c:["#F2F2EC","#1D4ED8","#000000","#E6E6DE","#FFE600"]},
+  {id:"subidon",name:"Colores de subidón",price:200,ff:"Bricolage Grotesque",fonts:["Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800"],c:["#FFF6EA","#FF7A1A","#1A1033","#C4A1FF","#C6F432"]},
+  {id:"kpop",name:"K-pop neón",price:250,ff:"Unbounded",fonts:["Unbounded:wght@600;700;900","Outfit:wght@400;500;700;800"],c:["#0B0620","#FF2E93","#F8F4FF","#150B30","#22D3EE"]},
+  {id:"anime",name:"Anime de gimnasio",price:250,ff:"Dela Gothic One",fonts:["Dela+Gothic+One","M+PLUS+Rounded+1c:wght@500;700;800"],c:["#FFFFFF","#E11D48","#111111","#F3F3F3","#FACC15"]},
+  {id:"cristal",name:"Cristal líquido",price:300,ff:"Inter",fonts:["Inter:wght@400;500;600;700;800"],c:["#DCE4F7","#7C3AED","#111827","#F472B6","#A78BFA"]},
   {id:"arcade",name:"Arcade 8-bit",price:300,ff:"Press Start 2P",fonts:["Press+Start+2P","VT323"],c:["#10102A","#B07CFF","#F4F4F4","#17173A","#E83B3B"]},
 ];
 const skinItemId=id=>"t-"+id;

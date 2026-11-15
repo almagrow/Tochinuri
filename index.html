@@ -1601,6 +1601,9 @@ const CFG=window.TOCHI_CONFIG||{};
 /* Sesión: por defecto se queda guardada en el dispositivo (localStorage) y no hay que volver a entrar.
    Si al entrar se desmarca «Mantener la sesión iniciada», se guarda solo hasta cerrar el navegador (sessionStorage). */
 const REM_KEY="tochinuri-remember";
+/* Cuenta de prueba: usuario «prueba». Cada vez que se entra empieza vacía, como una cuenta nueva. */
+const TEST_EMAIL="prueba@tochinuri.es";
+const isTestUser=u=>(u?.email||"").toLowerCase()===TEST_EMAIL;
 const remember=()=>{try{return localStorage.getItem(REM_KEY)!=="0"}catch(e){return true}};
 const AUTH_STORE={
   getItem:k=>{try{return localStorage.getItem(k)??sessionStorage.getItem(k)}catch(e){return null}},
@@ -1654,7 +1657,9 @@ function showAuth(mode){
 async function onAuthSubmit(ev){
   {const rb=$("#auRemember");if(rb)try{localStorage.setItem(REM_KEY,rb.checked?"1":"0")}catch(e){}}
   ev.preventDefault();const err=m=>{const e=$("#auErr");e.textContent=m;e.hidden=false};
-  const btn=ev.target.querySelector("button[type=submit]"),email=$("#auEmail")?.value.trim(),pass=$("#auPass")?.value,pass2=$("#auPass2")?.value;
+  const btn=ev.target.querySelector("button[type=submit]"),pass=$("#auPass")?.value,pass2=$("#auPass2")?.value;
+  let email=$("#auEmail")?.value.trim();if(/^prueba$/i.test(email||""))email=TEST_EMAIL;
+  if(email===TEST_EMAIL){try{localStorage.setItem(REM_KEY,"0")}catch(e){}}
   if($("#auEmail")&&!/^\S+@\S+\.\S+$/.test(email||""))return err("Escribe tu email.");
   if((authMode==="login")&&!pass)return err("Escribe tu contraseña.");
   if((authMode==="signup"||authMode==="reset")&&(pass||"").length<6)return err("La contraseña debe tener al menos 6 caracteres.");
@@ -1677,6 +1682,10 @@ async function onAuthSubmit(ev){
 async function startApp(u){
   if(appStarted&&authUser&&authUser.id===u.id)return;
   authUser=u;appStarted=true;workouts=[];profile=null;profileReady=false;
+  if(isTestUser(u)){let done=false;try{done=sessionStorage.getItem("tochinuri-fresh")===u.id}catch(e){}
+    if(!done){try{await SB.from("docs").delete().eq("user_id",u.id)}catch(e){}
+      try{["tochinuri-mode","tochinuri-skin","tochinuri-logo","tochinuri-theme"].forEach(k=>localStorage.removeItem(k));sessionStorage.setItem("tochinuri-fresh",u.id)}catch(e){}
+      modeStored=false;modeAsked=false;try{mode="cf"}catch(e){}document.documentElement.removeAttribute("data-skin")}}
   try{navigator.storage?.persist?.().catch(()=>{})}catch(e){}
   $("#saveNote").textContent="Cargando tus datos…";show("log");
   const docs=SB.from("docs");

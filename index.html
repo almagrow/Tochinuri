@@ -1881,6 +1881,40 @@ html{background:linear-gradient(var(--safe-band,var(--bg)) 0 env(safe-area-inset
 @media (prefers-reduced-motion:reduce){.play.ic2 *{animation:none!important}}
 .qa-i:focus-visible{outline:none}.qa-i:focus-visible .qa-ic{outline:2px solid var(--brand);outline-offset:2px}
 :root.v2[data-frame] .hello .avatar,:root.v2[data-frame] .hello-me .avatar{margin:26px}
+/* ================= Ajuste fino para pantallas de iPhone y Android ================= */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,a,label,.tab,.tab-new,.qa-i,.wod,.wk-w,.td-w,.me-hb{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+input,select,textarea{font-size:max(16px,1em)}
+/* Alturas con la barra del navegador del móvil (dvh) */
+@supports (height:100dvh){.picker{height:min(86dvh,720px)}.qa-sheet{max-height:86dvh}.pl-sheet{max-height:88dvh}}
+/* Cabecera en móviles normales (≤400 px): logo y botones algo más compactos para que no se toquen */
+@media (max-width:400px){
+  .brand{font-size:26px}.lg-w{font-size:27px}.brand-bar{width:122px}
+  .nav-right{gap:5px}.top-stats,.coin-chip.top-coins{height:34px;min-width:0;padding:0 8px;font-size:14px}
+  .top-stats svg,.coin-chip.top-coins svg{width:16px;height:16px}
+  header.top .theme-btn,header.top .icon-btn{width:36px;height:36px}
+}
+/* Saludo en pantallas estrechas: foto algo más pequeña para que el texto respire */
+@media (max-width:400px){
+  .v2 .hello .avatar,.v2 .hello-me .avatar{width:46px;height:46px;font-size:18px}
+  :root.v2[data-frame] .hello .avatar,:root.v2[data-frame] .hello-me .avatar{margin:22px 22px 22px 18px}
+  .v2 .hello{font-size:16px;gap:10px}.v2 .hello-t b{font-size:18px}
+  .td-q{font-size:33px}.td.todo{padding:20px 18px 18px}
+}
+@media (max-width:340px){
+  .v2 .hello .avatar,.v2 .hello-me .avatar{width:40px;height:40px;font-size:16px}
+  :root.v2[data-frame] .hello .avatar,:root.v2[data-frame] .hello-me .avatar{margin:19px 18px 19px 16px}
+  .v2 .hello{font-size:15px}.td-q{font-size:29px}.td-stats{gap:12px}.td-stats b{font-size:19px}
+  .brand{font-size:23px}.lg-w{font-size:24px}.brand-bar{width:108px}
+  .qa-ic{width:52px;height:52px}
+}
+/* Pantallas bajitas (iPhone SE): menos aire vertical */
+@media (max-height:620px){.td.todo{gap:6px;padding-top:16px;padding-bottom:16px}.td-s{font-size:14px}.wk-d{padding:6px 0}}
+/* Con el teclado abierto, la barra de abajo se esconde para no tapar lo que escribes */
+body.kb-open nav.tabs,body.kb-open .toast{display:none}
+body.kb-open main{padding-bottom:24px}
+/* Móvil en horizontal: contenido centrado y barra fina */
+@media (orientation:landscape) and (max-height:500px){:root{--tabbar-h:52px}.td-q{font-size:28px}.v2 .hello .avatar{width:40px;height:40px}}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -6248,6 +6282,11 @@ const QA_KEY={lib:"lib",openTableBtn:"table",openChBtn:"challenges",openMaxBtn:"
 {const _q=qaItems;qaItems=function(){return _q().map(q=>({...q,ic:IC2[QA_KEY[q.id]]||q.ic}))}}
 {const _o=openQA;openQA=function(){_o();$("#qaGrid").querySelectorAll(".qa-i").forEach((b,i)=>{const ic=b.querySelector(".ic2");b.addEventListener("pointerenter",()=>playIc(ic));b.addEventListener("pointerdown",()=>playIc(ic));setTimeout(()=>playIc(ic),80+i*45)})}}
 
+
+/* Teclado del móvil: esconder la barra de abajo mientras escribes */
+{const isField=el=>el&&(el.matches?.('input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=button]),textarea,select')&&!el.readOnly);let kbT=null;
+  document.addEventListener("focusin",e=>{if(isField(e.target)&&matchMedia("(pointer:coarse)").matches){clearTimeout(kbT);document.body.classList.add("kb-open")}});
+  document.addEventListener("focusout",()=>{clearTimeout(kbT);kbT=setTimeout(()=>{if(!isField(document.activeElement))document.body.classList.remove("kb-open")},120)})}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

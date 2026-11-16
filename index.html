@@ -2054,6 +2054,20 @@ body.wr-open{overflow:hidden}
 .pk-art{flex:none;width:46px;height:46px;display:block}.pk-art svg{width:46px;height:46px}
 .pk[aria-checked="true"]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 10%,var(--surface))}
 .pk:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* Cooperativo */
+.co-groups,.co-sp{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:10px 0 0;padding-bottom:2px}.co-groups::-webkit-scrollbar,.co-sp::-webkit-scrollbar{display:none}
+.co-chip{flex:none;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;cursor:pointer;white-space:nowrap}
+.co-chip.on{background:color-mix(in srgb,var(--brand) 18%,var(--surface));border-color:var(--brand);font-weight:600}
+.co-name{margin:0 0 2px;font-size:20px;overflow-wrap:anywhere}
+.co-feed{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.co-it{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.co-av{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--brand) 20%,var(--surface));font-weight:700}
+.co-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;overflow-wrap:anywhere}
+.co-act{display:flex;flex-direction:column;gap:8px}.co-act input:not([type=checkbox]){width:100%}
+.co-amt{display:flex;align-items:center;gap:8px}.co-amt input{flex:1;min-width:0}
+.co-sug{background:var(--surface);border:1px solid var(--brand);border-radius:14px;padding:12px}.co-sug p{margin:0 0 8px}
+.co-more summary{cursor:pointer;color:var(--muted);font-size:14px}.co-more form{margin-top:12px}
+.fr-tabs{margin:4px 0 8px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -4768,6 +4782,15 @@ Object.assign(window.FRIENDS_API,{
   async shareAnswer(id,res,score){const{error}=await SB.rpc("share_answer",{p_id:id,p_res:res||"",p_score:score});if(error)throw error},
   async shareDecline(id){const{error}=await SB.rpc("share_decline",{p_id:id});if(error)throw error}
 });
+Object.assign(window.FRIENDS_API,{
+  async coopList(){const{data,error}=await SB.rpc("coop_list");if(error)throw error;return data||[]},
+  async coopCreate(name,me){const{data,error}=await SB.rpc("coop_create",{p_name:name,p_me:me||""});if(error)throw new Error(/too_many/.test(error.message)?"too_many":"error");return data},
+  async coopJoin(code,me){const{data,error}=await SB.rpc("coop_join",{p_code:code,p_me:me||""});if(error)throw new Error(/not_found/.test(error.message)?"not_found":/full/.test(error.message)?"full":/too_many/.test(error.message)?"too_many":"error");return data},
+  async coopLeave(id){const{error}=await SB.rpc("coop_leave",{p_group:id});if(error)throw error},
+  async coopFeed(id){const{data,error}=await SB.rpc("coop_feed",{p_group:id});if(error)throw error;return data||[]},
+  async coopPost(id,kind,text,key,me){const{error}=await SB.rpc("coop_post",{p_group:id,p_kind:kind,p_text:text,p_key:key,p_me:me||""});if(error)throw new Error(/too_many/.test(error.message)?"too_many":"error")},
+  async coopUnpost(id){const{error}=await SB.rpc("coop_unpost",{p_id:id});if(error)throw error}
+});
 /* Avisos en el móvil (push) */
 window.PUSH_API={
   async pubKey(){const{data,error}=await SB.rpc("push_pub_key");if(error)throw error;return data},
@@ -6815,6 +6838,104 @@ paintPet=function(){const c=$("#petCard");if(!c)return;if(!profile||!profile.pet
     const ok=await saveProf({petKind:k,petOn:true},`${PET_KINDS[k].em} ¡${k==="gorila"?"Gori":(profile.petName||"Tochi")} es ahora tu mascota!`);if(ok!==false){$("#mePet").checked=true;sync()}};
   $("#mePet").onchange=async ev=>{const on=ev.target.checked,k=petKind();const ok=await saveProf({petOn:on},on?(k==="gorila"?"¡Uh uh! Gori ya está en tu portada 🦍":"¡Miau! Tochi ya está en tu portada 🐱"):"Mascota desactivada");if(ok===false)ev.target.checked=!on};
   const _om2=openMe;openMe=function(first){_om2(first);try{sync()}catch(e){}};sync()}}
+
+/* ================= Cooperativo: grupos privados de amigos con muro de actividad ================= */
+let coopGroups=[],coopLoaded=false,coopSel=null,coopFeed=[],coopSport="run",frTab="rank",coopT=null;
+const CO_SPORTS=[["run","🏃","Correr","km","salido a correr"],["bike","🚴","Bici","km","salido en bici"],["swim","🏊","Natación","min","ido a nadar"],["walk","🚶","Caminar","km","salido a caminar"],["yoga","🧘","Yoga","min","hecho yoga"],["other","🏅","Otro","",""],["win","🎉","Logro","",""]];
+const CO_ICON={week:"🔥",back:"🙌",hito:"🎉",run:"🏃",bike:"🚴",swim:"🏊",walk:"🚶",yoga:"🧘",other:"🏅",win:"🎉"};
+const coName=()=>(profile?.name||"").trim();
+const coShare=()=>({week:true,back:true,...(profile?.coopShare||{})});
+function coPosted(){try{return new Set(JSON.parse(localStorage.getItem("tn-coop-posted")||"[]"))}catch(e){return new Set()}}
+function coSavePosted(s){try{localStorage.setItem("tn-coop-posted",JSON.stringify([...s].slice(-300)))}catch(e){}}
+function coDismissed(){try{return new Set(JSON.parse(localStorage.getItem("tn-coop-no")||"[]"))}catch(e){return new Set()}}
+/* Frases automáticas: solo constancia y vuelta, sin pesos ni marcas */
+function coopAutoEvents(){const sh=coShare(),out=[],t=today(),dates=[...new Set(workouts.filter(w=>w.date&&w.date<=t).map(w=>w.date))].sort();
+  if(sh.week){const mon=isoD(mondayOf(new Date())),to=isoD(addDays(dObj(mon),6)),n=dates.filter(d=>d>=mon&&d<=to).length;
+    for(const[k,w] of[[3,"tres"],[5,"cinco"]])if(n>=k)out.push({key:`wk${k}-${mon}`,kind:"week",text:`ha entrenado ${w} días esta semana`})}
+  if(sh.back&&dates.length>1){const D=dates[dates.length-1],P=dates[dates.length-2],gap=Math.round((dObj(D)-dObj(P))/864e5),ago=Math.round((dObj(t)-dObj(D))/864e5);
+    if(gap>=14&&ago<=3)out.push({key:`back-${D}`,kind:"back",text:`ha vuelto a entrenar después de ${Math.round(gap/7)} semanas`})}
+  return out}
+/* Hitos: se sugieren, y solo se comparten si la persona lo confirma */
+function coopSuggestions(){const lim=isoD(addDays(new Date(),-14)),first=re=>{let d=null;for(const w of workouts){if(!w.date)continue;const hit=re.test(w.name||"")||(w.exercises||[]).some(e=>e.name&&re.test(e.name)&&!/muscle/i.test(e.name));if(hit&&(!d||w.date<d))d=w.date}return d};
+  const out=[],m=first(/murph/i),p=first(/pull-?up|dominada/i);
+  if(m&&m>=lim)out.push({key:"murph1",kind:"hito",text:"ha completado su primer Murph",ask:"Has apuntado tu primer Murph"});
+  if(p&&p>=lim)out.push({key:"pullup1",kind:"hito",text:"ha conseguido su primera dominada",ask:"Has apuntado tu primera dominada"});
+  return out}
+async function coopAuto(){if(!FRIENDS_API?.coopPost||!coopGroups.length)return 0;const done=coPosted(),ev=coopAutoEvents();let n=0;
+  for(const g of coopGroups)for(const e of ev){const k=g.id+":"+e.key;if(done.has(k))continue;
+    try{await FRIENDS_API.coopPost(g.id,e.kind,e.text,e.key,coName());done.add(k);n++}catch(x){if(x?.message==="too_many")break}}
+  if(n)coSavePosted(done);return n}
+async function coopLoad(){coopGroups=await FRIENDS_API.coopList();coopLoaded=true;
+  if(!coopGroups.some(g=>g.id===coopSel))coopSel=coopGroups[0]?.id||null;
+  if(coopGroups.length)await coopAuto();
+  coopFeed=coopSel?await FRIENDS_API.coopFeed(coopSel).catch(()=>[]):[]}
+function coopTabs(v){v.querySelector(".fr-tabs")?.remove();const h=v.querySelector(".view-title");if(!h)return;
+  h.insertAdjacentHTML("afterend",`<div class="seg fr-tabs" role="radiogroup" aria-label="Sección">${[["rank","Ranking"],["coop","Cooperativo"]].map(([k,l])=>`<input type="radio" name="frT" id="frT_${k}" value="${k}"${frTab===k?" checked":""}><label for="frT_${k}">${l}</label>`).join("")}</div>`);
+  v.querySelectorAll("[name=frT]").forEach(x=>x.onchange=()=>{frTab=x.value;renderFriends()})}
+const coErr=e=>e?.message==="not_found"?"No hay ningún grupo con ese código. Revísalo.":e?.message==="full"?"Ese grupo ya está lleno (30 personas).":e?.message==="too_many"?"Ya estás en 10 grupos, que es el máximo.":"No se pudo. Inténtalo de nuevo.";
+function coopSportForm(){const s=CO_SPORTS.find(x=>x[0]===coopSport),free=!s[3];
+  return`<form class="sec co-act" id="coAct"><span class="eyebrow">Cuenta algo al grupo</span>
+   <div class="co-sp" role="radiogroup" aria-label="Tipo de actividad">${CO_SPORTS.map(([k,e,l])=>`<button type="button" class="co-chip${k===coopSport?" on":""}" role="radio" aria-checked="${k===coopSport}" data-sp="${k}"><span aria-hidden="true">${e}</span> ${l}</button>`).join("")}</div>
+   ${free?`<input id="coTxt" maxlength="60" autocomplete="off" required placeholder="${coopSport==="win"?"Ej. mi primer pino o 10 minutos sin parar":"Ej. un partido de pádel"}">`
+   :`<div class="co-amt"><input id="coAmt" type="number" inputmode="decimal" min="0" step="any" placeholder="${s[3]==="km"?"Distancia (opcional)":"Duración (opcional)"}"><span class="muted">${s[3]}</span></div>`}
+   <p class="form-error" id="coErr" hidden></p><button class="btn primary" type="submit">Publicar en el muro</button></form>`}
+function coopGroupHtml(g){const sh=coShare(),done=coPosted(),no=coDismissed();
+  const sug=coopSuggestions().filter(s=>!done.has(g.id+":"+s.key)&&!no.has(g.id+":"+s.key));
+  const feed=coopFeed.length?`<ul class="co-feed">${coopFeed.map(it=>`<li class="co-it"><span class="co-av" aria-hidden="true">${esc((it.name||"?").trim().charAt(0).toUpperCase())}</span><div class="co-t"><span><b>${esc(it.mine?"Tú":it.name)}</b> ${esc(it.text)}</span><small class="muted">${CO_ICON[it.kind]||"🏅"} ${relDay(String(it.at).slice(0,10))}</small></div>${it.mine?`<button type="button" class="icon-btn" data-counpost="${esc(it.id)}" aria-label="Borrar esta publicación">×</button>`:""}</li>`).join("")}</ul>`
+    :`<p class="muted">Todavía no hay nada en el muro. En cuanto alguien entrene o cuente una actividad, aparecerá aquí.</p>`;
+  return`<div class="sec co-head"><h3 class="co-name">${esc(g.name)}</h3><p class="muted">${g.members.length} ${g.members.length===1?"persona":"personas"}: ${esc(g.members.map(n=>n||"Alguien").join(", "))}</p>
+    <div class="fr-cr"><b class="mono fr-c" id="coCode">${esc(g.code)}</b><button type="button" class="btn" id="coInvite">Invitar</button></div>
+    <p class="muted">Quien tenga este código puede unirse. Pásaselo solo a quien quieras.</p></div>
+  ${sug.map(s=>`<div class="sec co-sug"><p>${esc(s.ask)}. ¿Lo compartes con «${esc(g.name)}»?</p><div class="rt-ca"><button type="button" class="btn primary" data-cosug="${s.key}">Compartir</button><button type="button" class="btn" data-conosug="${s.key}">Ahora no</button></div></div>`).join("")}
+  <div class="sec fr-feed"><span class="eyebrow">Actividad del grupo</span>${feed}</div>
+  ${coopSportForm()}
+  <div class="sec co-priv"><span class="eyebrow">Lo que compartes</span>
+   <label class="ff-opt"><input type="checkbox" id="coWeek"${sh.week?" checked":""}> Avisar cuando entreno 3 o 5 días en una semana</label>
+   <label class="ff-opt"><input type="checkbox" id="coBack"${sh.back?" checked":""}> Avisar cuando vuelvo tras dos semanas sin entrenar</label>
+   <p class="muted">Nunca se publican pesos, marcas, fotos ni notas. Los hitos (como tu primer Murph) te los preguntamos antes, y lo que cuentas a mano lo escribes tú. Puedes borrar tus publicaciones con la ×.</p></div>`}
+async function renderCoop(load){const v=$("#v-friends");if(!v)return;
+  if(load!==false||!coopLoaded){v.innerHTML=`<h2 class="view-title">Amigos</h2><p class="muted">Cargando…</p>`;
+    try{await coopLoad()}catch(e){v.innerHTML=`<h2 class="view-title">Amigos</h2><div class="empty"><h3>No se pudo cargar</h3><p>Revisa la conexión y vuelve a intentarlo.</p><button type="button" class="btn" id="coRetry">Reintentar</button></div>`;coopTabs(v);$("#coRetry").onclick=()=>renderCoop();return}}
+  const g=coopGroups.find(x=>x.id===coopSel)||null;
+  const forms=`<form class="sec co-new" id="coNew"><label for="coNm" class="eyebrow">Crear un grupo privado</label><div class="fr-cr"><input id="coNm" maxlength="40" autocomplete="off" placeholder="Ej. Los del box" required><button class="btn primary" type="submit">Crear</button></div></form>
+   <form class="sec co-join" id="coJoin"><label for="coCd" class="eyebrow">Unirme con un código</label><div class="fr-cr"><input id="coCd" placeholder="Ej. K7Q2XM" autocomplete="off" autocapitalize="characters" maxlength="8" required><button class="btn" type="submit">Unirme</button></div></form>
+   <p class="form-error" id="coFErr" hidden></p>`;
+  v.innerHTML=`<h2 class="view-title">Amigos</h2>`+(g?`<div class="co-groups" role="tablist" aria-label="Tus grupos">${coopGroups.map(x=>`<button type="button" role="tab" aria-selected="${x.id===g.id}" class="co-chip${x.id===g.id?" on":""}" data-cog="${esc(x.id)}">${esc(x.name)}</button>`).join("")}</div>${coopGroupHtml(g)}<details class="sec co-more"><summary>Crear otro grupo o unirme a uno</summary>${forms}</details><button type="button" class="link-btn fr-off" id="coLeave">Salir de este grupo</button>`
+   :`<div class="sec fr-intro"><p><b>Cooperativo</b>: un grupo privado donde todos animáis a todos, entrenéis donde entrenéis. Los habituales del box, tu pareja, tus amigos de otro gimnasio… y cada uno con lo suyo: CrossFit, gimnasio, correr u otros deportes.</p><p class="muted">Aquí no hay ranking ni marcas: solo un muro con lo que cada uno quiere contar.</p></div>${forms}`);
+  coopTabs(v);
+  v.querySelectorAll("[data-cog]").forEach(b=>b.onclick=async()=>{coopSel=b.dataset.cog;try{coopFeed=await FRIENDS_API.coopFeed(coopSel)}catch(e){coopFeed=[]}renderCoop(false)});
+  const showErr=m=>{const e=$("#coFErr");if(e){e.textContent=m;e.hidden=false}};
+  $("#coNew").onsubmit=async ev=>{ev.preventDefault();const n=$("#coNm").value.trim();if(!n)return;ev.submitter&&(ev.submitter.disabled=true);
+    try{const r=await FRIENDS_API.coopCreate(n,coName());coopSel=r.id;toast("Grupo creado 🎉 Invita con el código");await renderCoop()}catch(e){showErr(coErr(e));ev.submitter&&(ev.submitter.disabled=false)}};
+  $("#coJoin").onsubmit=async ev=>{ev.preventDefault();const c=$("#coCd").value.trim().toUpperCase();if(!c)return;
+    try{const gn=await FRIENDS_API.coopJoin(c,coName());const prev=coopGroups.map(x=>x.id);await coopLoad();coopSel=(coopGroups.find(x=>!prev.includes(x.id))||coopGroups.find(x=>x.name===gn)||{}).id||coopSel;
+      toast(`Te has unido a «${gn}» 💪`);coopFeed=await FRIENDS_API.coopFeed(coopSel).catch(()=>[]);renderCoop(false)}catch(e){showErr(coErr(e))}};
+  if(!g)return;
+  $("#coInvite").onclick=async()=>{const t=`Únete a mi grupo «${g.name}» en TochiNuri con el código ${g.code}. Entra en https://tochinuri.es → Amigos → Cooperativo.`;
+    if(navigator.share){try{await navigator.share({title:"TochiNuri",text:t});return}catch(e){if(e?.name==="AbortError")return}}
+    try{await navigator.clipboard.writeText(t);toast("Invitación copiada")}catch(e){toast(`Código: ${g.code}`)}};
+  v.querySelectorAll("[data-sp]").forEach(b=>b.onclick=()=>{coopSport=b.dataset.sp;renderCoop(false)});
+  $("#coAct").onsubmit=async ev=>{ev.preventDefault();const s=CO_SPORTS.find(x=>x[0]===coopSport),e=$("#coErr");e.hidden=true;let text;
+    if(!s[3]){const t=$("#coTxt").value.trim();if(!t)return;text=(coopSport==="win"?"ha conseguido ":"ha hecho ")+t}
+    else{const a=parseFloat(String($("#coAmt").value).replace(",","."));text=`ha ${s[4]}`+(a>0&&a<1000?` ${Math.round(a*10)/10} ${s[3]}`:"")}
+    ev.submitter&&(ev.submitter.disabled=true);
+    try{await FRIENDS_API.coopPost(g.id,coopSport,text,"m-"+Date.now().toString(36),coName());toast("Publicado en el muro 👏");coopFeed=await FRIENDS_API.coopFeed(g.id);renderCoop(false)}
+    catch(x){e.textContent=x?.message==="too_many"?"Has publicado mucho hoy. Prueba mañana.":"No se pudo publicar. Inténtalo de nuevo.";e.hidden=false;ev.submitter&&(ev.submitter.disabled=false)}};
+  v.querySelectorAll("[data-counpost]").forEach(b=>b.onclick=async()=>{b.disabled=true;try{await FRIENDS_API.coopUnpost(b.dataset.counpost);coopFeed=coopFeed.filter(x=>x.id!==b.dataset.counpost);renderCoop(false)}catch(e){toast("No se pudo borrar");b.disabled=false}});
+  v.querySelectorAll("[data-cosug]").forEach(b=>b.onclick=async()=>{const s=coopSuggestions().find(x=>x.key===b.dataset.cosug);if(!s)return;b.disabled=true;
+    try{await FRIENDS_API.coopPost(g.id,s.kind,s.text,s.key,coName());const d=coPosted();d.add(g.id+":"+s.key);coSavePosted(d);toast("Compartido 🎉");coopFeed=await FRIENDS_API.coopFeed(g.id);renderCoop(false)}catch(e){toast("No se pudo compartir");b.disabled=false}});
+  v.querySelectorAll("[data-conosug]").forEach(b=>b.onclick=()=>{const n=coDismissed();n.add(g.id+":"+b.dataset.conosug);try{localStorage.setItem("tn-coop-no",JSON.stringify([...n]))}catch(e){}renderCoop(false)});
+  const sv=()=>saveProf({coopShare:{week:$("#coWeek").checked,back:$("#coBack").checked}},"Guardado");
+  $("#coWeek").onchange=sv;$("#coBack").onchange=sv;
+  let armed=0;$("#coLeave").onclick=async ev=>{const b=ev.currentTarget;if(!armed){armed=1;b.textContent="¿Seguro? Se borrarán tus publicaciones. Pulsa otra vez";setTimeout(()=>{armed=0;if(b.isConnected)b.textContent="Salir de este grupo"},5000);return}
+    try{await FRIENDS_API.coopLeave(g.id);coopSel=null;toast("Has salido del grupo");await renderCoop()}catch(e){toast("No se pudo salir")}}}
+/* Pestañas Ranking | Cooperativo dentro de Amigos */
+{const _rf=renderFriends;renderFriends=async function(load){
+  if(frTab==="coop"&&FRIENDS_API?.coopList)return renderCoop(load);
+  await _rf(load);const v=$("#v-friends");if(v&&FRIENDS_API?.coopList)coopTabs(v)}}
+/* Si apuntas entrenos, las frases automáticas llegan solas a tus grupos */
+{const _rc=renderAll;renderAll=function(){_rc();try{if(!coopLoaded||!coopGroups.length)return;clearTimeout(coopT);coopT=setTimeout(async()=>{try{if(await coopAuto()&&current==="friends"&&frTab==="coop"){coopFeed=coopSel?await FRIENDS_API.coopFeed(coopSel):[];renderCoop(false)}}catch(e){}},1500)}catch(e){}}}
+{const _bc=bootFriends;bootFriends=async function(){await _bc();try{if(FRIENDS_API?.coopList){coopGroups=await FRIENDS_API.coopList();coopLoaded=true;await coopAuto()}}catch(e){}}}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

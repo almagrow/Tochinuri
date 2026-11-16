@@ -2046,6 +2046,14 @@ body.wr-open{overflow:hidden}
 /* Aviso de descanso */
 .rest-c{display:flex;align-items:flex-start;gap:12px;margin-top:12px;padding:12px 8px 12px 14px;border-radius:16px;background:color-mix(in srgb,var(--p-blue) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--p-blue) 35%,var(--line))}
 .rest-c>div{flex:1;min-width:0}.rest-c b{display:block}.rest-c p{margin:4px 0 0;font-size:14px;color:var(--muted)}.rest-ic{font-size:26px;line-height:1}
+
+/* Gori y selector de mascota */
+.me-pet-kind{display:flex;gap:10px;margin-top:8px}
+.pk{flex:1;min-width:0;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;text-align:left;font:inherit}
+.pk b{display:block;font-size:15px}.pk small{color:var(--muted);font-size:12px}
+.pk-art{flex:none;width:46px;height:46px;display:block}.pk-art svg{width:46px;height:46px}
+.pk[aria-checked="true"]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 10%,var(--surface))}
+.pk:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -6723,6 +6731,90 @@ function paintRestCard(){let c=$("#restCard");const a=profile&&!(typeof todays==
   $("#restX").onclick=()=>{try{localStorage.setItem("tn-rest-x",today()+a.k)}catch(e){}c.remove()}}
 
 {const _ra9=renderAll;renderAll=function(){_ra9();try{paintWrapCard();paintRestCard();checkEpicDone()}catch(e){}}}
+
+
+/* ================= Gori: segunda mascota (gorila kawaii), disponible desde el principio ================= */
+function goriSVG(lv,mood){
+  const u="k"+(++petUid),O="#2A1E1A",fur="#7A4A2E",fur2="#A9714C",face="#FFE6CF",face2="#F7CFAE",pink="#FF9FB5",ow=2.8;
+  const sad=mood==="sad",happy=mood==="happy",gold=lv>=4;
+  const defs=`<defs><linearGradient id="${u}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${fur2}"/><stop offset="1" stop-color="${fur}"/></linearGradient>${gold?`<radialGradient id="${u}g"><stop offset="0" stop-color="#FFE58A" stop-opacity=".9"/><stop offset="1" stop-color="#FFE58A" stop-opacity="0"/></radialGradient>`:""}</defs>`;
+  const F=`fill="url(#${u}f)" stroke="${O}" stroke-width="${ow}" stroke-linejoin="round"`;
+  const spark=(x,y,s,cls="")=>`<path class="pt-spark ${cls}" style="transform-origin:${x}px ${y}px" d="M${x} ${y-6*s}C${x+.6*s} ${y-1.4*s} ${x+1.4*s} ${y-.6*s} ${x+6*s} ${y}C${x+1.4*s} ${y+.6*s} ${x+.6*s} ${y+1.4*s} ${x} ${y+6*s}C${x-.6*s} ${y+1.4*s} ${x-1.4*s} ${y+.6*s} ${x-6*s} ${y}C${x-1.4*s} ${y-.6*s} ${x-.6*s} ${y-1.4*s} ${x} ${y-6*s}z" fill="${gold?"#FFD54A":"#fff"}" stroke="${O}" stroke-width="1.4" stroke-linejoin="round"/>`;
+  const dot=(x,y,r,cls="")=>`<circle class="pt-spark ${cls}" style="transform-origin:${x}px ${y}px" cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="${O}" stroke-width="1.3"/>`;
+  const fx=`${spark(10,38,1)}${dot(13,24,2,"pt-d2")}${spark(110,30,.9,"pt-d3")}${dot(108,48,2.2)}${spark(106,72,.7,"pt-d2")}`;
+  const eye=(cx,cy)=>`<g class="pt-blink" style="transform-origin:${cx}px ${cy}px"><circle cx="${cx}" cy="${cy}" r="10.2" fill="#1B1414"/><circle class="pt-shine" cx="${cx-3.3}" cy="${cy-3.5}" r="4.2" fill="#fff"/><circle cx="${cx+3.6}" cy="${cy+3.6}" r="2.2" fill="#fff"/>${sad?`<path d="M${cx-6} ${cy+7}q6-3.5 12 0" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/>`:""}</g>`;
+  const brow=sad?`<path d="M30 40L45 31M90 40L75 31" stroke="${O}" stroke-width="2.8" fill="none" stroke-linecap="round"/>`:`<path d="M29 39C33 29 49 27 56 35C58 32 62 32 64 35C71 27 87 29 91 39" fill="none" stroke="${O}" stroke-width="2.6" stroke-linecap="round"/>`;
+  const muz=`<path d="M44 61C44 52 52 53 60 55C68 53 76 52 76 61C76 69 68 72 60 72C52 72 44 69 44 61Z" fill="${face2}" stroke="${O}" stroke-width="2.2" stroke-linejoin="round"/><path d="M53 57.4q2.6-2 4.6.4q-.6 2.4-2.6 2.2q-1.8-.6-2-2.6zM67 57.4q-2.6-2-4.6.4q.6 2.4 2.6 2.2q1.8-.6 2-2.6z" fill="${O}"/>`;
+  const mouth=happy?`<path d="M54 64q6 9 12 0z" fill="#7A2335" stroke="${O}" stroke-width="2" stroke-linejoin="round"/><path d="M56.4 67.2q3.6 2.6 7.2 0" fill="${pink}"/>`
+    :sad?`<path d="M55 67q5-4 10 0" stroke="${O}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`
+    :`<path d="M57 65q3 2.6 6 0" stroke="${O}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+  const tear=sad?`<path class="pt-tear" d="M36 56q-3 5 0 8q3-3 0-8z" fill="#7FD4FF" stroke="${O}" stroke-width="1"/>`:"";
+  const tuft=gold?"":`<path d="M52 16q2-9 8-8q-2 4 0 7q3-7 9-5q-4 3-3 7" fill="${fur2}" stroke="${O}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  const head=`<g class="pt-head">
+    <g class="pt-ear-l" style="transform-origin:22px 49px"><circle cx="19" cy="49" r="8" ${F}/><circle cx="19.5" cy="49" r="4" fill="${pink}"/></g>
+    <g class="pt-ear-r" style="transform-origin:98px 49px"><circle cx="101" cy="49" r="8" ${F}/><circle cx="100.5" cy="49" r="4" fill="${pink}"/></g>
+    ${tuft}<path d="M60 13C85 13 99 26 100 45C101 65 86 79 60 79C34 79 19 65 20 45C21 26 35 13 60 13Z" ${F}/>
+    <path d="M60 31C50 22 29 25 29 44C29 63 43 74 60 74C77 74 91 63 91 44C91 25 70 22 60 31Z" fill="${face}" stroke="${O}" stroke-width="${ow}" stroke-linejoin="round"/>
+    ${eye(45,46)}${eye(75,46)}${brow}${tear}${muz}${mouth}</g>`;
+  const band=c=>`<path d="M23 33q37-15 74 0l-1 6q-36-14-72 0z" fill="${c}" stroke="${O}" stroke-width="1.6" stroke-linejoin="round"/><path d="M95 34l9-4-3 6 6 2-11 0" fill="${c}" stroke="${O}" stroke-width="1.3" stroke-linejoin="round"/>`;
+  const db=(x,y,c,s=1)=>`<g transform="translate(${x} ${y}) scale(${s})"><rect x="-10" y="-1.8" width="20" height="3.6" rx="1.5" fill="#D1D5DB" stroke="${O}" stroke-width="1.2"/><rect x="-13" y="-6" width="5" height="12" rx="2" fill="${c}" stroke="${O}" stroke-width="1.5"/><rect x="8" y="-6" width="5" height="12" rx="2" fill="${c}" stroke="${O}" stroke-width="1.5"/></g>`;
+  /* Torso en V con pectorales y abdominales + hombros */
+  const body=`<path d="M30 76Q60 62 90 76L98 80C106 90 104 102 96 112H24C16 102 14 90 22 80Z" ${F}/>
+    <path d="M37 81Q48 76 60 82Q72 76 83 81Q86 90 80 94Q70 97 60 92Q50 97 40 94Q34 90 37 81Z" fill="${face}" stroke="${O}" stroke-width="2.2" stroke-linejoin="round"/><path d="M60 83V92M42 88q8 4 16 1M78 88q-8 4-16 1" stroke="${O}" stroke-width="1.2" fill="none" opacity=".45" stroke-linecap="round"/>
+    <path d="M48 96h24v14H48z" fill="${face}" stroke="${O}" stroke-width="2" stroke-linejoin="round"/><path d="M60 96v14M48 101h24M48 106h24" stroke="${O}" stroke-width="1.2" opacity=".45"/>
+    <circle cx="22" cy="83" r="12.5" ${F}/><circle cx="98" cy="83" r="12.5" ${F}/><path d="M14 80q5-6 12-5M106 80q-5-6-12-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".35"/>`;
+  const armsDown=`<path d="M24 84C8 86 6 104 22 108L42 106C46 98 40 93 33 94" ${F}/><path d="M96 84C112 86 114 104 98 108L78 106C74 98 80 93 87 94" ${F}/><path d="M12 96q6 5 14 3M108 96q-6 5-14 3" stroke="${O}" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".5"/>`;
+  const hands=`<ellipse cx="41" cy="103" rx="7.6" ry="5.6" fill="${face2}" stroke="${O}" stroke-width="2.2"/><ellipse cx="79" cy="103" rx="7.6" ry="5.6" fill="${face2}" stroke="${O}" stroke-width="2.2"/><path d="M38 100.5v4M41.5 100v4.6M75 100v4.6M78.5 100.5v4" stroke="${O}" stroke-width="1" opacity=".5"/>`;
+  const X=(sx,x)=>60+sx*x;
+  const limb=(d,w)=>`<path d="${d}" fill="none" stroke="${O}" stroke-width="${w+4.6}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${fur}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${fur2}" stroke-width="${w*.45}" stroke-linecap="round" stroke-linejoin="round" opacity=".7" transform="translate(0 -1.5)"/>`;
+  const plateC=gold?"#F5C400":"#DC2626",plateC2=gold?"#E8B100":"#1E5BD8";
+  let under="",behind="",armsL="",front="",pressHead=false,props="";
+  if(lv<=0){props=`<g class="pt-yarn" style="transform-origin:60px 99px"><g transform="translate(60 99) rotate(-8) scale(1.25)"><path d="M-12 0q12 9 24 0q-2 7-12 7t-12-7z" fill="#FDE047" stroke="${O}" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 0l3-3" stroke="${O}" stroke-width="2.4" stroke-linecap="round"/><path d="M-6 3q6 3 12 0" stroke="#CA8A04" stroke-width="1" fill="none"/></g></g>`;armsL=armsDown+props+hands}
+  else if(lv===1){front=band("#38BDF8");props=`<g class="pt-curl" style="transform-origin:60px 99px">${db(60,99,"#2563EB",1.7)}</g>`;armsL=armsDown+props+hands}
+  else if(lv===2){front=band("#EF4444");
+    const side=sx=>limb(`M${X(sx,34)} 84L${X(sx,51)} 84L${X(sx,47)} 60`,14)+`<g class="pt-bi" style="transform-origin:${X(sx,44)}px 80px"><circle cx="${X(sx,44)}" cy="80" r="8.6" ${F}/><path d="M${X(sx,40)} 76q${sx*4}-4 ${sx*8}-1" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".4"/></g>`+db(X(sx,47),56,"#EF4444",.8)+`<ellipse cx="${X(sx,47)}" cy="56" rx="7.4" ry="6.2" fill="${face2}" stroke="${O}" stroke-width="2.2"/>`;
+    armsL=side(-1)+side(1)}
+  else{pressHead=true;
+    if(gold)under=`<circle class="pt-glow" cx="60" cy="62" r="58" fill="url(#${u}g)"/><path class="pt-cape" style="transform-origin:60px 74px" d="M38 74q-14 20-10 36h64q4-16-10-36z" fill="#DC2626" stroke="${O}" stroke-width="2" stroke-linejoin="round"/>`;
+    behind=`<rect x="4" y="62" width="112" height="5" rx="2.5" fill="#9CA3AF" stroke="${O}" stroke-width="1.4"/><rect x="2" y="47" width="9" height="33" rx="3" fill="${plateC}" stroke="${O}" stroke-width="1.8"/><rect x="11" y="51" width="6" height="25" rx="2" fill="${plateC2}" stroke="${O}" stroke-width="1.5"/><rect x="109" y="47" width="9" height="33" rx="3" fill="${plateC}" stroke="${O}" stroke-width="1.8"/><rect x="103" y="51" width="6" height="25" rx="2" fill="${plateC2}" stroke="${O}" stroke-width="1.5"/>`;
+    armsL=limb(`M${X(-1,38)} 86L${X(-1,36)} 68`,14)+limb(`M${X(1,38)} 86L${X(1,36)} 68`,14)+`<ellipse cx="${X(-1,36)}" cy="64.5" rx="7.4" ry="6.4" fill="${face2}" stroke="${O}" stroke-width="2.2"/><ellipse cx="${X(1,36)}" cy="64.5" rx="7.4" ry="6.4" fill="${face2}" stroke="${O}" stroke-width="2.2"/>`;
+    front=(gold?`<path d="M44 21l5 9 11-12 11 12 5-9-2 12H46z" fill="#F5C400" stroke="#8A6A00" stroke-width="1.8" stroke-linejoin="round" transform="translate(0 -8)"/>`:band("#E11D48"))+(!sad?`<path class="pt-sweat" d="M98 40q2.6 5 0 7.6q-2.6-2.6 0-7.6z" fill="#60A5FA" stroke="${O}" stroke-width="1"/>`:"")}
+  const mat=`<ellipse cx="60" cy="111" rx="46" ry="6" fill="${gold?"#F5C400":"#C9B8FF"}" opacity=".45"/>`;
+  const top=pressHead?`<g class="pt-press">${behind}${armsL}${head}${front}</g>`:`${armsL}${head}${front}`;
+  return`<svg class="pet-svg pt-${mood} pt-lv${lv} pt-gori" viewBox="0 0 120 120" aria-hidden="true">${defs}${fx}<g class="pt-bob">${mat}${under}${body}${top}</g></svg>`}
+
+const PET_KINDS={gato:{nm:"Tochi",em:"🐱",pl:"Gato",stages:["Gatito","Gato en forma","Gato fuerte","Gato bestia","Gato leyenda"]},
+  gorila:{nm:"Gori",em:"🦍",pl:"Gorila",stages:["Gorilita","Gorila en forma","Gorila fuerte","Gorila bestia","Gorila leyenda"]}};
+const petKind=()=>profile?.petKind==="gorila"?"gorila":"gato";
+const petNm=()=>petKind()==="gorila"?"Gori":(profile?.petName||"Tochi");
+{const _ps=petSVG;petSVG=function(lv,mood,kind){return(kind||petKind())==="gorila"?goriSVG(lv,mood):_ps(lv,mood)}}
+{const _pst=petState;petState=function(){const P=_pst(),st=PET_KINDS[petKind()].stages;return{...P,stage:{...P.stage,n:st[P.lv]},nextStage:P.nextStage?{...P.nextStage,n:st[P.lv+1]}:null}}}
+{const _cl=coinLedger;coinLedger=function(){return _cl().map(e=>e&&typeof e.why==="string"?{...e,why:e.why.replace(/^Tochi sube/,petNm()+" sube")}:e)}}
+checkPetLevel=async function(){if(petBusy||!profileReady||!profile||!profile.petOn)return;const X=petXP(),known=petLog().reduce((a,e)=>Math.max(a,e.lv),0);if(X.L<=known)return;
+  petBusy=true;const add=[];for(let L=known+1;L<=X.L;L++)add.push({lv:L,date:today(),amt:petCoins(L)});const tot=add.reduce((a,e)=>a+e.amt,0);
+  const ok=await saveProf({petLog:[...petLog(),...add]});petBusy=false;
+  if(ok!==false)setTimeout(()=>toast(`${PET_KINDS[petKind()].em} ¡${petNm()} sube a nivel ${X.L}! +${tot} TochiCoins`),900)};
+paintPet=function(){const c=$("#petCard");if(!c)return;if(!profile||!profile.petOn){c.innerHTML="";return}const P=petState(),nm=petNm();
+  const a=petNeed(P.L),b=petNeed(P.L+1),pct=Math.round((P.xp-a)/(b-a)*100);
+  const msg=P.mood==="sad"?(P.idle<99?`Lleva ${P.idle} días esperándote… ¡vuelve a entrenar!`:"Está esperando tu primer entreno."):P.mood==="happy"?"¡Está feliz, has entrenado hace nada!":"Está bien, pero quiere más hierro.";
+  c.innerHTML=`<div class="pet-card ${P.mood}"><button type="button" class="pet-art" id="petTap" aria-label="${esc(nm)}: ${esc(P.stage.n)}, nivel ${P.L}">${petSVG(P.lv,P.mood)}<span class="pet-lv mono">${P.L}</span></button>
+   <div class="pet-t"><span class="eyebrow">${esc(nm)} · Nivel ${P.L} · ${esc(P.stage.n)}</span><b>${esc(msg)}</b>
+    <div class="pet-xp" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}" aria-label="Experiencia hasta el nivel ${P.L+1}"><i style="width:${pct}%"></i></div>
+    <span class="muted">${P.xp-a} / ${b-a} XP · al nivel ${P.L+1} te da <b>${petCoins(P.L+1)} monedas</b>${P.nextStage?` · con nivel ${P.nextStage.min} será ${P.nextStage.n}`:""}</span></div>
+   <button type="button" class="icon-btn pet-x" id="petX" aria-label="Ocultar mascota">×</button></div>
+   <div class="pet-help" id="petHelp" hidden><b>¿Cómo sube ${esc(nm)}?</b> Con tus logros: cada nivel de insignia +${PET_XP.badge} XP, reto semanal +${PET_XP.challenge}, reto del mes +${PET_XP.month}, logro secreto +${PET_XP.secret} y objetivo cumplido +${PET_XP.goal}. Ahora llevas ${P.parts.badge} niveles de insignia, ${P.parts.ch} retos, ${P.parts.secret} secretos y ${P.parts.goal} objetivos.</div>`;
+  $("#petTap").onclick=()=>{const s=$("#petTap svg");s.classList.remove("jump");void s.getBBox();s.classList.add("jump");const h=$("#petHelp");h.hidden=!h.hidden};
+  $("#petX").onclick=async()=>{await saveProf({petOn:false},"Mascota desactivada. Puedes volver a activarla en Tu perfil.")}};
+/* Tu perfil: interruptor + elegir mascota */
+{const lab=$(".me-pet");if(lab){lab.querySelector("b").textContent="Mascota";lab.querySelector("small").textContent="En la portada: sube de nivel con tus logros y te da monedas";
+  const row=document.createElement("div");row.className="me-pet-kind";row.id="petKindRow";row.setAttribute("role","radiogroup");row.setAttribute("aria-label","Elegir mascota");
+  row.innerHTML=["gato","gorila"].map(k=>`<button type="button" class="pk" role="radio" data-pk="${k}" aria-checked="false"><span class="pk-art" aria-hidden="true"></span><span><b>${PET_KINDS[k].nm}</b><small>${PET_KINDS[k].pl==="Gato"?"El gatito":"El gorila"}</small></span></button>`).join("");
+  lab.insertAdjacentElement("afterend",row);
+  const sync=()=>{const cur=petKind();row.querySelectorAll(".pk").forEach(b=>{const k=b.dataset.pk;b.setAttribute("aria-checked",String(k===cur));b.querySelector(".pk-art").innerHTML=petSVG(2,"happy",k)});const art=lab.querySelector(".me-pet-art");if(art)art.innerHTML=petSVG(2,"happy",cur)};
+  row.onclick=async ev=>{const b=ev.target.closest(".pk");if(!b||!profile)return;const k=b.dataset.pk;if(k===petKind()&&profile.petOn)return;
+    const ok=await saveProf({petKind:k,petOn:true},`${PET_KINDS[k].em} ¡${k==="gorila"?"Gori":(profile.petName||"Tochi")} es ahora tu mascota!`);if(ok!==false){$("#mePet").checked=true;sync()}};
+  $("#mePet").onchange=async ev=>{const on=ev.target.checked,k=petKind();const ok=await saveProf({petOn:on},on?(k==="gorila"?"¡Uh uh! Gori ya está en tu portada 🦍":"¡Miau! Tochi ya está en tu portada 🐱"):"Mascota desactivada");if(ok===false)ev.target.checked=!on};
+  const _om2=openMe;openMe=function(first){_om2(first);try{sync()}catch(e){}};sync()}}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

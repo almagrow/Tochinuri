@@ -1979,6 +1979,73 @@ button.rm-cell[aria-expanded="true"]{border:2px solid var(--brand);background:co
 .sk-req{font-size:13px;font-weight:700;color:var(--accent,#E85D2A)}
 .sk-bar{height:6px;border-radius:3px;background:rgba(127,127,127,.22);overflow:hidden;margin:4px 0 2px}.sk-bar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#F59E0B,#EF4444)}
 .sk-locked .xt-prev{filter:saturate(.55);opacity:.8}
+
+/* Paquete 9: retos épicos, resumen del año, podio, actividad, WOD compartido y descanso */
+.ep{flex-direction:row;align-items:center;gap:12px}.ep-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.ep-badge{--bc:#F59E0B;flex:none;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;align-content:center;gap:0;position:relative;
+  background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--bc) 30%,#fff),var(--bc) 70%);border:3px solid color-mix(in srgb,var(--bc) 60%,#000);box-shadow:0 0 0 3px color-mix(in srgb,var(--bc) 25%,transparent),inset 0 -4px 0 rgba(0,0,0,.18)}
+.ep-badge .ep-ic{font-size:22px;line-height:1}.ep-badge small{font:800 8.5px/1 var(--f-body);color:#fff;letter-spacing:.06em;margin-top:2px;text-shadow:0 1px 1px rgba(0,0,0,.35)}
+.ep-badge.off{filter:grayscale(1);opacity:.45}
+.ep.ok{border-color:var(--p-green)}
+.ep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:12px;margin-top:10px}
+.ep-it{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:12px;color:var(--muted)}
+/* Resumen del año */
+body.wr-open{overflow:hidden}
+.wr{position:fixed;inset:0;z-index:300;background:#0E0B1A;color:#fff;display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top,0px)) 0 env(safe-area-inset-bottom,0px)}
+.wr-bars{display:flex;gap:4px;padding:0 14px}.wr-bars i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.25);overflow:hidden}.wr-bars i b{display:block;height:100%;width:0;background:#fff}
+.wr-bars i.done b{width:100%}.wr-bars i.on b{width:100%;animation:wrBar 6s linear}
+@keyframes wrBar{from{width:0}to{width:100%}}
+.wr-x{position:absolute;top:calc(18px + env(safe-area-inset-top,0px));right:12px;z-index:3;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:26px;line-height:1;cursor:pointer}
+.wr-stage{flex:1;display:flex;min-height:0}
+.wr-s{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 28px;gap:8px;animation:wrIn .45s ease-out}
+@keyframes wrIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.wr-s{animation:none}.wr-bars i.on b{animation:none}}
+.wr-s h2{font:900 clamp(30px,9vw,46px)/1.05 var(--f-display);margin:0;text-wrap:balance}.wr-s p{margin:0;font-size:17px;opacity:.9;max-width:30ch}.wr-sm{font-size:14px!important;opacity:.75!important}
+.wr-k{font:800 12px var(--f-body);letter-spacing:.16em;text-transform:uppercase;opacity:.75}
+.wr-big{font-size:clamp(72px,24vw,120px);line-height:1;font-weight:900}
+.wr-a{background:radial-gradient(circle at 50% 30%,#FF7A3D,#B4235A 60%,#2A0E4F)}.wr-b{background:linear-gradient(160deg,#0EA5E9,#1E3A8A)}.wr-c{background:linear-gradient(160deg,#F97316,#7C2D12)}
+.wr-d{background:linear-gradient(160deg,#A855F7,#3B0764)}.wr-e{background:linear-gradient(160deg,#EAB308,#713F12)}.wr-f{background:linear-gradient(160deg,#10B981,#064E3B)}
+.wr-g{background:linear-gradient(160deg,#EF4444,#450A0A)}.wr-z{background:linear-gradient(160deg,#FF5A1F,#C2185B 55%,#311B92)}
+.wr-pet{width:150px;height:150px}.wr-pet svg{width:100%;height:100%}
+.wr-ol{list-style:none;margin:10px 0 0;padding:0;width:min(280px,100%);display:flex;flex-direction:column;gap:6px}.wr-ol li{display:flex;justify-content:space-between;gap:10px;background:rgba(255,255,255,.14);border-radius:12px;padding:8px 12px;text-align:left}
+.wr-sum{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(320px,100%);margin:8px 0}.wr-sum div{background:rgba(255,255,255,.15);border-radius:16px;padding:12px 6px;display:flex;flex-direction:column}
+.wr-sum b{font-size:30px;font-weight:900}.wr-sum span{font-size:13px;opacity:.85}
+.wr-share,.wr-again{position:relative;z-index:3;min-width:220px}.wr-again{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
+.wr-nav{position:absolute;top:70px;bottom:120px;width:34%;background:none;border:0;z-index:2;cursor:pointer}.wr-prev{left:0}.wr-next{right:0;width:66%}
+.wr-card{display:flex;align-items:center;gap:6px;margin-top:12px;padding:6px 6px 6px 12px;border-radius:16px;color:#fff;background:linear-gradient(120deg,#FF5A1F,#C2185B 60%,#4C1D95)}
+.wr-card-b{flex:1;display:flex;align-items:center;gap:12px;background:none;border:0;color:inherit;text-align:left;padding:8px 0;cursor:pointer;min-width:0}
+.wr-card-b b{display:block;font-size:16px}.wr-card-b small{opacity:.9}.wr-card-ic{font-size:28px}.wr-card .icon-btn{color:#fff}
+/* Podio */
+.fr-pod{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:18px 0 6px}
+.fp{display:flex;flex-direction:column;align-items:center;gap:4px;width:30%;max-width:120px;min-width:0}
+.fp-av{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font:800 19px var(--f-display);background:var(--surface-2);border:3px solid var(--line);color:var(--ink)}
+.fp.p1 .fp-av{width:58px;height:58px;font-size:23px;border-color:#F5C400}.fp.p2 .fp-av{border-color:#B8C0C8}.fp.p3 .fp-av{border-color:#C97B3C}
+.fp-n{font-size:14px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fp-v{font-size:13px;color:var(--muted)}
+.fp-b{width:100%;display:grid;place-items:center;font:900 20px var(--f-display);color:#fff;border-radius:12px 12px 4px 4px}
+.fp.p1 .fp-b{height:70px;background:linear-gradient(#F5C400,#C99A00)}.fp.p2 .fp-b{height:50px;background:linear-gradient(#C9D0D7,#8C96A1)}.fp.p3 .fp-b{height:36px;background:linear-gradient(#E0995A,#9A5520)}
+.fp.me .fp-n{color:var(--brand)}
+.fr-seg{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}.fr-seg::-webkit-scrollbar{display:none}.fr-seg label{white-space:nowrap}
+/* Actividad y reacciones */
+.ff-list,.ff-got{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.ff{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.ff-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.ff-w{overflow-wrap:anywhere}.ff-r{color:var(--brand)}
+.ff-re{display:flex;gap:4px;flex:none}
+.ff-rb{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface-2);font-size:18px;cursor:pointer;display:grid;place-items:center;transition:transform .12s}
+.ff-rb.on{background:color-mix(in srgb,var(--brand) 18%,var(--surface));border-color:var(--brand);transform:scale(1.08)}
+.ff-rh{display:block;margin-top:14px}
+.ff-got li{display:flex;align-items:center;gap:10px;font-size:14px}.ff-got li>span:nth-child(2){flex:1;min-width:0}.ff-e{font-size:20px}
+.ff-opt{display:flex;gap:10px;align-items:center;margin-top:12px;font-size:13px;color:var(--muted)}.ff-opt input[type=checkbox]{flex:none;width:20px;height:20px;min-width:0;padding:0;margin:0!important;accent-color:var(--brand)}
+.ff-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 4px}.ff-chip{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13px}
+/* WOD compartido */
+.ws-btn{display:inline-flex;align-items:center;gap:8px;margin:8px 0}.ws-btn svg{width:18px;height:18px}
+.ws-pick{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.ws-fr{display:flex;flex-wrap:wrap;gap:8px}.ws-o{display:flex;align-items:center;gap:6px;background:var(--surface-2);border-radius:999px;padding:6px 12px}
+.ws-pick input:not([type]),.ws-f input:not([type=checkbox]){width:100%;max-width:220px}
+.ws{flex-wrap:wrap}.ws-ex{display:block;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
+.ws-f{width:100%;display:flex;flex-direction:column;gap:6px;margin-top:8px}
+/* Aviso de descanso */
+.rest-c{display:flex;align-items:flex-start;gap:12px;margin-top:12px;padding:12px 8px 12px 14px;border-radius:16px;background:color-mix(in srgb,var(--p-blue) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--p-blue) 35%,var(--line))}
+.rest-c>div{flex:1;min-width:0}.rest-c b{display:block}.rest-c p{margin:4px 0 0;font-size:14px;color:var(--muted)}.rest-ic{font-size:26px;line-height:1}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -4685,6 +4752,14 @@ Object.assign(window.FRIENDS_API,{
   async duelAnswer(id,accept){const{error}=await SB.rpc("duel_answer",{p_id:id,p_accept:accept});if(error)throw error},
   async duelCancel(id){const{error}=await SB.rpc("duel_cancel",{p_id:id});if(error)throw error}
 });
+Object.assign(window.FRIENDS_API,{
+  async reactList(){const{data,error}=await SB.rpc("react_list");if(error)throw error;return data||[]},
+  async react(to,wid,emoji){const{error}=await SB.rpc("react_set",{p_to:to,p_wid:wid,p_emoji:emoji||""});if(error)throw error},
+  async shareList(){const{data,error}=await SB.rpc("share_list");if(error)throw error;return data||[]},
+  async shareSend(to,wod,res,score,lower){const{data,error}=await SB.rpc("share_send",{p_to:to,p_wod:wod,p_res:res||"",p_score:score,p_lower:lower!==false});if(error)throw new Error(/too_many/.test(error.message)?"too_many":"error");return data},
+  async shareAnswer(id,res,score){const{error}=await SB.rpc("share_answer",{p_id:id,p_res:res||"",p_score:score});if(error)throw error},
+  async shareDecline(id){const{error}=await SB.rpc("share_decline",{p_id:id});if(error)throw error}
+});
 /* Avisos en el móvil (push) */
 window.PUSH_API={
   async pubKey(){const{data,error}=await SB.rpc("push_pub_key");if(error)throw error;return data},
@@ -5447,11 +5522,11 @@ async function renderFriends(load){const v=$("#v-friends");
   if(frMe?.error){v.innerHTML=`<h2 class="view-title">Amigos</h2><div class="empty"><h3>No se pudo cargar</h3><p>Revisa la conexión y vuelve a intentarlo.</p><button type="button" class="btn" id="frRetry">Reintentar</button></div>`;$("#frRetry").onclick=()=>renderFriends();return}
   if(!frMe?.code){v.innerHTML=`<h2 class="view-title">Amigos</h2>
     <div class="sec fr-intro"><p>Añade a tus compañeros del box o del gym y compara cuántos días entrenáis, vuestra racha y los kilos movidos.</p>
-    <p class="muted">Solo se comparte tu <b>nombre</b> y esos números de la semana y del mes. Tus entrenos, fotos, pesos de cada ejercicio y notas no se comparten. Lo puedes desactivar cuando quieras.</p>
+    <p class="muted">Se comparte tu <b>nombre</b>, esos números de la semana y del mes y el <b>nombre y resultado de tus últimos entrenos</b> (para que tus amigos te den ánimos). Tus fotos, pesos de cada ejercicio y notas no se comparten. Puedes dejar de compartir los entrenos o desactivarlo todo cuando quieras.</p>
     <button type="button" class="btn primary full" id="frOn">Activar amigos</button></div>`;
     $("#frOn").onclick=async()=>{$("#frOn").disabled=true;try{await FRIENDS_API.enable(profile?.name||"");await renderFriends()}catch(e){toast("No se pudo activar. Inténtalo de nuevo.");$("#frOn").disabled=false}};return}
   const B=(frBoard||[]).slice(),key=frSort,unit=FR_SORT.find(s=>s[0]===key)[2],curWk=isoD(mondayOf(new Date()));
-  const val=r=>{const s=r.stats||{};if((key==="week"||key==="kg")&&s.wk!==curWk)return 0;return Number(s[key])||0};
+  const curMo=today().slice(0,7),val=r=>{const s=r.stats||{};if((key==="week"||key==="kg")&&s.wk!==curWk)return 0;if((key==="mkg"||key==="mch"||key==="month")&&s.mo&&s.mo!==curMo)return 0;return Number(s[key])||0};
   B.sort((a,b)=>val(b)-val(a)||(a.is_me?-1:1));
   const medal=i=>i===0?"🥇":i===1?"🥈":i===2?"🥉":`<span class="mono">${i+1}</span>`;
   v.innerHTML=`<h2 class="view-title">Amigos</h2>
@@ -5459,7 +5534,7 @@ async function renderFriends(load){const v=$("#v-friends");
    <p class="muted">Pásaselo a tus compañeros para que te añadan.</p></div>
   <form class="sec fr-add" id="frAdd"><label for="frIn" class="eyebrow">Añadir con su código</label><div class="fr-cr"><input id="frIn" placeholder="Ej. K7Q2XM" autocomplete="off" autocapitalize="characters" maxlength="8"><button class="btn primary" type="submit">Añadir</button></div><p class="form-error" id="frErr" hidden></p></form>
   <div class="seg fr-seg" role="radiogroup" aria-label="Ranking por">${FR_SORT.map(([k,l])=>`<input type="radio" name="frS" id="frS_${k}" value="${k}"${key===k?" checked":""}><label for="frS_${k}">${l}</label>`).join("")}</div>
-  <ol class="fr-board">${B.map((r,i)=>`<li class="${r.is_me?"me":""}"><span class="fr-pos">${medal(i)}</span><span class="fr-n"><b>${esc(r.name||"Sin nombre")}${r.is_me?" <small>(tú)</small>":""}</b><small class="muted">${(r.stats?.ch||0)&&r.stats?.wk===curWk?`${r.stats.ch}/3 retos · `:""}racha ${r.stats?.streak||0} sem.</small></span><b class="fr-v mono">${key==="kg"?fmtBig(val(r)):val(r)} <small>${unit}</small></b>${r.is_me?"":`<button type="button" class="icon-btn fr-x" data-frx="${esc(r.user_id)}" aria-label="Quitar a ${esc(r.name||"este amigo")}">×</button>`}</li>`).join("")}</ol>
+  <ol class="fr-board">${B.map((r,i)=>`<li class="${r.is_me?"me":""}"><span class="fr-pos">${medal(i)}</span><span class="fr-n"><b>${esc(r.name||"Sin nombre")}${r.is_me?" <small>(tú)</small>":""}</b><small class="muted">${(r.stats?.ch||0)&&r.stats?.wk===curWk?`${r.stats.ch}/3 retos · `:""}racha ${r.stats?.streak||0} sem.</small></span><b class="fr-v mono">${key==="kg"||key==="mkg"?fmtBig(val(r)):val(r)} <small>${unit}</small></b>${r.is_me?"":`<button type="button" class="icon-btn fr-x" data-frx="${esc(r.user_id)}" aria-label="Quitar a ${esc(r.name||"este amigo")}">×</button>`}</li>`).join("")}</ol>
   ${B.length<2?`<p class="muted fr-solo">Aún no has añadido a nadie. ¡Comparte tu código!</p>`:""}
   <div class="fr-confirm sec" id="frConf" hidden><p id="frConfT"></p><div class="rt-ca"><button type="button" class="btn danger-btn" id="frConfY">Sí</button><button type="button" class="btn" id="frConfN">No</button></div></div>
   <button type="button" class="link-btn fr-off" id="frOff">Desactivar amigos y dejar de compartir</button>`;
@@ -6420,6 +6495,234 @@ function checkStreakUnlocks(){if(!profile||shopAdmin||shopFree)return;const best
   if(!got.length)return;
   setTimeout(()=>toast(got.length===1?`🔥 ¡Racha de ${got[0].streak} ${got[0].streak===1?"semana":"semanas"}! Has ganado el marco «${got[0].name}». Póntelo en Tienda › Mías.`:`🔥 ¡Has ganado ${got.length} marcos de racha! Póntelos en Tienda › Mías.`),900)}
 {const _ra2=renderAll;renderAll=function(){_ra2();try{checkStreakUnlocks()}catch(e){}}}
+
+
+/* ================= Paquete 9: retos épicos del mes, resumen del año, ranking, reacciones, WOD compartido y aviso de descanso ================= */
+
+/* ---------- 1 · Retos épicos del mes con insignia ---------- */
+const EPIC_START=[2026,10];/* noviembre de 2026 */
+const repsOf=re=>W=>W.reduce((a,w)=>a+(w.exercises||[]).reduce((s,e)=>e.name&&re.test(norm(e.name))?s+(myReps(e)||0)*(Number(e.sets)||1):s,0),0);
+const EPIC_POOL={
+  burpee:{t:"1.000 burpees",ic:"🔥",g:1000,u:"reps",col:"#EF4444",v:repsOf(/burpee/)},
+  wb:{t:"1.000 wall balls",ic:"🎯",g:1000,u:"reps",col:"#8B5CF6",v:repsOf(/wall ?ball/)},
+  du:{t:"1.500 dobles de comba",ic:"🪢",g:1500,u:"reps",col:"#06B6D4",v:repsOf(/double.?under|dobles|comba|\bdu\b/)},
+  pull:{t:"500 dominadas",ic:"🦍",g:500,u:"reps",col:"#78716C",v:repsOf(/dominad|pull.?up|chest.?to.?bar|chin.?up|\bc2b\b/)},
+  squat:{t:"1.500 sentadillas",ic:"🦵",g:1500,u:"reps",col:"#F59E0B",v:repsOf(/sentadilla|squat|thruster|wall ?ball|pistol/)},
+  push:{t:"1.000 flexiones",ic:"💥",g:1000,u:"reps",col:"#EC4899",v:repsOf(/flexion|push.?up/)},
+  kg:{t:"Mueve 100.000 kg",ic:"🏋️",g:100000,u:"kg",col:"#2563EB",v:W=>W.reduce((a,w)=>a+wodVolume(w),0)},
+  days:{t:"Entrena 16 días",ic:"📅",g:16,u:"días",col:"#16A34A",v:W=>new Set(W.map(w=>w.date)).size},
+  rep:{t:"10.000 repeticiones",ic:"⚡",g:10000,u:"reps",col:"#EAB308",v:W=>W.reduce((a,w)=>a+(w.exercises||[]).reduce((s,e)=>s+(myReps(e)||0)*(Number(e.sets)||1),0),0)}
+};
+/* Cada mes: un reto de movimiento + uno que vale para todos (gym y CrossFit) */
+const EPIC_PLAN=[["pull","days"],["burpee","kg"],["wb","days"],["squat","rep"],["push","kg"],["du","days"],["burpee","rep"],["pull","kg"],["wb","days"],["squat","rep"],["burpee","days"],["push","kg"]];
+const EPIC_COINS=200;
+function epicFor(y,m){return EPIC_PLAN[m].map(k=>({key:k,id:`e${y}-${m+1}-${k}`,...EPIC_POOL[k],c:EPIC_COINS,y,m}))}
+function epicProgress(c){const mf=isoD(new Date(c.y,c.m,1)),mt=isoD(new Date(c.y,c.m+1,0));return chProgress(c,mf,mt)}
+function epicMonths(){const out=[],n=new Date();for(let y=EPIC_START[0],m=EPIC_START[1];y<n.getFullYear()||(y===n.getFullYear()&&m<=n.getMonth());m===11?(y++,m=0):m++)out.push([y,m]);return out}
+function epicBadges(){const out=[];for(const[y,m] of epicMonths())for(const c of epicFor(y,m)){const p=epicProgress(c);if(p.ok)out.push({...c,...p})}return out}
+function epicNow(){const d=new Date();return epicFor(d.getFullYear(),d.getMonth()).map(c=>({...c,...epicProgress(c)}))}
+const epicVal=c=>c.u==="kg"?`${fmtBig(Math.min(c.v,c.g))} / ${fmtBig(c.g)} kg`:`${fmtBig(Math.min(Math.round(c.v),c.g))} / ${fmtBig(c.g)} ${c.u}`;
+const MESC=["ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC"];
+const badgeHtml=(c,on)=>`<span class="ep-badge${on?"":" off"}" style="--bc:${c.col}" aria-hidden="true"><span class="ep-ic">${c.ic}</span><small>${MESC[c.m]} ${String(c.y).slice(2)}</small></span>`;
+function epicCard(c){const pct=Math.min(100,c.v/c.g*100),d=new Date(),left=new Date(d.getFullYear(),d.getMonth()+1,0).getDate()-d.getDate()+1;
+  return`<li class="ch ep${c.ok?" ok":""}">${badgeHtml(c,c.ok)}<div class="ep-b"><div class="ch-h"><b>${esc(c.t)}</b><span class="ch-coin">${COIN_SVG}<b class="mono">${c.c}</b></span></div>
+  <div class="ch-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(pct)}" aria-label="${esc(c.t)}"><i style="width:${pct}%;background:${c.col}"></i></div>
+  <span class="ch-v mono">${c.ok?"¡Insignia conseguida! Monedas sumadas ✓":`${epicVal(c)} · ${left===1?"último día":`quedan ${left} días`}`}</span></div></li>`}
+function epicSection(){const now=epicNow(),B=epicBadges();
+  return`<div class="sec ep-sec"><div class="ch-sh"><span class="eyebrow">Retos épicos de ${MESL[new Date().getMonth()].toLowerCase()}</span><span class="muted">Insignia + ${EPIC_COINS} monedas</span></div>
+  <ul class="ch-list">${now.map(epicCard).join("")}</ul></div>
+  <div class="sec ep-vit"><span class="eyebrow">Tus insignias · ${B.length}</span>${B.length?`<div class="ep-grid">${B.map(c=>`<div class="ep-it">${badgeHtml(c,true)}<span>${esc(c.t)}</span></div>`).join("")}</div>`:`<p class="muted">Completa un reto épico para ganar tu primera insignia.</p>`}</div>`}
+{const _rc=renderChallenges;renderChallenges=function(){_rc();try{const v=$("#v-challenges"),f=v.querySelector(".ch-foot");(f||v.lastElementChild).insertAdjacentHTML("beforebegin",epicSection())}catch(e){}}}
+{const _cl=coinLedger;coinLedger=function(){const out=_cl();try{for(const b of epicBadges()){const mt=isoD(new Date(b.y,b.m+1,0));out.push({date:mt>today()?today():mt,amt:b.c,why:`Reto épico: ${b.t}`})}}catch(e){}return out.sort((a,b)=>(b.date||"").localeCompare(a.date||""))}}
+function checkEpicDone(){if(!profile)return;let seen=[];try{seen=JSON.parse(localStorage.getItem("tn-epic")||"[]")}catch(e){}
+  const now=epicNow().filter(c=>c.ok&&!seen.includes(c.id));if(!now.length)return;
+  try{localStorage.setItem("tn-epic",JSON.stringify([...seen,...now.map(c=>c.id)].slice(-60)))}catch(e){}
+  setTimeout(()=>toast(`${now[0].ic} ¡Reto épico completado: ${now[0].t}! Insignia y ${EPIC_COINS} monedas para ti.`),1200)}
+
+/* ---------- 2 · Resumen del año (estilo «Wrapped») ---------- */
+const wrapYear=()=>{const d=new Date();return d.getMonth()===0?d.getFullYear()-1:d.getFullYear()};
+function yearStats(y){const from=`${y}-01-01`,to=`${y}-12-31`,W=workouts.filter(w=>w.date&&w.date>=from&&w.date<=to);
+  const days=new Set(W.map(w=>w.date)),secs=W.reduce((a,w)=>a+(Number(w.duration)||0),0),kgs=W.reduce((a,w)=>a+wodVolume(w),0);
+  const reps=W.reduce((a,w)=>a+(w.exercises||[]).reduce((s,e)=>s+(myReps(e)||0)*(Number(e.sets)||1),0),0);
+  let prs=0;try{for(const arr of ANALYSIS.values())for(const e of arr)if(e.cmp?.pr&&e.date>=from&&e.date<=to)prs++}catch(e){}
+  const exC=new Map();W.forEach(w=>(w.exercises||[]).forEach(e=>{if(!e.name)return;const k=exKey(e.name),o=exC.get(k)||{n:e.name,c:0};o.c++;exC.set(k,o)}));
+  const topEx=[...exC.values()].sort((a,b)=>b.c-a.c).slice(0,3);
+  const byM=Array(12).fill(0);[...days].forEach(d=>byM[Number(d.slice(5,7))-1]++);const bm=byM.indexOf(Math.max(...byM));
+  const mu={};W.forEach(w=>(w.exercises||[]).forEach(e=>{if(!e.name)return;const s=Math.min(10,Number(e.sets)||1);for(const[k,f] of musclesOf(e.name))mu[k]=(mu[k]||0)+s*f}));
+  const topMu=Object.entries(mu).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k])=>MUSC.find(m=>m[0]===k)?.[1]||k);
+  const types={};W.forEach(w=>{if(w.type)types[w.type]=(types[w.type]||0)+1});const topType=Object.entries(types).sort((a,b)=>b[1]-a[1])[0]?.[0]||"";
+  let best=0;try{best=streakInfo().best||0}catch(e){}
+  const badges=(()=>{try{return epicBadges().filter(b=>b.y===y).length}catch(e){return 0}})();
+  return{y,n:W.length,days:days.size,hours:secs/3600,kg:kgs,reps,prs,topEx,bestMonth:byM[bm]?bm:-1,bestMonthDays:byM[bm]||0,topMu,topType,best,badges}}
+const kgEq=kg=>kg>=6000?`Como levantar ${fmtBig(kg/6000)} ${Math.round(kg/6000)===1?"elefante":"elefantes"} 🐘`:kg>=1500?`Como levantar ${fmtBig(kg/1500)} ${Math.round(kg/1500)===1?"coche":"coches"} 🚗`:kg>0?`Como levantar ${fmtBig(kg/80)} personas 🙋`:"";
+let wrapI=0,wrapT=null;
+function wrapSlides(S){const pet=(()=>{try{return petSVG(Math.min(4,petState().lv||2),"happy")}catch(e){return""}})();
+  if(!S.n)return[`<div class="wr-s wr-a"><span class="wr-k">Tu ${S.y}</span><h2>Aún no hay entrenos este año</h2><p>Apunta tu primer entreno y aquí verás tu resumen.</p></div>`];
+  const out=[
+    `<div class="wr-s wr-a"><div class="wr-pet">${pet}</div><span class="wr-k">TochiNuri</span><h2>Tu ${S.y}<br>en el box</h2><p>Toca para ver tu año →</p></div>`,
+    `<div class="wr-s wr-b"><span class="wr-k">Constancia</span><p>Has entrenado</p><b class="wr-big mono">${S.days}</b><h2>${S.days===1?"día":"días"}</h2><p>${S.n} ${S.n===1?"sesión":"sesiones"}${S.hours>=1?` · ${fmtBig(S.hours)} horas sudando`:""}</p></div>`,
+    `<div class="wr-s wr-c"><span class="wr-k">Hierro</span><p>Has movido</p><b class="wr-big mono">${fmtBig(S.kg)}</b><h2>kilos</h2><p>${kgEq(S.kg)}</p>${S.reps?`<p class="wr-sm">y ${fmtBig(S.reps)} repeticiones</p>`:""}</div>`];
+  if(S.topEx.length)out.push(`<div class="wr-s wr-d"><span class="wr-k">Tu ejercicio favorito</span><h2>${esc(S.topEx[0].n)}</h2><p>${S.topEx[0].c} ${S.topEx[0].c===1?"vez":"veces"}</p>${S.topEx.length>1?`<ol class="wr-ol">${S.topEx.map(e=>`<li><span>${esc(e.n)}</span><b class="mono">${e.c}</b></li>`).join("")}</ol>`:""}</div>`);
+  out.push(`<div class="wr-s wr-e"><span class="wr-k">Récords</span><b class="wr-big mono">${S.prs}</b><h2>${S.prs===1?"récord batido":"récords batidos"}</h2>${S.bestMonth>=0?`<p>Tu mes más fuerte: <b>${MESL[S.bestMonth]}</b>, con ${S.bestMonthDays} días</p>`:""}</div>`);
+  if(S.topMu.length)out.push(`<div class="wr-s wr-f"><span class="wr-k">Músculo estrella</span><h2>${esc(S.topMu[0])}</h2>${S.topMu.length>1?`<p>Seguido de ${esc(S.topMu.slice(1).join(" y ").toLowerCase())}</p>`:""}${S.topType?`<p class="wr-sm">Tu formato favorito: ${esc(S.topType)}</p>`:""}</div>`);
+  out.push(`<div class="wr-s wr-g"><span class="wr-k">Racha</span><b class="wr-big mono">${S.best}</b><h2>${S.best===1?"semana":"semanas"} seguidas</h2><p>tu mejor racha cumpliendo el reto</p>${S.badges?`<p class="wr-sm">${S.badges} ${S.badges===1?"insignia épica":"insignias épicas"} este año</p>`:""}</div>`);
+  out.push(`<div class="wr-s wr-z"><span class="wr-k">Tu ${S.y} en TochiNuri</span><div class="wr-sum">
+    <div><b class="mono">${S.days}</b><span>días</span></div><div><b class="mono">${fmtBig(S.kg)}</b><span>kg</span></div><div><b class="mono">${S.prs}</b><span>récords</span></div><div><b class="mono">${S.best}</b><span>sem. racha</span></div></div>
+    ${S.topEx[0]?`<p>Favorito: <b>${esc(S.topEx[0].n)}</b></p>`:""}<button type="button" class="btn primary wr-share" id="wrShare">Compartir mi año</button><button type="button" class="btn wr-again" id="wrAgain">Ver otra vez</button></div>`);
+  return out}
+function openWrap(){const S=yearStats(wrapYear());wrapI=0;const sl=wrapSlides(S);
+  let o=$("#wrapView");if(!o){o=document.createElement("div");o.id="wrapView";o.className="wr";o.setAttribute("role","dialog");o.setAttribute("aria-modal","true");o.setAttribute("aria-label","Tu resumen del año");document.body.appendChild(o)}
+  o.innerHTML=`<div class="wr-bars">${sl.map(()=>`<i><b></b></i>`).join("")}</div><button type="button" class="wr-x" id="wrX" aria-label="Cerrar">×</button><div class="wr-stage" id="wrStage" aria-live="polite"></div>
+    <button type="button" class="wr-nav wr-prev" id="wrPrev" aria-label="Anterior"></button><button type="button" class="wr-nav wr-next" id="wrNext" aria-label="Siguiente"></button>`;
+  o.hidden=false;document.body.classList.add("wr-open");
+  const go=i=>{wrapI=Math.max(0,Math.min(sl.length-1,i));$("#wrStage").innerHTML=sl[wrapI];o.querySelectorAll(".wr-bars i").forEach((b,j)=>b.className=j<wrapI?"done":j===wrapI?"on":"");
+    const last=wrapI===sl.length-1;$("#wrNext").hidden=last;$("#wrPrev").hidden=wrapI===0;
+    clearTimeout(wrapT);if(!last)wrapT=setTimeout(()=>go(wrapI+1),6000);
+    const sh=$("#wrShare");if(sh)sh.onclick=()=>shareWrap(S);const ag=$("#wrAgain");if(ag)ag.onclick=()=>go(0)};
+  $("#wrNext").onclick=()=>go(wrapI+1);$("#wrPrev").onclick=()=>go(wrapI-1);$("#wrX").onclick=closeWrap;go(0);$("#wrX").focus()}
+function closeWrap(){clearTimeout(wrapT);const o=$("#wrapView");if(o)o.hidden=true;document.body.classList.remove("wr-open")}
+document.addEventListener("keydown",e=>{const o=$("#wrapView");if(!o||o.hidden)return;if(e.key==="Escape")closeWrap();if(e.key==="ArrowRight")$("#wrNext")?.click();if(e.key==="ArrowLeft")$("#wrPrev")?.click()});
+async function shareWrap(S){const cv=document.createElement("canvas");cv.width=1080;cv.height=1920;const x=cv.getContext("2d");
+  const g=x.createLinearGradient(0,0,1080,1920);g.addColorStop(0,"#FF5A1F");g.addColorStop(.55,"#C2185B");g.addColorStop(1,"#311B92");x.fillStyle=g;x.fillRect(0,0,1080,1920);
+  x.fillStyle="rgba(255,255,255,.08)";for(let i=0;i<7;i++){x.beginPath();x.arc(900-i*90,260+i*40,180-i*14,0,7);x.fill()}
+  const F="system-ui,-apple-system,Segoe UI,Roboto,sans-serif";
+  const T=(t,y,sz,w="800",col="#fff")=>{x.fillStyle=col;x.font=`${w} ${sz}px ${F}`;x.textAlign="center";x.fillText(t,540,y)};
+  T("TOCHINURI",150,40,"800","rgba(255,255,255,.75)");T(`Mi ${S.y}`,300,150,"900");T("en el box",400,80,"700");
+  const rr=(X,Y,W,H,R)=>{x.beginPath();x.moveTo(X+R,Y);x.arcTo(X+W,Y,X+W,Y+H,R);x.arcTo(X+W,Y+H,X,Y+H,R);x.arcTo(X,Y+H,X,Y,R);x.arcTo(X,Y,X+W,Y,R);x.closePath()};
+  const box=(cx,cy,v,l)=>{x.fillStyle="rgba(255,255,255,.14)";rr(cx-230,cy-130,460,250,36);x.fill();x.fillStyle="#fff";x.font=`900 110px ${F}`;x.textAlign="center";x.fillText(v,cx,cy+20);x.font=`600 40px ${F}`;x.fillStyle="rgba(255,255,255,.85)";x.fillText(l,cx,cy+85)};
+  box(300,700,String(S.days),"días entrenados");box(780,700,fmtBig(S.kg),"kg movidos");box(300,1000,String(S.prs),"récords");box(780,1000,String(S.best),"semanas de racha");
+  if(S.topEx[0]){T("Mi ejercicio favorito",1250,44,"600","rgba(255,255,255,.8)");T(S.topEx[0].n.slice(0,26),1335,74,"900")}
+  if(S.topMu[0]){T("Músculo estrella",1470,44,"600","rgba(255,255,255,.8)");T(S.topMu[0],1550,74,"900")}
+  T("tochinuri.es",1810,44,"700","rgba(255,255,255,.8)");
+  const blob=await new Promise(r=>cv.toBlob(r,"image/png"));if(!blob){toast("No se pudo crear la imagen");return}
+  const file=new File([blob],`tochinuri-${S.y}.png`,{type:"image/png"});
+  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:`Mi ${S.y} en TochiNuri`,text:`Mi ${S.y} en TochiNuri 💪`});return}}catch(e){if(e?.name==="AbortError")return}
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);toast("Imagen descargada")}
+/* Acceso en el menú y aviso en portada en diciembre y enero */
+{const tools=$(".tools");if(tools){const b=document.createElement("button");b.type="button";b.className="tool";b.id="openWrapBtn";b.hidden=true;b.innerHTML=`<svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg><span>Tu año</span>`;b.onclick=()=>openWrap();tools.appendChild(b)}
+  if(typeof QA!=="undefined")QA.splice(1,0,["openWrapBtn","Tu año"]);
+  if(typeof QA_KEY!=="undefined")QA_KEY.openWrapBtn="wrap";
+  if(typeof IC2!=="undefined")IC2.wrap=`<svg viewBox="0 0 48 48" class="ic2 ic-wrap"><rect x="9" y="6" width="30" height="36" rx="6"/><path d="M15 13h18"/><g class="mv"><path d="M24 19l2.6 5.4 5.9.8-4.3 4.1 1 5.8L24 32.3l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z" class="ac"/></g></svg>`}
+function paintWrapCard(){let c=$("#wrapCard");const d=new Date(),on=profile&&(d.getMonth()===11||d.getMonth()===0)&&workouts.length>0;let hide=false;try{hide=localStorage.getItem("tn-wrap-x")===String(wrapYear())}catch(e){}
+  if(!on||hide){if(c)c.remove();return}
+  if(!c){c=document.createElement("div");c.id="wrapCard";const t=$("#todayCard");if(!t)return;t.before(c)}
+  c.innerHTML=`<div class="wr-card"><button type="button" class="wr-card-b" id="wrGo"><span class="wr-card-ic" aria-hidden="true">🎉</span><span><b>Tu ${wrapYear()} en TochiNuri</b><small>Días, kilos, récords y tu ejercicio favorito</small></span></button><button type="button" class="icon-btn" id="wrHide" aria-label="Ocultar">×</button></div>`;
+  $("#wrGo").onclick=()=>openWrap();$("#wrHide").onclick=()=>{try{localStorage.setItem("tn-wrap-x",String(wrapYear()))}catch(e){}c.remove()}}
+
+/* ---------- 3 · Ranking: también por mes y con podio ---------- */
+FR_SORT.push(["mkg","Kg mes","kg"],["mch","Retos mes","retos"]);
+{const _mp=myPublicStats;myPublicStats=function(){const s=_mp();try{const d=new Date(),mf=isoD(new Date(d.getFullYear(),d.getMonth(),1));
+    const M=workouts.filter(w=>w.date&&w.date>=mf&&w.date<=today());s.mkg=Math.round(M.reduce((a,w)=>a+wodVolume(w),0));
+    s.mch=epicNow().filter(c=>c.ok).length+(challengeState().month.ok?1:0);s.mo=mf.slice(0,7);
+    s.last=profile?.frShareLast===false?[]:sorted().filter(w=>w.date&&w.date<=today()).slice(0,6).map(w=>({id:String(w.id).slice(0,40),d:w.date,t:(w.name||w.type||"Entreno").slice(0,60),r:String(w.result||(w.duration?fmtTime(w.duration):"")).slice(0,30),ty:(w.type||"").slice(0,12)}))}catch(e){}return s}}
+function podiumHtml(B,val,key,unit){if(B.length<2)return"";const top=B.slice(0,3),ord=top.length===3?[1,0,2]:[1,0];
+  const ini=n=>esc((n||"?").trim().slice(0,1).toUpperCase());
+  return`<div class="fr-pod" aria-hidden="true">${ord.map(i=>{const r=top[i];if(!r)return"";const v=val(r);return`<div class="fp p${i+1}${r.is_me?" me":""}"><span class="fp-av">${ini(r.name)}</span><b class="fp-n">${esc((r.name||"Sin nombre").split(" ")[0])}</b><span class="fp-v mono">${key==="kg"||key==="mkg"?fmtBig(v):v} <small>${unit}</small></span><span class="fp-b">${i+1}</span></div>`}).join("")}</div>`}
+
+/* ---------- 4 · Reacciones y actividad de amigos ---------- */
+let frReacts=[],frShares=[];
+const REACT=[["fire","🔥","Fuego"],["muscle","💪","Fuerza"],["clap","👏","Aplausos"]];
+const reEmoji=k=>(REACT.find(r=>r[0]===k)||[])[1]||"👍";
+async function loadSocial(){if(!FRIENDS_API?.reactList||!frMe?.code)return;const[r,s]=await Promise.all([FRIENDS_API.reactList().catch(()=>null),FRIENDS_API.shareList().catch(()=>null)]);if(r)frReacts=r;if(s)frShares=s;paintDuelDot()}
+const relDay=d=>{const n=Math.round((dObj(today())-dObj(d))/864e5);return n<=0?"hoy":n===1?"ayer":n<7?`hace ${n} días`:fmtD(d)};
+function feedHtml(){const lim=isoD(addDays(new Date(),-14)),items=[];
+  for(const r of (frBoard||[]))if(!r.is_me)for(const w of (r.stats?.last||[]))if(w.d>=lim)items.push({...w,uid:r.user_id,name:r.name||"Tu amigo"});
+  items.sort((a,b)=>b.d.localeCompare(a.d));
+  const mine=k=>frReacts.find(x=>x.mine&&x.to_user===k.uid&&x.wid===k.id)?.emoji;
+  const recv=frReacts.filter(x=>!x.mine).slice(0,8);
+  const wname=id=>{const w=workouts.find(x=>x.id===id);return w?(w.name||w.type||"tu entreno"):"tu entreno"};
+  return`<div class="sec fr-feed"><span class="eyebrow">Actividad de tus amigos</span>
+   ${items.length?`<ul class="ff-list">${items.slice(0,12).map(it=>{const m=mine(it);return`<li class="ff"><div class="ff-t"><b>${esc(it.name)}</b> <span class="muted">· ${relDay(it.d)}</span><span class="ff-w">${esc(it.t)}${it.ty&&it.ty!==it.t?` <span class="tag">${esc(it.ty)}</span>`:""}${it.r?` <b class="mono ff-r">${esc(it.r)}</b>`:""}</span></div>
+     <div class="ff-re" role="group" aria-label="Reaccionar al entreno de ${esc(it.name)}">${REACT.map(([k,e,l])=>`<button type="button" class="ff-rb${m===k?" on":""}" data-re="${k}" data-to="${esc(it.uid)}" data-w="${esc(it.id)}" aria-pressed="${m===k}" aria-label="${l}">${e}</button>`).join("")}</div></li>`}).join("")}</ul>`
+     :`<p class="muted">Cuando tus amigos apunten entrenos los verás aquí y podrás darles ánimos.</p>`}
+   ${recv.length?`<span class="eyebrow ff-rh">Ánimos que te han dado</span><ul class="ff-got">${recv.map(x=>`<li><span class="ff-e">${reEmoji(x.emoji)}</span><span><b>${esc(x.from_name||"Un amigo")}</b> en «${esc(wname(x.wid))}»</span><small class="muted">${relDay(String(x.created_at).slice(0,10))}</small></li>`).join("")}</ul>`:""}
+   <label class="ff-opt"><input type="checkbox" id="frShareLast"${profile?.frShareLast===false?"":" checked"}> Compartir con mis amigos el nombre y el resultado de mis últimos entrenos</label></div>`}
+
+/* ---------- 5 · WOD compartido ---------- */
+const lowerBetter=ty=>!/amrap|fuerza|emom|intervalos/i.test(ty||"");
+function scoreOf(res){const t=String(res||"").trim().replace(",",".");if(!t)return null;
+  if(/^\d+:\d{1,2}(:\d{1,2})?$/.test(t))return parseTime(t);
+  const rr=t.match(/^(\d+)\s*\+\s*(\d+)/);if(rr)return Number(rr[1])*1000+Number(rr[2]);
+  const n=parseFloat(t);return isNaN(n)?null:n}
+function wodPayload(x){return{n:(x.name||x.type||"WOD").slice(0,60),ty:(x.type||"").slice(0,12),ex:(x.exercises||[]).filter(e=>e.name).slice(0,20).map(e=>({n:String(e.name).slice(0,50),reps:e.reps||"",sets:e.sets||"",weight:e.weight||"",time:e.time||""}))}}
+const wodExLine=w=>(w.ex||[]).map(e=>[e.sets&&Number(e.sets)>1?e.sets+"×":"",e.reps?e.reps+" ":"",e.n,e.weight?` ${e.weight} kg`:"",e.time?` ${fmtTime(e.time)}`:""].join("")).join(" · ");
+function sharesHtml(){const L=frShares.filter(s=>s.status!=="declined");if(!L.length)return"";
+  const row=s=>{const who=esc(s.friend_name||"Tu amigo"),w=s.wod||{},title=`<b>«${esc(w.n||"WOD")}»</b>${w.ty?` <span class="tag">${esc(w.ty)}</span>`:""}`,ex=wodExLine(w);
+    if(s.status==="pending"&&!s.mine)return`<li class="ws"><div class="du-t"><b>${who}</b> te reta con ${title}<span class="du-st">Su resultado: <b class="mono">${esc(s.their_res||"—")}</b></span>${ex?`<small class="ws-ex">${esc(ex)}</small>`:""}</div>
+      <form class="ws-f" data-wsf="${s.id}"><label class="eyebrow" for="wsr_${s.id}">Tu resultado</label><input id="wsr_${s.id}" placeholder="${lowerBetter(w.ty)?"Ej. 4:32":"Ej. 5+12 o 80"}" autocomplete="off" maxlength="20" required>
+      <label class="ff-opt"><input type="checkbox" checked data-wssave> Guardarlo también en mis entrenos</label>
+      <div class="rt-ca"><button class="btn primary" type="submit">Enviar resultado</button><button type="button" class="btn" data-wsno="${s.id}">Rechazar</button></div></form></li>`;
+    if(s.status==="pending")return`<li class="ws"><div class="du-t">Has retado a <b>${who}</b> con ${title}<span class="du-st">Tu resultado: <b class="mono">${esc(s.my_res||"—")}</b> · esperando el suyo…</span></div><div class="du-a"><button type="button" class="btn" data-wsno="${s.id}">Cancelar</button></div></li>`;
+    const a=s.my_score,b=s.their_score;let r="";if(a!=null&&b!=null)r=Number(a)===Number(b)?"tie":(s.lower_better?Number(a)<Number(b):Number(a)>Number(b))?"win":"lose";
+    return`<li class="ws done"><div class="du-t">${r==="win"?"🏆 Ganas":r==="lose"?"Gana "+who:r==="tie"?"Empate":"Resultado"} en ${title}<span class="du-st">Tú <b class="mono">${esc(s.my_res||"—")}</b> · ${who} <b class="mono">${esc(s.their_res||"—")}</b></span></div></li>`};
+  return`<div class="sec ws-sec"><span class="eyebrow">WODs compartidos</span><ul class="du-list">${L.slice(0,12).map(row).join("")}</ul></div>`}
+async function shareWodFlow(x){const v=$("#v-wod");if(!v)return;v.querySelector(".ws-pick")?.remove();
+  if(!FRIENDS_API?.shareSend){toast("Los amigos funcionan en tochinuri.es al entrar con tu cuenta");return}
+  if(!frMe?.code||!frBoard){try{await loadFriends()}catch(e){}}
+  const F=(frBoard||[]).filter(r=>!r.is_me);
+  const box=document.createElement("div");box.className="sec ws-pick";
+  if(!frMe?.code||!F.length){box.innerHTML=`<p class="muted">${frMe?.code?"Aún no tienes amigos añadidos.":"Activa los amigos para retar con tus WODs."}</p><button type="button" class="btn" id="wsGoFr">Ir a Amigos</button>`;
+    $("#wsShare").after(box);$("#wsGoFr").onclick=()=>openFriends();return}
+  const res=x.result||(x.duration?fmtTime(x.duration):"");
+  box.innerHTML=`<span class="eyebrow">Retar con este WOD</span><div class="ws-fr" role="radiogroup" aria-label="Amigo">${F.map((r,i)=>`<label class="ws-o"><input type="radio" name="wsTo" value="${esc(r.user_id)}"${i?"":" checked"}> ${esc(r.name||"Sin nombre")}</label>`).join("")}</div>
+    <label class="eyebrow" for="wsMy">Tu resultado</label><input id="wsMy" value="${esc(res)}" placeholder="${lowerBetter(x.type)?"Ej. 4:32":"Ej. 5+12 o 80"}" maxlength="20">
+    <p class="muted">${lowerBetter(x.type)?"Gana el tiempo más bajo.":"Gana el resultado más alto."} Tu amigo verá el nombre, los ejercicios y tu resultado.</p>
+    <div class="rt-ca"><button type="button" class="btn primary" id="wsSend">Enviar reto</button><button type="button" class="btn" id="wsCancel">Cancelar</button></div>`;
+  $("#wsShare").after(box);$("#wsCancel").onclick=()=>box.remove();
+  $("#wsSend").onclick=async()=>{const to=box.querySelector("[name=wsTo]:checked")?.value,my=$("#wsMy").value.trim();if(!to)return;$("#wsSend").disabled=true;
+    try{await FRIENDS_API.shareSend(to,wodPayload(x),my,scoreOf(my),lowerBetter(x.type));const n=F.find(r=>r.user_id===to)?.name||"tu amigo";toast(`WOD enviado a ${n} ⚔️`);box.remove();loadSocial()}
+    catch(e){toast(e?.message==="too_many"?"Has enviado muchos retos hoy. Prueba mañana.":"No se pudo enviar. Inténtalo de nuevo.");$("#wsSend").disabled=false}}}
+{const _ow=openWod;openWod=function(id){_ow(id);try{const x=workouts.find(w=>w.id===id),v=$("#v-wod");if(!x||!v)return;const h=v.querySelector(".view-title");if(!h)return;
+    const R=frReacts.filter(r=>!r.mine&&r.wid===id);
+    if(R.length)h.insertAdjacentHTML("afterend",`<div class="ff-chips" aria-label="Ánimos de tus amigos">${R.map(r=>`<span class="ff-chip">${reEmoji(r.emoji)} ${esc(r.from_name||"Amigo")}</span>`).join("")}</div>`);
+    if(FRIENDS_API?.shareSend&&(x.exercises||[]).some(e=>e.name)){const b=document.createElement("button");b.type="button";b.className="btn ws-btn";b.id="wsShare";b.innerHTML=`${typeof F3_IC!=="undefined"?F3_IC.sword:""}<span>Retar a un amigo con este WOD</span>`;
+      (v.querySelector(".ff-chips")||h).insertAdjacentElement("afterend",b);b.onclick=()=>shareWodFlow(x)}}catch(e){}}}
+
+/* Vista de amigos: podio, actividad, reacciones y WODs compartidos */
+{const _rf=renderFriends;renderFriends=async function(load){await _rf(load);if(!frMe?.code)return;const v=$("#v-friends"),board=v.querySelector(".fr-board");if(!board)return;
+  if(load!==false)await loadSocial();
+  try{localStorage.setItem("tn-react-seen",new Date().toISOString())}catch(e){}paintDuelDot();
+  const key=frSort,unit=FR_SORT.find(s=>s[0]===key)[2],curWk=isoD(mondayOf(new Date())),curMo=today().slice(0,7);
+  const val=r=>{const s=r.stats||{};if((key==="week"||key==="kg")&&s.wk!==curWk)return 0;if((key==="mkg"||key==="mch"||key==="month")&&s.mo&&s.mo!==curMo)return 0;return Number(s[key])||0};
+  const B=(frBoard||[]).slice().sort((a,b)=>val(b)-val(a)||(a.is_me?-1:1));
+  v.querySelector(".fr-pod")?.remove();board.insertAdjacentHTML("beforebegin",podiumHtml(B,val,key,unit));
+  v.querySelector(".fr-feed")?.remove();v.querySelector(".ws-sec")?.remove();
+  const anchor=v.querySelector(".fr-solo")||board;anchor.insertAdjacentHTML("afterend",sharesHtml()+feedHtml());
+  v.querySelectorAll("[data-re]").forEach(b=>b.onclick=async()=>{const on=b.classList.contains("on"),k=b.dataset.re,to=b.dataset.to,w=b.dataset.w;
+    b.parentElement.querySelectorAll(".ff-rb").forEach(x=>{x.classList.remove("on");x.setAttribute("aria-pressed","false")});if(!on){b.classList.add("on");b.setAttribute("aria-pressed","true")}
+    frReacts=frReacts.filter(x=>!(x.mine&&x.to_user===to&&x.wid===w));if(!on)frReacts.push({mine:true,to_user:to,wid:w,emoji:k,created_at:new Date().toISOString()});
+    try{await FRIENDS_API.react(to,w,on?"":k)}catch(e){toast("No se pudo enviar. Revisa la conexión.")}});
+  const sl=$("#frShareLast");if(sl)sl.onchange=async()=>{await saveProf({frShareLast:sl.checked},sl.checked?"Compartirás tus últimos entrenos":"Ya no compartes tus entrenos");publishStats()};
+  v.querySelectorAll("[data-wsno]").forEach(b=>b.onclick=async()=>{b.disabled=true;try{await FRIENDS_API.shareDecline(b.dataset.wsno);await loadSocial();renderFriends(false)}catch(e){toast("No se pudo. Inténtalo de nuevo.");b.disabled=false}});
+  v.querySelectorAll("[data-wsf]").forEach(f=>f.onsubmit=async ev=>{ev.preventDefault();const id=f.dataset.wsf,s=frShares.find(x=>x.id===id),res=f.querySelector("input:not([type=checkbox])").value.trim();if(!res||!s)return;
+    f.querySelector("[type=submit]").disabled=true;
+    try{await FRIENDS_API.shareAnswer(id,res,scoreOf(res));
+      if(f.querySelector("[data-wssave]")?.checked){const w=s.wod||{},secs=lowerBetter(w.ty)?parseTime(res):null;const nw={id:newId(),date:today(),name:w.n||"WOD",type:TYPES.includes(w.ty)?w.ty:"Otro",result:res,
+        exercises:(w.ex||[]).map(e=>({name:e.n,reps:e.reps,sets:e.sets,weight:e.weight,time:e.time})),notes:`Reto de ${s.friend_name||"un amigo"}`};if(secs)nw.duration=secs;await store.save(nw)}
+      toast("¡Resultado enviado! 💪");await loadSocial();renderFriends(false)}catch(e){toast("No se pudo enviar. Inténtalo de nuevo.");f.querySelector("[type=submit]").disabled=false}})}}
+/* El punto rojo de Amigos también avisa de WODs y ánimos nuevos */
+{const _pd=paintDuelDot;paintDuelDot=function(){_pd();const b=$("#topFriends");if(!b)return;let seen="";try{seen=localStorage.getItem("tn-react-seen")||""}catch(e){}
+  const ws=frShares.filter(s=>s.status==="pending"&&!s.mine).length,nr=frReacts.filter(r=>!r.mine&&String(r.created_at)>seen).length;
+  if(ws||nr){b.classList.add("has-dot");b.setAttribute("aria-label",`Amigos: ${[ws?`${ws} WOD${ws>1?"s":""} para ti`:"",nr?`${nr} ánimo${nr>1?"s":""} nuevo${nr>1?"s":""}`:""].filter(Boolean).join(", ")}`)}}}
+{const _bf=bootFriends;bootFriends=async function(){await _bf();try{if(frMe?.code){if(!frBoard)frBoard=await FRIENDS_API.board();await loadSocial()}}catch(e){}}}
+
+/* ---------- 6 · Aviso de descanso por grupo muscular ---------- */
+function restAdvice(){const t=today(),days=[0,1,2,3,4].map(i=>isoD(addDays(dObj(t),-i)));
+  const per=days.map(d=>{const m=new Set();for(const w of workouts){if(w.date!==d)continue;for(const e of(w.exercises||[])){if(!e.name)continue;for(const[k,f] of musclesOf(e.name))if(f>=1)m.add(k)}}return m});
+  const trained=days.map(d=>workouts.some(w=>w.date===d));
+  const start=trained[0]?0:1,hot=[];
+  for(const[k,label] of MUSC){let run=0;for(let i=start;i<5;i++){if(per[i].has(k))run++;else break}if(run>=3)hot.push([label,run])}
+  const last7=new Set(workouts.filter(w=>w.date&&w.date>isoD(addDays(dObj(t),-7))&&w.date<=t).map(w=>w.date)).size;
+  if(hot.length){hot.sort((a,b)=>b[1]-a[1]);const names=hot.slice(0,2).map(h=>h[0].toLowerCase());return{k:"mu",t:`Llevas ${hot[0][1]} días seguidos dándole a ${names.join(" y ")}`,p:"Hoy mejor dales un respiro: trabaja otra zona, haz movilidad o cardio suave. El músculo crece cuando descansa."}}
+  if(last7>=6)return{k:"all",t:`Has entrenado ${last7} de los últimos 7 días`,p:"Tu cuerpo agradecerá un día de descanso o una sesión suave. Volverás con más fuerza."};
+  return null}
+function paintRestCard(){let c=$("#restCard");const a=profile&&!(typeof todays==="function"&&todays().length)?restAdvice():null;let hid="";try{hid=localStorage.getItem("tn-rest-x")||""}catch(e){}
+  if(!a||hid===today()+a.k){if(c)c.remove();return}
+  if(!c){c=document.createElement("div");c.id="restCard";const t=$("#todayCard");if(!t)return;t.after(c)}
+  c.innerHTML=`<div class="rest-c" role="note"><span class="rest-ic" aria-hidden="true">🧘</span><div><b>${esc(a.t)}</b><p>${esc(a.p)}</p></div><button type="button" class="icon-btn" id="restX" aria-label="Ocultar aviso">×</button></div>`;
+  $("#restX").onclick=()=>{try{localStorage.setItem("tn-rest-x",today()+a.k)}catch(e){}c.remove()}}
+
+{const _ra9=renderAll;renderAll=function(){_ra9();try{paintWrapCard();paintRestCard();checkEpicDone()}catch(e){}}}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

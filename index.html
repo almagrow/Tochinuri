@@ -2093,6 +2093,9 @@ body.wr-open{overflow:hidden}
 .co-habs{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
 .co-habs li{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;opacity:.75}
 .co-habs li.ok{opacity:1;border-color:#2e9e6a}.co-habs li>div{display:flex;flex-direction:column;gap:2px;min-width:0}.co-hi{font-size:22px;flex:none}
+button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding:0}button.cd.on:active{transform:scale(.94)}
+.cal-day{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.cal-w{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;width:100%;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;font:inherit;color:var(--ink);cursor:pointer}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -3462,7 +3465,8 @@ function renderMonth(){
   const first=(new Date(y,m,1).getDay()+6)%7;let cal="";
   for(let i=0;i<first;i++)cal+=`<span></span>`;
   for(let d=1;d<=dim;d++){const k=y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0"),n=D.ws.filter(w=>w.date===k).length;
-    cal+=`<span class="cd${n?" on":""}${isCur&&d===now.getDate()?" today":""}${isCur&&d>now.getDate()?" fut":""}" title="${n?n+" entreno"+(n>1?"s":""):""}">${d}</span>`}
+    const cls=`cd${n?" on":""}${isCur&&d===now.getDate()?" today":""}${isCur&&d>now.getDate()?" fut":""}`;
+    cal+=n?`<button type="button" class="${cls}" data-cday="${k}" data-ids="${D.ws.filter(w=>w.date===k).map(w=>w.id).join(",")}" aria-label="${d}: ${n} entreno${n>1?"s":""}. Ver">${d}</button>`:`<span class="${cls}">${d}</span>`}
   /* categorías y formatos */
   const catN={};D.exs.forEach(e=>{const f=findEx(e.name);const c=f?f.c:"otro";catN[c]=(catN[c]||0)+1});
   const typN={};D.ws.forEach(w=>{typN[w.type||"Otro"]=(typN[w.type||"Otro"]||0)+1});
@@ -7099,6 +7103,16 @@ function groupShop(){const body=$("#v-shop .shop-body");if(!body||shopTab==="coi
 {const b=document.getElementById("openMonth");if(b){b.hidden=false;const t=document.querySelector(".tools");if(t)t.prepend(b)}
   if(typeof QA!=="undefined"&&!QA.some(q=>q[0]==="openMonth"))QA.splice(1,0,["openMonth","Estadísticas"]);
   if(typeof QA_KEY!=="undefined")QA_KEY.openMonth="stats"}
+
+/* Calendario de Estadísticas: al tocar un día entrenado se ve el entreno */
+function openWodFromCal(id){const back=new Date(statMonth);openWod(id);try{setNav("Entreno","Estadísticas",()=>openMonth(back))}catch(e){}}
+document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-cday]");if(!b)return;
+  const ids=(b.dataset.ids||"").split(",").filter(Boolean),box=b.closest(".pr-box");if(!ids.length)return;
+  if(ids.length===1){openWodFromCal(ids[0]);return}
+  let L=box.querySelector(".cal-day");if(!L){L=document.createElement("div");L.className="cal-day";box.appendChild(L)}
+  if(L.dataset.d===b.dataset.cday){L.remove();return}L.dataset.d=b.dataset.cday;
+  L.innerHTML=`<span class="eyebrow">${esc(humanDate(b.dataset.cday))}</span>${ids.map(id=>{const w=workouts.find(x=>x.id===id);return w?`<button type="button" class="cal-w" data-calw="${esc(id)}"><b>${esc(w.name||w.type||"Entreno")}</b><span class="muted">${esc(w.type||"")}${w.result?" · "+esc(w.result):""}</span></button>`:""}).join("")}`;
+  L.querySelectorAll("[data-calw]").forEach(x=>x.onclick=()=>openWodFromCal(x.dataset.calw));L.scrollIntoView({block:"nearest",behavior:"smooth"})});
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

@@ -2277,6 +2277,10 @@ button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding
 @keyframes pfBloom{50%{transform:translateX(-50%) scale(1.35)}}
 @keyframes pfSquat{0%,100%{transform:none}50%{transform:scale(1.08,.8) translateY(4px)}}
 @keyframes pfPurr{0%,100%{transform:rotate(-3deg) scale(1.02)}50%{transform:rotate(3deg) scale(1.02)}}
+.pet-info{margin-top:4px}
+.pet-info>summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--brand);padding:4px 0;list-style-position:inside}
+.pet-info>span.muted{display:block;margin:2px 0 4px}
+.pet-help.in{margin:6px 0 2px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -7642,9 +7646,14 @@ function petWander(field,P,kind){
   const P=petState(),nm=petNm(),kind=petKind();
   old.insertAdjacentHTML("afterend",petFieldHtml(P,nm,kind));old.remove();card.classList.add("has-field");
   const nu=nextUnlock(P.L),t=card.querySelector(".pet-t");if(t)t.insertAdjacentHTML("beforeend",`<span class="muted pf-next">🌱 El campo crece con su nivel${nu?`: en el nivel ${nu.L} aparece ${esc(nu.t)}.`:". ¡Ya está completo!"}</span><span class="muted pf-next">👆 Tócale para que salte, desliza el dedo encima para acariciarle o toca el campo para darle ${kind==="gorila"?"un plátano 🍌":"un pescado 🐟"}.</span>`);
+  /* Info de niveles en un desplegable */
+  if(t){const dt=document.createElement("details");dt.className="pet-info";dt.open=!!petFx.infoOpen;dt.innerHTML=`<summary>ℹ️ Cómo sube de nivel</summary>`;
+    [...t.querySelectorAll(":scope > span.muted")].forEach(el=>dt.appendChild(el));
+    const h=$("#petHelp");if(h){h.hidden=false;h.classList.add("in");dt.appendChild(h)}
+    t.appendChild(dt);dt.ontoggle=()=>{petFx.infoOpen=dt.open}}
   petFx.lastL=P.L;
   const f=$("#petTap");petWander(f,P,kind);
-  const poke=()=>{if(petFx.poke)petFx.poke();try{navigator.vibrate&&navigator.vibrate(20)}catch(x){}const h=$("#petHelp");if(h)h.hidden=!h.hidden};
+  const poke=()=>{if(petFx.poke)petFx.poke();try{navigator.vibrate&&navigator.vibrate(20)}catch(x){}};
   let st=null,stroked=false;
   const onPet=ev=>{const r=f.querySelector(".pet-walker").getBoundingClientRect();return ev.clientX>=r.left+6&&ev.clientX<=r.right-6&&ev.clientY>=r.top&&ev.clientY<=r.bottom};
   f.addEventListener("pointerdown",ev=>{stroked=false;st=onPet(ev)?{x:ev.clientX,y:ev.clientY,acc:0,n:0}:null});

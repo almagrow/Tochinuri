@@ -2083,6 +2083,16 @@ body.wr-open{overflow:hidden}
 .shop-grp>summary{cursor:pointer;list-style:none;padding:14px 0;font-weight:700;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.02em;display:flex;justify-content:space-between;align-items:center}
 .shop-grp>summary::-webkit-details-marker{display:none}.shop-grp>summary::after{content:"▾";transition:transform .2s;color:var(--muted)}.shop-grp[open]>summary::after{transform:rotate(180deg)}
 .shop-grp[open]{padding-bottom:12px}.shop-grp>p:first-of-type{margin-top:0}
+.fr-tabhint{margin:0 0 8px;font-size:13px}
+.co-garden .co-gsvg{width:100%;height:auto;display:block;border-radius:14px;border:1px solid var(--line);margin-top:8px}
+.co-gi{display:flex;flex-direction:column;gap:2px;margin-top:8px;font-size:14px}
+.co-me-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:8px}
+.co-mc{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.co-mc p{margin:0;font-size:13px;overflow-wrap:anywhere}.co-mn{font-size:26px;font-weight:800;color:var(--brand)}.co-mn small{font-size:12px;font-weight:500;color:var(--muted)}
+.co-hh{display:block;margin-top:14px}
+.co-habs{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.co-habs li{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;opacity:.75}
+.co-habs li.ok{opacity:1;border-color:#2e9e6a}.co-habs li>div{display:flex;flex-direction:column;gap:2px;min-width:0}.co-hi{font-size:22px;flex:none}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -6865,9 +6875,9 @@ paintPet=function(){const c=$("#petCard");if(!c)return;if(!profile||!profile.pet
 /* ================= Cooperativo: grupos privados de amigos con muro de actividad ================= */
 let coopGroups=[],coopLoaded=false,coopSel=null,coopFeed=[],coopSport="run",frTab="rank",coopT=null,coopCh=[],coopPre=0,coopLastSync={};
 const CO_SPORTS=[["run","🏃","Correr","km","salido a correr"],["bike","🚴","Bici","km","salido en bici"],["swim","🏊","Natación","min","ido a nadar"],["walk","🚶","Caminar","km","salido a caminar"],["yoga","🧘","Yoga","min","hecho yoga"],["other","🏅","Otro","",""],["win","🎉","Logro","",""]];
-const CO_ICON={week:"🔥",back:"🙌",hito:"🎉",run:"🏃",bike:"🚴",swim:"🏊",walk:"🚶",yoga:"🧘",other:"🏅",win:"🎉"};
+const CO_ICON={week:"🔥",back:"🙌",hito:"🎉",pr:"📈",hab:"🌱",tot:"🏁",run:"🏃",bike:"🚴",swim:"🏊",walk:"🚶",yoga:"🧘",other:"🏅",win:"🎉"};
 const coName=()=>(profile?.name||"").trim();
-const coShare=()=>({week:true,back:true,chal:true,...(profile?.coopShare||{})});
+const coShare=()=>({week:true,back:true,chal:true,pr:true,hito:true,hab:true,...(profile?.coopShare||{})});
 function coPosted(){try{return new Set(JSON.parse(localStorage.getItem("tn-coop-posted")||"[]"))}catch(e){return new Set()}}
 function coSavePosted(s){try{localStorage.setItem("tn-coop-posted",JSON.stringify([...s].slice(-300)))}catch(e){}}
 function coDismissed(){try{return new Set(JSON.parse(localStorage.getItem("tn-coop-no")||"[]"))}catch(e){return new Set()}}
@@ -6877,7 +6887,62 @@ function coopAutoEvents(){const sh=coShare(),out=[],t=today(),dates=[...new Set(
     for(const[k,w] of[[3,"tres"],[5,"cinco"]])if(n>=k)out.push({key:`wk${k}-${mon}`,kind:"week",text:`ha entrenado ${w} días esta semana`})}
   if(sh.back&&dates.length>1){const D=dates[dates.length-1],P=dates[dates.length-2],gap=Math.round((dObj(D)-dObj(P))/864e5),ago=Math.round((dObj(t)-dObj(D))/864e5);
     if(gap>=14&&ago<=3)out.push({key:`back-${D}`,kind:"back",text:`ha vuelto a entrenar después de ${Math.round(gap/7)} semanas`})}
+  const wk=isoD(addDays(new Date(),-7));
+  if(sh.pr)coopPRs().filter(r=>r.date>=wk).slice(0,3).forEach(r=>out.push({key:`pr-${norm(r.name).slice(0,30)}-${r.date}`,kind:"pr",text:`ha superado su marca personal en ${r.name}`}));
+  if(sh.hito){const H=coopHitos();if(H.last&&H.lastDate>=wk)out.push({key:`tot${H.last}`,kind:"tot",text:`ha llegado a ${H.last} entrenamientos`})}
+  if(sh.hab)coopHabits().filter(h=>h.ok).forEach(h=>out.push({key:`hab-${h.id}-${today().slice(0,7)}`,kind:"hab",text:`ha conseguido el reconocimiento «${h.t}» este mes`}));
   return out}
+/* ---- Modo colectivo: progreso propio (solo te compara contigo) ---- */
+function coopDates(){const t=today();return[...new Set(workouts.filter(w=>w.date&&w.date<=t).map(w=>w.date))].sort()}
+function coopPRs(){const out=[],seen=new Set();try{for(const arr of ANALYSIS.values())for(const e of arr)if(e.cmp?.pr&&e.date){const n=findEx(e.name)?.n||e.name,k=n+e.date;if(!seen.has(k)){seen.add(k);out.push({name:n,date:e.date})}}}catch(x){}
+  return out.sort((a,b)=>b.date.localeCompare(a.date))}
+const HITOS=[10,25,50,75,100,150,200,250,300,400,500,750,1000];
+function coopHitos(){const D=coopDates(),n=D.length;let last=0,lastDate="";for(const m of HITOS)if(n>=m){last=m;lastDate=D[m-1]}
+  const next=HITOS.find(m=>m>n)||null,prev=[...HITOS].reverse().find(m=>m<=n)||0;return{n,last,lastDate,next,prev}}
+function coopConst(){const D=new Set(coopDates()),mon=mondayOf(new Date()),cnt=k=>{let c=0;for(let i=0;i<7;i++)if(D.has(isoD(addDays(mon,7*k+i))))c++;return c};
+  const now=cnt(0),prev=[-1,-2,-3,-4].map(cnt),avg=Math.round(prev.reduce((a,b)=>a+b,0)/4*10)/10;return{now,avg}}
+function coopHabits(){const t=today(),mo=t.slice(0,7),W=workouts.filter(w=>w.date&&w.date.slice(0,7)===mo&&w.date<=t),D=coopDates(),Ds=new Set(D),mon=mondayOf(new Date());
+  let wk=0;for(let k=0;k<4;k++){let c=0;for(let i=0;i<7;i++)if(Ds.has(isoD(addDays(mon,-7*k+i))))c++;if(c>=2)wk++}
+  const we=new Set(W.filter(w=>{const g=dObj(w.date).getDay();return g===0||g===6}).map(w=>isoD(mondayOf(dObj(w.date))))).size;
+  const kinds=new Set(W.map(w=>w.kind==="gym"?"gym":"cf")).size,types=new Set(W.map(w=>w.type||w.name||"").filter(Boolean)).size;
+  const mob=W.filter(w=>/movilidad|estiramiento|yoga|mobility|stretch/i.test((w.name||"")+" "+(w.type||"")+" "+(w.exercises||[]).map(e=>e.name).join(" "))).length;
+  return[
+   {id:"const",ic:"🗓️",t:"Constancia",d:"2 días o más en 3 de las últimas 4 semanas. No hace falta que sean seguidas.",ok:wk>=3,p:`${wk}/3 semanas`},
+   {id:"finde",ic:"☀️",t:"Fin de semana activo",d:"Mover el cuerpo en 2 fines de semana del mes.",ok:we>=2,p:`${Math.min(we,2)}/2 fines de semana`},
+   {id:"var",ic:"🎨",t:"Variedad",d:"Combinar CrossFit y gym, o 4 tipos de entreno distintos en el mes.",ok:kinds>=2||types>=4,p:kinds>=2?"CrossFit y gym":`${Math.min(types,4)}/4 tipos`},
+   {id:"mov",ic:"🧘",t:"Cuida tu cuerpo",d:"3 sesiones de movilidad, estiramientos o yoga en el mes.",ok:mob>=3,p:`${Math.min(mob,3)}/3 sesiones`}]}
+function coopMeHtml(){const c=coopConst(),h=coopHitos(),P=coopPRs(),pr30=P.filter(r=>r.date>=isoD(addDays(new Date(),-30))),H=coopHabits();
+  const cmsg=c.now===0?"Esta semana aún no has entrenado. Cualquier sesión cuenta, por pequeña que sea.":c.now>c.avg?`¡Vas por encima de tu media (${String(c.avg).replace(".",",")} días)! 💪`:c.now>=c.avg?"Igualas tu media. ¡Bien hecho!":`Tu media es ${String(c.avg).replace(".",",")} días por semana. A tu ritmo.`;
+  const hp=h.next?Math.round((h.n-h.prev)/(h.next-h.prev)*100):100;
+  return`<div class="sec co-me"><span class="eyebrow">Tu progreso · solo contigo mismo</span>
+   <div class="co-me-g">
+    <div class="co-mc"><b>🗓️ Constancia individual</b><div class="co-mn mono">${c.now} <small>${c.now===1?"día":"días"} esta semana</small></div><p class="muted">${cmsg}</p></div>
+    <div class="co-mc"><b>📈 Superación de marcas propias</b><div class="co-mn mono">${pr30.length} <small>${pr30.length===1?"récord":"récords"} en 30 días</small></div><p class="muted">${pr30.length?esc(pr30.slice(0,3).map(r=>r.name).join(", ")):"Cuando superes una marca tuya, saldrá aquí."}</p></div>
+    <div class="co-mc"><b>🏁 Hitos flexibles</b><div class="co-mn mono">${h.n} <small>entrenamientos en total</small></div>${h.next?`<div class="co-bar"><i style="width:${hp}%"></i></div><p class="muted">Siguiente hito: ${h.next}. Sin rachas obligatorias: si paras, no pierdes nada.</p>`:`<p class="muted">¡Has pasado todos los hitos!</p>`}</div>
+   </div>
+   <span class="eyebrow co-hh">Reconocimientos por hábitos · este mes</span>
+   <ul class="co-habs">${H.map(x=>`<li class="${x.ok?"ok":""}"><span class="co-hi" aria-hidden="true">${x.ic}</span><div><b>${x.t}</b>${x.ok?' <span class="tag">Conseguido</span>':""}<small class="muted">${x.d} · ${x.p}</small></div></li>`).join("")}</ul></div>`}
+/* ---- Jardín colectivo: cada entreno del grupo hace crecer el paisaje ---- */
+let coopGarden=null;
+function gardenSVG(g){const mem=Math.max(1,g.members||1),per=(g.w1||0)/mem,st=g.w1===0?0:per<1?1:per<2?2:per<3?3:per<4?4:5,n=Math.min(36,Math.max(st?3:0,g.m28||0));
+  let seed=7;const rnd=()=>(seed=(seed*9301+49297)%233280)/233280;let pl="";
+  const items=[];for(let i=0;i<n;i++)items.push({x:14+rnd()*292,y:104+rnd()*28,r:rnd()});items.sort((a,b)=>a.y-b.y);
+  for(const it of items){const k=Math.min(5,Math.max(1,Math.round(st-1+it.r*1.6))),x=it.x.toFixed(1),y=it.y.toFixed(1),c=["#E85D9A","#F5C400","#8B5CF6","#FF7A45","#38BDF8"][Math.floor(it.r*5)];
+    if(k<=1)pl+=`<path d="M${x} ${y}v-6" stroke="#3F8F4E" stroke-width="2" stroke-linecap="round"/><ellipse cx="${it.x-3}" cy="${it.y-6}" rx="3" ry="1.6" fill="#5DBB63"/><ellipse cx="${it.x+3}" cy="${it.y-7}" rx="3" ry="1.6" fill="#5DBB63"/>`;
+    else if(k===2)pl+=`<path d="M${x} ${y}v-13" stroke="#3F8F4E" stroke-width="2"/><ellipse cx="${it.x-4}" cy="${it.y-7}" rx="4" ry="2" fill="#5DBB63"/><ellipse cx="${it.x+4}" cy="${it.y-10}" rx="4" ry="2" fill="#5DBB63"/><circle cx="${x}" cy="${it.y-15}" r="3.4" fill="${c}"/><circle cx="${x}" cy="${it.y-15}" r="1.3" fill="#FFE58A"/>`;
+    else if(k===3)pl+=`<ellipse cx="${x}" cy="${it.y-7}" rx="11" ry="8" fill="#4CAF50"/><circle cx="${it.x-4}" cy="${it.y-10}" r="2" fill="${c}"/><circle cx="${it.x+5}" cy="${it.y-7}" r="2" fill="${c}"/>`;
+    else{const h=k===4?22:30;pl+=`<rect x="${it.x-2}" y="${it.y-h*.5}" width="4" height="${h*.5}" rx="1.5" fill="#8B5A2B"/><circle cx="${x}" cy="${it.y-h*.62}" r="${h*.4}" fill="${k===5?"#2E7D32":"#43A047"}"/><circle cx="${it.x-h*.18}" cy="${it.y-h*.72}" r="${h*.22}" fill="#66BB6A"/>${k===5?`<circle cx="${it.x+h*.15}" cy="${it.y-h*.5}" r="2.2" fill="#E53935"/>`:""}`}}
+  const sun=st>=3?`<circle cx="282" cy="26" r="13" fill="#FFD54A"/>`:`<circle cx="282" cy="26" r="11" fill="#FFE9A8"/>`;
+  const cloud=st<=1?`<g fill="#fff" opacity=".85"><ellipse cx="70" cy="30" rx="20" ry="8"/><ellipse cx="86" cy="25" rx="13" ry="8"/></g>`:"";
+  return`<svg viewBox="0 0 320 140" class="co-gsvg" role="img" aria-label="Jardín del grupo, nivel ${st} de 5"><defs><linearGradient id="cgS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${st>=2?"#BFE6FF":"#DDE7EE"}"/><stop offset="1" stop-color="#F4FBFF"/></linearGradient></defs>
+   <rect width="320" height="140" fill="url(#cgS)"/>${sun}${cloud}<path d="M0 96Q80 84 160 94T320 92V140H0Z" fill="${st?"#A5D6A7":"#C8B08A"}"/><path d="M0 108Q90 100 170 108T320 106V140H0Z" fill="${st?"#81C784":"#B89B70"}"/>${pl}</svg>`}
+const G_STAGE=["Tierra esperando semillas","Primeros brotes","Plantas en flor","Arbustos frondosos","Árboles creciendo","Un bosque lleno de vida"];
+function coopGardenHtml(){const g=coopGarden;if(!g)return"";const mem=Math.max(1,g.members||1),per=(g.w1||0)/mem,st=g.w1===0?0:per<1?1:per<2?2:per<3?3:per<4?4:5;
+  const tr=g.w1>g.w2?"🌱 Creciendo: más actividad que la semana pasada":g.w1===g.w2?(g.w1?"🌿 Se mantiene igual que la semana pasada":"💧 Necesita agua: ¡cualquier entreno lo despierta!"):"💧 Necesita un poco más de agua que la semana pasada";
+  return`<div class="sec co-garden"><span class="eyebrow">Jardín colectivo</span>${gardenSVG(g)}
+   <div class="co-gi"><b>${G_STAGE[st]}</b><span class="muted">${g.w1} ${g.w1===1?"entreno":"entrenos"} del grupo en 7 días · ${g.active7} de ${g.members} ${g.members===1?"persona":"personas"} ${g.active7===1?"ha":"han"} regado · tú: ${g.mine7}</span><span>${tr}</span></div>
+   <p class="muted">Cada entrenamiento de cualquiera hace crecer el jardín. Si el grupo mantiene la actividad, el paisaje evoluciona.</p></div>`}
+{const _cc=FRIENDS_API&&FRIENDS_API.coopChals;if(_cc)FRIENDS_API.coopChals=async function(id){const[c,g]=await Promise.all([_cc.call(FRIENDS_API,id),SB.rpc("coop_garden",{p_group:id}).then(r=>r.error?null:r.data).catch(()=>null)]);coopGarden=g;return c}}
 /* Hitos: se sugieren, y solo se comparten si la persona lo confirma */
 function coopSuggestions(){const lim=isoD(addDays(new Date(),-14)),first=re=>{let d=null;for(const w of workouts){if(!w.date)continue;const hit=re.test(w.name||"")||(w.exercises||[]).some(e=>e.name&&re.test(e.name)&&!/muscle/i.test(e.name));if(hit&&(!d||w.date<d))d=w.date}return d};
   const out=[],m=first(/murph/i),p=first(/pull-?up|dominada/i);
@@ -6914,7 +6979,7 @@ function coopChalsHtml(){
      <p class="co-ch-m">${v.msg}</p>${c.own?`<button type="button" class="link-btn co-ch-x" data-cochdel="${esc(c.id)}">Borrar este reto</button>`:""}</li>`}).join("")}</ul>`
     :`<p class="muted">Todavía no hay ningún reto. Proponed uno y a por él entre todos.</p>`;
   const p=CH_PRE[coopPre]||CH_PRE[0];
-  return`<div class="sec co-chsec"><span class="eyebrow">Retos del grupo</span>${list}
+  return`<div class="sec co-chsec"><span class="eyebrow">Objetivos colectivos · retos cooperativos</span>${list}
    <p class="muted">Cada entrenamiento cuenta igual: un WOD de una hora o 15 minutos de movilidad. Máximo 2 por día y persona.</p>
    <details class="co-chnew"><summary>Proponer un reto</summary><form id="coCh">
     <div class="co-sp" role="radiogroup" aria-label="Tipo de reto">${CH_PRE.map((x,i)=>`<button type="button" class="co-chip${i===coopPre?" on":""}" role="radio" aria-checked="${i===coopPre}" data-coprs="${i}">${esc(x.t)}</button>`).join("")}</div>
@@ -6932,8 +6997,9 @@ async function coopLoad(){coopGroups=await FRIENDS_API.coopList();coopLoaded=tru
   coopFeed=coopSel?await FRIENDS_API.coopFeed(coopSel).catch(()=>[]):[];
   coopCh=coopSel?await FRIENDS_API.coopChals(coopSel).catch(()=>[]):[]}
 function coopTabs(v){v.querySelector(".fr-tabs")?.remove();const h=v.querySelector(".view-title");if(!h)return;
-  h.insertAdjacentHTML("afterend",`<div class="seg fr-tabs" role="radiogroup" aria-label="Sección">${[["rank","Ranking"],["coop","Cooperativo"]].map(([k,l])=>`<input type="radio" name="frT" id="frT_${k}" value="${k}"${frTab===k?" checked":""}><label for="frT_${k}">${l}</label>`).join("")}</div>`);
-  v.querySelectorAll("[name=frT]").forEach(x=>x.onchange=()=>{frTab=x.value;renderFriends()})}
+  h.insertAdjacentHTML("afterend",`<div class="seg fr-tabs" role="radiogroup" aria-label="Sección">${[["rank","⚔️ Modo VS"],["coop","🤝 Modo colectivo"]].map(([k,l])=>`<input type="radio" name="frT" id="frT_${k}" value="${k}"${frTab===k?" checked":""}><label for="frT_${k}">${l}</label>`).join("")}</div>`);
+  v.querySelectorAll("[name=frT]").forEach(x=>x.onchange=()=>{frTab=x.value;renderFriends()});
+  v.querySelector(".fr-tabs").insertAdjacentHTML("afterend",`<p class="muted fr-tabhint">${frTab==="coop"?"Sin rankings: objetivos de grupo, tus propias marcas y hábitos. Aquí todos suman, entrenes lo que entrenes.":"Compite con tus amigos: ranking, duelos y WODs compartidos."}</p>`)}
 const coErr=e=>e?.message==="not_found"?"No hay ningún grupo con ese código. Revísalo.":e?.message==="full"?"Ese grupo ya está lleno (30 personas).":e?.message==="too_many"?"Ya estás en 10 grupos, que es el máximo.":"No se pudo. Inténtalo de nuevo.";
 function coopSportForm(){const s=CO_SPORTS.find(x=>x[0]===coopSport),free=!s[3];
   return`<form class="sec co-act" id="coAct"><span class="eyebrow">Cuenta algo al grupo</span>
@@ -6949,14 +7015,17 @@ function coopGroupHtml(g){const sh=coShare(),done=coPosted(),no=coDismissed();
     <div class="fr-cr"><b class="mono fr-c" id="coCode">${esc(g.code)}</b><button type="button" class="btn" id="coInvite">Invitar</button></div>
     <p class="muted">Quien tenga este código puede unirse. Pásaselo solo a quien quieras.</p></div>
   ${sug.map(s=>`<div class="sec co-sug"><p>${esc(s.ask)}. ¿Lo compartes con «${esc(g.name)}»?</p><div class="rt-ca"><button type="button" class="btn primary" data-cosug="${s.key}">Compartir</button><button type="button" class="btn" data-conosug="${s.key}">Ahora no</button></div></div>`).join("")}
-  ${coopChalsHtml()}
+  ${coopGardenHtml()}${coopChalsHtml()}${coopMeHtml()}
   <div class="sec fr-feed"><span class="eyebrow">Actividad del grupo</span>${feed}</div>
   ${coopSportForm()}
   <div class="sec co-priv"><span class="eyebrow">Lo que compartes</span>
    <label class="ff-opt"><input type="checkbox" id="coWeek"${sh.week?" checked":""}> Avisar cuando entreno 3 o 5 días en una semana</label>
    <label class="ff-opt"><input type="checkbox" id="coBack"${sh.back?" checked":""}> Avisar cuando vuelvo tras dos semanas sin entrenar</label>
+   <label class="ff-opt"><input type="checkbox" id="coPr"${sh.pr?" checked":""}> Avisar cuando supero una marca mía (solo el ejercicio, sin pesos)</label>
+   <label class="ff-opt"><input type="checkbox" id="coHito"${sh.hito?" checked":""}> Avisar de mis hitos (10, 25, 50… entrenamientos)</label>
+   <label class="ff-opt"><input type="checkbox" id="coHab"${sh.hab?" checked":""}> Avisar de mis reconocimientos por hábitos</label>
    <label class="ff-opt"><input type="checkbox" id="coChal"${sh.chal?" checked":""}> Sumar mis entrenos a los retos del grupo (solo cuenta cuántos hay cada día, no qué haces)</label>
-   <p class="muted">Nunca se publican pesos, marcas, fotos ni notas. Los hitos (como tu primer Murph) te los preguntamos antes, y lo que cuentas a mano lo escribes tú. Puedes borrar tus publicaciones con la ×.</p></div>`}
+   <p class="muted">Nunca se publican pesos, cifras de marcas, fotos ni notas. Los hitos (como tu primer Murph) te los preguntamos antes, y lo que cuentas a mano lo escribes tú. Puedes borrar tus publicaciones con la ×.</p></div>`}
 async function renderCoop(load){const v=$("#v-friends");if(!v)return;
   if(load!==false||!coopLoaded){v.innerHTML=`<h2 class="view-title">Amigos</h2><p class="muted">Cargando…</p>`;
     try{await coopLoad()}catch(e){v.innerHTML=`<h2 class="view-title">Amigos</h2><div class="empty"><h3>No se pudo cargar</h3><p>Revisa la conexión y vuelve a intentarlo.</p><button type="button" class="btn" id="coRetry">Reintentar</button></div>`;coopTabs(v);$("#coRetry").onclick=()=>renderCoop();return}}
@@ -6989,8 +7058,8 @@ async function renderCoop(load){const v=$("#v-friends");if(!v)return;
   v.querySelectorAll("[data-cosug]").forEach(b=>b.onclick=async()=>{const s=coopSuggestions().find(x=>x.key===b.dataset.cosug);if(!s)return;b.disabled=true;
     try{await FRIENDS_API.coopPost(g.id,s.kind,s.text,s.key,coName());const d=coPosted();d.add(g.id+":"+s.key);coSavePosted(d);toast("Compartido 🎉");coopFeed=await FRIENDS_API.coopFeed(g.id);renderCoop(false)}catch(e){toast("No se pudo compartir");b.disabled=false}});
   v.querySelectorAll("[data-conosug]").forEach(b=>b.onclick=()=>{const n=coDismissed();n.add(g.id+":"+b.dataset.conosug);try{localStorage.setItem("tn-coop-no",JSON.stringify([...n]))}catch(e){}renderCoop(false)});
-  const sv=async()=>{await saveProf({coopShare:{week:$("#coWeek").checked,back:$("#coBack").checked,chal:$("#coChal").checked}},"Guardado");await coopSyncDays();try{coopCh=await FRIENDS_API.coopChals(g.id)}catch(e){}renderCoop(false)};
-  $("#coWeek").onchange=sv;$("#coBack").onchange=sv;$("#coChal").onchange=sv;
+  const sv=async()=>{await saveProf({coopShare:{week:$("#coWeek").checked,back:$("#coBack").checked,chal:$("#coChal").checked,pr:$("#coPr").checked,hito:$("#coHito").checked,hab:$("#coHab").checked}},"Guardado");await coopSyncDays();try{coopCh=await FRIENDS_API.coopChals(g.id)}catch(e){}renderCoop(false)};
+  ["#coWeek","#coBack","#coChal","#coPr","#coHito","#coHab"].forEach(q=>{const x=$(q);if(x)x.onchange=sv});
   v.querySelectorAll("[data-coprs]").forEach(b=>b.onclick=()=>{coopPre=Number(b.dataset.coprs);const p=CH_PRE[coopPre];$("#coChT").value=p.t;$("#coChN").value=p.n;$("#coChU").textContent=p.u;$("#coChD").value=String(p.d);
     v.querySelectorAll("[data-coprs]").forEach(x=>{const on=x===b;x.classList.toggle("on",on);x.setAttribute("aria-checked",String(on))})});
   $("#coCh").onsubmit=async ev=>{ev.preventDefault();const e=$("#coChE");e.hidden=true;const p=CH_PRE[coopPre],title=$("#coChT").value.trim(),n=parseInt($("#coChN").value,10),d=parseInt($("#coChD").value,10);

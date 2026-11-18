@@ -2139,7 +2139,7 @@ body.wr-open{overflow:hidden}
       <button type="button" class="tool" id="openMaxBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18"/><rect x="5" y="12" width="3" height="6" rx="1"/><rect x="16" y="12" width="3" height="6" rx="1"/><path d="M8 15h8"/><path d="M12 3v6M9 6l3-3 3 3"/></svg><span>Pesos máximos</span></button>
       <button type="button" class="tool" id="openProgBtn" hidden></button>
       <button type="button" class="tool" id="openTotalsBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 5H6l6 7-6 7h12"/></svg><span>Totales</span></button>
-      <button type="button" class="tool" id="openMonth" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Estadísticas</span></button>
+      <button type="button" class="tool" id="openMonth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Estadísticas</span></button>
       <button type="button" class="tool" id="openRMBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3M19 12h3"/><rect x="5" y="7" width="3" height="10" rx="1"/><rect x="16" y="7" width="3" height="10" rx="1"/><path d="M8 12h8"/></svg><span>Calculadora RM</span></button>
       <button type="button" class="tool" id="openWeightsBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 8h11l2 12h-15z"/><circle cx="12" cy="5" r="2"/><path d="M10 13.5h4M12 11.5v4"/></svg><span>Mis pesos</span></button>
       <button type="button" class="tool" id="openBadgesBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"/><path d="M9 3l1.5 5M15 3l-1.5 5M12 11.5l.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2L9.1 13.6l2-.3z"/></svg><span>Insignias <small id="badgeCount" class="bd-count"></small></span></button>
@@ -7094,6 +7094,11 @@ function groupShop(){const body=$("#v-shop .shop-body");if(!body||shopTab==="coi
 
 /* Resumen semanal y estadísticas del mes en un mismo sitio: fuera del menú el acceso suelto «Resumen» */
 {const b=document.getElementById("openSumBtn");if(b)b.remove()}
+
+/* Estadísticas también en el menú y en los accesos rápidos */
+{const b=document.getElementById("openMonth");if(b){b.hidden=false;const t=document.querySelector(".tools");if(t)t.prepend(b)}
+  if(typeof QA!=="undefined"&&!QA.some(q=>q[0]==="openMonth"))QA.splice(1,0,["openMonth","Estadísticas"]);
+  if(typeof QA_KEY!=="undefined")QA_KEY.openMonth="stats"}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

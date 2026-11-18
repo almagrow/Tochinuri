@@ -2124,6 +2124,15 @@ button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding
 .cheer-fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:415}
 @keyframes cheerIn{from{opacity:0;transform:translateX(-50%) translateY(-24px) scale(.8)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
 @media (prefers-reduced-motion:reduce){.cheer-pop{animation:none}}
+.ff-groups{display:flex;flex-direction:column;gap:8px}
+.ff-friend{background:var(--surface-2);border-radius:14px;padding:0 12px}
+.ff-friend>summary{display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 0;list-style:none}
+.ff-friend>summary::-webkit-details-marker{display:none}
+.ff-friend>summary::after{content:"▾";margin-left:auto;color:var(--muted);transition:transform .2s}
+.ff-friend[open]>summary::after{transform:rotate(180deg)}
+.ff-av{flex:none;width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:800}
+.ff-gn{display:flex;flex-direction:column;min-width:0}
+.ff-friend .ff-list{margin:0 0 8px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -6754,12 +6763,13 @@ const relDay=d=>{const n=Math.round((dObj(today())-dObj(d))/864e5);return n<=0?"
 function feedHtml(){const lim=isoD(addDays(new Date(),-14)),items=[];
   for(const r of (frBoard||[]))if(!r.is_me)for(const w of (r.stats?.last||[]))if(w.d>=lim)items.push({...w,uid:r.user_id,name:r.name||"Tu amigo"});
   items.sort((a,b)=>b.d.localeCompare(a.d));
+  const groups=[];for(const it of items){let g=groups.find(x=>x.uid===it.uid);if(!g){g={uid:it.uid,name:it.name,items:[]};groups.push(g)}g.items.push(it)}
   const mine=k=>frReacts.find(x=>x.mine&&x.to_user===k.uid&&x.wid===k.id)?.emoji;
   const recv=frReacts.filter(x=>!x.mine).slice(0,8);
   const wname=id=>{const w=workouts.find(x=>x.id===id);return w?(w.name||w.type||"tu entreno"):"tu entreno"};
   return`<div class="sec fr-feed"><span class="eyebrow">Actividad de tus amigos</span>
-   ${items.length?`<ul class="ff-list">${items.slice(0,12).map(it=>{const m=mine(it);return`<li class="ff"><div class="ff-t"><b>${esc(it.name)}</b> <span class="muted">· ${relDay(it.d)}</span><span class="ff-w">${esc(it.t)}${it.ty&&it.ty!==it.t?` <span class="tag">${esc(it.ty)}</span>`:""}${it.r?` <b class="mono ff-r">${esc(it.r)}</b>`:""}</span></div>
-     <div class="ff-re" role="group" aria-label="Reaccionar al entreno de ${esc(it.name)}">${REACT.map(([k,e,l])=>`<button type="button" class="ff-rb${m===k?" on":""}" data-re="${k}" data-to="${esc(it.uid)}" data-w="${esc(it.id)}" aria-pressed="${m===k}" aria-label="${l}">${e}</button>`).join("")}</div></li>`}).join("")}</ul>`
+   ${items.length?`<div class="ff-groups">${groups.map(g=>`<details class="ff-friend"><summary><span class="ff-av" aria-hidden="true">${esc((g.name||"?").trim().slice(0,1).toUpperCase())}</span><span class="ff-gn"><b>${esc(g.name)}</b><small class="muted">${g.items.length} entreno${g.items.length===1?"":"s"} · último ${relDay(g.items[0].d)}</small></span></summary><ul class="ff-list">${g.items.map(it=>{const m=mine(it);return`<li class="ff"><div class="ff-t"><span class="muted">${relDay(it.d)}</span><span class="ff-w">${esc(it.t)}${it.ty&&it.ty!==it.t?` <span class="tag">${esc(it.ty)}</span>`:""}${it.r?` <b class="mono ff-r">${esc(it.r)}</b>`:""}</span></div>
+     <div class="ff-re" role="group" aria-label="Reaccionar al entreno de ${esc(it.name)}">${REACT.map(([k,e,l])=>`<button type="button" class="ff-rb${m===k?" on":""}" data-re="${k}" data-to="${esc(it.uid)}" data-w="${esc(it.id)}" aria-pressed="${m===k}" aria-label="${l}">${e}</button>`).join("")}</div></li>`}).join("")}</ul></details>`).join("")}</div>`
      :`<p class="muted">Cuando tus amigos apunten entrenos los verás aquí y podrás darles ánimos.</p>`}
    ${recv.length?`<span class="eyebrow ff-rh">Ánimos que te han dado</span><ul class="ff-got">${recv.map(x=>`<li><span class="ff-e">${reEmoji(x.emoji)}</span><span><b>${esc(x.from_name||"Un amigo")}</b> en «${esc(wname(x.wid))}»</span><small class="muted">${relDay(String(x.created_at).slice(0,10))}</small></li>`).join("")}</ul>`:""}
    <label class="ff-opt"><input type="checkbox" id="frShareLast"${profile?.frShareLast===false?"":" checked"}> Compartir con mis amigos el nombre y el resultado de mis últimos entrenos</label></div>`}

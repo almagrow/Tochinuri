@@ -5169,8 +5169,13 @@ function animalCard(x){
     ${nx?`<p class="muted animal-n">Te faltan ${Math.round(nx.kg-t).toLocaleString("es-ES")} kg para mover ${esc(nx.n)} ${nx.e}</p>`:""}
   </div></div>`;
 }
-{const _ow=openWod;openWod=function(id){_ow(id);const x=workouts.find(w=>w.id===id);if(!x)return;const html=animalCard(x);if(!html)return;
-  const v=$("#v-wod"),acts=v.querySelector(".sec.row-actions");if(acts)acts.insertAdjacentHTML("beforebegin",html);else v.insertAdjacentHTML("beforeend",html)}}
+{const _ow=openWod;openWod=function(id){_ow(id);const x=workouts.find(w=>w.id===id);if(!x)return;
+  const v=$("#v-wod"),acts=v.querySelector(".sec.row-actions");
+  /* Fuerza animal ocupa el sitio del resumen; el resumen baja al final de la página (antes de los botones) */
+  const sum=[...v.querySelectorAll(":scope > .sec")].find(el=>el.querySelector(":scope > h3")?.textContent==="Resumen del entreno");
+  const html=animalCard(x);
+  if(html){if(sum)sum.insertAdjacentHTML("beforebegin",html);else if(acts)acts.insertAdjacentHTML("beforebegin",html);else v.insertAdjacentHTML("beforeend",html)}
+  if(sum&&acts)acts.parentNode.insertBefore(sum,acts)}}
 
 
 /* Barra de estado del móvil (iOS y Android): mismo color que la cabecera de cada tema, sin franjas ni bordes arriba */

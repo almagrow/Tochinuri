@@ -2261,6 +2261,22 @@ button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding
 @keyframes pfSleep{0%,100%{transform:scale(1.04,.88) translateY(3px)}50%{transform:scale(1.06,.85) translateY(4px)}}
 @keyframes pfSpin{50%{transform:translateY(-18px) rotate(180deg)}100%{transform:rotate(360deg)}}
 @keyframes pfStretch{35%{transform:scale(1.16,.82)}70%{transform:scale(.94,1.08)}}
+.pet-walker{touch-action:none}
+.pf-vis{font-size:20px;line-height:1;pointer-events:none}
+.pf-vis i{display:inline-block;font-style:normal}
+.pf-vis.hop{animation:pfVisHop .42s ease-in-out infinite}
+.pf-vis.walk{animation:pfVisWalk .7s ease-in-out infinite}
+.night .pf-vis{filter:brightness(.7)}
+.pf-shoot{top:12px;width:70px;height:2px;border-radius:2px;z-index:3;background:linear-gradient(90deg,rgba(255,255,255,0),#fff);box-shadow:0 0 6px #fff;transform:rotate(-18deg);animation:pfShoot 1.4s ease-out forwards}
+.pf-it.bloom{animation:pfBloom .65s ease 2!important}
+.pet-field.squat .pet-hop{animation:pfSquat .85s ease-in-out infinite}
+.pet-field.purr .pet-hop{animation:pfPurr .25s ease-in-out infinite}
+@keyframes pfVisHop{50%{transform:translateY(-9px)}}
+@keyframes pfVisWalk{50%{transform:translateY(-2px) rotate(3deg)}}
+@keyframes pfShoot{0%{opacity:0;translate:0 0}15%{opacity:1}100%{opacity:0;translate:170px 50px}}
+@keyframes pfBloom{50%{transform:translateX(-50%) scale(1.35)}}
+@keyframes pfSquat{0%,100%{transform:none}50%{transform:scale(1.08,.8) translateY(4px)}}
+@keyframes pfPurr{0%,100%{transform:rotate(-3deg) scale(1.02)}50%{transform:rotate(3deg) scale(1.02)}}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -7516,7 +7532,7 @@ function petFieldHtml(P,nm,kind){
    <i class="pf-tufts" aria-hidden="true"></i>
    <span class="pet-lv mono">${L}</span></div>`}
 function petWander(field,P,kind){
-  clearTimeout(petFx.timer);clearInterval(petFx.dust);clearInterval(petFx.zz);petFx.feed=null;petFx.poke=null;
+  clearTimeout(petFx.timer);clearTimeout(petFx.vis);clearInterval(petFx.dust);clearInterval(petFx.zz);petFx.feed=null;petFx.poke=null;petFx.pet=null;
   const w=field.querySelector(".pet-walker"),flip=field.querySelector(".pet-flip");if(!w||!flip)return;
   const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches,MAXY=44,SZ=76,gor=kind==="gorila",night=field.classList.contains("night"),sad=P.mood==="sad";
   const spd=sad?13:P.mood==="happy"?36:24;
@@ -7532,11 +7548,15 @@ function petWander(field,P,kind){
     if(petFx.x<34)b.classList.add("l");else if(petFx.x>W()-SZ-34)b.classList.add("r");w.appendChild(b);setTimeout(()=>b.remove(),2600)};
   const later=(fn,ms)=>{clearTimeout(petFx.timer);petFx.timer=setTimeout(()=>{if(field.isConnected)fn()},ms)};
   const curPos=()=>{try{const m=new DOMMatrixReadOnly(getComputedStyle(w).transform);return{x:m.m41,y:-m.m42}}catch(e){return{x:petFx.x,y:petFx.y}}};
-  const CLS=["walking","resting","sniff","sleeping","spin","stretch","hopping"];
+  const CLS=["walking","resting","sniff","sleeping","spin","stretch","hopping","squat","purr"];
   const stopAll=()=>{clearTimeout(petFx.timer);clearInterval(petFx.dust);clearInterval(petFx.zz);const p=curPos();petFx.x=p.x;petFx.y=p.y;field.classList.remove(...CLS);put(petFx.x,petFx.y,0)};
   if(petFx.x==null||petFx.x>W()-SZ){petFx.x=(W()-SZ)/2;petFx.y=10}
   put(petFx.x,petFx.y,0);
   const hop=ms=>{field.classList.add("hopping");setTimeout(()=>field.classList.remove("hopping"),ms||700)};
+  /* Caricias: deslizar el dedo sobre la mascota */
+  petFx.pet=n=>{if(n===1){stopAll();field.classList.add("purr")}popAt(pfPick(["❤️","💕","💖"]),20+Math.random()*30);
+    if(n%3===1)say(gor?"Uh uh… ♥":"Prrr… 😻");try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}
+    later(()=>{field.classList.remove("purr");if(!reduce)next()},1600)};
   if(reduce){petFx.poke=()=>{say()};return}
   const cx=el=>{const r=el.getBoundingClientRect(),f=field.getBoundingClientRect();return r.left-f.left+r.width/2};
   const goTo=(nx,ny,done)=>{const d=Math.hypot(nx-petFx.x,(ny-petFx.y)*2),dur=Math.max(1.2,d/spd);
@@ -7549,11 +7569,27 @@ function petWander(field,P,kind){
   const next=()=>later(step,500+Math.random()*1800);
   const sleep=ms=>{field.classList.add("sleeping");popAt("💤");clearInterval(petFx.zz);petFx.zz=setInterval(()=>{if(!field.isConnected){clearInterval(petFx.zz);return}popAt("💤",44)},1700);
     later(()=>{clearInterval(petFx.zz);field.classList.remove("sleeping");next()},ms)};
+  /* Si hoy has entrenado, a veces entrena contigo */
+  const workout=()=>{let i=0;const n=3;field.classList.add("squat");const tick=()=>{i++;say(i<n?`${i}…`:`¡${n}! 💪`);if(i<n)later(tick,850);else later(()=>{field.classList.remove("squat");popAt("💪");next()},900)};later(tick,300)};
+  /* Visitas: un conejo, un erizo de noche, una ardilla en otoño… y a veces la mascota los persigue */
+  const visit=()=>{if(!field.isConnected)return;if(document.hidden||field.querySelector(".pf-vis,.pf-shoot")){petFx.vis=setTimeout(visit,15000);return}
+    const season=["autumn","winter","spring","summer"].find(c=>field.classList.contains(c));
+    if(night&&Math.random()<.45){const sh=document.createElement("i");sh.className="pf-shoot";sh.style.left=(10+Math.random()*50)+"%";field.appendChild(sh);setTimeout(()=>sh.remove(),1600);
+      if(!field.classList.contains("sleeping"))setTimeout(()=>say("✨ ¡Pide un deseo!"),500);petFx.vis=setTimeout(visit,25000+Math.random()*25000);return}
+    const e=night?"🦔":season==="autumn"&&Math.random()<.5?"🐿️":season==="winter"&&Math.random()<.4?"🐧":pfPick(["🐇","🐇","🐥","🐢"]);
+    const ltr=Math.random()<.5,d=Math.round(Math.random()*38),dur=e==="🐢"?16:e==="🦔"||e==="🐧"?11:6.5;
+    const v=document.createElement("span");v.className="pf-vis"+(e==="🐢"||e==="🦔"?" walk":" hop");v.innerHTML=`<i style="transform:scaleX(${ltr?-1:1})">${e}</i>`;
+    v.style.bottom=(6+d)+"px";v.style.zIndex=String(100-d);v.style.left=ltr?"-30px":(W()+10)+"px";field.appendChild(v);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{v.style.transition=`left ${dur}s linear`;v.style.left=ltr?(W()+10)+"px":"-30px"}));
+    setTimeout(()=>v.remove(),dur*1000+300);
+    if(!field.classList.contains("sleeping")&&Math.random()<.55)setTimeout(()=>{if(!field.isConnected)return;stopAll();popAt("❗");
+      say(gor?"¡Uh! ¿Quién va?":"¡Miau! ¿Quién eres?");later(()=>goTo(ltr?W()-SZ-6:6,Math.max(0,Math.min(MAXY,d)),()=>{popAt(pfPick(["😹","❓","💨"]));next()}),800)},dur*280);
+    petFx.vis=setTimeout(visit,22000+Math.random()*22000)};
   const interact=it=>{
     const act=it.dataset.act,side=Math.random()<.5?-1:1,ix=cx(it),d=Number(it.dataset.d)||10;
     const nx=Math.max(6,Math.min(W()-SZ-6,ix-SZ/2+side*(act==="drink"?0:30))),ny=act==="drink"?d+8:d;
     goTo(nx,ny,()=>{face(ix>=petFx.x+SZ/2?1:-1);
-      if(act==="flower"){field.classList.add("sniff");later(()=>{field.classList.remove("sniff");popAt(gor?"💚":"💕");if(Math.random()<.3)say(gor?"Huele a victoria":"Mmm, flores");next()},1700)}
+      if(act==="flower"){field.classList.add("sniff");it.classList.add("bloom");setTimeout(()=>it.classList.remove("bloom"),1300);later(()=>{field.classList.remove("sniff");popAt(gor?"💚":"💕");if(Math.random()<.3)say(gor?"Huele a victoria":"Mmm, flores");next()},1700)}
       else if(act==="snow"){hop(600);popAt("❄️");later(()=>{say(gor?"¡Brr! A calentar":"¡Qué frío!");next()},900)}
       else if(act==="leaves"){hop(600);popAt("🍂");popAt("🍁",50);later(next,1000)}
       else if(act==="drink"){const pd=field.querySelector(".pf-pond");pd&&pd.classList.add("ripple");popAt("💧");field.classList.add("sniff");
@@ -7580,6 +7616,7 @@ function petWander(field,P,kind){
     add(P.mood==="happy"?2:.6,()=>{hop(700);later(step,1100+Math.random()*1200)});
     add(1.1,()=>{say();rest(2700,next)});
     if(!sad)add(.7,()=>{field.classList.add("spin");popAt("✨");setTimeout(()=>field.classList.remove("spin"),850);later(next,1000)});
+    if(!night&&P.idle===0)add(1.6,workout);
     add(.7,()=>{field.classList.add("stretch");setTimeout(()=>field.classList.remove("stretch"),1450);later(next,1500)});
     add(sad?3:1.4,()=>rest(2500+Math.random()*2500,next));
     add(3,()=>goTo(6+Math.random()*(W()-SZ-12),Math.random()*MAXY,next));
@@ -7596,16 +7633,24 @@ function petWander(field,P,kind){
   /* Tocar a la mascota */
   petFx.poke=()=>{stopAll();hop(700);popAt(pfPick(["💪","❤️","🔥","⭐","💥"]));if(Math.random()<.5)say();later(next,1200)};
   petFx.timer=setTimeout(step,700);
+  petFx.vis=setTimeout(visit,8000+Math.random()*8000);
+  const tm=["dawn","day","dusk","night"].find(c=>field.classList.contains(c));
+  setTimeout(()=>{if(!field.isConnected)return;if(sad)say();else if(P.idle===0&&tm!=="night")say("¡Entreno hecho! 💪");else if(tm==="dawn")say("¡Buenos días! 🥱");else if(tm==="dusk")say("Qué atardecer… 🌇")},1200);
 }
 {const _pp=paintPet;paintPet=function(){_pp();try{
   const c=$("#petCard");if(!c||!profile||!profile.petOn)return;const card=c.querySelector(".pet-card"),old=c.querySelector(".pet-art");if(!card||!old)return;
   const P=petState(),nm=petNm(),kind=petKind();
   old.insertAdjacentHTML("afterend",petFieldHtml(P,nm,kind));old.remove();card.classList.add("has-field");
-  const nu=nextUnlock(P.L),t=card.querySelector(".pet-t");if(t)t.insertAdjacentHTML("beforeend",`<span class="muted pf-next">🌱 El campo crece con su nivel${nu?`: en el nivel ${nu.L} aparece ${esc(nu.t)}.`:". ¡Ya está completo!"}</span><span class="muted pf-next">👆 Tócale para que salte o toca el campo para darle ${kind==="gorila"?"un plátano 🍌":"un pescado 🐟"}.</span>`);
+  const nu=nextUnlock(P.L),t=card.querySelector(".pet-t");if(t)t.insertAdjacentHTML("beforeend",`<span class="muted pf-next">🌱 El campo crece con su nivel${nu?`: en el nivel ${nu.L} aparece ${esc(nu.t)}.`:". ¡Ya está completo!"}</span><span class="muted pf-next">👆 Tócale para que salte, desliza el dedo encima para acariciarle o toca el campo para darle ${kind==="gorila"?"un plátano 🍌":"un pescado 🐟"}.</span>`);
   petFx.lastL=P.L;
   const f=$("#petTap");petWander(f,P,kind);
   const poke=()=>{if(petFx.poke)petFx.poke();try{navigator.vibrate&&navigator.vibrate(20)}catch(x){}const h=$("#petHelp");if(h)h.hidden=!h.hidden};
-  f.onclick=ev=>{if(ev.target.closest(".pet-lv"))return;const wr=f.querySelector(".pet-walker").getBoundingClientRect();
+  let st=null,stroked=false;
+  const onPet=ev=>{const r=f.querySelector(".pet-walker").getBoundingClientRect();return ev.clientX>=r.left+6&&ev.clientX<=r.right-6&&ev.clientY>=r.top&&ev.clientY<=r.bottom};
+  f.addEventListener("pointerdown",ev=>{stroked=false;st=onPet(ev)?{x:ev.clientX,y:ev.clientY,acc:0,n:0}:null});
+  f.addEventListener("pointermove",ev=>{if(!st)return;st.acc+=Math.hypot(ev.clientX-st.x,ev.clientY-st.y);st.x=ev.clientX;st.y=ev.clientY;if(st.acc>36){st.acc=0;st.n++;stroked=true;petFx.pet&&petFx.pet(st.n)}});
+  ["pointerup","pointercancel","pointerleave"].forEach(t=>f.addEventListener(t,()=>{st=null}));
+  f.onclick=ev=>{if(stroked){stroked=false;return}if(ev.target.closest(".pet-lv"))return;const wr=f.querySelector(".pet-walker").getBoundingClientRect();
     const on=ev.clientX>=wr.left+6&&ev.clientX<=wr.right-6&&ev.clientY>=wr.top&&ev.clientY<=wr.bottom;
     if(on||!petFx.feed||!ev.clientX){poke();return}const fr=f.getBoundingClientRect();petFx.feed(ev.clientX-fr.left,fr.bottom-ev.clientY)};
   f.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();poke()}};

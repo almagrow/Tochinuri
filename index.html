@@ -1857,6 +1857,7 @@ html{background:linear-gradient(var(--safe-band,var(--bg)) 0 env(safe-area-inset
 @keyframes icDraw{0%{stroke-dashoffset:40}}
 .play.ic-tot .b{animation:icBar .7s cubic-bezier(.2,1.3,.5,1) both;transform-origin:bottom}.ic-tot .b2{animation-delay:.1s!important}.ic-tot .b3{animation-delay:.2s!important}
 @keyframes icBar{0%{transform:scaleY(.1)}}
+.ic-sig .sg{stroke-dasharray:90;stroke-dashoffset:0}.play.ic-sig .sg{animation:icSig .9s ease}@keyframes icSig{0%{stroke-dashoffset:90}}
 .play.ic-rm .k{animation:icKey .5s ease}.ic-rm .k2{animation-delay:.08s!important}.ic-rm .k3{animation-delay:.16s!important}.ic-rm .k4{animation-delay:.24s!important}.ic-rm .k5{animation-delay:.32s!important}.ic-rm .k6{animation-delay:.4s!important}
 @keyframes icKey{50%{fill:var(--brand);transform:scale(1.3)}}
 .play.ic-cyc .mv{animation:icDrip .8s ease}
@@ -5031,7 +5032,7 @@ const fmtHM=s=>{s=Math.round(s);const h=Math.floor(s/3600),m=Math.round((s%3600)
 function renderTotals(){
   if(!totK)totK=mode==="gym"?"gym":"cf";
   const v=$("#v-totals"),{T,list}=totalsData(totK);
-  v.innerHTML=`<h2 class="view-title">Estadísticas totales</h2>
+  v.innerHTML=`<h2 class="view-title">Totales por ejercicio</h2>
     <div class="seg mw-seg" role="radiogroup" aria-label="Sección" style="margin-bottom:14px">${[["all","Todo"],["cf","CrossFit"],["gym","Gym"]].map(([k,l])=>`<input type="radio" name="totK" id="totK_${k}" value="${k}"${totK===k?" checked":""}><label for="totK_${k}">${l}</label>`).join("")}</div>
     ${T.wods?`<div class="tot-grid">
       <div class="mtile"><span class="eyebrow">Entrenos</span><b>${fmtBig(T.wods)}</b></div>
@@ -5068,7 +5069,7 @@ function renderTotals(){
   $("#totList").onclick=ev=>{const b=ev.target.closest("[data-tot]");if(!b)return;const o=list.find(x=>x.key===b.dataset.tot);if(o?.ex){returnTo="totals";openEx(o.ex)}};
   paint();
 }
-function openTotals(){openTool("totals","Estadísticas totales",renderTotals)}
+function openTotals(){openTool("totals","Totales por ejercicio",renderTotals)}
 
 $("#openTotalsBtn").onclick=()=>openTotals();
 $("#topStats").onclick=()=>openBadges();
@@ -6513,7 +6514,7 @@ const IC2={
  goals:`<svg viewBox="0 0 48 48" class="ic2 ic-goal"><path d="M12 43V5"/><path class="mv ac" d="M12 7h22l-5 7 5 7H12z"/></svg>`,
  muscles:`<svg viewBox="0 0 48 48" class="ic2 ic-mus"><path d="M8 40c0-8 2-12 6-16l4-10 6-2 2 4-4 4 2 4c4-2 10-2 12 4 2 6-2 12-10 12z"/><circle class="mv ac" cx="30" cy="31" r="5"/></svg>`,
  summary:`<svg viewBox="0 0 48 48" class="ic2 ic-sum"><rect x="8" y="5" width="32" height="38" rx="5"/><path d="M14 12h12"/><path class="mv draw" d="M14 33l6-8 5 5 9-11"/><circle cx="34" cy="19" r="2.5" class="ac"/></svg>`,
- totals:`<svg viewBox="0 0 48 48" class="ic2 ic-tot"><path d="M6 42h36"/><rect class="b b1 ac2" x="9" y="28" width="7" height="14" rx="1.5"/><rect class="b b2 ac2" x="20.5" y="18" width="7" height="24" rx="1.5"/><rect class="b b3 ac" x="32" y="8" width="7" height="34" rx="1.5"/></svg>`,
+ totals:`<svg viewBox="0 0 48 48" class="ic2 ic-sig"><path class="sg" d="M36 9H13l13 15-13 15h23"/><circle cx="38" cy="39" r="2.5" class="ac"/></svg>`,
  rm:`<svg viewBox="0 0 48 48" class="ic2 ic-rm"><rect x="10" y="5" width="28" height="38" rx="5"/><rect x="15" y="10" width="18" height="8" rx="2" class="ac2"/><circle class="k k1" cx="18" cy="25" r="2.2"/><circle class="k k2" cx="24" cy="25" r="2.2"/><circle class="k k3" cx="30" cy="25" r="2.2"/><circle class="k k4" cx="18" cy="32" r="2.2"/><circle class="k k5" cx="24" cy="32" r="2.2"/><circle class="k k6 ac" cx="30" cy="35" r="3.5"/></svg>`,
  cycle:`<svg viewBox="0 0 48 48" class="ic2 ic-cyc"><path class="mv ac" d="M24 6s-12 13-12 21a12 12 0 0 0 24 0c0-8-12-21-12-21z"/><path d="M18 29a6 6 0 0 0 6 6"/></svg>`,
  pain:`<svg viewBox="0 0 48 48" class="ic2 ic-pain"><g class="mv"><rect x="6" y="17" width="36" height="14" rx="7" transform="rotate(-35 24 24)" class="ac2"/><rect x="18" y="17" width="12" height="14" rx="2" transform="rotate(-35 24 24)"/><circle cx="22" cy="23" r="1"/><circle cx="26" cy="25" r="1"/></g></svg>`,
@@ -6523,7 +6524,7 @@ const IC2={
  friends:`<svg viewBox="0 0 48 48" class="ic2 ic-fr"><g class="mv l"><circle cx="16" cy="15" r="6"/><path d="M5 39c1-8 5-12 11-12s10 4 11 12"/></g><g class="mv r"><circle cx="33" cy="17" r="5" class="ac2"/><path d="M26 39c1-6 3-10 7-10s7 4 8 10"/></g></svg>`,
  badges:`<svg viewBox="0 0 48 48" class="ic2 ic-bdg"><path d="M16 4l5 12M32 4l-5 12"/><g class="mv"><circle cx="24" cy="29" r="13" class="ac2"/><path d="M24 21l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z" class="ac"/></g></svg>`,
  weights:`<svg viewBox="0 0 48 48" class="ic2 ic-wts"><path d="M14 16h20l4 26H10z"/><path d="M19 16a5 5 0 0 1 10 0"/><text x="24" y="35" text-anchor="middle" font-size="10" font-weight="800" class="t">KG</text></svg>`,
- stats:`<svg viewBox="0 0 48 48" class="ic2 ic-tot"><path d="M6 42h36"/><rect class="b b1 ac2" x="9" y="24" width="7" height="18" rx="1.5"/><rect class="b b2 ac" x="20.5" y="12" width="7" height="30" rx="1.5"/><rect class="b b3 ac2" x="32" y="20" width="7" height="22" rx="1.5"/></svg>`
+ stats:`<svg viewBox="0 0 48 48" class="ic2 ic-sum"><path d="M7 6v36h36"/><path class="mv draw" d="M13 33l9-11 7 6 11-14"/><circle cx="40" cy="14" r="2.8" class="ac"/></svg>`
 };
 const INTRO={
  lib:"Tu enciclopedia de hierro: cómo se hace cada ejercicio, paso a paso y con su animación. Para que tu técnica sea de libro y no de vídeo viral. ¿Falta alguno? Créalo tú.",

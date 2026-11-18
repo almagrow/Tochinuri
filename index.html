@@ -2281,63 +2281,70 @@ button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding
 .pet-info>summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--brand);padding:4px 0;list-style-position:inside}
 .pet-info>span.muted{display:block;margin:2px 0 4px}
 .pet-help.in{margin:6px 0 2px}
-/* ====== Samurái: laca negra y roja, oro y bermellón ====== */
-:root[data-skin="samurai"]{--bg:#120C0A;--surface:#1E1512;--surface-2:#170F0D;--ink:#F3E7CE;--muted:#B9A684;--line:#5C4526;--accent:#D4AF5A;--accent-ink:#120C0A;--brand:#D4AF5A;--f-display:"Zen Old Mincho","Shippori Mincho B1","Noto Serif JP",serif;--f-body:"Zen Old Mincho","Shippori Mincho B1","Noto Serif JP",serif;--p-red:#c23a2b;--p-blue:#5b7fb0;--p-yellow:#d4af5a;--p-green:#7fa86a;--p-white:#a89c88;--danger:#e0533f;--star:#e6c068;--gold:#D4AF5A;--gold2:#8C6A2E;--ver:#B8291E;color-scheme:dark}
-[data-skin="samurai"] body{background-color:#120C0A;background-image:radial-gradient(ellipse at 50% -10%,rgba(184,41,30,.28),transparent 60%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cg fill='none' stroke='%23D4AF5A' stroke-opacity='.07' stroke-width='1'%3E%3Cpath d='M28 0v32M0 16l28 16 28-16M0 48l28-16 28 16M28 32l-28 16v33M28 32l28 16v33M0 81l28 16 28-16M28 64v33M0 48l28 16 28-16M28 64L0 81M28 64l28 17'/%3E%3C/g%3E%3C/svg%3E");background-attachment:fixed}
-/* Cabecera: negro con doble filo dorado y sol rojo detrás del logo */
-[data-skin="samurai"] header.top{background:#0B0706;border-bottom:0;box-shadow:0 0 0 100vmax #0B0706,0 1px 0 100vmax #0B0706;clip-path:inset(0 -100vmax -8px);position:relative}
-[data-skin="samurai"] header.top::after{content:"";position:absolute;left:-100vmax;right:-100vmax;bottom:-6px;height:6px;background:linear-gradient(#D4AF5A 0 1.5px,transparent 1.5px 4px,#8C6A2E 4px 5px,transparent 5px);pointer-events:none}
-[data-skin="samurai"] .brand{position:relative;isolation:isolate}
-[data-skin="samurai"] .brand::before{content:"";position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:radial-gradient(circle,#B8291E 0 58%,rgba(184,41,30,0) 72%);z-index:-1;opacity:.55}
-[data-skin="samurai"] .brand-word{color:#F3E7CE;letter-spacing:.04em;text-shadow:0 1px 0 #000}
-[data-skin="samurai"] .brand-word span{color:#D4AF5A}
-[data-skin="samurai"] header.top :is(button,.icon-btn,.pill){background:#1E1512;border-color:#5C4526;color:#D4AF5A}
-/* Tarjetas: placas de laca con esquinas doradas como una armadura */
-[data-skin="samurai"] :is(.td,.wk,.wod,.stat,.pr-box,.shop-card,.wallet,.pet-card,.sec .goal){background:
-  linear-gradient(#D4AF5A,#D4AF5A) top left/14px 1.5px no-repeat,linear-gradient(#D4AF5A,#D4AF5A) top left/1.5px 14px no-repeat,
-  linear-gradient(#D4AF5A,#D4AF5A) top right/14px 1.5px no-repeat,linear-gradient(#D4AF5A,#D4AF5A) top right/1.5px 14px no-repeat,
-  linear-gradient(#D4AF5A,#D4AF5A) bottom left/14px 1.5px no-repeat,linear-gradient(#D4AF5A,#D4AF5A) bottom left/1.5px 14px no-repeat,
-  linear-gradient(#D4AF5A,#D4AF5A) bottom right/14px 1.5px no-repeat,linear-gradient(#D4AF5A,#D4AF5A) bottom right/1.5px 14px no-repeat,
-  linear-gradient(165deg,#2A1B16 0%,#1A110E 55%,#140D0B 100%);border:1px solid #3E2C1A;border-radius:3px;box-shadow:0 8px 22px rgba(0,0,0,.45),inset 0 1px 0 rgba(212,175,90,.12)}
-[data-skin="samurai"] .td-w{background:linear-gradient(180deg,#0F0A08,#160F0C);border:1px solid #2E2115;border-left:3px solid #B8291E;border-radius:2px}
-[data-skin="samurai"] .td-wt b{color:#F3E7CE;letter-spacing:.1em}
-[data-skin="samurai"] .td-stats b{color:#E6C068}
-[data-skin="samurai"] .td-k{color:#9FC27F}
-[data-skin="samurai"] .td-go{color:#D4AF5A}
-[data-skin="samurai"] .td-more{border-color:#5C4526;color:#E9DCC0}
-/* Reto semanal: laca bermellón con nubes doradas */
-[data-skin="samurai"] .goal{background:#8E1F16 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Cg fill='none' stroke='%23E6C068' stroke-opacity='.28' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M8 40c0-8 10-10 14-4 2-9 16-9 18 0 6-6 16-2 14 6M70 22c0-6 8-8 11-3 2-7 13-7 14 0 5-5 13-2 11 5'/%3E%3C/g%3E%3C/svg%3E"),linear-gradient(160deg,#A6271B,#5E130D);border:1.5px solid #D4AF5A;border-radius:3px;box-shadow:0 8px 22px rgba(0,0,0,.5),inset 0 0 0 4px #5E130D,inset 0 0 0 5px rgba(230,192,104,.5)}
-[data-skin="samurai"] .goal-txt h3{color:#F8EBD0;letter-spacing:.06em}
-[data-skin="samurai"] .goal-txt p{color:#F0D9B5}
-[data-skin="samurai"] .goal :is(.dot,.goal-nums button){background:rgba(0,0,0,.25);border-color:rgba(230,192,104,.5);color:#F3E7CE}
-[data-skin="samurai"] .goal :is(.dot.on,.goal-nums button[aria-pressed="true"]){background:#D4AF5A;border-color:#D4AF5A;color:#3A0C08}
-/* Semana: monedas de oro; hoy, sello rojo */
-[data-skin="samurai"] .wk-d{background:#140D0B;border-color:#3E2C1A;color:#B9A684;border-radius:3px}
-[data-skin="samurai"] .wk-d.on{background:radial-gradient(circle at 40% 30%,#F0D58C,#C79A45 60%,#8C6A2E);color:#2A1607;border-color:#E6C068;box-shadow:inset 0 -2px 0 rgba(0,0,0,.25)}
-[data-skin="samurai"] .wk-d.now{outline:2px solid #B8291E;outline-offset:2px}
-[data-skin="samurai"] .wk-d.on.now{background:radial-gradient(circle at 40% 30%,#D9483A,#A3241A 70%);color:#F8EBD0;border-color:#E6C068}
-/* Selector CrossFit/Gym y botones */
-[data-skin="samurai"] .mode-sw{background:#0F0A08;border:1px solid #5C4526;border-radius:3px}
-[data-skin="samurai"] .mode-sw button{border-radius:2px;letter-spacing:.08em;color:#B9A684}
-[data-skin="samurai"] .mode-sw [aria-checked="true"]{background:linear-gradient(#C53526,#8E1F16);color:#F8EBD0;box-shadow:inset 0 0 0 1px #D4AF5A}
-[data-skin="samurai"] .btn{border-radius:3px;border-color:#5C4526}
-[data-skin="samurai"] .btn.primary{background:linear-gradient(#C53526,#8E1F16);border:1px solid #D4AF5A;color:#F8EBD0;letter-spacing:.06em;box-shadow:inset 0 1px 0 rgba(255,220,160,.25)}
-[data-skin="samurai"] .tag{background:transparent;color:#D4AF5A;border:1px solid #D4AF5A;border-radius:2px;letter-spacing:.1em}
-[data-skin="samurai"] .avatar{background:radial-gradient(circle at 40% 30%,#D9483A,#8E1F16);color:#F8EBD0;border:2px solid #D4AF5A}
-[data-skin="samurai"] :is(h2.view-title,.sec h3,.v2-sec){letter-spacing:.12em}
-[data-skin="samurai"] :is(h2.view-title,.v2-sec){color:#F3E7CE}
-[data-skin="samurai"] :is(h2.view-title,.v2-sec)::after{content:"";display:block;width:42px;height:2px;margin-top:4px;background:linear-gradient(90deg,#B8291E 0 50%,#D4AF5A 50%)}
-[data-skin="samurai"] .wk-h .v2-sec::after{display:none}
-[data-skin="samurai"] :is(input,select,textarea){background:#0F0A08;border-color:#5C4526;color:#F3E7CE;border-radius:3px}
-/* Barra inferior: negro con filo dorado y el + como sello rojo */
-[data-skin="samurai"] nav.tabs{background:#0B0706;border-top:0;box-shadow:0 -1.5px 0 #D4AF5A,0 -5px 0 #0B0706,0 -6px 0 #8C6A2E}
-[data-skin="samurai"] .tab{color:#8F7E62}[data-skin="samurai"] .tab[aria-current="page"]{color:#D4AF5A}
-[data-skin="samurai"] .tab-new{background:radial-gradient(circle at 40% 30%,#D9483A,#8E1F16 70%);border:2px solid #D4AF5A;color:#F8EBD0;border-radius:50%;box-shadow:0 0 0 4px #0B0706,0 6px 18px rgba(184,41,30,.5)}
-
-[data-skin="samurai"] header.top .nav-back{background:transparent;border:0;box-shadow:none;color:#D4AF5A}
-[data-skin="samurai"] .eyebrow{letter-spacing:.06em}
-[data-skin="samurai"] .summary .eyebrow{letter-spacing:0;font-size:11px;overflow-wrap:normal;word-break:keep-all}
-:root[data-skin="samurai"]{overflow-x:clip}[data-skin="samurai"] body{overflow-x:clip}
+/* ====== Sakura kawaii: cerezos en flor, rosa pastel y todo redondito ====== */
+:root[data-skin="sakura"]{--bg:#FFF0F5;--surface:#FFFFFF;--surface-2:#FFE6EE;--ink:#5B3446;--muted:#9C7186;--line:#F8C9D8;--accent:#FF6F9F;--accent-ink:#FFFFFF;--brand:#FF6F9F;--f-display:"Yusei Magic","Zen Maru Gothic","M PLUS Rounded 1c",system-ui,sans-serif;--f-body:"Zen Maru Gothic","M PLUS Rounded 1c",system-ui,sans-serif;--p-red:#ff6f8f;--p-blue:#8fb8ff;--p-yellow:#ffc66b;--p-green:#7fd6b4;--p-white:#c7a9b7;--danger:#e8507a;--drop:#e8507a;--star:#ffb547;color-scheme:light}
+[data-skin="sakura"] body{position:relative;isolation:isolate;background-color:#FFF0F5;background-image:radial-gradient(#FFD3E1 1.4px,transparent 1.6px),radial-gradient(#FFE3EC 1.4px,transparent 1.6px);background-size:26px 26px;background-position:0 0,13px 13px}
+/* Pétalos cayendo detrás de todo */
+[data-skin="sakura"] body::after{content:"";position:fixed;inset:-200px 0 0;z-index:-1;pointer-events:none;opacity:.7;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='220'%3E%3Cg fill='%23FFB3CB'%3E%3Cpath d='M20 30c6-10 18-6 14 4-3 7-12 9-14-4z'/%3E%3Cpath d='M120 70c7-9 18-3 13 6-4 6-13 7-13-6z' fill='%23FFC7D8'/%3E%3Cpath d='M70 150c6-10 18-6 14 4-3 7-12 9-14-4z' fill='%23FF9FBE'/%3E%3Cpath d='M160 180c5-8 15-4 11 4-3 5-10 6-11-4z'/%3E%3Cpath d='M40 200c5-8 14-4 11 3-3 6-10 7-11-3z' fill='%23FFC7D8'/%3E%3C/g%3E%3C/svg%3E");animation:skFall 26s linear infinite}
+@keyframes skFall{from{background-position:0 0}to{background-position:180px 660px}}
+@media (prefers-reduced-motion:reduce){[data-skin="sakura"] body::after{animation:none}}
+/* Cabecera blanca con borde ondulado */
+[data-skin="sakura"] header.top{background:#FFFFFF;border-bottom:0;box-shadow:0 0 0 100vmax #FFFFFF;clip-path:inset(0 -100vmax -12px);position:relative}
+[data-skin="sakura"] header.top::after{content:"";position:absolute;left:-100vmax;right:-100vmax;bottom:-10px;height:10px;pointer-events:none;background:radial-gradient(circle at 10px 0,#FFFFFF 9.5px,transparent 10px) 0 0/20px 10px repeat-x;filter:drop-shadow(0 2px 0 #F8C9D8)}
+[data-skin="sakura"] .hello{margin-top:12px}
+[data-skin="sakura"] .brand-word{color:#5B3446;font-family:var(--f-display)}
+[data-skin="sakura"] .brand-word span{color:#FF6F9F}
+[data-skin="sakura"] .brand-word::after{content:"🌸";font-size:.55em;vertical-align:super;margin-left:1px}
+[data-skin="sakura"] header.top .nav-right :is(button,a){border-radius:99px}
+/* Tarjetas redonditas con una flor en la esquina */
+[data-skin="sakura"] :is(.td,.wk,.wod,.stat,.pr-box,.shop-card,.wallet,.pet-card){background:#FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34'%3E%3Cg transform='translate(17 17)' fill='%23FFD0DE'%3E%3Cellipse rx='4.5' ry='7' cy='-7'/%3E%3Cellipse rx='4.5' ry='7' cy='-7' transform='rotate(72)'/%3E%3Cellipse rx='4.5' ry='7' cy='-7' transform='rotate(144)'/%3E%3Cellipse rx='4.5' ry='7' cy='-7' transform='rotate(216)'/%3E%3Cellipse rx='4.5' ry='7' cy='-7' transform='rotate(288)'/%3E%3Ccircle r='3' fill='%23FFF3B8'/%3E%3C/g%3E%3C/svg%3E") no-repeat right 8px top 8px/26px;border:2px solid #F8C9D8;border-radius:26px;box-shadow:0 6px 0 #FBDCE6,0 10px 24px rgba(255,111,159,.12)}
+[data-skin="sakura"] .td-w{background:#FFE6EE;border-radius:20px;border:0}
+[data-skin="sakura"] .td-wt b{color:#5B3446}
+[data-skin="sakura"] .td-stats b{color:#FF5C90}
+[data-skin="sakura"] .td-k{color:#3FB48B}
+[data-skin="sakura"] .td-go{color:#FF5C90}
+[data-skin="sakura"] .td-more{border:2px dashed #F8C9D8;border-radius:99px;color:#5B3446}
+/* Reto semanal: degradado rosa-lila con nubecitas */
+[data-skin="sakura"] .goal{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70'%3E%3Cg fill='%23FFFFFF' fill-opacity='.35'%3E%3Ccircle cx='20' cy='50' r='10'/%3E%3Ccircle cx='34' cy='44' r='13'/%3E%3Ccircle cx='50' cy='51' r='9'/%3E%3Ccircle cx='100' cy='20' r='7'/%3E%3Ccircle cx='110' cy='15' r='9'/%3E%3Ccircle cx='121' cy='21' r='6'/%3E%3C/g%3E%3C/svg%3E"),linear-gradient(135deg,#FF8FB5,#C9A7FF);border:0;border-radius:28px;box-shadow:0 6px 0 #E58AB5,0 12px 26px rgba(201,167,255,.35)}
+[data-skin="sakura"] .goal-txt h3{color:#FFFFFF;text-shadow:0 2px 0 rgba(200,60,120,.25)}
+[data-skin="sakura"] .goal-txt p{color:#FFF4F8}
+[data-skin="sakura"] .goal-cat{border-radius:22px;border:3px solid #FFFFFF}
+[data-skin="sakura"] .goal :is(.dot,.goal-nums button){background:rgba(255,255,255,.45);border-color:#FFFFFF;color:#5B3446;border-radius:99px}
+[data-skin="sakura"] .goal :is(.dot.on,.goal-nums button[aria-pressed="true"]){background:#FFFFFF;border-color:#FFFFFF;color:#FF5C90}
+/* Semana: burbujitas; los días entrenados son flores */
+[data-skin="sakura"] .wk-d{background:#FFFFFF;border:2px solid #F8C9D8;border-radius:18px;color:#9C7186}
+[data-skin="sakura"] .wk-d.on{background:#FF8FB5;border-color:#FF8FB5;color:#FFFFFF;border-radius:50% 50% 46% 46%;box-shadow:0 4px 0 #E8679A}
+[data-skin="sakura"] .wk-d.now{outline:3px dotted #FF6F9F;outline-offset:2px}
+[data-skin="sakura"] .wk-d.on.now{background:#FF6F9F}
+/* Selector y botones gorditos tipo gominola */
+[data-skin="sakura"] .mode-sw{background:#FFE6EE;border:0;border-radius:99px;padding:4px}
+[data-skin="sakura"] .mode-sw button{border-radius:99px;color:#9C7186}
+[data-skin="sakura"] .mode-sw [aria-checked="true"]{background:#FF6F9F;color:#FFFFFF;box-shadow:0 3px 0 #E0548A}
+[data-skin="sakura"] .btn{border-radius:99px;border:2px solid #F8C9D8}
+[data-skin="sakura"] .btn.primary{background:linear-gradient(#FF8FB5,#FF6F9F);border-color:#FF6F9F;color:#FFFFFF;box-shadow:0 4px 0 #E0548A}
+[data-skin="sakura"] .btn.primary:active{transform:translateY(3px);box-shadow:0 1px 0 #E0548A}
+[data-skin="sakura"] .tag{background:#DDF6EC;color:#2F8F6C;border-radius:99px;border:0}
+[data-skin="sakura"] .avatar{background:#FFB3CB;color:#FFFFFF;border:3px solid #FFFFFF;box-shadow:0 0 0 2px #FF8FB5,inset -6px -4px 0 rgba(255,111,159,.25)}
+[data-skin="sakura"] :is(input,select,textarea){border-radius:16px;border:2px solid #F8C9D8;background:#FFFFFF}
+[data-skin="sakura"] :is(h2.view-title,.sec h3,.v2-sec,.goal-txt h3,.td-wt b){font-family:var(--f-display);text-transform:none;letter-spacing:.01em}
+[data-skin="sakura"] :is(h2.view-title,.v2-sec,.sec>h3)::before{content:"🌸 ";font-size:.8em}
+[data-skin="sakura"] .eyebrow{color:#C9708F}
+/* Barra de abajo blanca con el + como flor */
+[data-skin="sakura"] nav.tabs{background:#FFFFFF;border-top:0;box-shadow:0 -2px 0 #F8C9D8,0 -8px 20px rgba(255,111,159,.12)}
+[data-skin="sakura"] .tab{color:#C49AAD}[data-skin="sakura"] .tab[aria-current="page"]{color:#FF5C90}
+[data-skin="sakura"] .tab-new{background:radial-gradient(circle at 35% 30%,#FFB3CB,#FF6F9F 70%);color:#FFFFFF;border:4px solid #FFFFFF;border-radius:50%;box-shadow:0 0 0 2px #FFC2D5,0 6px 0 #E0548A,0 10px 22px rgba(255,111,159,.4)}
+[data-skin="sakura"] .wk{background-image:none}
+[data-skin="sakura"] .summary .eyebrow{letter-spacing:0;font-size:11px;word-break:keep-all}
+[data-skin="sakura"] .summary>div{border-radius:18px}
+[data-skin="sakura"] .shop-grp{border:2px solid #F8C9D8;border-radius:22px;background:#FFFFFF;box-shadow:0 4px 0 #FBDCE6}
+[data-skin="sakura"] .shop-grp>summary{text-transform:none;font-family:var(--f-display);letter-spacing:.01em;color:#5B3446}
+[data-skin="sakura"] .shop-grp>summary::before{content:"✿ ";color:#FF8FB5}
+[data-skin="sakura"] .shop-grp>summary{justify-content:flex-start;gap:6px}[data-skin="sakura"] .shop-grp>summary::after{margin-left:auto}
+[data-skin="sakura"] .seg{border-radius:99px;background:#FFE6EE;border:0}
+[data-skin="sakura"] .seg label{border-radius:99px}
+[data-skin="sakura"] .seg input:checked+label{background:#FF6F9F;color:#FFFFFF;box-shadow:0 3px 0 #E0548A}
+[data-skin="sakura"] .td-k::after{content:" (๑˃ᴗ˂)ﻭ";letter-spacing:0}
+:root[data-skin="sakura"]{overflow-x:clip}[data-skin="sakura"] body{overflow-x:clip}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -3269,7 +3276,7 @@ const SKINS=[
   {id:"kpop",name:"K-pop neón",price:250,ff:"Unbounded",fonts:["Unbounded:wght@600;700;900","Outfit:wght@400;500;700;800"],c:["#0B0620","#FF2E93","#F8F4FF","#150B30","#22D3EE"]},
   {id:"anime",name:"Anime de gimnasio",price:250,ff:"Dela Gothic One",fonts:["Dela+Gothic+One","M+PLUS+Rounded+1c:wght@500;700;800"],c:["#FFFFFF","#E11D48","#111111","#F3F3F3","#FACC15"]},
   {id:"cristal",name:"Cristal líquido",price:300,ff:"Inter",fonts:["Inter:wght@400;500;600;700;800"],c:["#DCE4F7","#7C3AED","#111827","#F472B6","#A78BFA"]},
-  {id:"samurai",name:"Samurái",price:300,ff:"Zen Old Mincho",fonts:["Zen+Old+Mincho:wght@400;700;900"],c:["#120C0A","#D4AF5A","#F3E7CE","#1E1512","#B8291E"]},
+  {id:"sakura",name:"Sakura kawaii",price:250,ff:"Yusei Magic",fonts:["Yusei+Magic","Zen+Maru+Gothic:wght@500;700;900"],c:["#FFF0F5","#FF6F9F","#5B3446","#FFFFFF","#FF6F9F"]},
   {id:"arcade",name:"Arcade 8-bit",price:300,ff:"Press Start 2P",fonts:["Press+Start+2P","VT323"],c:["#10102A","#B07CFF","#F4F4F4","#17173A","#E83B3B"]},
 ];
 const skinItemId=id=>"t-"+id;

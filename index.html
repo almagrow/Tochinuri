@@ -2151,6 +2151,56 @@ button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding
 :root.v2[data-frame="admin"] .hello .avatar,:root.v2[data-frame="admin"] .hello-me .avatar{margin:26px 26px 70px}
 @media (max-width:400px){:root.v2[data-frame="admin"] .hello .avatar,:root.v2[data-frame="admin"] .hello-me .avatar{margin:22px 22px 60px 18px}}
 @media (max-width:340px){:root.v2[data-frame="admin"] .hello .avatar,:root.v2[data-frame="admin"] .hello-me .avatar{margin:19px 18px 52px 16px}}
+.pet-card.has-field{flex-wrap:wrap;padding:8px;align-items:stretch}
+.pet-card.has-field .pet-t{flex:1 1 100%;padding:6px 6px 2px}
+.pet-card.has-field .pet-x{background:rgba(255,255,255,.75);color:#333;z-index:300}
+.pet-field{position:relative;flex:0 0 100%;height:158px;border-radius:14px;overflow:hidden;cursor:pointer;background:#bfe6ff;isolation:isolate;-webkit-tap-highlight-color:transparent;outline-offset:2px}
+.pet-field>*{position:absolute;display:block}
+.pf-sky{inset:0;background:linear-gradient(#78c8ff,#d6f1ff 62%)}
+.night .pf-sky{background:linear-gradient(#10163a,#2b3a73 70%)}
+.gloomy .pf-sky{background:linear-gradient(#8e9aa8,#c7ced6 62%)}
+.pf-sun{top:8px;right:50px;font-size:30px;line-height:1;animation:pfSun 6s ease-in-out infinite}
+.pf-moon{top:8px;right:50px;font-size:26px;line-height:1}
+.pf-stars{inset:0 0 50% 0;background:radial-gradient(circle,#fff 0 1px,transparent 1.5px) 0 0/46px 34px,radial-gradient(circle,#fff8c4 0 1px,transparent 1.5px) 17px 13px/61px 41px;opacity:.85;animation:pfTw 3s ease-in-out infinite}
+.pf-cloud{top:16px;left:-60px;width:50px;height:15px;border-radius:99px;background:#fff;opacity:.92;animation:pfCloud 70s linear infinite}
+.pf-cloud::before{content:"";position:absolute;left:10px;top:-8px;width:22px;height:18px;border-radius:50%;background:inherit}
+.pf-cloud.c2{top:40px;width:38px;height:12px;animation-duration:95s;animation-delay:-40s;opacity:.8}
+.night .pf-cloud{background:#7f8fc0;opacity:.5}
+.gloomy .pf-cloud{background:#6f7782;opacity:.9}
+.pf-hill{bottom:38%;border-radius:50% 50% 0 0}
+.pf-hill.h1{left:-12%;width:70%;height:54px;background:#86cc7b}
+.pf-hill.h2{right:-14%;width:66%;height:42px;background:#74bd6c}
+.pf-tree{left:7%;bottom:44%;font-size:34px;line-height:1}
+.pf-tree.t2{left:auto;right:9%;bottom:43%;font-size:28px}
+.pf-fence{left:0;right:0;bottom:36%;height:15px;background:linear-gradient(#cda877,#cda877) 0 4px/100% 2px no-repeat,linear-gradient(#cda877,#cda877) 0 10px/100% 2px no-repeat,repeating-linear-gradient(90deg,#b98f5a 0 4px,transparent 4px 24px)}
+.pf-grass{left:0;right:0;bottom:0;height:37%;background:linear-gradient(rgba(255,255,255,.12),rgba(0,0,0,.08)),repeating-linear-gradient(90deg,#63bd5c 0 30px,#58b054 30px 60px)}
+.night .pf-hill,.night .pf-tree,.night .pf-grass,.night .pf-fence,.night .pf-fl,.night .pet-walker{filter:brightness(.62) saturate(.9)}
+.gloomy .pf-hill,.gloomy .pf-grass{filter:saturate(.55) brightness(.92)}
+.pf-fl{font-size:14px;line-height:1;bottom:5%;animation:pfSway 3.6s ease-in-out infinite;transform-origin:50% 100%}
+.pf-fl.f1{left:12%;bottom:22%}.pf-fl.f2{left:34%;bottom:6%;animation-delay:-1s}.pf-fl.f3{right:16%;bottom:12%;animation-delay:-2s}.pf-fl.f4{right:40%;bottom:24%;font-size:12px}
+.pf-bf{left:30%;top:46%;font-size:16px;animation:pfBf 9s ease-in-out infinite}
+.pf-rain{inset:0;background:linear-gradient(105deg,transparent 46%,rgba(255,255,255,.55) 50%,transparent 54%) 0 0/11px 24px;opacity:.55;animation:pfRain .55s linear infinite}
+.pet-walker{left:0;bottom:6px;width:76px;height:76px;transition-property:transform;transition-timing-function:linear;will-change:transform}
+.pet-shadow{left:14px;right:14px;bottom:-1px;height:9px;border-radius:50%;background:rgba(0,0,0,.22);filter:blur(1px)}
+.pet-flip{position:absolute;inset:0;transform-origin:50% 100%}
+.pet-hop{position:absolute;inset:0;transform-origin:50% 100%}
+.pet-walker .pet-svg{width:100%;height:100%}
+.pet-field.walking .pet-hop{animation:pfStep .42s ease-in-out infinite}
+.pet-field.hopping .pet-hop{animation:pfJump .6s cubic-bezier(.3,.9,.4,1)}
+.pet-field.resting .pet-hop{transform:scaleY(.94);animation:pfBreathe 2.6s ease-in-out infinite}
+.pet-field .pet-lv{right:8px;bottom:8px;z-index:250;position:absolute;min-width:26px;height:26px;border-radius:999px;background:var(--brand);color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center;padding:0 6px;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.pf-pop{z-index:260;font-size:22px;pointer-events:none;animation:pfPop 1.1s ease-out forwards}
+@keyframes pfCloud{to{left:110%}}
+@keyframes pfSun{50%{transform:scale(1.08) rotate(8deg)}}
+@keyframes pfTw{50%{opacity:.45}}
+@keyframes pfSway{50%{transform:rotate(6deg)}}
+@keyframes pfBf{0%,100%{transform:translate(0,0)}25%{transform:translate(70px,-14px)}50%{transform:translate(140px,6px)}75%{transform:translate(60px,-20px)}}
+@keyframes pfRain{to{background-position:-5px 24px}}
+@keyframes pfStep{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+@keyframes pfJump{35%{transform:translateY(-26px) scale(1.04)}70%{transform:translateY(0) scale(.97,1.03)}}
+@keyframes pfBreathe{50%{transform:scaleY(.97)}}
+@keyframes pfPop{from{transform:translateY(0) scale(.6);opacity:1}to{transform:translateY(-34px) scale(1.2);opacity:0}}
+@media (prefers-reduced-motion:reduce){.pet-field *{animation:none!important;transition:none!important}}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -7343,6 +7393,61 @@ function checkCheers(){try{
 {const _ls=loadSocial;loadSocial=async function(){await _ls();checkCheers()}}
 setInterval(()=>{if(document.visibilityState==="visible"&&typeof frMe!=="undefined"&&frMe?.code)loadSocial()},90000);
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&typeof frMe!=="undefined"&&frMe?.code)loadSocial()});
+
+/* ---------- Mascota en su campo: fondo, nubes, valla, y paseo libre ---------- */
+let petFx={timer:0,x:null,y:null,dir:1};
+function petFieldHtml(P,nm,kind){
+  const h=new Date().getHours(),night=h>=21||h<7,sad=P.mood==="sad",happy=P.mood==="happy";
+  const cls=["pet-field",night?"night":"",sad?"gloomy":"",happy?"sunny":""].filter(Boolean).join(" ");
+  return`<div class="${cls}" id="petTap" role="button" tabindex="0" aria-label="${esc(nm)}: ${esc(P.stage.n)}, nivel ${P.L}. Toca para saltar">
+   <div class="pf-sky"></div>
+   ${night?`<span class="pf-moon" aria-hidden="true">🌙</span><i class="pf-stars" aria-hidden="true"></i>`:`<span class="pf-sun" aria-hidden="true">${sad?"":"☀️"}</span>`}
+   <i class="pf-cloud c1" aria-hidden="true"></i><i class="pf-cloud c2" aria-hidden="true"></i>
+   <i class="pf-hill h1" aria-hidden="true"></i><i class="pf-hill h2" aria-hidden="true"></i>
+   <span class="pf-tree" aria-hidden="true">🌳</span><span class="pf-tree t2" aria-hidden="true">🌲</span>
+   <i class="pf-fence" aria-hidden="true"></i><i class="pf-grass" aria-hidden="true"></i>
+   <span class="pf-fl f1" aria-hidden="true">🌼</span><span class="pf-fl f2" aria-hidden="true">🌷</span><span class="pf-fl f3" aria-hidden="true">🌼</span><span class="pf-fl f4" aria-hidden="true">🌱</span>
+   ${happy&&!night?`<span class="pf-bf" aria-hidden="true">🦋</span>`:""}
+   ${sad?`<i class="pf-rain" aria-hidden="true"></i>`:""}
+   <div class="pet-walker"><i class="pet-shadow"></i><div class="pet-flip"><div class="pet-hop">${petSVG(P.lv,P.mood,kind)}</div></div></div>
+   <span class="pet-lv mono">${P.L}</span></div>`}
+function petWander(field,P){
+  clearTimeout(petFx.timer);
+  const w=field.querySelector(".pet-walker"),flip=field.querySelector(".pet-flip");if(!w||!flip)return;
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches,MAXY=44,SZ=76;
+  const spd=P.mood==="sad"?13:P.mood==="happy"?36:24;
+  const W=()=>Math.max(160,field.clientWidth||300);
+  const put=(x,y,dur)=>{w.style.transitionDuration=dur+"s";w.style.transform=`translate3d(${Math.round(x)}px,${-Math.round(y)}px,0)`;w.style.zIndex=String(100-Math.round(y));
+    const s=1-(y/MAXY)*.2;flip.style.transform=`scale(${(petFx.dir*s).toFixed(3)},${s.toFixed(3)})`};
+  if(petFx.x==null||petFx.x>W()-SZ){petFx.x=(W()-SZ)/2;petFx.y=10}
+  put(petFx.x,petFx.y,0);
+  if(reduce)return;
+  const step=()=>{
+    if(!field.isConnected)return;
+    if(document.hidden){petFx.timer=setTimeout(step,2500);return}
+    const r=Math.random();
+    if(r<(P.mood==="happy"?.3:.12)){field.classList.add("hopping");setTimeout(()=>field.classList.remove("hopping"),700);petFx.timer=setTimeout(step,1100+Math.random()*1200);return}
+    if(r<(P.mood==="sad"?.5:.3)){field.classList.add("resting");const t=2500+Math.random()*2500;setTimeout(()=>field.classList.remove("resting"),t);petFx.timer=setTimeout(step,t+300);return}
+    const nx=6+Math.random()*(W()-SZ-12),ny=Math.random()*MAXY,d=Math.hypot(nx-petFx.x,(ny-petFx.y)*2),dur=Math.max(1.2,d/spd);
+    petFx.dir=nx>=petFx.x?1:-1;put(petFx.x,petFx.y,0);void w.offsetWidth;
+    field.classList.add("walking");put(nx,ny,dur);petFx.x=nx;petFx.y=ny;
+    petFx.timer=setTimeout(()=>{field.classList.remove("walking");petFx.timer=setTimeout(step,600+Math.random()*1800)},dur*1000)};
+  petFx.timer=setTimeout(step,700);
+}
+{const _pp=paintPet;paintPet=function(){_pp();try{
+  const c=$("#petCard");if(!c||!profile||!profile.petOn)return;const card=c.querySelector(".pet-card"),old=c.querySelector(".pet-art");if(!card||!old)return;
+  const P=petState(),nm=petNm(),kind=petKind();
+  old.insertAdjacentHTML("afterend",petFieldHtml(P,nm,kind));old.remove();card.classList.add("has-field");
+  const f=$("#petTap");petWander(f,P);
+  const tap=ev=>{if(ev&&ev.type==="keydown"&&ev.key!=="Enter"&&ev.key!==" ")return;if(ev&&ev.type==="keydown")ev.preventDefault();
+    f.classList.add("hopping");setTimeout(()=>f.classList.remove("hopping"),700);
+    const e=document.createElement("span");e.className="pf-pop";e.textContent=["💪","❤️","🔥","⭐","💥"][Math.floor(Math.random()*5)];
+    const wr=f.querySelector(".pet-walker").getBoundingClientRect(),fr=f.getBoundingClientRect();e.style.left=(wr.left-fr.left+30)+"px";e.style.top=(wr.top-fr.top-4)+"px";f.appendChild(e);setTimeout(()=>e.remove(),1100);
+    try{navigator.vibrate&&navigator.vibrate(20)}catch(x){}
+    const h=$("#petHelp");if(h)h.hidden=!h.hidden};
+  f.onclick=tap;f.onkeydown=tap;
+}catch(e){}}}
+paintPet();
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

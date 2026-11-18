@@ -529,7 +529,7 @@ select{background:var(--surface);border:1px solid var(--line);border-radius:9px;
 .pos{color:var(--p-green)}
 .neg{color:var(--danger)}
 .xs-wrap{grid-column:1/-1;min-width:0}
-.ex-stats{margin-top:4px}
+.ex-stats{margin-top:6px;border-top:1px dashed var(--line,#0002);padding-top:2px}
 .ex-stats summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--brand);padding:6px 0;list-style-position:inside}
 .xrows{display:flex;flex-direction:column}
 .xrow{padding:8px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:5px}
@@ -3404,7 +3404,7 @@ function exStatsTable(wid,idx){
   }).join("");
   if(!rows)return"";
   const n=before.length,cid=`xc_${String(wid).replace(/\W/g,"")}_${idx}`;
-  return`<details class="ex-stats" ${n?"open":""}><summary>Estadísticas${n?` · comparado con ${n} ${n===1?"sesión anterior":"sesiones anteriores"}`:" · primera vez"}</summary>
+  return`<details class="ex-stats"><summary>📊 Estadísticas y gráficas${n?` · comparado con ${n} ${n===1?"sesión anterior":"sesiones anteriores"}`:" · primera vez"}</summary>
     ${n?`<div class="seg xv-seg" role="radiogroup" aria-label="Ver como"><input type="radio" name="${cid}" id="${cid}n" value="n" checked data-xv="${cid}"><label for="${cid}n">Números</label><input type="radio" name="${cid}" id="${cid}g" value="g" data-xv="${cid}"><label for="${cid}g">Gráfica</label></div>`:""}
     <div id="${cid}_n">${prev?`<p class="xr-note muted">«Antes» es tu sesión del ${esc(shortDate(prev.date))}. Récord y media cuentan hasta ese día.</p>`:""}<div class="xrows">${rows}</div></div>
     ${n?`<div id="${cid}_g" hidden>${exChart(cur,before)}</div>`:""}

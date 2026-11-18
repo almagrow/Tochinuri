@@ -2113,6 +2113,10 @@ button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding
 .ex-more{margin-top:6px}.ex-more>summary{cursor:pointer;font-size:13px;color:var(--muted);padding:4px 0;list-style:none}.ex-more>summary::-webkit-details-marker{display:none}
 .ex-more>summary::before{content:"＋ "}.ex-more[open]>summary::before{content:"− "}.ex-more[open]{display:flex;flex-direction:column;gap:8px}
 .go-form select{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;padding:0 12px}
+.ch-svg{width:100%;height:auto;display:block;margin-top:6px;overflow:visible}
+.ch-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px}.ch-card h3{margin:0 0 4px}.ch-card>p{margin:0 0 4px;font-size:13px}
+.ch-rg{grid-template-columns:repeat(3,1fr);margin-top:10px}.xv-seg{margin:8px 0}.ch-cap{margin:6px 0 0;font-weight:600;font-size:14px}
+.ch-cap.pos{color:var(--pos,#1c7a4d)}.ch-cap.neg{color:var(--neg,#c0392b)}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -3399,9 +3403,11 @@ function exStatsTable(wid,idx){
       <div class="xr-pills">${pctPill(v,pv,m.better,"vs antes")}${pctPill(v,rec,m.better,"vs récord")}${pctPill(v,avg,m.better,"vs media")}</div></div>`;
   }).join("");
   if(!rows)return"";
-  const n=before.length;
+  const n=before.length,cid=`xc_${String(wid).replace(/\W/g,"")}_${idx}`;
   return`<details class="ex-stats" ${n?"open":""}><summary>Estadísticas${n?` · comparado con ${n} ${n===1?"sesión anterior":"sesiones anteriores"}`:" · primera vez"}</summary>
-    ${prev?`<p class="xr-note muted">«Antes» es tu sesión del ${esc(shortDate(prev.date))}. Récord y media cuentan hasta ese día.</p>`:""}<div class="xrows">${rows}</div>
+    ${n?`<div class="seg xv-seg" role="radiogroup" aria-label="Ver como"><input type="radio" name="${cid}" id="${cid}n" value="n" checked data-xv="${cid}"><label for="${cid}n">Números</label><input type="radio" name="${cid}" id="${cid}g" value="g" data-xv="${cid}"><label for="${cid}g">Gráfica</label></div>`:""}
+    <div id="${cid}_n">${prev?`<p class="xr-note muted">«Antes» es tu sesión del ${esc(shortDate(prev.date))}. Récord y media cuentan hasta ese día.</p>`:""}<div class="xrows">${rows}</div></div>
+    ${n?`<div id="${cid}_g" hidden>${exChart(cur,before)}</div>`:""}
     ${n?"":`<p class="muted" style="margin:6px 0 0;font-size:13px">Cuando repitas este ejercicio verás aquí los porcentajes de cambio.</p>`}</details>`;
 }
 function wodSummary(x){
@@ -3564,9 +3570,9 @@ async function snapshotMonths(){
   snapBusy=true;const p={...profile,months:next};
   try{await store.saveProfile(p);profile=p}catch(e){}finally{snapBusy=false}
 }
-function statsSeg(){return`<div class="seg stats-seg seg3" role="tablist"><input type="radio" name="stMode" id="stModeW" value="week"${statsMode==="week"?" checked":""}><label for="stModeW">Semana</label><input type="radio" name="stMode" id="stModeM" value="month"${statsMode==="month"?" checked":""}><label for="stModeM">Mes</label><input type="radio" name="stMode" id="stModeH" value="hist"${statsMode==="hist"?" checked":""}><label for="stModeH">Historial</label></div>`}
+function statsSeg(){return`<div class="seg stats-seg seg4" role="tablist"><input type="radio" name="stMode" id="stModeW" value="week"${statsMode==="week"?" checked":""}><label for="stModeW">Semana</label><input type="radio" name="stMode" id="stModeM" value="month"${statsMode==="month"?" checked":""}><label for="stModeM">Mes</label><input type="radio" name="stMode" id="stModeG" value="chart"${statsMode==="chart"?" checked":""}><label for="stModeG">Gráficas</label><input type="radio" name="stMode" id="stModeH" value="hist"${statsMode==="hist"?" checked":""}><label for="stModeH">Historial</label></div>`}
 function wireSeg(){document.querySelectorAll("[name=stMode]").forEach(r=>r.onchange=()=>{statsMode=r.value;if(statsMode==="week"){openSummary(isoD(addDays(mondayOf(new Date()),-7)));window.scrollTo(0,0);return}if(current!=="stats"){openMonth();statsMode=r.value;renderStats()}else renderStats();window.scrollTo(0,0)})}
-function renderStats(){if(statsMode==="hist")renderHistory();else renderMonth()}
+function renderStats(){if(statsMode==="hist")renderHistory();else if(statsMode==="chart")renderCharts();else renderMonth()}
 function renderHistory(){
   const now=new Date(),keys=new Set([...workouts.filter(w=>w.date).map(w=>w.date.slice(0,7)),...Object.keys(profile?.months||{})]);
   if(!keys.size){$("#v-stats").innerHTML=statsSeg()+`<div class="empty" style="margin-top:14px"><h3>Aún no hay meses</h3><p>Cuando apuntes entrenos, aquí verás la evolución de todos tus meses.</p></div>`;wireSeg();return}
@@ -5879,7 +5885,7 @@ function drawSummary(S){const c=document.createElement("canvas");c.width=1080;c.
   if(S.animal){x.fillText(`${S.animal.e} Fuerza de ${S.animal.n}`.slice(0,48),80,y);y+=64}
   x.fillStyle="#9d92ba";x.font=`500 30px ${ff}`;x.fillText("tochinuri.es",80,1300);return c}
 function renderSummary(){const v=$("#v-summary"),cur=isoD(mondayOf(new Date()));if(!sumWk)sumWk=isoD(addDays(mondayOf(new Date()),-7));const S=weekSummary(sumWk);
-  statsMode="week";v.innerHTML=`<h2 class="view-title">Estadísticas</h2>${statsSeg().replace(/stMode([WMH])"/g,'sumMode$1"')}
+  statsMode="week";v.innerHTML=`<h2 class="view-title">Estadísticas</h2>${statsSeg().replace(/stMode([WMGH])"/g,'sumMode$1"')}
    <div class="sum-nav"><button type="button" class="btn" id="sumPrev" aria-label="Semana anterior">‹</button><b>${fmtD(S.from)} – ${fmtD(S.to)}${sumWk===cur?" · en curso":""}</b><button type="button" class="btn" id="sumNext" aria-label="Semana siguiente"${sumWk>=cur?" disabled":""}>›</button></div>
    ${S.sessions?`<img class="sum-img" id="sumImg" alt="Resumen de la semana: ${S.days} días, ${fmtBig(S.kg)} kg, ${S.rec} récords">
    <div class="sum-acts"><button type="button" class="btn primary" id="sumShare">Compartir</button><button type="button" class="btn" id="sumSave">Guardar imagen</button></div>`
@@ -7196,6 +7202,40 @@ function checkRoutinePop(){try{if(!profileReady||!profile||current!=="log"||docu
   const se=$("#seBox");let seD=null;if(se){seD=document.createElement("details");seD.className="mo-det se-det";seD.innerHTML=`<summary><span>¿Cómo llegas hoy?</span><small>sueño y energía</small></summary>`;se.before(seD);seD.appendChild(se)}
   {const _of=openForm;openForm=function(w){_of(w);try{if(seD)seD.open=!!document.querySelector("[name^=se_]:checked");syncT();syncL();$("#exRows").querySelectorAll(".ex-card").forEach(el=>tidyRow(el,null))}catch(e){}}}
 }
+
+/* ================= Gráficas: pestaña en Estadísticas y vista en la comparación de cada ejercicio ================= */
+function barSVG(P,fmt,o={}){const W=340,H=170,pl=8,pr=8,pt=22,pb=30,n=P.length;if(!n)return"";const mx=Math.max(...P.map(p=>p.v),0)||1,bw=(W-pl-pr)/n;
+  const bars=P.map((p,i)=>{const h=Math.max(p.v?3:0,(p.v/mx)*(H-pt-pb)),x=pl+i*bw+bw*.16,w=bw*.68,y=H-pb-h;
+    return`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="4" fill="${p.hl?"var(--brand)":"color-mix(in srgb,var(--brand) 40%,var(--surface-2))"}"/>${p.v?`<text x="${(x+w/2).toFixed(1)}" y="${(y-5).toFixed(1)}" text-anchor="middle" font-size="${n>10?8:10}" font-weight="700" fill="var(--ink)">${esc(fmt(p.v))}</text>`:""}<text x="${(x+w/2).toFixed(1)}" y="${H-pb+14}" text-anchor="middle" font-size="${n>10?8:10}" fill="var(--muted)">${esc(p.l)}</text>`}).join("");
+  return`<svg viewBox="0 0 ${W} ${H}" class="ch-svg" role="img" aria-label="${esc(o.label||"Gráfica")}"><line x1="${pl}" x2="${W-pr}" y1="${H-pb}" y2="${H-pb}" stroke="var(--line)"/>${bars}</svg>`}
+function lineSVG(P,fmt,o={}){const W=340,H=170,pl=14,pr=14,pt=24,pb=30,n=P.length;if(!n)return"";const vs=P.map(p=>p.v),mn=Math.min(...vs),mx=Math.max(...vs),rg=(mx-mn)||mx||1;
+  const X=i=>n===1?W/2:pl+i*(W-pl-pr)/(n-1),Y=v=>H-pb-((v-(mx===mn?mn-rg/2:mn))/(mx===mn?rg:rg))*(H-pt-pb)*(mx===mn?.5:1);
+  const path=P.map((p,i)=>`${i?"L":"M"}${X(i).toFixed(1)} ${Y(p.v).toFixed(1)}`).join(" ");
+  return`<svg viewBox="0 0 ${W} ${H}" class="ch-svg" role="img" aria-label="${esc(o.label||"Gráfica")}"><path d="${path}" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+   ${P.map((p,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="${p.hl?6:4}" fill="${p.hl?"var(--brand)":"var(--surface)"}" stroke="var(--brand)" stroke-width="2"/>${p.hl||i===0||n<=6?`<text x="${X(i).toFixed(1)}" y="${(Y(p.v)-10).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)">${esc(fmt(p.v))}</text>`:""}<text x="${X(i).toFixed(1)}" y="${H-pb+16}" text-anchor="middle" font-size="9" fill="var(--muted)">${esc(p.l)}</text>`).join("")}</svg>`}
+/* Evolución del ejercicio en su dato principal: esta sesión resaltada frente a las anteriores */
+function exChart(cur,before){const order=["weight","reps","time","vol","sets"],m=order.map(k=>MET.find(x=>x.k===k)).find(m=>m&&m.get(cur)!=null);if(!m)return"";
+  const all=[...before,cur].filter(e=>m.get(e)!=null).slice(-10),P=all.map(e=>({l:shortDate(e.date).replace(/\s+de\s+/," "),v:m.get(e),hl:e===cur}));
+  const pv=all.length>1?m.get(all[all.length-2]):null,v=m.get(cur),d=pv?((v-pv)/pv*100)*m.better:null;
+  return`<p class="xr-note muted">${esc(m.l)} en tus últimas ${all.length} sesiones${m.better<0?" (cuanto más bajo, mejor)":""}. La de hoy va resaltada.</p>${lineSVG(P,m.fmt,{label:`Evolución de ${m.l}`})}
+   ${d!=null?`<p class="ch-cap ${d>0?"pos":d<0?"neg":""}">${d>0?"▲ Mejor":d<0?"▼ Peor":"= Igual"} que la vez anterior (${pctTxt(Math.abs(d)*Math.sign(d))})</p>`:""}`}
+document.addEventListener("change",ev=>{const r=ev.target;if(!r.dataset||!r.dataset.xv)return;const id=r.dataset.xv,g=r.value==="g";const N=document.getElementById(id+"_n"),G=document.getElementById(id+"_g");if(N)N.hidden=g;if(G)G.hidden=!g});
+let chWeeks=12;
+function renderCharts(){const v=$("#v-stats"),inM=w=>(w.kind==="gym")===(mode==="gym"),W=workouts.filter(w=>w.date&&w.date<=today()&&inM(w));
+  const mon=mondayOf(new Date()),wk=[];for(let i=chWeeks-1;i>=0;i--){const a=addDays(mon,-7*i),f=isoD(a),t=isoD(addDays(a,6)),S=W.filter(w=>w.date>=f&&w.date<=t);
+    wk.push({l:`${a.getDate()}/${a.getMonth()+1}`,v:new Set(S.map(w=>w.date)).size,kg:Math.round(S.reduce((s,w)=>s+wodVolume(w),0)),hl:i===0})}
+  const d=new Date(),mo=[];for(let i=5;i>=0;i--){const a=new Date(d.getFullYear(),d.getMonth()-i,1),k=isoD(a).slice(0,7),S=W.filter(w=>w.date.slice(0,7)===k);
+    mo.push({l:MES[a.getMonth()].slice(0,3),v:new Set(S.map(w=>w.date)).size,kg:Math.round(S.reduce((s,w)=>s+wodVolume(w),0)),n:S.length,hl:i===0})}
+  const big=v=>v>=1000?String(Math.round(v/100)/10).replace(".",",")+"k":String(v);
+  const tot=wk.reduce((a,b)=>a+b.v,0),avg=String(Math.round(tot/chWeeks*10)/10).replace(".",",");
+  v.innerHTML=`<h2 class="view-title">Estadísticas</h2>${statsSeg()}
+   <p class="muted">${mode==="gym"?"Tus sesiones de gym":"Tus entrenos de CrossFit"}. Cambia de sección con el interruptor de la portada.</p>
+   <div class="sec ch-card"><h3>Días entrenados por semana</h3><p class="muted">Media: <b>${avg}</b> días por semana en las últimas ${chWeeks} semanas.</p>${barSVG(wk,x=>String(x),{label:"Días por semana"})}
+    <div class="seg ch-rg" role="radiogroup" aria-label="Periodo">${[[8,"8 sem."],[12,"12 sem."],[26,"6 meses"]].map(([n,l])=>`<input type="radio" name="chW" id="chW${n}" value="${n}"${chWeeks===n?" checked":""}><label for="chW${n}">${l}</label>`).join("")}</div></div>
+   <div class="sec ch-card"><h3>Kilos movidos por semana</h3>${wk.some(x=>x.kg)?barSVG(wk.map(x=>({...x,v:x.kg})),big,{label:"Kilos por semana"}):`<p class="muted">Apunta ejercicios con peso para ver esta gráfica.</p>`}</div>
+   <div class="sec ch-card"><h3>Días entrenados por mes</h3>${barSVG(mo,x=>String(x),{label:"Días por mes"})}</div>
+   <div class="sec ch-card"><h3>Kilos movidos por mes</h3>${mo.some(x=>x.kg)?barSVG(mo.map(x=>({...x,v:x.kg})),big,{label:"Kilos por mes"}):`<p class="muted">Apunta ejercicios con peso para ver esta gráfica.</p>`}</div>`;
+  wireSeg();v.querySelectorAll("[name=chW]").forEach(r=>r.onchange=()=>{chWeeks=Number(r.value);renderCharts()})}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

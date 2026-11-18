@@ -2281,6 +2281,62 @@ button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding
 .pet-info>summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--brand);padding:4px 0;list-style-position:inside}
 .pet-info>span.muted{display:block;margin:2px 0 4px}
 .pet-help.in{margin:6px 0 2px}
+/* ====== Samurái: laca negra y roja, oro y bermellón ====== */
+:root[data-skin="samurai"]{--bg:#120C0A;--surface:#1E1512;--surface-2:#170F0D;--ink:#F3E7CE;--muted:#B9A684;--line:#5C4526;--accent:#D4AF5A;--accent-ink:#120C0A;--brand:#D4AF5A;--f-display:"Zen Old Mincho","Shippori Mincho B1","Noto Serif JP",serif;--f-body:"Zen Old Mincho","Shippori Mincho B1","Noto Serif JP",serif;--p-red:#c23a2b;--p-blue:#5b7fb0;--p-yellow:#d4af5a;--p-green:#7fa86a;--p-white:#a89c88;--danger:#e0533f;--star:#e6c068;--gold:#D4AF5A;--gold2:#8C6A2E;--ver:#B8291E;color-scheme:dark}
+[data-skin="samurai"] body{background-color:#120C0A;background-image:radial-gradient(ellipse at 50% -10%,rgba(184,41,30,.28),transparent 60%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cg fill='none' stroke='%23D4AF5A' stroke-opacity='.07' stroke-width='1'%3E%3Cpath d='M28 0v32M0 16l28 16 28-16M0 48l28-16 28 16M28 32l-28 16v33M28 32l28 16v33M0 81l28 16 28-16M28 64v33M0 48l28 16 28-16M28 64L0 81M28 64l28 17'/%3E%3C/g%3E%3C/svg%3E");background-attachment:fixed}
+/* Cabecera: negro con doble filo dorado y sol rojo detrás del logo */
+[data-skin="samurai"] header.top{background:#0B0706;border-bottom:0;box-shadow:0 0 0 100vmax #0B0706,0 1px 0 100vmax #0B0706;clip-path:inset(0 -100vmax -8px);position:relative}
+[data-skin="samurai"] header.top::after{content:"";position:absolute;left:-100vmax;right:-100vmax;bottom:-6px;height:6px;background:linear-gradient(#D4AF5A 0 1.5px,transparent 1.5px 4px,#8C6A2E 4px 5px,transparent 5px);pointer-events:none}
+[data-skin="samurai"] .brand{position:relative;isolation:isolate}
+[data-skin="samurai"] .brand::before{content:"";position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:radial-gradient(circle,#B8291E 0 58%,rgba(184,41,30,0) 72%);z-index:-1;opacity:.55}
+[data-skin="samurai"] .brand-word{color:#F3E7CE;letter-spacing:.04em;text-shadow:0 1px 0 #000}
+[data-skin="samurai"] .brand-word span{color:#D4AF5A}
+[data-skin="samurai"] header.top :is(button,.icon-btn,.pill){background:#1E1512;border-color:#5C4526;color:#D4AF5A}
+/* Tarjetas: placas de laca con esquinas doradas como una armadura */
+[data-skin="samurai"] :is(.td,.wk,.wod,.stat,.pr-box,.shop-card,.wallet,.pet-card,.sec .goal){background:
+  linear-gradient(#D4AF5A,#D4AF5A) top left/14px 1.5px no-repeat,linear-gradient(#D4AF5A,#D4AF5A) top left/1.5px 14px no-repeat,
+  linear-gradient(#D4AF5A,#D4AF5A) top right/14px 1.5px no-repeat,linear-gradient(#D4AF5A,#D4AF5A) top right/1.5px 14px no-repeat,
+  linear-gradient(#D4AF5A,#D4AF5A) bottom left/14px 1.5px no-repeat,linear-gradient(#D4AF5A,#D4AF5A) bottom left/1.5px 14px no-repeat,
+  linear-gradient(#D4AF5A,#D4AF5A) bottom right/14px 1.5px no-repeat,linear-gradient(#D4AF5A,#D4AF5A) bottom right/1.5px 14px no-repeat,
+  linear-gradient(165deg,#2A1B16 0%,#1A110E 55%,#140D0B 100%);border:1px solid #3E2C1A;border-radius:3px;box-shadow:0 8px 22px rgba(0,0,0,.45),inset 0 1px 0 rgba(212,175,90,.12)}
+[data-skin="samurai"] .td-w{background:linear-gradient(180deg,#0F0A08,#160F0C);border:1px solid #2E2115;border-left:3px solid #B8291E;border-radius:2px}
+[data-skin="samurai"] .td-wt b{color:#F3E7CE;letter-spacing:.1em}
+[data-skin="samurai"] .td-stats b{color:#E6C068}
+[data-skin="samurai"] .td-k{color:#9FC27F}
+[data-skin="samurai"] .td-go{color:#D4AF5A}
+[data-skin="samurai"] .td-more{border-color:#5C4526;color:#E9DCC0}
+/* Reto semanal: laca bermellón con nubes doradas */
+[data-skin="samurai"] .goal{background:#8E1F16 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Cg fill='none' stroke='%23E6C068' stroke-opacity='.28' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M8 40c0-8 10-10 14-4 2-9 16-9 18 0 6-6 16-2 14 6M70 22c0-6 8-8 11-3 2-7 13-7 14 0 5-5 13-2 11 5'/%3E%3C/g%3E%3C/svg%3E"),linear-gradient(160deg,#A6271B,#5E130D);border:1.5px solid #D4AF5A;border-radius:3px;box-shadow:0 8px 22px rgba(0,0,0,.5),inset 0 0 0 4px #5E130D,inset 0 0 0 5px rgba(230,192,104,.5)}
+[data-skin="samurai"] .goal-txt h3{color:#F8EBD0;letter-spacing:.06em}
+[data-skin="samurai"] .goal-txt p{color:#F0D9B5}
+[data-skin="samurai"] .goal :is(.dot,.goal-nums button){background:rgba(0,0,0,.25);border-color:rgba(230,192,104,.5);color:#F3E7CE}
+[data-skin="samurai"] .goal :is(.dot.on,.goal-nums button[aria-pressed="true"]){background:#D4AF5A;border-color:#D4AF5A;color:#3A0C08}
+/* Semana: monedas de oro; hoy, sello rojo */
+[data-skin="samurai"] .wk-d{background:#140D0B;border-color:#3E2C1A;color:#B9A684;border-radius:3px}
+[data-skin="samurai"] .wk-d.on{background:radial-gradient(circle at 40% 30%,#F0D58C,#C79A45 60%,#8C6A2E);color:#2A1607;border-color:#E6C068;box-shadow:inset 0 -2px 0 rgba(0,0,0,.25)}
+[data-skin="samurai"] .wk-d.now{outline:2px solid #B8291E;outline-offset:2px}
+[data-skin="samurai"] .wk-d.on.now{background:radial-gradient(circle at 40% 30%,#D9483A,#A3241A 70%);color:#F8EBD0;border-color:#E6C068}
+/* Selector CrossFit/Gym y botones */
+[data-skin="samurai"] .mode-sw{background:#0F0A08;border:1px solid #5C4526;border-radius:3px}
+[data-skin="samurai"] .mode-sw button{border-radius:2px;letter-spacing:.08em;color:#B9A684}
+[data-skin="samurai"] .mode-sw [aria-checked="true"]{background:linear-gradient(#C53526,#8E1F16);color:#F8EBD0;box-shadow:inset 0 0 0 1px #D4AF5A}
+[data-skin="samurai"] .btn{border-radius:3px;border-color:#5C4526}
+[data-skin="samurai"] .btn.primary{background:linear-gradient(#C53526,#8E1F16);border:1px solid #D4AF5A;color:#F8EBD0;letter-spacing:.06em;box-shadow:inset 0 1px 0 rgba(255,220,160,.25)}
+[data-skin="samurai"] .tag{background:transparent;color:#D4AF5A;border:1px solid #D4AF5A;border-radius:2px;letter-spacing:.1em}
+[data-skin="samurai"] .avatar{background:radial-gradient(circle at 40% 30%,#D9483A,#8E1F16);color:#F8EBD0;border:2px solid #D4AF5A}
+[data-skin="samurai"] :is(h2.view-title,.sec h3,.v2-sec){letter-spacing:.12em}
+[data-skin="samurai"] :is(h2.view-title,.v2-sec){color:#F3E7CE}
+[data-skin="samurai"] :is(h2.view-title,.v2-sec)::after{content:"";display:block;width:42px;height:2px;margin-top:4px;background:linear-gradient(90deg,#B8291E 0 50%,#D4AF5A 50%)}
+[data-skin="samurai"] .wk-h .v2-sec::after{display:none}
+[data-skin="samurai"] :is(input,select,textarea){background:#0F0A08;border-color:#5C4526;color:#F3E7CE;border-radius:3px}
+/* Barra inferior: negro con filo dorado y el + como sello rojo */
+[data-skin="samurai"] nav.tabs{background:#0B0706;border-top:0;box-shadow:0 -1.5px 0 #D4AF5A,0 -5px 0 #0B0706,0 -6px 0 #8C6A2E}
+[data-skin="samurai"] .tab{color:#8F7E62}[data-skin="samurai"] .tab[aria-current="page"]{color:#D4AF5A}
+[data-skin="samurai"] .tab-new{background:radial-gradient(circle at 40% 30%,#D9483A,#8E1F16 70%);border:2px solid #D4AF5A;color:#F8EBD0;border-radius:50%;box-shadow:0 0 0 4px #0B0706,0 6px 18px rgba(184,41,30,.5)}
+
+[data-skin="samurai"] header.top .nav-back{background:transparent;border:0;box-shadow:none;color:#D4AF5A}
+[data-skin="samurai"] .eyebrow{letter-spacing:.06em}
+:root[data-skin="samurai"]{overflow-x:clip}[data-skin="samurai"] body{overflow-x:clip}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -3212,6 +3268,7 @@ const SKINS=[
   {id:"kpop",name:"K-pop neón",price:250,ff:"Unbounded",fonts:["Unbounded:wght@600;700;900","Outfit:wght@400;500;700;800"],c:["#0B0620","#FF2E93","#F8F4FF","#150B30","#22D3EE"]},
   {id:"anime",name:"Anime de gimnasio",price:250,ff:"Dela Gothic One",fonts:["Dela+Gothic+One","M+PLUS+Rounded+1c:wght@500;700;800"],c:["#FFFFFF","#E11D48","#111111","#F3F3F3","#FACC15"]},
   {id:"cristal",name:"Cristal líquido",price:300,ff:"Inter",fonts:["Inter:wght@400;500;600;700;800"],c:["#DCE4F7","#7C3AED","#111827","#F472B6","#A78BFA"]},
+  {id:"samurai",name:"Samurái",price:300,ff:"Zen Old Mincho",fonts:["Zen+Old+Mincho:wght@400;700;900"],c:["#120C0A","#D4AF5A","#F3E7CE","#1E1512","#B8291E"]},
   {id:"arcade",name:"Arcade 8-bit",price:300,ff:"Press Start 2P",fonts:["Press+Start+2P","VT323"],c:["#10102A","#B07CFF","#F4F4F4","#17173A","#E83B3B"]},
 ];
 const skinItemId=id=>"t-"+id;

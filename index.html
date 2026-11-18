@@ -2096,6 +2096,12 @@ body.wr-open{overflow:hidden}
 button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding:0}button.cd.on:active{transform:scale(.94)}
 .cal-day{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .cal-w{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;width:100%;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;font:inherit;color:var(--ink);cursor:pointer}
+.rt-pop .rec-card{padding-top:18px}.rt-pop-ic{font-size:40px;display:block;line-height:1;margin-bottom:4px}
+.rt-meme{display:block;width:100%;max-height:240px;object-fit:contain;border-radius:14px;background:var(--surface-2);margin:0 0 12px}
+.rt-hole{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;min-height:170px;border:2px dashed color-mix(in srgb,var(--brand) 55%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--brand) 6%,var(--surface));color:var(--ink);font:inherit;cursor:pointer;margin:0 0 12px;padding:12px}
+.rt-hole>span{font-size:34px}.rt-hole small{color:var(--muted);font-size:12px}
+.rt-pop-r{display:flex;flex-direction:column;gap:2px;background:var(--surface-2);border-radius:12px;padding:10px 12px;margin-bottom:14px;text-align:left;overflow-wrap:anywhere}
+.rt-pop-a{display:flex;flex-direction:column;gap:8px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -2897,9 +2903,10 @@ function renderShop(){
   }else if(shopTab==="mine"){
     const mine=allItems().filter(i=>own.has(i.id));
     const cur=s=>slots[s]||(s==="start"?"b-start":"b-win");
-    body=`<p class="muted" style="margin:0 0 10px;font-size:14px">Elige qué imagen sale en el recuadro del reto semanal.</p><div class="shop-grid">${mine.map(it=>`<div class="shop-card owned"><img src="${it.src}" alt="${esc(it.name)}"><div class="sc-b"><b>${esc(it.name)}</b>
+    body=`<p class="muted" style="margin:0 0 10px;font-size:14px">Elige qué imagen sale en el recuadro del reto semanal y en el aviso de tu rutina del día.</p><div class="shop-grid">${mine.map(it=>`<div class="shop-card owned"><img src="${it.src}" alt="${esc(it.name)}"><div class="sc-b"><b>${esc(it.name)}</b>
       <button type="button" class="btn ${cur("start")===it.id?"on":""}" data-slot="start" data-id="${it.id}">${cur("start")===it.id?"✓ ":""}Al empezar la semana</button>
-      <button type="button" class="btn ${cur("win")===it.id?"on":""}" data-slot="win" data-id="${it.id}">${cur("win")===it.id?"✓ ":""}Al cumplir el reto</button></div></div>`).join("")}</div>`;
+      <button type="button" class="btn ${cur("win")===it.id?"on":""}" data-slot="win" data-id="${it.id}">${cur("win")===it.id?"✓ ":""}Al cumplir el reto</button>
+      <button type="button" class="btn ${slots.routine===it.id?"on":""}" data-slot="routine" data-id="${slots.routine===it.id?"":it.id}">${slots.routine===it.id?"✓ ":""}Al recordar tu rutina</button></div></div>`).join("")}</div>`;
   }else{
     const L=coinLedger(),S=[...(C.spent||[])].reverse();
     body=`${typeof streakFramesHTML==="function"&&profile?`<div class="sec">${streakFramesHTML()}</div>`:""}<h3>TochiCoins</h3><div class="pr-box"><h3 style="margin:0 0 8px;font-family:var(--f-display);text-transform:uppercase">Cómo ganar TochiCoins</h3><ul class="kv" style="margin:0">
@@ -7113,6 +7120,22 @@ document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.clos
   if(L.dataset.d===b.dataset.cday){L.remove();return}L.dataset.d=b.dataset.cday;
   L.innerHTML=`<span class="eyebrow">${esc(humanDate(b.dataset.cday))}</span>${ids.map(id=>{const w=workouts.find(x=>x.id===id);return w?`<button type="button" class="cal-w" data-calw="${esc(id)}"><b>${esc(w.name||w.type||"Entreno")}</b><span class="muted">${esc(w.type||"")}${w.result?" · "+esc(w.result):""}</span></button>`:""}).join("")}`;
   L.querySelectorAll("[data-calw]").forEach(x=>x.onclick=()=>openWodFromCal(x.dataset.calw));L.scrollIntoView({block:"nearest",behavior:"smooth"})});
+
+/* ================= Aviso de la rutina del día, al estilo del récord, con el meme que elijas ================= */
+function routineMemeSrc(){const id=coinsData().slots?.routine;if(!id)return null;const it=allItems().find(i=>i.id===id);return it&&ownedIds().has(it.id)?it.src:null}
+function showRoutinePop(r){if(!r)return;document.querySelector(".rec-pop")?.remove();const src=routineMemeSrc(),day=DAYS7.find(([d])=>d===todayDow())[1];
+  const el=document.createElement("div");el.className="rec-pop rt-pop";el.setAttribute("role","dialog");el.setAttribute("aria-modal","true");el.setAttribute("aria-labelledby","rtpT");
+  el.innerHTML=`<div class="rec-card"><span class="rt-pop-ic" aria-hidden="true">🏋️</span><h2 id="rtpT">¡HOY TOCA!</h2><p class="muted">${esc(day)} · tu rutina del día</p>
+    ${src?`<img class="rt-meme" src="${src}" alt="Tu meme de rutina">`:`<button type="button" class="rt-hole" id="rtpHole"><span aria-hidden="true">🖼️</span><b>Aquí va tu meme</b><small>Elige una imagen en Tienda › Mías › «Al recordar tu rutina»</small></button>`}
+    <div class="rt-pop-r"><b>${esc(r.name)}</b><small class="muted">${(r.ex||[]).slice(0,4).map(e=>esc(e.name)).join(" · ")}${(r.ex||[]).length>4?` · +${r.ex.length-4}`:""}</small></div>
+    <div class="rt-pop-a"><button type="button" class="btn primary full" id="rtpGo">Empezar la rutina</button><button type="button" class="btn full" id="rtpLater">Luego</button></div></div>`;
+  document.body.appendChild(el);const close=()=>el.remove();
+  $("#rtpLater").onclick=close;$("#rtpGo").onclick=()=>{close();startRoutine(r)};
+  $("#rtpHole")&&($("#rtpHole").onclick=()=>{close();openShop("mine")});
+  el.addEventListener("click",e=>{if(e.target===el)close()});el.addEventListener("keydown",e=>{if(e.key==="Escape")close()});$("#rtpGo").focus()}
+function checkRoutinePop(){try{if(!profileReady||!profile||current!=="log"||document.querySelector(".rec-pop")||tourOn)return;const r=routineOf(todayDow());if(!r)return;
+  if(lsGet("tn-rt-pop","")===today())return;if(todays().some(w=>w.kind==="gym"))return;lsSet("tn-rt-pop",today());setTimeout(()=>{if(current==="log"&&!document.querySelector(".rec-pop"))showRoutinePop(r)},900)}catch(e){}}
+{const _rr=renderAll;renderAll=function(){_rr();checkRoutinePop()}}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

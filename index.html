@@ -2079,6 +2079,10 @@ body.wr-open{overflow:hidden}
 .co-ch-x{margin-top:6px;font-size:13px}
 .co-chnew{margin-top:12px}.co-chnew summary{cursor:pointer;font-weight:600}.co-chnew form{display:flex;flex-direction:column;gap:8px;margin-top:10px}
 .co-chnew input:not([type=checkbox]),.co-chnew select{width:100%}.co-chnew .co-amt input{width:auto;flex:1}
+.shop-grp{border:1px solid var(--line);border-radius:14px;background:var(--surface);margin:10px 0;padding:0 12px}
+.shop-grp>summary{cursor:pointer;list-style:none;padding:14px 0;font-weight:700;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.02em;display:flex;justify-content:space-between;align-items:center}
+.shop-grp>summary::-webkit-details-marker{display:none}.shop-grp>summary::after{content:"▾";transition:transform .2s;color:var(--muted)}.shop-grp[open]>summary::after{transform:rotate(180deg)}
+.shop-grp[open]{padding-bottom:12px}.shop-grp>p:first-of-type{margin-top:0}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -2827,7 +2831,7 @@ $("#meForm").addEventListener("submit",async ev=>{
    Lo gastado y lo comprado se guarda en tu perfil. El catálogo de la tienda es común y solo lo cambia quien edita la app. */
 const COIN={week:50,streakStep:10,streakMax:50,pr:10};
 const COIN_SVG=`<svg class="coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="var(--coin)"/><circle cx="12" cy="12" r="8" fill="none" stroke="var(--coin-in)" stroke-width="1.4"/><path d="M8.2 8.3h7.6M12 8.3v8" stroke="var(--coin-in)" stroke-width="2.4" stroke-linecap="round"/></svg>`;
-let SHOP=[],shopCol=null,shopAdmin=false,shopTab="shop",buying=null,shopAddOpen=false;
+let SHOP=[],shopCol=null,shopAdmin=false,shopTab="mine",buying=null,shopAddOpen=false;
 const BUILTIN=()=>[{id:"b-start",name:"Ser fitness es mi pasión",src:GOAL_CAT,price:0,builtin:true},{id:"b-win",name:"Gatito musculoso",src:GOAL_CAT_WIN,price:0,builtin:true}];
 const coinsData=()=>profile?.coins||{spent:[],owned:[],slots:{}};
 function coinLedger(){
@@ -2856,7 +2860,7 @@ function coinChip(){return`<button type="button" class="coin-chip" id="coinChip"
 function openShop(tab){shopTab=tab||shopTab;buying=null;openTool("shop","Tienda",renderShop)}
 function renderShop(){
   const v=$("#v-shop"),B=coinBalance(),own=ownedIds(),C=coinsData(),slots=C.slots||{};
-  const seg=`<div class="seg seg3 shop-seg">${[["shop","Tienda"],["mine","Mías"],["coins","Monedas"]].map(([k,n])=>`<input type="radio" name="shopTab" id="st-${k}" value="${k}"${shopTab===k?" checked":""}><label for="st-${k}">${n}</label>`).join("")}</div>`;
+  const seg=`<div class="seg seg3 shop-seg">${[["mine","Mías"],["coins","Logros"],["shop","Tienda"]].map(([k,n])=>`<input type="radio" name="shopTab" id="st-${k}" value="${k}"${shopTab===k?" checked":""}><label for="st-${k}">${n}</label>`).join("")}</div>`;
   let body="";
   if(shopTab==="shop"){
     const items=SHOP;
@@ -2885,7 +2889,7 @@ function renderShop(){
       <button type="button" class="btn ${cur("win")===it.id?"on":""}" data-slot="win" data-id="${it.id}">${cur("win")===it.id?"✓ ":""}Al cumplir el reto</button></div></div>`).join("")}</div>`;
   }else{
     const L=coinLedger(),S=[...(C.spent||[])].reverse();
-    body=`<div class="pr-box"><h3 style="margin:0 0 8px;font-family:var(--f-display);text-transform:uppercase">Cómo ganar TochiCoins</h3><ul class="kv" style="margin:0">
+    body=`${typeof streakFramesHTML==="function"&&profile?`<div class="sec">${streakFramesHTML()}</div>`:""}<h3>TochiCoins</h3><div class="pr-box"><h3 style="margin:0 0 8px;font-family:var(--f-display);text-transform:uppercase">Cómo ganar TochiCoins</h3><ul class="kv" style="margin:0">
         <li style="border-top:0"><span>Cumplir el reto semanal</span><b class="mono">+${COIN.week}</b></li>
         <li><span>Extra por racha (cada semana seguida)</span><b class="mono">+${COIN.streakStep} … +${COIN.streakMax}</b></li>
         <li><span>Batir un récord</span><b class="mono">+${COIN.pr}</b></li></ul></div>
@@ -5168,7 +5172,7 @@ const EXTRA_CATS=[
    items:[{id:"disco",name:"Disco de pesas",price:120},{id:"llama",name:"Llama",price:150},{id:"estrella",name:"Estrella de impacto",price:150},{id:"latido",name:"Latido",price:100}]}
 ];
 const exName=it=>typeof it.name==="string"?it.name:(profile?.sex==="mujer"?it.name.f:it.name.m);
-const extraOwned=(c,id)=>{if(ownedIds().has(c.pfx+id))return true;const it=c.items.find(x=>x.id===id);return!!(it&&it.streak&&typeof streakBest==="function"&&streakBest()>=it.streak)};
+const extraOwned=(c,id)=>{const it=c.items.find(x=>x.id===id);if(it&&it.streak)return typeof streakBest==="function"&&streakBest()>=it.streak;return ownedIds().has(c.pfx+id)};
 const extraPref=c=>{const v=profile?.[c.prof]||"";const it=c.items.find(x=>x.id===v);return it&&extraOwned(c,v)?v:""};
 function extraPreview(c,it){
   const id=it?it.id:"";
@@ -5241,7 +5245,7 @@ function paintExtrasShop(){
       html+=`<h3 style="margin-top:18px">${c.title}</h3><p class="muted">${c.desc}</p><div class="shop-grid">${c.items.filter(it=>!it.streak).map(it=>{const iid=c.pfx+it.id,has=extraOwned(c,it.id),sh=it.price-B.bal;
         return`<div class="shop-card${has?" owned":""}"><div class="lg-prev xt-prev">${extraPreview(c,it)}</div><div class="sc-b"><b>${esc(exName(it))}</b><span class="price">${COIN_SVG}<span class="mono">${it.price}</span></span>
           ${has?`<span class="tag">Ya es tuyo</span>`:buying===iid?`<div class="buy-confirm"><span>¿Comprar por ${it.price}?</span><div class="row-actions"><button type="button" class="btn primary" data-xok="${c.key}|${it.id}">Sí</button><button type="button" class="btn" data-buyno>No</button></div></div>`
-          :`<button type="button" class="btn ${sh>0?"":"primary"}" data-xbuy="${iid}" ${sh>0?"disabled":""}>${sh>0?`Te faltan ${sh}`:"Comprar"}</button>`}</div></div>`}).join("")}</div>`+(c.key==="frame"&&typeof streakFramesHTML==="function"?streakFramesHTML():"");
+          :`<button type="button" class="btn ${sh>0?"":"primary"}" data-xbuy="${iid}" ${sh>0?"disabled":""}>${sh>0?`Te faltan ${sh}`:"Comprar"}</button>`}</div></div>`}).join("")}</div>`;
     }
     box.innerHTML=html;
   }else{
@@ -6533,11 +6537,12 @@ function seasonNow(d=new Date()){const m=d.getMonth()+1,x=d.getDate();
   if(c.key==="frame"&&it&&it.id==="temporada")h=h.replace('data-fr="temporada"',`data-fr="temporada" data-season="${seasonNow()}"`);return h}}
 {const _ae=applyExtras;applyExtras=function(){_ae();const r=document.documentElement;r.setAttribute("data-rl",rachaLevel());r.setAttribute("data-season",seasonNow())}}
 function streakFramesHTML(){const c=EXTRA_CATS[1],best=streakBest(),cur=streakNow();
-  return`<h3 style="margin-top:18px">Marcos de racha</h3><p class="muted">No se compran: se ganan encadenando semanas en las que cumples tu reto semanal. Cuenta tu mejor racha, así que lo que ganas se queda para siempre. Racha actual: <b>${cur}</b> · Mejor racha: <b>${best}</b> ${best===1?"semana":"semanas"}.</p><div class="shop-grid">${c.items.filter(it=>it.streak).map(it=>{const has=extraOwned(c,it.id),left=it.streak-best;
+  const L=c.items.filter(it=>it.streak).slice().sort((a,b)=>{const ha=extraOwned(c,a.id),hb=extraOwned(c,b.id);return ha!==hb?(ha?1:-1):ha?b.streak-a.streak:a.streak-b.streak});
+  return`<h3>Marcos de racha</h3><p class="muted">No se compran: se ganan encadenando semanas en las que cumples tu reto semanal. Cuenta tu mejor racha, así que lo que ganas se queda para siempre. Racha actual: <b>${cur}</b> · Mejor racha: <b>${best}</b> ${best===1?"semana":"semanas"}. Primero salen los que te faltan, empezando por el más cercano.</p><div class="shop-grid">${L.map(it=>{const has=extraOwned(c,it.id),left=it.streak-best;
     const extra=it.id==="temporada"?` · ahora ${SEASONS[seasonNow()]}`:it.id==="racha"?" · cambia con tu racha":"";
     return`<div class="shop-card${has?" owned":" sk-locked"}"><div class="lg-prev xt-prev">${extraPreview(c,it)}</div><div class="sc-b"><b>${esc(exName(it))}</b><span class="sk-req">🔥 ${it.streak} ${it.streak===1?"semana":"semanas"}${extra}</span>${has?`<span class="tag">Ya es tuyo</span>`:`<div class="sk-bar" role="progressbar" aria-label="Progreso de racha" aria-valuemin="0" aria-valuemax="${it.streak}" aria-valuenow="${Math.min(best,it.streak)}"><i style="width:${Math.min(100,best/it.streak*100)}%"></i></div><span class="muted" style="font-size:12px">Te ${left===1?"falta 1 semana":`faltan ${left} semanas`}</span>`}</div></div>`}).join("")}</div>`}
 /* Aviso al ganar un marco de racha nuevo */
-function checkStreakUnlocks(){if(!profile||shopAdmin||shopFree)return;const best=streakBest();if(!best)return;
+function checkStreakUnlocks(){if(!profile)return;const best=streakBest();if(!best)return;
   let seen=0;try{seen=+(localStorage.getItem("tn-skf")||0)}catch(e){}
   if(best<=seen)return;const got=STREAK_FRAMES.filter(x=>x.streak>seen&&x.streak<=best);
   try{localStorage.setItem("tn-skf",String(best))}catch(e){}
@@ -7003,6 +7008,20 @@ async function renderCoop(load){const v=$("#v-friends");if(!v)return;
 /* Si apuntas entrenos, las frases automáticas llegan solas a tus grupos */
 {const _rc=renderAll;renderAll=function(){_rc();try{if(!coopLoaded||!coopGroups.length)return;clearTimeout(coopT);coopT=setTimeout(async()=>{try{await coopSyncDays();if(await coopAuto()&&current==="friends"&&frTab==="coop"){coopFeed=coopSel?await FRIENDS_API.coopFeed(coopSel):[];renderCoop(false)}}catch(e){}},1500)}catch(e){}}}
 {const _bc=bootFriends;bootFriends=async function(){await _bc();try{if(FRIENDS_API?.coopList){coopGroups=await FRIENDS_API.coopList();coopLoaded=true;await coopAuto();await coopSyncDays()}}catch(e){}}}
+
+/* ================= Tienda: cada grupo en un desplegable (Mías y Tienda) ================= */
+const shopOpen=new Set();
+function groupShop(){const body=$("#v-shop .shop-body");if(!body||shopTab==="coins")return;
+  const mk=(title,nodes,before)=>{if(!nodes.length)return;const d=document.createElement("details");d.className="shop-grp";const key=shopTab+"|"+title;d.open=shopOpen.has(key);
+    d.innerHTML=`<summary>${esc(title)}</summary>`;before.parentNode.insertBefore(d,before);nodes.forEach(n=>d.appendChild(n));d.ontoggle=()=>{d.open?shopOpen.add(key):shopOpen.delete(key)}};
+  /* Lo de arriba sin título (imágenes del reto) */
+  const first=[...body.children].filter(n=>!n.classList.contains("skins-sec")&&!n.classList.contains("just-bought")&&!n.classList.contains("shop-grp"));
+  if(first.length)mk(shopTab==="mine"?"Imágenes del reto semanal":"Imágenes",first,first[0]);
+  /* Cada h3 con lo que viene detrás hasta el siguiente h3 */
+  for(const h of [...body.querySelectorAll("h3")]){if(h.closest(".shop-grp"))continue;const nodes=[];let n=h.nextElementSibling;
+    while(n&&n.tagName!=="H3"){if(n.querySelector&&n.querySelector("h3"))break;nodes.push(n);n=n.nextElementSibling}
+    const t=h.textContent.trim();const anchor=h;mk(t,[...nodes],anchor);h.remove()}}
+{const _rs=renderShop;renderShop=function(){_rs();try{groupShop()}catch(e){}}}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

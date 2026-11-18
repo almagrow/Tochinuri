@@ -3542,8 +3542,8 @@ async function snapshotMonths(){
   snapBusy=true;const p={...profile,months:next};
   try{await store.saveProfile(p);profile=p}catch(e){}finally{snapBusy=false}
 }
-function statsSeg(){return`<div class="seg stats-seg" role="tablist"><input type="radio" name="stMode" id="stModeM" value="month"${statsMode==="month"?" checked":""}><label for="stModeM">Por mes</label><input type="radio" name="stMode" id="stModeH" value="hist"${statsMode==="hist"?" checked":""}><label for="stModeH">Historial</label></div>`}
-function wireSeg(){document.querySelectorAll("[name=stMode]").forEach(r=>r.onchange=()=>{statsMode=r.value;renderStats();window.scrollTo(0,0)})}
+function statsSeg(){return`<div class="seg stats-seg seg3" role="tablist"><input type="radio" name="stMode" id="stModeW" value="week"${statsMode==="week"?" checked":""}><label for="stModeW">Semana</label><input type="radio" name="stMode" id="stModeM" value="month"${statsMode==="month"?" checked":""}><label for="stModeM">Mes</label><input type="radio" name="stMode" id="stModeH" value="hist"${statsMode==="hist"?" checked":""}><label for="stModeH">Historial</label></div>`}
+function wireSeg(){document.querySelectorAll("[name=stMode]").forEach(r=>r.onchange=()=>{statsMode=r.value;if(statsMode==="week"){openSummary(isoD(addDays(mondayOf(new Date()),-7)));window.scrollTo(0,0);return}if(current!=="stats"){openMonth();statsMode=r.value;renderStats()}else renderStats();window.scrollTo(0,0)})}
 function renderStats(){if(statsMode==="hist")renderHistory();else renderMonth()}
 function renderHistory(){
   const now=new Date(),keys=new Set([...workouts.filter(w=>w.date).map(w=>w.date.slice(0,7)),...Object.keys(profile?.months||{})]);
@@ -5835,19 +5835,19 @@ function drawSummary(S){const c=document.createElement("canvas");c.width=1080;c.
   if(S.animal){x.fillText(`${S.animal.e} Fuerza de ${S.animal.n}`.slice(0,48),80,y);y+=64}
   x.fillStyle="#9d92ba";x.font=`500 30px ${ff}`;x.fillText("tochinuri.es",80,1300);return c}
 function renderSummary(){const v=$("#v-summary"),cur=isoD(mondayOf(new Date()));if(!sumWk)sumWk=isoD(addDays(mondayOf(new Date()),-7));const S=weekSummary(sumWk);
-  v.innerHTML=`<h2 class="view-title">Resumen semanal</h2>
+  statsMode="week";v.innerHTML=`<h2 class="view-title">Estadísticas</h2>${statsSeg().replace(/stMode([WMH])"/g,'sumMode$1"')}
    <div class="sum-nav"><button type="button" class="btn" id="sumPrev" aria-label="Semana anterior">‹</button><b>${fmtD(S.from)} – ${fmtD(S.to)}${sumWk===cur?" · en curso":""}</b><button type="button" class="btn" id="sumNext" aria-label="Semana siguiente"${sumWk>=cur?" disabled":""}>›</button></div>
    ${S.sessions?`<img class="sum-img" id="sumImg" alt="Resumen de la semana: ${S.days} días, ${fmtBig(S.kg)} kg, ${S.rec} récords">
    <div class="sum-acts"><button type="button" class="btn primary" id="sumShare">Compartir</button><button type="button" class="btn" id="sumSave">Guardar imagen</button></div>`
    :`<div class="empty"><h3>Semana sin entrenos</h3><p>No hay nada apuntado del ${fmtD(S.from)} al ${fmtD(S.to)}.</p></div>`}`;
-  $("#sumPrev").onclick=()=>{sumWk=isoD(addDays(dObj(sumWk),-7));renderSummary()};$("#sumNext").onclick=()=>{sumWk=isoD(addDays(dObj(sumWk),7));renderSummary()};
+  wireSeg();statsMode="month";$("#sumPrev").onclick=()=>{sumWk=isoD(addDays(dObj(sumWk),-7));renderSummary()};$("#sumNext").onclick=()=>{sumWk=isoD(addDays(dObj(sumWk),7));renderSummary()};
   if(!S.sessions)return;const cv=drawSummary(S),url=cv.toDataURL("image/png");$("#sumImg").src=url;const fname=`tochinuri-semana-${S.from}.png`;
   const save=()=>{const a=document.createElement("a");a.href=url;a.download=fname;document.body.appendChild(a);a.click();a.remove()};
   $("#sumSave").onclick=save;
   $("#sumShare").onclick=async()=>{try{const blob=await new Promise(r=>cv.toBlob(r,"image/png")),f=new File([blob],fname,{type:"image/png"});
     if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:"Mi semana en TochiNuri",text:`${S.days} días, ${fmtBig(S.kg)} kg y ${S.rec} récords esta semana 💪`});else{save();toast("Imagen guardada: compártela desde tu galería")}}catch(e){if(e?.name!=="AbortError")save()}};
 }
-function openSummary(wk){if(wk)sumWk=wk;openTool("summary","Resumen",renderSummary)}
+function openSummary(wk){if(wk)sumWk=wk;openTool("summary","Estadísticas",renderSummary)}
 function paintSumCard(){const c=$("#sumCard");if(!c)return;const d=new Date().getDay(),prev=isoD(addDays(mondayOf(new Date()),-7));
   if(!profile||![1,2,3].includes(d)||lsGet("tochinuri-sum-"+prev,"")==="1"){c.innerHTML="";return}const S=weekSummary(prev);if(!S.sessions){c.innerHTML="";return}
   c.innerHTML=`<div class="sum-card"><div><span class="eyebrow">Tu semana pasada</span><b>${S.days} días · ${fmtBig(S.kg)} kg · ${S.rec} récord${S.rec===1?"":"s"}</b></div><button type="button" class="btn primary" id="sumOpen">Ver y compartir</button><button type="button" class="icon-btn" id="sumX" aria-label="Ocultar resumen">×</button></div>`;
@@ -6663,11 +6663,11 @@ async function shareWrap(S){const cv=document.createElement("canvas");cv.width=1
   try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:`Mi ${S.y} en TochiNuri`,text:`Mi ${S.y} en TochiNuri 💪`});return}}catch(e){if(e?.name==="AbortError")return}
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);toast("Imagen descargada")}
 /* Acceso en el menú y aviso en portada en diciembre y enero */
-{const tools=$(".tools");if(tools){const b=document.createElement("button");b.type="button";b.className="tool";b.id="openWrapBtn";b.hidden=true;b.innerHTML=`<svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg><span>Tu año</span>`;b.onclick=()=>openWrap();tools.appendChild(b)}
-  if(typeof QA!=="undefined")QA.splice(1,0,["openWrapBtn","Tu año"]);
+{const tools=null;if(tools){const b=document.createElement("button");b.type="button";b.className="tool";b.id="openWrapBtn";b.hidden=true;b.innerHTML=`<svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg><span>Tu año</span>`;b.onclick=()=>openWrap();tools.appendChild(b)}
+
   if(typeof QA_KEY!=="undefined")QA_KEY.openWrapBtn="wrap";
   if(typeof IC2!=="undefined")IC2.wrap=`<svg viewBox="0 0 48 48" class="ic2 ic-wrap"><rect x="9" y="6" width="30" height="36" rx="6"/><path d="M15 13h18"/><g class="mv"><path d="M24 19l2.6 5.4 5.9.8-4.3 4.1 1 5.8L24 32.3l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z" class="ac"/></g></svg>`}
-function paintWrapCard(){let c=$("#wrapCard");const d=new Date(),on=profile&&(d.getMonth()===11||d.getMonth()===0)&&workouts.length>0;let hide=false;try{hide=localStorage.getItem("tn-wrap-x")===String(wrapYear())}catch(e){}
+function paintWrapCard(){let c=$("#wrapCard");const d=new Date(),on=profile&&d.getMonth()===11&&d.getDate()<=14&&workouts.length>0;let hide=false;try{hide=localStorage.getItem("tn-wrap-x")===String(wrapYear())}catch(e){}
   if(!on||hide){if(c)c.remove();return}
   if(!c){c=document.createElement("div");c.id="wrapCard";const t=$("#todayCard");if(!t)return;t.before(c)}
   c.innerHTML=`<div class="wr-card"><button type="button" class="wr-card-b" id="wrGo"><span class="wr-card-ic" aria-hidden="true">🎉</span><span><b>Tu ${wrapYear()} en TochiNuri</b><small>Días, kilos, récords y tu ejercicio favorito</small></span></button><button type="button" class="icon-btn" id="wrHide" aria-label="Ocultar">×</button></div>`;
@@ -7091,6 +7091,9 @@ function groupShop(){const body=$("#v-shop .shop-body");if(!body||shopTab==="coi
     while(n&&n.tagName!=="H3"){if(n.querySelector&&n.querySelector("h3"))break;nodes.push(n);n=n.nextElementSibling}
     const t=h.textContent.trim();const anchor=h;mk(t,[...nodes],anchor);h.remove()}}
 {const _rs=renderShop;renderShop=function(){_rs();try{groupShop()}catch(e){}}}
+
+/* Resumen semanal y estadísticas del mes en un mismo sitio: fuera del menú el acceso suelto «Resumen» */
+{const b=document.getElementById("openSumBtn");if(b)b.remove()}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

@@ -1,6 +1,6 @@
 /* Modo sin conexión: guarda la app para abrirla aunque no haya internet.
    Las páginas se piden primero a la red (para tener siempre la última versión); los datos de Supabase nunca se guardan aquí. */
-const CACHE="tochinuri-v46";
+const CACHE="tochinuri-v47";
 const SHELL=["./","index.html","legal.html","config.js","manifest.webmanifest","icons/icon-192.png","icons/icon-512.png","icons/apple-touch-icon.png"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});

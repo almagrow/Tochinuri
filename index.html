@@ -2117,6 +2117,13 @@ button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding
 .ch-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px}.ch-card h3{margin:0 0 4px}.ch-card>p{margin:0 0 4px;font-size:13px}
 .ch-rg{grid-template-columns:repeat(3,1fr);margin-top:10px}.xv-seg{margin:8px 0}.ch-cap{margin:6px 0 0;font-weight:600;font-size:14px}
 .ch-cap.pos{color:var(--pos,#1c7a4d)}.ch-cap.neg{color:var(--neg,#c0392b)}
+.cheer-pop{position:fixed;z-index:420;top:calc(env(safe-area-inset-top,0px) + 14px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;width:max-content;max-width:min(92vw,360px);background:var(--surface);color:var(--ink);border:2px solid var(--brand);border-radius:16px;padding:10px 16px;box-shadow:0 10px 30px rgba(0,0,0,.3);font-size:15px;cursor:pointer;animation:cheerIn .4s cubic-bezier(.2,1.4,.4,1)}
+.cheer-pop.out{opacity:0;transform:translateX(-50%) translateY(-12px);transition:.25s}
+.cheer-e{font-size:28px;line-height:1;flex:none;letter-spacing:2px}
+.cheer-t{min-width:0;overflow-wrap:anywhere}
+.cheer-fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:415}
+@keyframes cheerIn{from{opacity:0;transform:translateX(-50%) translateY(-24px) scale(.8)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+@media (prefers-reduced-motion:reduce){.cheer-pop{animation:none}}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -7241,6 +7248,45 @@ function renderCharts(){const v=$("#v-stats"),inM=w=>(w.kind==="gym")===(mode===
    <div class="sec ch-card"><h3>Días entrenados por mes</h3>${barSVG(mo,x=>String(x),{label:"Días por mes"})}</div>
    <div class="sec ch-card"><h3>Kilos movidos por mes</h3>${mo.some(x=>x.kg)?barSVG(mo.map(x=>({...x,v:x.kg})),big,{label:"Kilos por mes"}):`<p class="muted">Apunta ejercicios con peso para ver esta gráfica.</p>`}</div>`;
   wireSeg();v.querySelectorAll("[name=chW]").forEach(r=>r.onchange=()=>{chWeeks=Number(r.value);renderCharts()})}
+
+/* ---------- Ánimos de amigos: aviso emergente con lluvia de emojis ---------- */
+function cheerRain(emojis){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  document.querySelector(".cheer-fx")?.remove();
+  const cv=document.createElement("canvas");cv.className="cheer-fx";cv.setAttribute("aria-hidden","true");document.body.appendChild(cv);
+  const ctx=cv.getContext("2d"),dpr=Math.min(2,devicePixelRatio||1);cv.width=innerWidth*dpr;cv.height=innerHeight*dpr;
+  const P=[],n=60;for(let i=0;i<n;i++)P.push({e:emojis[i%emojis.length],x:Math.random()*cv.width,y:-(20+Math.random()*cv.height*.5)*dpr,vx:(Math.random()-.5)*1.6*dpr,vy:(2.5+Math.random()*4)*dpr,s:(22+Math.random()*22)*dpr,r:Math.random()*6,vr:(Math.random()-.5)*.1});
+  const t0=performance.now();let raf=0;
+  const tick=t=>{ctx.clearRect(0,0,cv.width,cv.height);const k=Math.max(0,Math.min(1,(4200-(t-t0))/700));ctx.globalAlpha=k;
+    for(const p of P){p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r*.4);ctx.font=`${p.s}px system-ui,"Apple Color Emoji","Segoe UI Emoji",sans-serif`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(p.e,0,0);ctx.restore()}
+    if(t-t0<4200&&cv.isConnected)raf=requestAnimationFrame(tick);else{cancelAnimationFrame(raf);cv.remove()}};
+  raf=requestAnimationFrame(tick);
+}
+function showCheerPop(list){
+  if(!list.length)return;document.querySelector(".cheer-pop")?.remove();
+  const names=[...new Set(list.map(r=>(r.from_name||"Un amigo").trim()||"Un amigo"))],emojis=[...new Set(list.map(r=>reEmoji(r.emoji)))];
+  const who=names.length===1?names[0]:names.length===2?`${names[0]} y ${names[1]}`:`${names[0]}, ${names[1]} y ${names.length-2} más`;
+  const txt=names.length===1?`Tu amigo <b>${esc(who)}</b> te manda ánimos`:`Tus amigos <b>${esc(who)}</b> te mandan ánimos`;
+  const el=document.createElement("div");el.className="cheer-pop";el.setAttribute("role","status");el.setAttribute("aria-live","polite");
+  el.innerHTML=`<span class="cheer-e" aria-hidden="true">${emojis.slice(0,3).join("")}</span><span class="cheer-t">${txt}</span>`;
+  document.body.appendChild(el);
+  const close=()=>{el.classList.add("out");setTimeout(()=>el.remove(),250)};
+  el.onclick=close;setTimeout(close,5500);
+  try{navigator.vibrate&&navigator.vibrate([40,30,80])}catch(e){}
+  cheerRain(emojis);
+}
+function checkCheers(){try{
+  const R=(frReacts||[]).filter(r=>!r.mine&&r.created_at);if(!R.length)return;
+  const max=R.reduce((a,r)=>String(r.created_at)>a?String(r.created_at):a,"");
+  const seen=lsGet("tn-cheer-pop","");
+  if(!seen){lsSet("tn-cheer-pop",max);return}
+  const fresh=R.filter(r=>String(r.created_at)>seen);if(!fresh.length)return;
+  if(document.querySelector(".rec-pop"))return; /* se avisará la próxima vez */
+  lsSet("tn-cheer-pop",max);showCheerPop(fresh);
+}catch(e){}}
+{const _ls=loadSocial;loadSocial=async function(){await _ls();checkCheers()}}
+setInterval(()=>{if(document.visibilityState==="visible"&&typeof frMe!=="undefined"&&frMe?.code)loadSocial()},90000);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&typeof frMe!=="undefined"&&frMe?.code)loadSocial()});
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

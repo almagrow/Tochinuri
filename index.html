@@ -2102,6 +2102,16 @@ button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding
 .rt-hole>span{font-size:34px}.rt-hole small{color:var(--muted);font-size:12px}
 .rt-pop-r{display:flex;flex-direction:column;gap:2px;background:var(--surface-2);border-radius:12px;padding:10px 12px;margin-bottom:14px;text-align:left;overflow-wrap:anywhere}
 .rt-pop-a{display:flex;flex-direction:column;gap:8px}
+#wodForm .fx-hide{display:none!important}
+#wodForm.is-gym .fmt-row{display:none}
+#wodForm select{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;padding:0 12px}
+#photoCta{padding:10px 12px;min-height:0}#photoCta small{display:none}#photoCta svg{width:20px;height:20px}
+.se-det{margin:4px 0 2px}.mo-det{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:0 12px;margin-top:6px}
+.mo-det>summary{cursor:pointer;list-style:none;padding:13px 0;display:flex;align-items:baseline;gap:8px;font-weight:600}
+.mo-det>summary::-webkit-details-marker{display:none}.mo-det>summary::after{content:"▾";margin-left:auto;color:var(--muted);transition:transform .2s}.mo-det[open]>summary::after{transform:rotate(180deg)}
+.mo-det>summary small{color:var(--muted);font-weight:400;font-size:13px}.mo-det[open]{padding-bottom:12px}
+.ex-more{margin-top:6px}.ex-more>summary{cursor:pointer;font-size:13px;color:var(--muted);padding:4px 0;list-style:none}.ex-more>summary::-webkit-details-marker{display:none}
+.ex-more>summary::before{content:"＋ "}.ex-more[open]>summary::before{content:"− "}.ex-more[open]{display:flex;flex-direction:column;gap:8px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -7136,6 +7146,33 @@ function showRoutinePop(r){if(!r)return;document.querySelector(".rec-pop")?.remo
 function checkRoutinePop(){try{if(!profileReady||!profile||current!=="log"||document.querySelector(".rec-pop")||tourOn)return;const r=routineOf(todayDow());if(!r)return;
   if(lsGet("tn-rt-pop","")===today())return;if(todays().some(w=>w.kind==="gym"))return;lsSet("tn-rt-pop",today());setTimeout(()=>{if(current==="log"&&!document.querySelector(".rec-pop"))showRoutinePop(r)},900)}catch(e){}}
 {const _rr=renderAll;renderAll=function(){_rr();checkRoutinePop()}}
+
+/* ================= Formulario de entreno más sencillo: desplegables y menos cosas a la vista ================= */
+{const F=$("#wodForm");
+  /* Formato y nivel en dos desplegables, en una sola fila */
+  const tF=$("#fType").closest(".field"),lF=$("#fLevelSeg").closest(".field");
+  const row=document.createElement("div");row.className="grid2 fmt-row";
+  row.innerHTML=`<div class="field"><label for="fTypeSel">Formato</label><select id="fTypeSel"><option value="">Elegir…</option>${TYPES.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join("")}</select></div>
+   <div class="field"><label for="fLevelSel">Nivel</label><select id="fLevelSel"><option value="">Sin indicar</option>${[...$("#fLevelSeg").querySelectorAll("input")].map(r=>`<option value="${r.value}">${esc($("label[for="+r.id+"]").textContent)}</option>`).join("")}</select></div>`;
+  tF.before(row);tF.classList.add("fx-hide");lF.classList.add("fx-hide");
+  const bind=(sel,name)=>{const S=$(sel),R=()=>[...F.querySelectorAll(`input[name=${name}]`)];
+    const sync=()=>{S.value=(R().find(r=>r.checked)||{}).value||""};
+    S.onchange=()=>{const v=S.value;R().forEach(r=>{const on=r.value===v;if(r.checked!==on){r.checked=on;r.dispatchEvent(new Event("change",{bubbles:true}))}})};
+    F.addEventListener("change",ev=>{if(ev.target.name===name)sync()});return sync};
+  const syncT=bind("#fTypeSel","ftype"),syncL=bind("#fLevelSel","fLevel");
+  /* Pareja, molestias y notas dentro de «Más opciones» */
+  const mo=$("#moreOpts");if(mo&&mo.tagName!=="DETAILS"){mo.id="moreOptsIn";const d=document.createElement("details");d.id="moreOpts";d.className="mo-det";
+    d.innerHTML=`<summary><span>Más opciones</span><small id="moreOptsS">pareja, molestias y notas</small></summary>`;mo.before(d);d.appendChild(mo)}
+  /* En cada ejercicio, la sensación y la nota van en «Detalles» */
+  const tidyRow=(el,e)=>{if(!el||el.querySelector(".ex-more"))return;const fw=el.querySelector(".feel-wrap"),nt=el.querySelector(".exnt");if(!fw&&!nt)return;
+    const ac=el.querySelector(".ex-acts"),onlyPl=ac&&ac.children.length===1&&ac.querySelector(".ex-plates");
+    const d=document.createElement("details");d.className="ex-more";d.innerHTML=`<summary>${onlyPl?"Sensación, nota y discos":"Sensación y nota"}</summary>`;(fw||nt).before(d);if(onlyPl)d.appendChild(ac);if(fw)d.appendChild(fw);if(nt)d.appendChild(nt);
+    d.open=!!(e&&(e.feel||e.notes))};
+  {const _ar=addRow;addRow=function(e={}){const r=_ar(e);tidyRow(r instanceof Element?r:$("#exRows").lastElementChild,e);return r}}
+  /* Sueño y energía, plegado */
+  const se=$("#seBox");let seD=null;if(se){seD=document.createElement("details");seD.className="mo-det se-det";seD.innerHTML=`<summary><span>¿Cómo llegas hoy?</span><small>sueño y energía</small></summary>`;se.before(seD);seD.appendChild(se)}
+  {const _of=openForm;openForm=function(w){_of(w);try{if(seD)seD.open=!!document.querySelector("[name^=se_]:checked");syncT();syncL();$("#exRows").querySelectorAll(".ex-card").forEach(el=>tidyRow(el,null))}catch(e){}}}
+}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

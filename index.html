@@ -2222,6 +2222,45 @@ button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding
 @keyframes pfBird{to{left:110%;top:40px}}
 @keyframes pfBee{0%,100%{transform:translate(0,0)}25%{transform:translate(14px,-8px)}50%{transform:translate(-6px,-14px)}75%{transform:translate(-14px,-4px)}}
 @keyframes pfSniff{0%,100%{transform:rotate(0)}50%{transform:translateY(5px) rotate(10deg)}}
+.dawn .pf-sky{background:linear-gradient(#ff9e7a,#ffd9b8 55%,#fff0dc)}
+.dusk .pf-sky{background:linear-gradient(#4b3f8f,#c86a8f 45%,#ffb37a)}
+.dawn .pf-sun,.dusk .pf-sun{top:30px;filter:saturate(1.4) hue-rotate(-15deg)}
+.dusk .pf-hill,.dusk .pf-grass,.dusk .pf-it,.dusk .pf-fence{filter:brightness(.85) saturate(1.1) sepia(.15)}
+.pf-mnt{left:-5%;right:-5%;bottom:44%;height:50px;background:linear-gradient(#9cb3d4,#c9d7ec);clip-path:polygon(0 100%,10% 38%,20% 70%,34% 8%,48% 62%,62% 22%,76% 68%,89% 28%,100% 75%,100% 100%)}
+.night .pf-mnt{background:linear-gradient(#2c3766,#3d4a80)}
+.dusk .pf-mnt{background:linear-gradient(#7d6aa8,#b58aa8)}
+.winter .pf-mnt{background:linear-gradient(#fff 0 28%,#c9d7ec 55%)}
+.pf-path{left:-15%;right:-15%;bottom:9%;height:20px;border-radius:50%;background:rgba(205,170,120,.5);transform:rotate(-2.5deg)}
+.pf-tufts{left:0;right:0;bottom:-3px;height:14px;z-index:150;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='14'%3E%3Cpath d='M1 14Q3 5 5 14M8 14Q11 1 13 14M15 14Q18 6 20 14M21 14Q24 3 25 14' stroke='%2346a040' stroke-width='2.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x 0 100%/26px 14px;transform-origin:50% 100%;animation:pfTuft 3.2s ease-in-out infinite}
+.night .pf-tufts{filter:brightness(.55)}
+.autumn .pf-hill.h1{background:#a9c46a}.autumn .pf-hill.h2{background:#c2b55e}
+.autumn .pf-grass{filter:hue-rotate(-18deg) saturate(.9)}
+.winter .pf-hill{box-shadow:inset 0 7px 0 #fff;filter:saturate(.45) brightness(1.1)}
+.winter .pf-grass,.winter .pf-tufts{filter:saturate(.3) brightness(1.18)}
+.winter .pf-path{background:rgba(255,255,255,.75)}
+.spring .pf-hill.h1{background:#8fd681}
+.pf-fall{top:-18px;z-index:225;line-height:1;pointer-events:none;animation:pfFall linear infinite}
+.winter .pf-fall{color:#fff;text-shadow:0 0 3px rgba(80,120,180,.6)}
+.pf-ff{width:4px;height:4px;border-radius:50%;background:#fff7a8;box-shadow:0 0 6px 2px #fde047;z-index:220;animation:pfFF 4s ease-in-out infinite}
+.pf-dust{width:10px;height:6px;border-radius:50%;background:rgba(170,140,95,.45);pointer-events:none;animation:pfDust .7s ease-out forwards}
+.winter .pf-dust{background:rgba(255,255,255,.85)}
+.pf-say{position:absolute;bottom:calc(100% - 4px);left:50%;transform:translateX(-50%);background:#fff;color:#222;font:700 11px/1.2 system-ui,sans-serif;white-space:nowrap;padding:5px 9px;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.22);z-index:5;pointer-events:none;animation:pfSay 2.6s ease forwards}
+.pf-say::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:#fff}
+.pf-say.l{left:4px;transform:none}.pf-say.l::after{left:24px}
+.pf-say.r{left:auto;right:4px;transform:none}.pf-say.r::after{left:auto;right:20px}
+.pf-treat{transform:translateX(-50%);font-size:17px;line-height:1;pointer-events:none;animation:pfDrop .45s cubic-bezier(.3,1.5,.5,1)}
+.pet-field.sleeping .pet-hop{animation:pfSleep 3s ease-in-out infinite}
+.pet-field.spin .pet-hop{animation:pfSpin .8s ease-in-out}
+.pet-field.stretch .pet-hop{animation:pfStretch 1.4s ease-in-out}
+@keyframes pfTuft{50%{transform:skewX(5deg)}}
+@keyframes pfFall{0%{transform:translate(0,0) rotate(0)}25%{transform:translate(12px,45px) rotate(80deg)}50%{transform:translate(-6px,95px) rotate(170deg)}75%{transform:translate(14px,140px) rotate(250deg)}100%{transform:translate(2px,190px) rotate(340deg)}}
+@keyframes pfFF{0%,100%{transform:translate(0,0);opacity:.15}50%{transform:translate(12px,-14px);opacity:1}}
+@keyframes pfDust{from{transform:scale(.5);opacity:.9}to{transform:scale(1.8) translateY(-4px);opacity:0}}
+@keyframes pfSay{0%{opacity:0;margin-bottom:-6px}10%,85%{opacity:1;margin-bottom:0}100%{opacity:0}}
+@keyframes pfDrop{from{transform:translateX(-50%) translateY(-30px) scale(.6);opacity:0}to{transform:translateX(-50%) translateY(0) scale(1);opacity:1}}
+@keyframes pfSleep{0%,100%{transform:scale(1.04,.88) translateY(3px)}50%{transform:scale(1.06,.85) translateY(4px)}}
+@keyframes pfSpin{50%{transform:translateY(-18px) rotate(180deg)}100%{transform:rotate(360deg)}}
+@keyframes pfStretch{35%{transform:scale(1.16,.82)}70%{transform:scale(.94,1.08)}}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -7415,12 +7454,13 @@ function checkCheers(){try{
 setInterval(()=>{if(document.visibilityState==="visible"&&typeof frMe!=="undefined"&&frMe?.code)loadSocial()},90000);
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&typeof frMe!=="undefined"&&frMe?.code)loadSocial()});
 
-/* ---------- Mascota en su campo: fondo, entorno que crece con el nivel y paseo con interacciones ---------- */
+/* ---------- Mascota en su campo: entorno que crece con el nivel, hora del día, estaciones y paseo con interacciones ---------- */
 /* st = etapas [nivel desde el que aparece, emoji, tamaño]. act = cómo interactúa la mascota. */
 const SCENE=[
   {id:"bA",back:1,x:7,nm:"un árbol",st:[[0,"🌱",16],[2,"🌿",24],[4,"🌳",30],[7,"🌳",37],[10,"🌳",44]]},
   {id:"bB",back:1,x:91,nm:"un pino",st:[[3,"🌱",15],[5,"🌲",24],[8,"🌲",30],[10,"🌲",38]]},
   {id:"bC",back:1,x:30,nm:"otro árbol",st:[[6,"🌱",14],[8,"🌳",24],[10,"🌳",31]]},
+  {id:"home",back:1,x:64,nm:"una caseta",st:[[3,"🏡",24],[8,"🏡",31]]},
   {id:"fl1",x:12,d:20,act:"flower",nm:"flores",st:[[0,"🌱",12],[1,"🌼",15]]},
   {id:"fl2",x:36,d:4,act:"flower",nm:"flores",st:[[1,"🌱",12],[2,"🌷",16]]},
   {id:"fl3",x:84,d:12,act:"flower",nm:"flores",st:[[2,"🌱",12],[3,"🌼",16]]},
@@ -7434,62 +7474,90 @@ const SCENE=[
   {id:"pond",x:56,d:4,act:"drink",nm:"un estanque",pond:1,st:[[5,"",64]]}
 ];
 const sceneAt=(it,L)=>{let s=null;for(const e of it.st)if(L>=e[0])s=e;return s};
-let petFx={timer:0,x:null,y:null,dir:1,chase:0};
-function sceneHtml(L,kind,grow){
-  return SCENE.map(it=>{const s=sceneAt(it,L);if(!s)return"";
+let petFx={timer:0,dust:0,zz:0,x:null,y:null,dir:1,chase:0};
+const pfTime=()=>{const h=new Date().getHours();return h>=21||h<7?"night":h<9?"dawn":h>=18?"dusk":"day"};
+const pfSeason=()=>{const m=new Date().getMonth();return m===11||m<2?"winter":m<5?"spring":m<8?"summer":"autumn"};
+const pfPick=a=>a[Math.floor(Math.random()*a.length)];
+function sceneHtml(L,kind,grow,season){
+  let h=SCENE.map(it=>{const s=sceneAt(it,L);if(!s)return"";
     const emo=s[1]==="BALL"?(kind==="gorila"?"⚽":"🧶"):s[1];
     if(it.pond)return`<i class="pf-pond" data-act="drink" data-d="${it.d}" style="left:${it.x}%;bottom:${6+it.d}px;z-index:${100-it.d}" aria-hidden="true"></i>`;
     const style=it.back?`left:${it.x}%;bottom:41%;font-size:${s[2]}px;z-index:1`:`left:${it.x}%;bottom:${6+it.d}px;font-size:${s[2]}px;z-index:${100-it.d}`;
-    return`<span class="pf-it${it.back?" back":""}${it.act==="ball"?" ball":""}${grow&&s[0]===L?" grow":""}" ${it.act?`data-act="${it.act}" data-d="${it.d}"`:""} ${it.id==="tr1"?`data-apples="${L>=7?1:0}"`:""} style="${style}" aria-hidden="true">${emo}</span>`}).join("")}
+    return`<span class="pf-it${it.back?" back":""}${it.act==="ball"?" ball":""}${grow&&s[0]===L?" grow":""}" ${it.act?`data-act="${it.act}" data-d="${it.d}"`:""} ${it.id==="tr1"?`data-apples="${L>=7?1:0}"`:""} style="${style}" aria-hidden="true">${emo}</span>`}).join("");
+  if(season==="winter"&&L>=2)h+=`<span class="pf-it" data-act="snow" data-d="8" style="left:20%;bottom:14px;font-size:24px;z-index:92" aria-hidden="true">⛄</span>`;
+  if(season==="autumn"&&L>=1)h+=`<span class="pf-it" data-act="leaves" data-d="2" style="left:68%;bottom:8px;font-size:15px;z-index:98" aria-hidden="true">🍂</span>`;
+  return h}
 function nextUnlock(L){let m=1e9;for(const it of SCENE)for(const e of it.st)if(e[0]>L&&e[0]<m)m=e[0];if(m===1e9)return null;
   const names=[...new Set(SCENE.filter(it=>it.st.some(e=>e[0]===m)).map(it=>it.nm))];return{L:m,t:names.join(" y ")}}
+function fallHtml(season,sad){
+  if(sad)return`<i class="pf-rain" aria-hidden="true"></i>`;
+  const cfg={autumn:{n:7,e:["🍂","🍁"],s:[11,15]},winter:{n:16,e:["❄"],s:[7,12]},spring:{n:6,e:["🌸"],s:[8,11]}}[season];if(!cfg)return"";
+  let h="";for(let i=0;i<cfg.n;i++){const sz=cfg.s[0]+Math.random()*(cfg.s[1]-cfg.s[0]),dur=6+Math.random()*6;
+    h+=`<i class="pf-fall" style="left:${(i/cfg.n*100+Math.random()*8).toFixed(1)}%;font-size:${sz.toFixed(0)}px;animation-duration:${dur.toFixed(1)}s;animation-delay:-${(Math.random()*dur).toFixed(1)}s" aria-hidden="true">${pfPick(cfg.e)}</i>`}
+  return h}
 function petFieldHtml(P,nm,kind){
-  const h=new Date().getHours(),night=h>=21||h<7,sad=P.mood==="sad",happy=P.mood==="happy",L=P.L;
-  const cls=["pet-field",night?"night":"",sad?"gloomy":"",happy?"sunny":""].filter(Boolean).join(" ");
-  return`<div class="${cls}" id="petTap" role="button" tabindex="0" aria-label="${esc(nm)}: ${esc(P.stage.n)}, nivel ${L}. Toca para saltar">
+  const tm=pfTime(),night=tm==="night",season=pfSeason(),sad=P.mood==="sad",happy=P.mood==="happy",L=P.L;
+  const cls=["pet-field",tm,season,sad?"gloomy":"",happy?"sunny":""].filter(Boolean).join(" ");
+  const ff=night?Array.from({length:6},(_,i)=>`<i class="pf-ff" style="left:${(6+i*15+Math.random()*6).toFixed(0)}%;bottom:${(14+Math.random()*40).toFixed(0)}%;animation-delay:-${(Math.random()*4).toFixed(1)}s" aria-hidden="true"></i>`).join(""):"";
+  return`<div class="${cls}" id="petTap" role="button" tabindex="0" aria-label="${esc(nm)}: ${esc(P.stage.n)}, nivel ${L}. Toca a ${esc(nm)} para que salte o toca el campo para darle de comer">
    <div class="pf-sky"></div>
    ${night?`<span class="pf-moon" aria-hidden="true">🌙</span><i class="pf-stars" aria-hidden="true"></i>`:`<span class="pf-sun" aria-hidden="true">${sad?"":"☀️"}</span>`}
    <i class="pf-cloud c1" aria-hidden="true"></i><i class="pf-cloud c2" aria-hidden="true"></i>
    ${!night&&!sad&&L>=10?`<span class="pf-rainbow" aria-hidden="true">🌈</span>`:""}
    ${!night&&!sad&&L>=4?`<span class="pf-bird" aria-hidden="true">🐦</span>`:""}
+   <i class="pf-mnt" aria-hidden="true"></i>
    <i class="pf-hill h1" aria-hidden="true"></i><i class="pf-hill h2" aria-hidden="true"></i>
-   <i class="pf-fence" aria-hidden="true"></i><i class="pf-grass" aria-hidden="true"></i>
-   ${sceneHtml(L,kind,petFx.lastL!=null&&petFx.lastL<L)}
-   ${!night&&!sad&&L>=7?`<span class="pf-bee" aria-hidden="true">🐝</span>`:""}
-   ${happy&&!night?`<span class="pf-bf" aria-hidden="true">🦋</span>`:""}
-   ${sad?`<i class="pf-rain" aria-hidden="true"></i>`:""}
+   <i class="pf-fence" aria-hidden="true"></i><i class="pf-grass" aria-hidden="true"></i><i class="pf-path" aria-hidden="true"></i>
+   ${sceneHtml(L,kind,petFx.lastL!=null&&petFx.lastL<L,season)}
+   ${!night&&!sad&&L>=7&&season!=="winter"?`<span class="pf-bee" aria-hidden="true">🐝</span>`:""}
+   ${happy&&!night&&season!=="winter"?`<span class="pf-bf" aria-hidden="true">🦋</span>`:""}
+   ${ff}${fallHtml(season,sad)}
    <div class="pet-walker"><i class="pet-shadow"></i><div class="pet-flip"><div class="pet-hop">${petSVG(P.lv,P.mood,kind)}</div></div></div>
+   <i class="pf-tufts" aria-hidden="true"></i>
    <span class="pet-lv mono">${L}</span></div>`}
 function petWander(field,P,kind){
-  clearTimeout(petFx.timer);
+  clearTimeout(petFx.timer);clearInterval(petFx.dust);clearInterval(petFx.zz);petFx.feed=null;petFx.poke=null;
   const w=field.querySelector(".pet-walker"),flip=field.querySelector(".pet-flip");if(!w||!flip)return;
-  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches,MAXY=44,SZ=76,gor=kind==="gorila";
-  const spd=P.mood==="sad"?13:P.mood==="happy"?36:24;
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches,MAXY=44,SZ=76,gor=kind==="gorila",night=field.classList.contains("night"),sad=P.mood==="sad";
+  const spd=sad?13:P.mood==="happy"?36:24;
   const W=()=>Math.max(160,field.clientWidth||300);
   const put=(x,y,dur)=>{w.style.transitionDuration=dur+"s";w.style.transform=`translate3d(${Math.round(x)}px,${-Math.round(y)}px,0)`;w.style.zIndex=String(100-Math.round(y));
     const s=1-(y/MAXY)*.2;flip.style.transform=`scale(${(petFx.dir*s).toFixed(3)},${s.toFixed(3)})`};
   const face=d=>{petFx.dir=d;put(petFx.x,petFx.y,0)};
-  const popAt=(emoji,ox)=>{const e=document.createElement("span");e.className="pf-pop";e.textContent=emoji;const wr=w.getBoundingClientRect(),fr=field.getBoundingClientRect();
+  const popAt=(emoji,ox)=>{if(!field.isConnected)return;const e=document.createElement("span");e.className="pf-pop";e.textContent=emoji;const wr=w.getBoundingClientRect(),fr=field.getBoundingClientRect();
     e.style.left=(wr.left-fr.left+(ox??30))+"px";e.style.top=(wr.top-fr.top-2)+"px";field.appendChild(e);setTimeout(()=>e.remove(),1100)};
-  const later=(fn,ms)=>{petFx.timer=setTimeout(()=>{if(field.isConnected)fn()},ms)};
+  const SAY=sad?["Te echo de menos…","¿Entrenamos hoy?","Me aburro…","¿Y si vamos al box?"]:night?["Zzz…","Mañana entrenamos 😴","Qué sueño…"]:
+    gor?["¡Uh uh!","¿Press banca?","Plátano post-entreno 🍌","¡Más hierro!","Fuerza de gorila 💪","¿Hoy toca espalda?"]:["¡Miau!","¿Hoy toca pierna?","Una serie más 💪","Prrr…","¡Dame un PR!","Estiro y a por ello"];
+  const say=t=>{if(!field.isConnected)return;w.querySelector(".pf-say")?.remove();const b=document.createElement("span");b.className="pf-say";b.textContent=t||pfPick(SAY);
+    if(petFx.x<34)b.classList.add("l");else if(petFx.x>W()-SZ-34)b.classList.add("r");w.appendChild(b);setTimeout(()=>b.remove(),2600)};
+  const later=(fn,ms)=>{clearTimeout(petFx.timer);petFx.timer=setTimeout(()=>{if(field.isConnected)fn()},ms)};
+  const curPos=()=>{try{const m=new DOMMatrixReadOnly(getComputedStyle(w).transform);return{x:m.m41,y:-m.m42}}catch(e){return{x:petFx.x,y:petFx.y}}};
+  const CLS=["walking","resting","sniff","sleeping","spin","stretch","hopping"];
+  const stopAll=()=>{clearTimeout(petFx.timer);clearInterval(petFx.dust);clearInterval(petFx.zz);const p=curPos();petFx.x=p.x;petFx.y=p.y;field.classList.remove(...CLS);put(petFx.x,petFx.y,0)};
   if(petFx.x==null||petFx.x>W()-SZ){petFx.x=(W()-SZ)/2;petFx.y=10}
   put(petFx.x,petFx.y,0);
-  if(reduce)return;
+  const hop=ms=>{field.classList.add("hopping");setTimeout(()=>field.classList.remove("hopping"),ms||700)};
+  if(reduce){petFx.poke=()=>{say()};return}
   const cx=el=>{const r=el.getBoundingClientRect(),f=field.getBoundingClientRect();return r.left-f.left+r.width/2};
   const goTo=(nx,ny,done)=>{const d=Math.hypot(nx-petFx.x,(ny-petFx.y)*2),dur=Math.max(1.2,d/spd);
     petFx.dir=nx>=petFx.x?1:-1;put(petFx.x,petFx.y,0);void w.offsetWidth;
     field.classList.add("walking");put(nx,ny,dur);petFx.x=nx;petFx.y=ny;
-    later(()=>{field.classList.remove("walking");done()},dur*1000)};
+    clearInterval(petFx.dust);petFx.dust=setInterval(()=>{if(!field.isConnected){clearInterval(petFx.dust);return}const p=curPos(),k=document.createElement("i");k.className="pf-dust";
+      k.style.left=(p.x+SZ/2-5-petFx.dir*16)+"px";k.style.bottom=(5+p.y)+"px";k.style.zIndex=String(99-Math.round(p.y));field.appendChild(k);setTimeout(()=>k.remove(),700)},330);
+    later(()=>{clearInterval(petFx.dust);field.classList.remove("walking");done()},dur*1000)};
   const rest=(ms,fn)=>{field.classList.add("resting");later(()=>{field.classList.remove("resting");fn()},ms)};
-  const hop=ms=>{field.classList.add("hopping");setTimeout(()=>field.classList.remove("hopping"),ms||700)};
   const next=()=>later(step,500+Math.random()*1800);
+  const sleep=ms=>{field.classList.add("sleeping");popAt("💤");clearInterval(petFx.zz);petFx.zz=setInterval(()=>{if(!field.isConnected){clearInterval(petFx.zz);return}popAt("💤",44)},1700);
+    later(()=>{clearInterval(petFx.zz);field.classList.remove("sleeping");next()},ms)};
   const interact=it=>{
     const act=it.dataset.act,side=Math.random()<.5?-1:1,ix=cx(it),d=Number(it.dataset.d)||10;
     const nx=Math.max(6,Math.min(W()-SZ-6,ix-SZ/2+side*(act==="drink"?0:30))),ny=act==="drink"?d+8:d;
     goTo(nx,ny,()=>{face(ix>=petFx.x+SZ/2?1:-1);
-      if(act==="flower"){field.classList.add("sniff");later(()=>{field.classList.remove("sniff");popAt(gor?"💚":"💕");next()},1700)}
+      if(act==="flower"){field.classList.add("sniff");later(()=>{field.classList.remove("sniff");popAt(gor?"💚":"💕");if(Math.random()<.3)say(gor?"Huele a victoria":"Mmm, flores");next()},1700)}
+      else if(act==="snow"){hop(600);popAt("❄️");later(()=>{say(gor?"¡Brr! A calentar":"¡Qué frío!");next()},900)}
+      else if(act==="leaves"){hop(600);popAt("🍂");popAt("🍁",50);later(next,1000)}
       else if(act==="drink"){const pd=field.querySelector(".pf-pond");pd&&pd.classList.add("ripple");popAt("💧");field.classList.add("sniff");
-        later(()=>{popAt("💧",44);later(()=>{pd&&pd.classList.remove("ripple");field.classList.remove("sniff");next()},1200)},1300)}
+        later(()=>{popAt("💧",44);later(()=>{pd&&pd.classList.remove("ripple");field.classList.remove("sniff");if(Math.random()<.35)say("¡A hidratarse!");next()},1200)},1300)}
       else if(act==="tree"){
         if(it.dataset.apples==="1"&&Math.random()<.55){
           const fr=field.getBoundingClientRect(),tr=it.getBoundingClientRect(),a=document.createElement("span");a.className="pf-apple";a.textContent="🍎";
@@ -7505,28 +7573,42 @@ function petWander(field,P,kind){
   const step=()=>{
     if(!field.isConnected)return;
     if(document.hidden){petFx.timer=setTimeout(step,2500);return}
-    const items=[...field.querySelectorAll("[data-act]")],r=Math.random();
     if(petFx.chase){petFx.chase=0;const b=field.querySelector("[data-act=ball]");if(b){interact(b);return}}
-    if(items.length&&r<.55){interact(items[Math.floor(Math.random()*items.length)]);return}
-    if(r<.55+(P.mood==="happy"?.2:.07)){hop(700);later(step,1100+Math.random()*1200);return}
-    if(r<.85){rest(2500+Math.random()*2500,next);return}
-    const nx=6+Math.random()*(W()-SZ-12),ny=Math.random()*MAXY;goTo(nx,ny,next)};
+    const items=[...field.querySelectorAll("[data-act]")],opts=[],add=(wt,fn)=>opts.push([wt,fn]);
+    if(night)add(6,()=>sleep(5000+Math.random()*4000));
+    if(items.length)add(night?1.5:5.5,()=>interact(pfPick(items)));
+    add(P.mood==="happy"?2:.6,()=>{hop(700);later(step,1100+Math.random()*1200)});
+    add(1.1,()=>{say();rest(2700,next)});
+    if(!sad)add(.7,()=>{field.classList.add("spin");popAt("✨");setTimeout(()=>field.classList.remove("spin"),850);later(next,1000)});
+    add(.7,()=>{field.classList.add("stretch");setTimeout(()=>field.classList.remove("stretch"),1450);later(next,1500)});
+    add(sad?3:1.4,()=>rest(2500+Math.random()*2500,next));
+    add(3,()=>goTo(6+Math.random()*(W()-SZ-12),Math.random()*MAXY,next));
+    let t=Math.random()*opts.reduce((a,o)=>a+o[0],0);for(const[wt,fn] of opts){if((t-=wt)<=0){fn();return}}opts[opts.length-1][1]()};
+  /* Tocar el campo: le dejas comida y va a por ella */
+  petFx.feed=(px,pyb)=>{const wasSleep=field.classList.contains("sleeping");stopAll();
+    const ty=Math.max(0,Math.min(MAXY,pyb-12)),tx=Math.max(14,Math.min(W()-14,px));
+    field.querySelectorAll(".pf-treat").forEach(e=>e.remove());
+    const t=document.createElement("span");t.className="pf-treat";t.textContent=gor?"🍌":"🐟";t.style.left=tx+"px";t.style.bottom=(6+ty)+"px";t.style.zIndex=String(100-Math.round(ty));field.appendChild(t);
+    if(wasSleep)popAt("❗");
+    const side=tx<petFx.x+SZ/2?1:-1;
+    later(()=>goTo(Math.max(6,Math.min(W()-SZ-6,tx-SZ/2+side*26)),ty,()=>{face(tx>=petFx.x+SZ/2?1:-1);field.classList.add("sniff");
+      later(()=>{t.remove();field.classList.remove("sniff");hop(600);popAt("😋");if(Math.random()<.5)say(gor?"¡Gracias! 🍌":"¡Ñam, pescado!");later(next,1100)},900)}),wasSleep?500:150)};
+  /* Tocar a la mascota */
+  petFx.poke=()=>{stopAll();hop(700);popAt(pfPick(["💪","❤️","🔥","⭐","💥"]));if(Math.random()<.5)say();later(next,1200)};
   petFx.timer=setTimeout(step,700);
 }
 {const _pp=paintPet;paintPet=function(){_pp();try{
   const c=$("#petCard");if(!c||!profile||!profile.petOn)return;const card=c.querySelector(".pet-card"),old=c.querySelector(".pet-art");if(!card||!old)return;
   const P=petState(),nm=petNm(),kind=petKind();
   old.insertAdjacentHTML("afterend",petFieldHtml(P,nm,kind));old.remove();card.classList.add("has-field");
-  const nu=nextUnlock(P.L),t=card.querySelector(".pet-t");if(t)t.insertAdjacentHTML("beforeend",`<span class="muted pf-next">🌱 El campo crece con su nivel${nu?`: en el nivel ${nu.L} aparece ${esc(nu.t)}.`:". ¡Ya está completo!"}</span>`);
+  const nu=nextUnlock(P.L),t=card.querySelector(".pet-t");if(t)t.insertAdjacentHTML("beforeend",`<span class="muted pf-next">🌱 El campo crece con su nivel${nu?`: en el nivel ${nu.L} aparece ${esc(nu.t)}.`:". ¡Ya está completo!"}</span><span class="muted pf-next">👆 Tócale para que salte o toca el campo para darle ${kind==="gorila"?"un plátano 🍌":"un pescado 🐟"}.</span>`);
   petFx.lastL=P.L;
   const f=$("#petTap");petWander(f,P,kind);
-  const tap=ev=>{if(ev&&ev.type==="keydown"&&ev.key!=="Enter"&&ev.key!==" ")return;if(ev&&ev.type==="keydown")ev.preventDefault();
-    f.classList.add("hopping");setTimeout(()=>f.classList.remove("hopping"),700);
-    const e=document.createElement("span");e.className="pf-pop";e.textContent=["💪","❤️","🔥","⭐","💥"][Math.floor(Math.random()*5)];
-    const wr=f.querySelector(".pet-walker").getBoundingClientRect(),fr=f.getBoundingClientRect();e.style.left=(wr.left-fr.left+30)+"px";e.style.top=(wr.top-fr.top-4)+"px";f.appendChild(e);setTimeout(()=>e.remove(),1100);
-    try{navigator.vibrate&&navigator.vibrate(20)}catch(x){}
-    const h=$("#petHelp");if(h)h.hidden=!h.hidden};
-  f.onclick=tap;f.onkeydown=tap;
+  const poke=()=>{if(petFx.poke)petFx.poke();try{navigator.vibrate&&navigator.vibrate(20)}catch(x){}const h=$("#petHelp");if(h)h.hidden=!h.hidden};
+  f.onclick=ev=>{if(ev.target.closest(".pet-lv"))return;const wr=f.querySelector(".pet-walker").getBoundingClientRect();
+    const on=ev.clientX>=wr.left+6&&ev.clientX<=wr.right-6&&ev.clientY>=wr.top&&ev.clientY<=wr.bottom;
+    if(on||!petFx.feed||!ev.clientX){poke();return}const fr=f.getBoundingClientRect();petFx.feed(ev.clientX-fr.left,fr.bottom-ev.clientY)};
+  f.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();poke()}};
 }catch(e){}}}
 paintPet();
 </script>

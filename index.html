@@ -2112,6 +2112,7 @@ button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding
 .mo-det>summary small{color:var(--muted);font-weight:400;font-size:13px}.mo-det[open]{padding-bottom:12px}
 .ex-more{margin-top:6px}.ex-more>summary{cursor:pointer;font-size:13px;color:var(--muted);padding:4px 0;list-style:none}.ex-more>summary::-webkit-details-marker{display:none}
 .ex-more>summary::before{content:"＋ "}.ex-more[open]>summary::before{content:"− "}.ex-more[open]{display:flex;flex-direction:column;gap:8px}
+.go-form select{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;padding:0 12px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
@@ -5762,37 +5763,59 @@ function sleepInsights(){const W=workouts.filter(w=>w.sleep||w.energy);if(W.leng
 
 /* ---------- 4 · Objetivos con fecha ---------- */
 const kgGoals=()=>Array.isArray(profile?.kgGoals)?profile.kgGoals:[];
-const bestKg=name=>{const s=exSeries(exKey(name));return s.length?Math.max(...s.map(p=>p.v)):0};
-function goalDone(g){const s=exSeries(exKey(g.name)).filter(p=>p.d>=g.from&&p.v>=g.kg);return s.length?s[0].d:null}
-function projection(g){const s=exSeries(exKey(g.name)),cut=isoD(addDays(new Date(),-120)),pts=s.filter(p=>p.d>=cut);if(pts.length<3)return null;
+/* Tipos de objetivo: no todo se mide en kilos */
+const G_UNITS=[["kg","Peso (kg)","kg"],["reps","Repeticiones","reps"],["time","Tiempo","tiempo"],["m","Metros","m"],["km","Kilómetros","km"],["cal","Calorías","cal"]];
+const gUnit=g=>g.unit||"kg",gTarget=g=>gUnit(g)==="kg"?g.kg:g.target,lowerU=u=>u==="time";
+const gFmt=(v,u)=>v==null||v===0&&u!=="kg"?"—":u==="kg"?`${kg(v)} kg`:u==="time"?fmtTime(v):u==="reps"?`${v} reps`:`${String(Math.round(v*100)/100).replace(".",",")} ${u}`;
+function gParse(t,u){t=String(t||"").trim();if(!t)return null;if(u==="time"){if(t.includes(":"))return parseTime(t);const n=parseInt(t,10);if(!n)return null;return t.length>=3?Math.floor(n/100)*60+n%100:n}return u==="kg"?f2num(t):num(t)}
+function seriesU(name,u){if(u==="kg")return exSeries(exKey(name));const key=exKey(name),m=new Map(),lw=lowerU(u);
+  for(const w of workouts){if(!w.date)continue;for(const e0 of(w.exercises||[])){if(!e0.name||exKey(e0.name)!==key)continue;const e=myEx(e0);
+    const v=u==="time"?(Number(e.time)||null):num(e.reps);if(!v)continue;const o=m.get(w.date);if(o==null||(lw?v<o:v>o))m.set(w.date,v)}}
+  return[...m.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([d,v])=>({d,v}))}
+const bestU=(name,u)=>{const s=seriesU(name,u);if(!s.length)return 0;return lowerU(u)?Math.min(...s.map(p=>p.v)):Math.max(...s.map(p=>p.v))};
+const bestKg=name=>bestU(name,"kg");
+function goalDone(g){if(g.doneAt)return g.doneAt;const u=gUnit(g),t=gTarget(g),s=seriesU(g.name,u).filter(p=>p.d>=g.from&&(lowerU(u)?p.v<=t:p.v>=t));return s.length?s[0].d:null}
+function projection(g){if(gUnit(g)!=="kg")return null;const s=exSeries(exKey(g.name)),cut=isoD(addDays(new Date(),-120)),pts=s.filter(p=>p.d>=cut);if(pts.length<3)return null;
   const xs=pts.map(p=>dObj(p.d).getTime()/864e5),ys=pts.map(p=>p.v),n=xs.length,mx=xs.reduce((a,b)=>a+b)/n,my=ys.reduce((a,b)=>a+b)/n;
   let sxy=0,sxx=0;for(let i=0;i<n;i++){sxy+=(xs[i]-mx)*(ys[i]-my);sxx+=(xs[i]-mx)**2}if(!sxx)return null;const m=sxy/sxx,b=my-m*mx;if(m<=0.001)return{slope:m};
   const day=(g.kg-b)/m,dt=new Date(day*864e5);return{slope:m,date:isoD(dt)}}
-let goalForm=false;
+/* Tipo que se propone al elegir el ejercicio: kg si lo haces con peso, si no repeticiones o tiempo */
+function guessUnit(name){if(bestU(name,"kg"))return"kg";const c=findEx(name)?.c||"";if(c==="mon"||c==="yca"||/row|run|bike|ski|remo|carrera|correr|bici/i.test(name))return bestU(name,"time")?"time":"m";if(bestU(name,"reps")||c==="gim")return"reps";if(bestU(name,"time"))return"time";return"kg"}
+let goalForm=false,goUnit="kg";
 function renderGoals(){const v=$("#v-goals"),G=kgGoals();
-  const card=g=>{const done=goalDone(g),best=bestKg(g.name),pct=Math.max(0,Math.min(100,(best-g.start)/(g.kg-g.start)*100)),left=Math.ceil((dObj(g.by)-dObj(today()))/864e5);
+  const card=g=>{const u=gUnit(g),t=gTarget(g),done=goalDone(g),best=bestU(g.name,u),lw=lowerU(u),left=Math.ceil((dObj(g.by)-dObj(today()))/864e5);
+    const st=g.start||0,pct=done?100:lw?(st&&best?Math.max(0,Math.min(100,(st-best)/(st-t)*100)):0):Math.max(0,Math.min(100,(best-st)/((t-st)||1)*100));
     let txt="";if(done)txt=`<p class="go-ok">🎉 ¡Conseguido el ${fmtD(done)}! +50 TochiCoins</p>`;
-    else{const p=projection(g);if(left<0)txt=`<p class="go-late">Se pasó la fecha. Te quedaste en ${kg(best)} kg: ¡pon una nueva!</p>`;
+    else{const p=projection(g);if(left<0)txt=`<p class="go-late">Se pasó la fecha. Te quedaste en ${gFmt(best,u)}: ¡pon una nueva!</p>`;
+      else if(u!=="kg")txt=`<p class="muted">Se cuenta con lo que apuntas en ${u==="time"?"Tiempo":"Reps"} de este ejercicio${u==="m"||u==="km"||u==="cal"?` (por ejemplo, 500 = 500 ${u})`:""}. También puedes marcarlo tú.</p><button type="button" class="link-btn" data-gok="${esc(g.id)}">Marcar como conseguido</button>`;
       else if(p?.date){txt=p.date<=g.by?`<p class="go-good">A este ritmo lo consigues hacia el <b>${fmtD(p.date)}</b>, antes de tu fecha ✓</p>`:`<p class="go-warn">A este ritmo llegarías hacia el ${fmtD(p.date)}. Necesitas subir unos <b>${kg(Math.max(.5,(g.kg-best)/Math.max(1,left/7)))} kg por semana</b>.</p>`}
       else if(p)txt=`<p class="go-warn">Últimamente no subes de peso en este ejercicio. Necesitas unos ${kg(Math.max(.5,(g.kg-best)/Math.max(1,left/7)))} kg más por semana.</p>`;
       else txt=`<p class="muted">Apunta este ejercicio con peso al menos 3 veces para ver cuándo lo conseguirás.</p>`}
-    return`<li class="go${done?" ok":""}"><div class="go-h"><b>${esc(g.name)}</b><span class="mono">${kg(g.kg)} kg</span></div>
-     <div class="ch-bar"><i style="width:${done?100:pct}%"></i></div><div class="go-m"><span class="mono">${kg(best)} / ${kg(g.kg)} kg</span><span>${done?"":left>=0?`${left} días · hasta el ${fmtD(g.by)}`:`era el ${fmtD(g.by)}`}</span></div>${txt}
+    return`<li class="go${done?" ok":""}"><div class="go-h"><b>${esc(g.name)}</b><span class="mono">${lw?"≤ ":""}${gFmt(t,u)}</span></div>
+     <div class="ch-bar"><i style="width:${pct}%"></i></div><div class="go-m"><span class="mono">${gFmt(best,u)} / ${gFmt(t,u)}</span><span>${done?"":left>=0?`${left} días · hasta el ${fmtD(g.by)}`:`era el ${fmtD(g.by)}`}</span></div>${txt}
      <button type="button" class="link-btn go-del" data-gdel="${esc(g.id)}">Quitar objetivo</button></li>`};
-  v.innerHTML=`<h2 class="view-title">Objetivos</h2><p class="muted mw-intro">Ponte una meta de peso con fecha y te digo si vas a tiempo según cómo estás subiendo.</p>
+  const U=G_UNITS.find(x=>x[0]===goUnit)||G_UNITS[0];
+  v.innerHTML=`<h2 class="view-title">Objetivos</h2><p class="muted mw-intro">Ponte una meta con fecha: kilos, repeticiones, tiempo, metros, kilómetros o calorías.</p>
    ${goalForm?`<form class="sec go-form" id="goForm"><div class="field"><label for="goEx">Ejercicio</label><input id="goEx" readonly placeholder="Toca para elegir"></div>
-     <div class="grid2"><div class="field"><label for="goKg">Peso objetivo (kg)</label><input id="goKg" class="num" inputmode="decimal"></div><div class="field"><label for="goBy">Antes del</label><input type="date" id="goBy" min="${isoD(addDays(new Date(),7))}" value="${isoD(addDays(new Date(),90))}"></div></div>
+     <div class="field"><label for="goU">Tipo de objetivo</label><select id="goU">${G_UNITS.map(([k,l])=>`<option value="${k}"${k===goUnit?" selected":""}>${l}</option>`).join("")}</select></div>
+     <div class="grid2"><div class="field"><label for="goKg" id="goKgL">${goUnit==="time"?"Tiempo objetivo (mm:ss)":`Objetivo (${U[2]})`}</label><input id="goKg" class="num" inputmode="${goUnit==="kg"||goUnit==="km"?"decimal":"numeric"}" placeholder="${goUnit==="time"?"Ej. 7:30":""}"></div><div class="field"><label for="goBy">Antes del</label><input type="date" id="goBy" min="${isoD(addDays(new Date(),7))}" value="${isoD(addDays(new Date(),90))}"></div></div>
      <p class="muted" id="goNow"></p><p class="form-error" id="goErr" hidden></p><div class="rt-ca"><button class="btn primary" type="submit">Guardar objetivo</button><button type="button" class="btn" id="goCancel">Cancelar</button></div></form>`
    :`<button type="button" class="btn primary full" id="goNew">+ Nuevo objetivo</button>`}
-   ${G.length?`<ul class="go-list">${G.slice().sort((a,b)=>!!goalDone(a)-!!goalDone(b)||a.by.localeCompare(b.by)).map(card).join("")}</ul>`:goalForm?"":`<div class="empty"><h3>Sin objetivos todavía</h3><p>Por ejemplo: 100 kg en sentadilla antes de marzo.</p></div>`}`;
-  const nb=$("#goNew");if(nb)nb.onclick=()=>{goalForm=true;renderGoals();formKind=mode;openPicker($("#goEx"))};
-  if(goalForm){const ex=$("#goEx");ex.onclick=()=>{formKind=mode;openPicker(ex)};ex.addEventListener("change",()=>{const b=bestKg(ex.value);$("#goNow").textContent=b?`Tu máximo ahora: ${kg(b)} kg`:"Aún no tienes peso apuntado en este ejercicio.";if(b&&!$("#goKg").value)$("#goKg").value=kg(b+10)});
+   ${G.length?`<ul class="go-list">${G.slice().sort((a,b)=>!!goalDone(a)-!!goalDone(b)||a.by.localeCompare(b.by)).map(card).join("")}</ul>`:goalForm?"":`<div class="empty"><h3>Sin objetivos todavía</h3><p>Por ejemplo: 100 kg en sentadilla, 10 dominadas seguidas o 2.000 m de remo en 7:30.</p></div>`}`;
+  const nb=$("#goNew");if(nb)nb.onclick=()=>{goalForm=true;goUnit="kg";renderGoals();formKind=mode;openPicker($("#goEx"))};
+  if(goalForm){const ex=$("#goEx"),us=$("#goU");ex.onclick=()=>{formKind=mode;openPicker(ex)};
+    const paintNow=()=>{const u=us.value,b=ex.value?bestU(ex.value,u):0;$("#goNow").textContent=!ex.value?"":b?`Tu mejor marca ahora: ${gFmt(b,u)}`:`Aún no tienes ${u==="time"?"tiempo":u==="kg"?"peso":"este dato"} apuntado en este ejercicio.`};
+    const paintU=()=>{goUnit=us.value;const u=G_UNITS.find(x=>x[0]===goUnit);$("#goKgL").textContent=goUnit==="time"?"Tiempo objetivo (mm:ss)":`Objetivo (${u[2]})`;const i=$("#goKg");i.inputMode=goUnit==="kg"||goUnit==="km"?"decimal":"numeric";i.placeholder=goUnit==="time"?"Ej. 7:30":"";i.value="";paintNow()};
+    us.onchange=paintU;
+    ex.addEventListener("change",()=>{if(!ex.value)return;us.value=guessUnit(ex.value);paintU();const u=us.value,b=bestU(ex.value,u);if(b&&u==="kg")$("#goKg").value=kg(b+10)});
     $("#goCancel").onclick=()=>{goalForm=false;renderGoals()};
-    $("#goForm").onsubmit=async ev=>{ev.preventDefault();const name=ex.value.trim(),k=f2num($("#goKg").value),by=$("#goBy").value,e=m=>{$("#goErr").textContent=m;$("#goErr").hidden=false};
-      if(!name)return e("Elige el ejercicio.");if(!k)return e("Pon el peso que quieres levantar.");if(!by||by<=today())return e("Elige una fecha futura.");
-      const b=bestKg(name);if(k<=b)return e(`Ya has levantado ${kg(b)} kg: ponte un objetivo más alto.`);
-      await saveProf({kgGoals:[...kgGoals(),{id:"g"+Date.now().toString(36),name:findEx(name)?.n||name,kg:k,by,from:today(),start:b}]},"Objetivo guardado 🎯");goalForm=false;renderGoals()}}
+    $("#goForm").onsubmit=async ev=>{ev.preventDefault();const name=ex.value.trim(),u=us.value,k=gParse($("#goKg").value,u),by=$("#goBy").value,e=m=>{$("#goErr").textContent=m;$("#goErr").hidden=false};
+      if(!name)return e("Elige el ejercicio.");if(!k)return e(u==="time"?"Pon el tiempo que quieres conseguir (mm:ss).":"Pon la cifra que quieres conseguir.");if(!by||by<=today())return e("Elige una fecha futura.");
+      const b=bestU(name,u);if(b&&(lowerU(u)?k>=b:k<=b))return e(`Ya tienes ${gFmt(b,u)}: ponte un objetivo ${lowerU(u)?"más rápido":"más alto"}.`);
+      const it={id:"g"+Date.now().toString(36),name:findEx(name)?.n||name,by,from:today(),start:b};if(u==="kg")it.kg=k;else{it.unit=u;it.target=k}
+      await saveProf({kgGoals:[...kgGoals(),it]},"Objetivo guardado 🎯");goalForm=false;renderGoals()}}
   v.querySelectorAll("[data-gdel]").forEach(b=>b.onclick=async()=>{await saveProf({kgGoals:kgGoals().filter(g=>g.id!==b.dataset.gdel)},"Objetivo quitado");renderGoals()});
+  v.querySelectorAll("[data-gok]").forEach(b=>b.onclick=async()=>{await saveProf({kgGoals:kgGoals().map(g=>g.id===b.dataset.gok?{...g,doneAt:today()}:g)},"¡Objetivo conseguido! 🎉");renderGoals()});
 }
 function openGoals(){goalForm=false;openTool("goals","Objetivos",renderGoals)}
 
@@ -5885,7 +5908,7 @@ async function loadDuels(){if(!FRIENDS_API?.duelList||!frMe?.code)return;try{due
   if(add.length)await saveProf({duelLog:[...log,...add].slice(-200)});paintDuelDot()}
 function paintDuelDot(){const b=$("#topFriends");if(!b)return;const n=duels.filter(d=>d.status==="pending"&&!d.mine&&String(d.wk)===isoD(mondayOf(new Date()))).length;b.classList.toggle("has-dot",n>0);if(n)b.setAttribute("aria-label",`Amigos: ${n} reto${n>1?"s":""} pendiente${n>1?"s":""}`)}
 {const _cl=coinLedger;coinLedger=function(){const out=_cl();try{for(const e of duelLog())if(e.amt)out.push({date:e.date,amt:e.amt,why:e.why});
-    for(const g of kgGoals()){const d=goalDone(g);if(d)out.push({date:d,amt:50,why:`Objetivo cumplido: ${g.kg} kg en ${g.name}`})}
+    for(const g of kgGoals()){const d=goalDone(g);if(d)out.push({date:d,amt:50,why:`Objetivo cumplido: ${gFmt(gTarget(g),gUnit(g))} en ${g.name}`})}
     for(const s of secretsState())if(s.date)out.push({date:s.date,amt:25,why:`Logro secreto: ${s.n}`})}catch(e){}return out.sort((a,b)=>(b.date||"").localeCompare(a.date||""))}}
 function duelsHtml(){const cur=isoD(mondayOf(new Date())),bal=coinBalance().bal;if(!duels.length)return"";
   const row=d=>{const wk=String(d.wk),now=wk===cur,who=esc(d.friend_name||"Tu amigo"),u=d.kind==="kg"?"kg":"días",sc=n=>d.kind==="kg"?fmtBig(n):n;
@@ -6478,7 +6501,7 @@ const INTRO={
  challenges:"Tres retos nuevos cada lunes y uno grande cada mes. Se completan solos con lo que apuntas y te pagan en TochiCoins. Entrenar ya era bueno; ahora además cobras.",
  maxes:"Tu salón de la fama: el peso más alto que has levantado en cada ejercicio. Toca uno para ver cómo ha ido subiendo. Spoiler: hacia arriba.",
  plates:"Dime cuánto quieres levantar y te digo qué discos poner en cada lado. Se acabaron las cuentas de cabeza entre serie y serie.",
- goals:"Ponle fecha a tus metas: «100 kg en sentadilla antes de marzo». Te digo si vas a tiempo y cuánto te falta. Si lo cumples, hay premio.",
+ goals:"Ponle fecha a tus metas: «100 kg en sentadilla», «10 dominadas» o «2.000 m de remo en 7:30». Te digo cuánto te falta. Si lo cumples, hay premio.",
  muscles:"El mapa de tu cuerpo: se colorea según lo que trabajas. Si una zona sale gris, te está mirando con cara de abandono.",
  summary:"Tu semana en una imagen: días, kilos, récords y retos. Lista para presumir en el grupo del box (con moderación).",
  totals:"Las cifras gordas: todas las repeticiones y kilos acumulados en cada ejercicio. Prepárate para sentirte una máquina.",

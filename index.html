@@ -2854,7 +2854,8 @@ function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTi
 let mode="cf",modeStored=false;try{const _m=localStorage.getItem("tochinuri-mode");modeStored=!!_m;if(_m==="gym")mode="gym"}catch(e){}
 let formKind="cf";
 const isGymCat=c=>c&&c[0]==="y";
-const exFor=k=>k==="gym"?EX.filter(e=>isGymCat(e.c)||e.y):EX.filter(e=>!isGymCat(e.c));
+const exAZ=(a,b)=>a.n.localeCompare(b.n,"es",{sensitivity:"base",numeric:true});
+const exFor=k=>(k==="gym"?EX.filter(e=>isGymCat(e.c)||e.y):EX.filter(e=>!isGymCat(e.c))).sort(exAZ);
 const catIn=(e,k)=>k==="gym"?(isGymCat(e.c)?e.c:e.y):e.c;
 const catsFor=k=>Object.entries(CATS).filter(([c])=>isGymCat(c)===(k==="gym"));
 var LOG_ALL=false;
@@ -4267,7 +4268,7 @@ function renderChips(){
 function renderLib(){
   const q=norm($("#libSearch").value);
   const F=favs();
-  const list=exFor(mode).filter(e=>(libCat==="all"||(libCat==="fav"?F.has(e.n):catIn(e,mode)===libCat))&&(!q||norm(e.n+" "+e.d+" "+e.m.join(" ")).includes(q))).sort((x,y)=>{if(mode!=="gym")return 0;const o=catsFor("gym").map(c=>c[0]);return o.indexOf(catIn(x,"gym"))-o.indexOf(catIn(y,"gym"))});
+  const list=exFor(mode).filter(e=>(libCat==="all"||(libCat==="fav"?F.has(e.n):catIn(e,mode)===libCat))&&(!q||norm(e.n+" "+e.d+" "+e.m.join(" ")).includes(q))).sort(exAZ);
   $("#libCount").textContent=list.length+(list.length===1?" ejercicio":" ejercicios");
   if(libCat==="fav"&&!F.size){
     $("#libList").innerHTML=`<div class="empty"><h3>Aún no tienes favoritos</h3><p style="margin:0">Toca la ${STAR(false).replace("<svg",'<svg class="inline-star"')} de cualquier ejercicio y aparecerá aquí.</p></div>`;return;

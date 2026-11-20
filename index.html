@@ -8068,8 +8068,20 @@ function wuTone(f,d,v){try{const C=window.AudioContext||window.webkitAudioContex
   const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);const t=ac.currentTime;
   g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v||.3,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.start(t);o.stop(t+d+.02)}catch(e){}}
 const wuVib=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
-async function wuWake(on){try{if(on){if(navigator.wakeLock&&!wuLock){wuLock=await navigator.wakeLock.request("screen");wuLock.addEventListener("release",()=>{wuLock=null})}}else if(wuLock){const l=wuLock;wuLock=null;await l.release()}}catch(e){}}
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&wuTm&&!wuTm.done&&!wuTm.paused)wuWake(true)});
+const WU_VID="data:video/mp4;base64,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";
+let wuKeep=false,wuVid=null,wuKeepT=0;
+const wuIOS=()=>/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+/* Pantalla encendida: la API de Wake Lock y, como respaldo (iPhone con la app instalada), un vídeo mudo diminuto en bucle */
+function wuVideo(on){try{if(on){if(!wuVid){const v=document.createElement("video");v.muted=true;v.loop=true;v.playsInline=true;["muted","playsinline","webkit-playsinline"].forEach(a=>v.setAttribute(a,""));v.setAttribute("aria-hidden","true");v.tabIndex=-1;
+    v.style.cssText="position:fixed;left:0;top:0;width:2px;height:2px;opacity:.02;pointer-events:none;z-index:-1";v.src=WU_VID;document.body.appendChild(v);wuVid=v}
+    const r=wuVid.play();if(r&&r.catch)r.catch(()=>{})}else if(wuVid)wuVid.pause()}catch(e){}}
+async function wuWake(on,renew){
+  if(on){wuKeep=true;if(renew!==false){clearTimeout(wuKeepT);wuKeepT=setTimeout(()=>wuWake(false),20*60*1000)}
+    if(wuIOS())wuVideo(true);
+    try{if(navigator.wakeLock){if(!wuLock){wuLock=await navigator.wakeLock.request("screen");wuLock.addEventListener("release",()=>{wuLock=null})}}else if(!wuIOS())wuVideo(true)}catch(e){if(!wuIOS())wuVideo(true)}}
+  else{wuKeep=false;clearTimeout(wuKeepT);wuVideo(false);try{if(wuLock){const l=wuLock;wuLock=null;await l.release()}}catch(e){}}}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&wuKeep)wuWake(true,false)});
+{const _sh=show;show=function(v){_sh(v);if(v!=="warmup"&&wuKeep)wuWake(false)}}
 function wuPanel(){let p=$("#wuPanel");if(p)return p;p=document.createElement("div");p.id="wuPanel";p.className="wu-panel";p.hidden=true;p.setAttribute("role","timer");
   p.innerHTML=`<div class="wu-p-t"><b id="wuPn"></b><small id="wuPl"></small></div><span class="wu-p-c mono" id="wuPc">0:00</span><button type="button" class="btn" id="wuPp">Pausa</button><button type="button" class="btn primary" id="wuPnx" hidden>Siguiente</button><button type="button" class="icon-btn" id="wuPx" aria-label="Parar y cerrar el cronómetro">×</button>`;
   document.body.appendChild(p);
@@ -8081,14 +8093,14 @@ function wuPaint(){const p=wuPanel();if(!wuTm){p.hidden=true;return}p.hidden=fal
   $("#wuPn").textContent=T.name;$("#wuPl").textContent=T.done?"¡Hecho! Ya puedes parar.":T.paused?"En pausa":ph.l;
   $("#wuPc").textContent=T.done?"✔":wuClock(rem);$("#wuPp").hidden=!!T.done;$("#wuPp").textContent=T.paused?"Seguir":"Pausa";$("#wuPnx").hidden=!T.done;
   p.style.setProperty("--p",T.done?"100%":Math.round((1-rem/(ph.s*1000))*100)+"%")}
-function wuStop(){clearInterval(wuInt);wuInt=0;const was=wuTm;wuTm=null;wuWake(false);const p=$("#wuPanel");if(p)p.hidden=true;if(was&&current==="warmup")renderWarm()}
+function wuStop(){clearInterval(wuInt);wuInt=0;const was=wuTm;wuTm=null;const p=$("#wuPanel");if(p)p.hidden=true;if(was&&current==="warmup")renderWarm()}
 function wuStart(id){const f=wuFind(id);if(!f)return;clearInterval(wuInt);const ph=wuPhases(f.x);
   wuTm={id,name:f.x[0],ph,i:0,end:Date.now()+ph[0].s*1000,paused:false,left:0,done:false,lb:0};wuTone(660,.1,.2);wuWake(true);wuPaint();wuInt=setInterval(wuTick,250);
   if(current==="warmup"){const y=scrollY;renderWarm();scrollTo(0,y)}}
 function wuTick(){const T=wuTm;if(!T)return clearInterval(wuInt);if(current!=="warmup")return wuStop();if(T.paused||T.done)return;
   let rem=T.end-Date.now();
   while(rem<=0&&!T.done){const k=T.ph[T.i].k;T.i++;
-    if(T.i>=T.ph.length){T.done=true;clearInterval(wuInt);wuInt=0;wuWake(false);wuVib([250,120,250,120,400]);wuTone(880,.25);setTimeout(()=>wuTone(1175,.45,.4),260);wuDone.add(T.id);toast(`¡${T.name} hecho! ✔`);wuPaint();const y=scrollY;renderWarm();scrollTo(0,y);return}
+    if(T.i>=T.ph.length){T.done=true;clearInterval(wuInt);wuInt=0;wuVib([250,120,250,120,400]);wuTone(880,.25);setTimeout(()=>wuTone(1175,.45,.4),260);wuDone.add(T.id);toast(`¡${T.name} hecho! ✔`);wuPaint();const y=scrollY;renderWarm();scrollTo(0,y);return}
     T.end+=T.ph[T.i].s*1000;T.lb=0;rem=T.end-Date.now();
     if(T.ph[T.i].k==="g"){wuTone(1100,.3,.35);wuVib(150)}else if(T.ph[T.i].k==="c"){wuTone(880,.15);setTimeout(()=>wuTone(880,.15),220);wuVib([150,80,150])}}
   const sec=Math.ceil(rem/1000);if(sec<=3&&sec>0&&T.lb!==sec){T.lb=sec;wuTone(660,.12,.25)}

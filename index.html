@@ -1449,6 +1449,14 @@ header.top.sub .top-coins{display:none}
 .pet-t b{font-size:15px;line-height:1.3}
 .pet-t .muted{font-size:12px}
 .pet-x{position:absolute;top:6px;right:6px;width:28px;height:28px;min-height:0;font-size:16px}
+.pet-min{position:absolute;top:6px;right:40px;width:28px;height:28px;min-height:0;font-size:14px;z-index:300}
+.pet-card.has-field .pet-min{background:rgba(255,255,255,.75);color:#333}
+.pet-mini{display:flex;flex-direction:column;align-items:center;gap:3px;width:118px;padding:8px 8px 7px;margin:0 0 14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;color:var(--ink);cursor:pointer;font:inherit;text-align:center}
+.pet-mini.happy{border-color:color-mix(in srgb,var(--p-green) 60%,var(--line))}.pet-mini.sad{border-color:color-mix(in srgb,var(--danger) 45%,var(--line))}
+.pet-mini .pm-art{position:relative;width:64px;height:64px;display:grid;place-items:center}.pet-mini .pm-art svg{width:64px;height:64px}
+.pet-mini .pet-lv{right:-6px;bottom:-2px;min-width:22px;height:22px;font-size:11px}
+.pet-mini b{font-size:14px;line-height:1.1}.pet-mini small{font-size:11px;color:var(--muted)}.pet-mini .pet-xp{width:100%;height:6px;margin:1px 0}
+.pet-pop{animation:petPop .25s ease-out}@keyframes petPop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
 .sec-title{font-family:var(--f-display);font-size:20px;margin:22px 0 4px;text-transform:uppercase}
 .sc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
 .sc-card{display:flex;flex-direction:column;gap:3px;background:var(--surface-2);border:1px dashed var(--line);border-radius:14px;padding:12px;min-width:0}
@@ -7798,6 +7806,17 @@ function petWander(field,P,kind){
     if(on||!petFx.feed||!ev.clientX){poke();return}const fr=f.getBoundingClientRect();petFx.feed(ev.clientX-fr.left,fr.bottom-ev.clientY)};
   f.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();poke()}};
 }catch(e){}}}
+/* Mascota recogida en un cuadrado pequeño; al tocarlo se despliega el campo completo */
+{const _pf=paintPet;paintPet=function(){const c=$("#petCard");
+  if(!c||!profile||!profile.petOn||petFx.open){_pf();try{const card=c&&c.querySelector(".pet-card");if(card&&petFx.open&&!card.querySelector(".pet-min")){
+      card.insertAdjacentHTML("beforeend",`<button type="button" class="icon-btn pet-min" id="petMin" aria-label="Recoger mascota" aria-expanded="true">▴</button>`);
+      $("#petMin").onclick=()=>{petFx.open=false;paintPet()}}}catch(e){}return}
+  clearTimeout(petFx.timer);clearTimeout(petFx.vis);clearInterval(petFx.dust);clearInterval(petFx.zz);petFx.feed=petFx.poke=petFx.pet=null;
+  const P=petState(),nm=petNm(),a=petNeed(P.L),b=petNeed(P.L+1),pct=Math.round((P.xp-a)/(b-a)*100);
+  c.innerHTML=`<button type="button" class="pet-mini ${P.mood}" id="petMini" aria-expanded="false" aria-label="${esc(nm)}, nivel ${P.L}. Toca para abrir">
+    <span class="pm-art">${petSVG(P.lv,P.mood)}<span class="pet-lv mono">${P.L}</span></span>
+    <b>${esc(nm)}</b><span class="pet-xp" aria-hidden="true"><i style="width:${pct}%"></i></span><small>${P.mood==="sad"?"Te echa de menos":P.mood==="happy"?"¡Feliz!":"Quiere entrenar"} ▾</small></button>`;
+  $("#petMini").onclick=()=>{petFx.open=true;paintPet();const k=c.querySelector(".pet-card");if(k)k.classList.add("pet-pop")}}}
 paintPet();
 </script>
 

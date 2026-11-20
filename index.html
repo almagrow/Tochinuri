@@ -1451,7 +1451,11 @@ header.top.sub .top-coins{display:none}
 .pet-x{position:absolute;top:6px;right:6px;width:28px;height:28px;min-height:0;font-size:16px}
 .pet-min{position:absolute;top:6px;right:40px;width:28px;height:28px;min-height:0;font-size:14px;z-index:300}
 .pet-card.has-field .pet-min{background:rgba(255,255,255,.75);color:#333}
-.pet-mini{display:flex;flex-direction:column;align-items:center;gap:3px;width:118px;padding:8px 8px 7px;margin:0 0 14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;color:var(--ink);cursor:pointer;font:inherit;text-align:center}
+.pet-row{display:flex;gap:10px;align-items:stretch;margin:0 0 14px}
+.curio{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px}
+.curio-t{margin:0;font-size:14px;font-weight:700;line-height:1.3}.curio-w{margin:0;font-size:13px;color:var(--muted);line-height:1.35}
+.curio-next{margin-top:auto;align-self:flex-start;border:0;background:none;color:var(--brand);font:inherit;font-size:13px;font-weight:600;padding:2px 0;cursor:pointer;min-height:28px}
+.pet-mini{display:flex;flex-direction:column;align-items:center;gap:3px;width:118px;flex:none;padding:8px 8px 7px;margin:0;background:var(--surface);border:1px solid var(--line);border-radius:16px;color:var(--ink);cursor:pointer;font:inherit;text-align:center}
 .pet-mini.happy{border-color:color-mix(in srgb,var(--p-green) 60%,var(--line))}.pet-mini.sad{border-color:color-mix(in srgb,var(--danger) 45%,var(--line))}
 .pet-mini .pm-art{position:relative;width:64px;height:64px;display:grid;place-items:center}.pet-mini .pm-art svg{width:64px;height:64px}
 .pet-mini .pet-lv{right:-6px;bottom:-2px;min-width:22px;height:22px;font-size:11px}
@@ -7806,6 +7810,28 @@ function petWander(field,P,kind){
     if(on||!petFx.feed||!ev.clientX){poke();return}const fr=f.getBoundingClientRect();petFx.feed(ev.clientX-fr.left,fr.bottom-ev.clientY)};
   f.onkeydown=ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();poke()}};
 }catch(e){}}}
+/* Curiosidades de tus entrenos (al lado de la mascota recogida) */
+function curioList(){const W=(typeof workouts!=="undefined"&&Array.isArray(workouts))?workouts:[],L=[],F=n=>fmtBig(n),pl=(n,a,b)=>n===1?a:b;
+  if(!W.length)return[{e:"✨",t:"Aquí saldrán curiosidades de tus entrenos.",w:"Apunta el primero y empezamos a sacar cuentas."}];
+  const dates=W.map(w=>w.date).filter(Boolean).sort(),days=dates.length?Math.max(1,Math.round((Date.now()-new Date(dates[0]).getTime())/864e5)+1):1;
+  const span=days<14?`en ${days} ${pl(days,"día","días")}`:days<61?`en ${Math.round(days/7)} semanas`:days<730?`en ${Math.round(days/30.4)} meses`:`en ${String(Math.round(days/36.5)/10).replace(".",",")} años`;
+  let kg=0,reps=0,secs=0,best=null,bur=0;const cnt=new Map(),wd=[0,0,0,0,0,0,0];
+  for(const w of W){kg+=wodVolume(w);secs+=Number(w.duration)||0;if(w.date)wd[new Date(w.date+"T12:00").getDay()]++;
+    for(const e of(w.exercises||[])){if(!e.name)continue;const st=num(e.sets)||1,r=e.liftReps??(num(e.reps)||0)*st;reps+=r;
+      if(!e.fromLift)cnt.set(e.name,(cnt.get(e.name)||0)+1);if(/burpee/i.test(e.name))bur+=r;
+      const kgx=num(e.weight)||0;if(kgx>(best?.kg||0))best={kg:kgx,n:e.name}}}
+  if(kg>=4){const a=animalFor(kg),n=kg/a.kg,nr=n>=10?Math.round(n):Math.round(n*10)/10,c=nr<1.15?a.n:`${String(nr).replace(".",",")} ${a.p}`;
+    L.push({e:a.e,t:`¿Sabías que has levantado ${F(kg)} kg ${span}?`,w:`Eso es como levantar ${c}. Y sin que ninguno se queje.`})}
+  if(reps>=50){const ef=reps/1665;L.push({e:"🗼",t:`¿Sabías que llevas ${F(reps)} repeticiones?`,w:ef>=1?`Si fueran escalones, habrías subido ${String(Math.round(ef*10)/10).replace(".",",")} veces la Torre Eiffel. Andando, sin ascensor.`:`Si fueran escalones, ya irías por el ${Math.round(ef*100)} % de la Torre Eiffel. Sigue subiendo.`})}
+  if(secs>=1800){const h=secs/3600,fut=Math.round(secs/5400);L.push({e:"⏱️",t:`¿Sabías que has entrenado ${h>=10?F(h):String(Math.round(h*10)/10).replace(".",",")} horas ${span}?`,w:fut>=1?`Te daba para ver ${fut} ${pl(fut,"partido","partidos")} de fútbol… pero tú preferiste sudar la camiseta de verdad.`:"Casi un partido de fútbol entero, pero jugado por ti."})}
+  const top=[...cnt].sort((a,b)=>b[1]-a[1])[0];if(top&&top[1]>=2)L.push({e:"⭐",t:`¿Sabías que tu ejercicio estrella es ${top[0]}?`,w:`Lo has hecho ${top[1]} veces. A estas alturas debería pagarte alquiler.`});
+  const DN=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"],mx=Math.max(...wd);if(W.length>=4&&mx>=2){const d=wd.indexOf(mx);L.push({e:"📅",t:`¿Sabías que tu día favorito para entrenar es el ${DN[d]}?`,w:(pd=>`Has entrenado ${mx} ${pd}. Los ${pd} ya te tienen miedo.`)(d===0||d===6?DN[d]+"s":DN[d])})}
+  if(best&&best.kg>=5){const a=strongFor(best.kg);L.push({e:a?.e||"🏋️",t:`¿Sabías que lo más pesado que has movido son ${F(best.kg)} kg en ${best.n}?`,w:a?`Más de lo que puede cargar ${a.n}. Ya juegas en su liga.`:"Poco a poco, que los animales fuertes también empezaron así."})}
+  if(bur>=20)L.push({e:"🤸",t:`¿Sabías que llevas ${F(bur)} burpees?`,w:`Son ${F(bur)} veces que has besado el suelo. El suelo ya te considera familia.`});
+  const n=W.length,temp=n/10;L.push({e:"📺",t:`¿Sabías que llevas ${n} ${pl(n,"entreno","entrenos")} apuntados?`,w:temp>=1?`Si fueran capítulos, ya tendrías ${String(Math.round(temp*10)/10).replace(".",",")} ${pl(Math.round(temp*10)/10,"temporada","temporadas")} de tu propia serie. Spoiler: el final es muy tocho.`:`Si fueran capítulos, vas por el ${n} de la primera temporada. Esto se pone bueno.`});
+  return L}
+function curioHtml(){const L=curioList();if(petFx.ci==null)petFx.ci=Math.floor(Math.random()*L.length);const c=L[petFx.ci%L.length];
+  return`<div class="curio" aria-live="polite"><span class="eyebrow">Curiosidades</span><p class="curio-t"><span aria-hidden="true">${c.e}</span> ${esc(c.t)}</p><p class="curio-w">${esc(c.w)}</p>${L.length>1?`<button type="button" class="curio-next" id="curioNext">Otra curiosidad ›</button>`:""}</div>`}
 /* Mascota recogida en un cuadrado pequeño; al tocarlo se despliega el campo completo */
 {const _pf=paintPet;paintPet=function(){const c=$("#petCard");
   if(!c||!profile||!profile.petOn||petFx.open){_pf();try{const card=c&&c.querySelector(".pet-card");if(card&&petFx.open&&!card.querySelector(".pet-min")){
@@ -7813,9 +7839,10 @@ function petWander(field,P,kind){
       $("#petMin").onclick=()=>{petFx.open=false;paintPet()}}}catch(e){}return}
   clearTimeout(petFx.timer);clearTimeout(petFx.vis);clearInterval(petFx.dust);clearInterval(petFx.zz);petFx.feed=petFx.poke=petFx.pet=null;
   const P=petState(),nm=petNm(),a=petNeed(P.L),b=petNeed(P.L+1),pct=Math.round((P.xp-a)/(b-a)*100);
-  c.innerHTML=`<button type="button" class="pet-mini ${P.mood}" id="petMini" aria-expanded="false" aria-label="${esc(nm)}, nivel ${P.L}. Toca para abrir">
+  c.innerHTML=`<div class="pet-row"><button type="button" class="pet-mini ${P.mood}" id="petMini" aria-expanded="false" aria-label="${esc(nm)}, nivel ${P.L}. Toca para abrir">
     <span class="pm-art">${petSVG(P.lv,P.mood)}<span class="pet-lv mono">${P.L}</span></span>
-    <b>${esc(nm)}</b><span class="pet-xp" aria-hidden="true"><i style="width:${pct}%"></i></span><small>${P.mood==="sad"?"Te echa de menos":P.mood==="happy"?"¡Feliz!":"Quiere entrenar"} ▾</small></button>`;
+    <b>${esc(nm)}</b><span class="pet-xp" aria-hidden="true"><i style="width:${pct}%"></i></span><small>${P.mood==="sad"?"Te echa de menos":P.mood==="happy"?"¡Feliz!":"Quiere entrenar"} ▾</small></button>${curioHtml()}</div>`;
+  const cn=$("#curioNext");if(cn)cn.onclick=()=>{petFx.ci=(petFx.ci||0)+1;const box=c.querySelector(".curio");box.outerHTML=curioHtml();const b2=$("#curioNext");if(b2){b2.onclick=cn.onclick;b2.focus()}};
   $("#petMini").onclick=()=>{petFx.open=true;paintPet();const k=c.querySelector(".pet-card");if(k)k.classList.add("pet-pop")}}}
 paintPet();
 </script>

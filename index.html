@@ -1357,6 +1357,12 @@ header.top.sub .top-coins{display:none}
 .fr-code p{margin:6px 0 0;font-size:13px}
 .fr-add{display:flex;flex-direction:column;gap:6px}
 .fr-seg{margin:4px 0 10px}
+.fr-req ul,.frp-last{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}.fr-req li,.frp-last li{display:flex;align-items:center;justify-content:space-between;gap:10px}.fr-req li>span:first-child,.frp-last li>span{display:flex;flex-direction:column;min-width:0}.fr-req-b{display:flex;gap:6px;flex:none}
+.fr-alerts p{margin:6px 0 0;font-size:14px}.fr-inv{background:color-mix(in srgb,var(--brand) 12%,transparent);border-radius:10px;padding:8px 10px}
+.fr-tap{cursor:pointer}.frp-back{margin:0 0 8px}.frp-head{display:flex;align-items:center;gap:12px}.frp-av{width:52px;height:52px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:22px;font-weight:800;flex:none}
+.frp-pet{display:flex;align-items:center;gap:10px;margin:0 0 12px}.frp-pet svg{width:64px;height:64px}.frp-pet span{display:flex;flex-direction:column}
+.frp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 14px}.frp-t{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px}.frp-t b{font-size:18px}.frp-t small{font-size:11px;color:var(--muted)}
+.tpl-row{display:flex;align-items:center;gap:4px}.tpl-row .sheet-opt{flex:1}
 .fr-board{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
 .fr-board li{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
 .fr-board li.me{border:2px solid var(--brand)}
@@ -5960,7 +5966,7 @@ async function renderFriends(load){const v=$("#v-friends");
     <button type="button" class="btn primary full" id="frOn">Activar amigos</button></div>`;
     $("#frOn").onclick=async()=>{$("#frOn").disabled=true;try{await FRIENDS_API.enable(profile?.name||"");await renderFriends()}catch(e){toast("No se pudo activar. Inténtalo de nuevo.");$("#frOn").disabled=false}};return}
   const B=(frBoard||[]).slice(),key=frSort,unit=FR_SORT.find(s=>s[0]===key)[2],curWk=isoD(mondayOf(new Date()));
-  const curMo=today().slice(0,7),val=r=>{const s=r.stats||{};if((key==="week"||key==="kg")&&s.wk!==curWk)return 0;if((key==="mkg"||key==="mch"||key==="month")&&s.mo&&s.mo!==curMo)return 0;return Number(s[key])||0};
+  const curMo=today().slice(0,7),val=r=>{const s=r.stats||{};if((key==="week"||key==="kg")&&s.wk!==curWk)return 0;if((key==="mkg"||key==="mch"||key==="mpr"||key==="month")&&s.mo&&s.mo!==curMo)return 0;return Number(s[key])||0};
   B.sort((a,b)=>val(b)-val(a)||(a.is_me?-1:1));
   const medal=i=>i===0?"🥇":i===1?"🥈":i===2?"🥉":`<span class="mono">${i+1}</span>`;
   v.innerHTML=`<h2 class="view-title">Amigos</h2>
@@ -7141,7 +7147,7 @@ async function shareWodFlow(x){const v=$("#v-wod");if(!v)return;v.querySelector(
   if(load!==false)await loadSocial();
   try{localStorage.setItem("tn-react-seen",new Date().toISOString())}catch(e){}paintDuelDot();
   const key=frSort,unit=FR_SORT.find(s=>s[0]===key)[2],curWk=isoD(mondayOf(new Date())),curMo=today().slice(0,7);
-  const val=r=>{const s=r.stats||{};if((key==="week"||key==="kg")&&s.wk!==curWk)return 0;if((key==="mkg"||key==="mch"||key==="month")&&s.mo&&s.mo!==curMo)return 0;return Number(s[key])||0};
+  const val=r=>{const s=r.stats||{};if((key==="week"||key==="kg")&&s.wk!==curWk)return 0;if((key==="mkg"||key==="mch"||key==="mpr"||key==="month")&&s.mo&&s.mo!==curMo)return 0;return Number(s[key])||0};
   const B=(frBoard||[]).slice().sort((a,b)=>val(b)-val(a)||(a.is_me?-1:1));
   v.querySelector(".fr-pod")?.remove();board.insertAdjacentHTML("beforebegin",podiumHtml(B,val,key,unit));
   v.querySelector(".fr-feed")?.remove();v.querySelector(".ws-sec")?.remove();
@@ -7845,6 +7851,115 @@ function curioHtml(){const L=curioList();if(petFx.ci==null)petFx.ci=Math.floor(M
   const cn=$("#curioNext");if(cn)cn.onclick=()=>{petFx.ci=(petFx.ci||0)+1;const box=c.querySelector(".curio");box.outerHTML=curioHtml();const b2=$("#curioNext");if(b2){b2.onclick=cn.onclick;b2.focus()}};
   $("#petMini").onclick=()=>{petFx.open=true;paintPet();const k=c.querySelector(".pet-card");if(k)k.classList.add("pet-pop")}}}
 paintPet();
+/* ================= v81: solicitudes de amistad, invitar con enlace, perfil de amigo, ranking de récords, avisos, plantillas y curiosidades recientes ================= */
+if(window.FRIENDS_API&&typeof SB!=="undefined")Object.assign(window.FRIENDS_API,{
+  async request(code){const{data,error}=await SB.rpc("friend_request",{p_code:code});if(error)throw new Error(/not_found/.test(error.message)?"not_found":/too_many/.test(error.message)?"too_many":"error");return data||{}},
+  async requests(){const{data,error}=await SB.rpc("friend_requests_list");if(error)throw error;return data||[]},
+  async answer(id,ok){const{error}=await SB.rpc("friend_answer",{p_from:id,p_accept:!!ok});if(error)throw error},
+  async cancelReq(id){const{error}=await SB.rpc("friend_cancel",{p_to:id});if(error)throw error}});
+let frReqs=[];
+/* Enlace de invitación: tochinuri.es/?amigo=CÓDIGO. Se guarda hasta que haya sesión y amigos activados */
+try{const q=new URLSearchParams(location.search),c=(q.get("amigo")||"").trim().toUpperCase();if(/^[A-Z0-9]{4,8}$/.test(c)){localStorage.setItem("tn-invite",c);q.delete("amigo");history.replaceState(null,"",location.pathname+(q.toString()?"?"+q:"")+location.hash)}}catch(e){}
+const invCode=()=>{try{return localStorage.getItem("tn-invite")||""}catch(e){return""}},invClear=()=>{try{localStorage.removeItem("tn-invite")}catch(e){}};
+const invUrl=c=>`${location.origin}/?amigo=${encodeURIComponent(c)}`;
+async function sendFriendReq(c){const r=await FRIENDS_API.request(c),n=r.name||"Tu amigo";
+  toast(r.status==="accepted"?`${n} y tú ya sois amigos 💪`:r.status==="already"?`${n} ya está en tus amigos`:`Solicitud enviada a ${n}. Saldrá en el ranking cuando la acepte.`);return r}
+/* Datos públicos extra: récords del mes, entrenos, insignias y mascota */
+function monthPRs(){const mf=today().slice(0,7),seen=new Set();let n=0;try{for(const arr of ANALYSIS.values())for(const e of arr)if(e.cmp?.pr&&String(e.date).slice(0,7)===mf){const k=e.wid+"|"+e.idx;if(!seen.has(k)){seen.add(k);n++}}}catch(e){}return n}
+{const _mp=myPublicStats;myPublicStats=function(){const s=_mp();try{s.mpr=monthPRs();s.tot=workouts.length;s.bd=Object.values(badgeLevels()).reduce((a,v)=>a+(Number(v)||0),0);
+  if(profile?.petOn){s.pl=petState().L||0;s.pk=petKind();s.pn=petNm()}}catch(e){}return s}}
+FR_SORT.push(["mpr","Récords mes","récords"]);
+loadSocial=(f=>async function(){await f();if(FRIENDS_API?.requests&&frMe?.code){try{frReqs=await FRIENDS_API.requests()}catch(e){}paintDuelDot()}})(loadSocial);
+{const _pd=paintDuelDot;paintDuelDot=function(){_pd();const b=$("#topFriends");if(!b)return;const n=frReqs.filter(r=>r.incoming).length;
+  if(n){b.classList.add("has-dot");b.setAttribute("aria-label",`Amigos: ${n} solicitud${n>1?"es":""} de amistad`)}}}
+let invTried=false;{const _bf=bootFriends;bootFriends=async function(){await _bf();try{const c=invCode();if(c&&profile&&frBoot&&!invTried){invTried=true;if(frMe?.code){invClear();if(c!==frMe.code)await sendFriendReq(c);await loadSocial()}else openFriends()}}catch(e){}}}
+/* Avisos: quién te ha adelantado desde la última vez que miraste */
+function frAlerts(){const me=(frBoard||[]).find(r=>r.is_me);if(!me)return[];const curWk=isoD(mondayOf(new Date())),out=[];
+  const wv=r=>r.stats?.wk===curWk?Number(r.stats.week)||0:0,mpv=r=>r.stats?.mo===today().slice(0,7)?Number(r.stats.mpr)||0:0;
+  let old={};try{old=JSON.parse(localStorage.getItem("tn-fr-seen")||"{}")}catch(e){}
+  const now={wk:curWk,a:{},p:{}};
+  for(const r of frBoard){if(r.is_me)continue;const id=r.user_id,ahead=wv(r)>wv(me),pAhead=mpv(r)>mpv(me);now.a[id]=ahead;now.p[id]=pAhead;
+    if(ahead&&old.wk===curWk&&old.a&&old.a[id]===false)out.push(`🏃 <b>${esc(r.name||"Un amigo")}</b> te ha adelantado esta semana: lleva ${wv(r)} días y tú ${wv(me)}.`);
+    if(pAhead&&old.p&&old.p[id]===false)out.push(`🏆 <b>${esc(r.name||"Un amigo")}</b> ya tiene más récords este mes que tú (${mpv(r)} contra ${mpv(me)}).`)}
+  try{localStorage.setItem("tn-fr-seen",JSON.stringify(now))}catch(e){}return out}
+/* Perfil de un amigo */
+function petStageOf(L){let lv=0;try{PET_ST2.forEach((p,i)=>{if(L>=p.min)lv=i})}catch(e){}return lv}
+function renderFriendProfile(id){const v=$("#v-friends"),r=(frBoard||[]).find(x=>x.user_id===id);if(!r)return renderFriends(false);
+  const s=r.stats||{},curWk=isoD(mondayOf(new Date())),curMo=today().slice(0,7),wk=s.wk===curWk,mo=s.mo===curMo,nm=r.name||"Sin nombre";
+  const pet=s.pk?`<div class="frp-pet">${s.pk==="gorila"?goriSVG(petStageOf(s.pl),"happy"):petSVG(petStageOf(s.pl),"happy","gato")}<span><b>${esc(s.pn||"Su mascota")}</b><small class="muted">Nivel ${s.pl||0}</small></span></div>`:"";
+  const tile=(v,l)=>`<div class="frp-t"><b class="mono">${v}</b><small>${l}</small></div>`;
+  const last=(s.last||[]).length?`<ul class="frp-last">${s.last.map(w=>`<li><span><b>${esc(w.t||"Entreno")}</b><small class="muted">${esc(w.d?humanDate(w.d):"")}${w.ty?" · "+esc(w.ty):""}</small></span>${w.r?`<b class="mono">${esc(w.r)}</b>`:""}</li>`).join("")}</ul>`:`<p class="muted">No comparte sus últimos entrenos.</p>`;
+  v.innerHTML=`<button type="button" class="link-btn frp-back" id="frpBack">‹ Amigos</button>
+   <div class="sec frp-head"><span class="frp-av" aria-hidden="true">${esc(nm.trim().slice(0,1).toUpperCase()||"?")}</span><div><h2 class="view-title" style="margin:0">${esc(nm)}</h2><small class="muted">Racha de ${s.streak||0} sem.${s.tot?` · ${s.tot} entrenos`:""}</small></div></div>
+   ${pet}
+   <div class="frp-grid">${tile(wk?s.week||0:0,"días esta semana")}${tile(mo?s.month||0:0,"días este mes")}${tile(fmtBig(mo?s.mkg||0:0),"kg este mes")}${tile(mo?s.mpr||0:0,"récords este mes")}${tile(mo?s.mch||0:0,"retos del mes")}${tile(s.bd||0,"niveles de insignias")}</div>
+   <div class="sec"><span class="eyebrow">Últimos entrenos</span>${last}</div>`;
+  $("#frpBack").onclick=()=>renderFriends(false);scrollTo(0,0)}
+/* Vista de amigos: solicitudes, invitar, avisos y perfiles */
+{const _rf=renderFriends;renderFriends=async function(load){await _rf(load);const v=$("#v-friends");
+  if(!frMe?.code){const c=invCode(),intro=v.querySelector(".fr-intro");if(c&&intro&&!intro.querySelector(".fr-inv")){intro.insertAdjacentHTML("afterbegin",`<p class="fr-inv"><b>Te han invitado</b> con el código <b class="mono">${esc(c)}</b>. Activa amigos y le enviamos tu solicitud.</p>`)}return}
+  const c=invCode();if(c){invClear();if(c!==frMe.code){try{await sendFriendReq(c);await loadSocial();return renderFriends()}catch(e){toast(e.message==="not_found"?"El enlace de invitación no es válido.":"No se pudo enviar la solicitud.")}}}
+  if(load!==false&&!frReqs.length){try{frReqs=await FRIENDS_API.requests()}catch(e){}}
+  /* Invitar */
+  const cr=v.querySelector(".fr-code .fr-cr");if(cr&&!$("#frInvite")){cr.insertAdjacentHTML("beforeend",`<button type="button" class="btn primary" id="frInvite">Invitar</button>`);
+    $("#frInvite").onclick=async()=>{const url=invUrl(frMe.code),text=`¡Entrena conmigo en TochiNuri! Mi código de amigo es ${frMe.code}`;
+      try{if(navigator.share){await navigator.share({title:"TochiNuri",text,url});return}}catch(e){if(e?.name==="AbortError")return}
+      try{await navigator.clipboard.writeText(`${text}: ${url}`);toast("Enlace copiado. Pégalo en WhatsApp o donde quieras.")}catch(e){toast(url)}}}
+  /* Añadir con código = enviar solicitud */
+  const fa=$("#frAdd");if(fa){const lb=fa.querySelector("label");if(lb)lb.textContent="Enviar solicitud con su código";const sb=fa.querySelector("[type=submit]");if(sb)sb.textContent="Enviar";
+    fa.onsubmit=async ev=>{ev.preventDefault();const c=$("#frIn").value.trim().toUpperCase(),e=$("#frErr");e.hidden=true;if(!c)return;
+      if(c===frMe.code){e.textContent="Ese es tu propio código.";e.hidden=false;return}
+      try{await sendFriendReq(c);$("#frIn").value="";await loadSocial();renderFriends()}catch(x){e.textContent=x?.message==="not_found"?"No hay nadie con ese código. Revísalo.":x?.message==="too_many"?"Tienes demasiadas solicitudes sin responder.":"No se pudo enviar. Inténtalo de nuevo.";e.hidden=false}}}
+  /* Solicitudes y avisos */
+  v.querySelector(".fr-req")?.remove();v.querySelector(".fr-alerts")?.remove();
+  const inc=frReqs.filter(r=>r.incoming),out=frReqs.filter(r=>!r.incoming),al=frAlerts();
+  let h="";
+  if(al.length)h+=`<div class="sec fr-alerts"><span class="eyebrow">Avisos</span>${al.map(t=>`<p>${t}</p>`).join("")}</div>`;
+  if(inc.length||out.length)h+=`<div class="sec fr-req"><span class="eyebrow">Solicitudes de amistad</span><ul>
+    ${inc.map(r=>`<li><span><b>${esc(r.name||"Alguien")}</b><small class="muted">quiere ser tu amigo</small></span><span class="fr-req-b"><button type="button" class="btn primary" data-rqy="${esc(r.user_id)}">Aceptar</button><button type="button" class="btn" data-rqn="${esc(r.user_id)}">Rechazar</button></span></li>`).join("")}
+    ${out.map(r=>`<li><span><b>${esc(r.name||"Alguien")}</b><small class="muted">pendiente de que te acepte</small></span><button type="button" class="link-btn" data-rqc="${esc(r.user_id)}">Cancelar</button></li>`).join("")}</ul></div>`;
+  if(h)(v.querySelector(".fr-code")||v.querySelector(".view-title")).insertAdjacentHTML("afterend",h);
+  const act=(sel,fn,msg)=>v.querySelectorAll(sel).forEach(b=>b.onclick=async()=>{b.disabled=true;try{await fn(b);if(msg)toast(msg(b));frReqs=await FRIENDS_API.requests();frBoard=await FRIENDS_API.board();paintDuelDot();renderFriends(false)}catch(e){toast("No se pudo. Revisa la conexión.");b.disabled=false}});
+  act("[data-rqy]",b=>FRIENDS_API.answer(b.dataset.rqy,true),()=>"¡Ahora sois amigos! 💪");
+  act("[data-rqn]",b=>FRIENDS_API.answer(b.dataset.rqn,false),()=>"Solicitud rechazada");
+  act("[data-rqc]",b=>FRIENDS_API.cancelReq(b.dataset.rqc),()=>"Solicitud cancelada");
+  /* Tocar a un amigo abre su perfil */
+  v.querySelectorAll(".fr-board li").forEach(li=>{const x=li.querySelector("[data-frx]");if(!x)return;li.classList.add("fr-tap");li.setAttribute("role","button");li.tabIndex=0;
+    const go=ev=>{if(ev.target.closest("button,a,input,form"))return;renderFriendProfile(x.dataset.frx)};li.addEventListener("click",go);li.addEventListener("keydown",ev=>{if(ev.key==="Enter")go(ev)})})}}
+/* Plantillas de entrenos */
+const tplList=()=>Array.isArray(profile?.tpls)?profile.tpls:[];
+function tplFrom(x){const k=x.kind==="gym"?"gym":"cf";return{id:newId(),name:(x.name||x.type||"Entreno").slice(0,60),kind:k,type:x.type||"",
+  exercises:(x.exercises||[]).filter(e=>e.name&&!e.fromLift).map(e=>{const o={...e};delete o.cmp;return o}),...(x.lifts?.length?{lifts:x.lifts}:{})}}
+async function saveTpl(x){const t=tplFrom(x),L=tplList().filter(p=>!(p.name===t.name&&p.kind===t.kind));
+  if(L.length>=30)return toast("Tienes 30 plantillas. Borra alguna para guardar más.");
+  await saveProf({tpls:[t,...L]},`Plantilla «${t.name}» guardada. La tienes en el botón +.`)}
+function useTpl(t){if(mode!==t.kind)setMode(t.kind);const{id,...rest}=t;openForm({...rest,id:null,date:today(),result:"",duration:null,notes:"",photo:null,pains:[]})}
+function openTplSheet(){let el=$("#tplSheet");if(!el){el=document.createElement("div");el.className="sheet-bg";el.id="tplSheet";document.body.appendChild(el);el.addEventListener("click",ev=>{if(ev.target===el)el.hidden=true})}
+  const L=tplList().filter(t=>t.kind===(mode==="gym"?"gym":"cf"));
+  el.innerHTML=`<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="tplT"><div class="sheet-group"><div class="sheet-title" id="tplT">Mis plantillas</div>
+    ${L.length?L.map(t=>`<div class="tpl-row"><button type="button" class="sheet-opt" data-tpl="${esc(t.id)}"><span>${esc(t.name)}<small>${(t.exercises||[]).length} ejercicio${(t.exercises||[]).length===1?"":"s"}${t.type?" · "+esc(t.type):""}</small></span></button><button type="button" class="icon-btn" data-tpld="${esc(t.id)}" aria-label="Borrar plantilla ${esc(t.name)}">×</button></div>`).join(""):`<p class="muted" style="padding:10px 14px;margin:0">Aún no tienes plantillas aquí. Abre un entreno guardado y toca «Guardar como plantilla».</p>`}
+    </div><div class="sheet-group"><button type="button" class="sheet-opt sheet-cancel" id="tplClose">Cerrar</button></div></div>`;
+  el.hidden=false;$("#tplClose").onclick=()=>{el.hidden=true};
+  el.querySelectorAll("[data-tpl]").forEach(b=>b.onclick=()=>{const t=tplList().find(p=>p.id===b.dataset.tpl);el.hidden=true;if(t)useTpl(t)});
+  el.querySelectorAll("[data-tpld]").forEach(b=>b.onclick=async()=>{const t=tplList().find(p=>p.id===b.dataset.tpld);if(!t)return;
+    if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="¿Sí?";b.classList.add("danger");setTimeout(()=>{if(b.isConnected){b.dataset.sure="";b.textContent="×";b.classList.remove("danger")}},3000);return}
+    if(await saveProf({tpls:tplList().filter(p=>p.id!==t.id)},"Plantilla borrada")!==false)openTplSheet()})}
+{const g=$("#sheetRepeat")?.parentElement;if(g&&!$("#sheetTpl")){g.querySelector("#sheetRepeat").insertAdjacentHTML("afterend",`<button class="sheet-opt" id="sheetTpl" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 9v11"/></svg><span>Mis plantillas<small id="sheetTplS">Tus entrenos habituales guardados</small></span></button>`);
+  $("#sheetTpl").onclick=()=>{closeSheet();openTplSheet()}}}
+{const _ps=paintRepeat;paintRepeat=function(){_ps();const b=$("#sheetTpl");if(!b)return;const n=tplList().filter(t=>t.kind===(mode==="gym"?"gym":"cf")).length;b.hidden=!n;if(n)$("#sheetTplS").textContent=`${n} guardada${n>1?"s":""}`}}
+{const _ow=openWod;openWod=function(id){_ow(id);const x=workouts.find(w=>w.id===id),d=$("#wDup");if(!x||!d||$("#wTpl"))return;
+  d.insertAdjacentHTML("afterend",`<button class="btn" id="wTpl">Guardar como plantilla</button>`);$("#wTpl").onclick=()=>saveTpl(x)}}
+/* Curiosidades: primero lo más reciente (esta semana o este mes) */
+{const _cl=curioList;curioList=function(){const L=_cl(),W=(typeof workouts!=="undefined"&&Array.isArray(workouts))?workouts:[];if(!W.length)return L;
+  const t=today(),mon=isoD(mondayOf(new Date())),mf=t.slice(0,7)+"-01",wk=W.filter(w=>w.date>=mon&&w.date<=t),mo=W.filter(w=>w.date>=mf&&w.date<=t),R=[];
+  const per=(A,lab,lab2)=>{const kg=A.reduce((a,w)=>a+wodVolume(w),0),d=new Set(A.map(w=>w.date)).size;
+    if(kg>=4){const a=animalFor(kg),n=kg/a.kg,nr=n>=10?Math.round(n):Math.round(n*10)/10,c=nr<1.15?a.n:`${String(nr).replace(".",",")} ${a.p}`;
+      R.push({e:a.e,t:`${lab} has levantado ${fmtBig(kg)} kg.`,w:`Como subir ${c} a un camión. ${lab2}`})}
+    else if(d)R.push({e:"🔥",t:`${lab} llevas ${d} ${d===1?"día":"días"} entrenando.`,w:"Cada entreno cuenta. Tu mascota ya lo ha notado."})};
+  if(wk.length)per(wk,"Esta semana","Y aún queda semana.");else if(mo.length)per(mo,"Este mes","Y el mes no ha terminado.");
+  const pr=monthPRs();if(pr)R.push({e:"🏆",t:`Este mes has batido ${pr} ${pr===1?"récord":"récords"}.`,w:pr>2?"A este paso vas a tener que comprar una vitrina.":"Tu yo del mes pasado está flipando."});
+  return[...R,...L]}}
+{const _ch=curioHtml;curioHtml=function(){if(petFx.ci==null)petFx.ci=0;return _ch()}}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

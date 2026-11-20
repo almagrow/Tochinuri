@@ -33,3 +33,9 @@ create policy "shop: quitar (admin)" on public.shop for delete to authenticated 
 
 -- Para hacer administradora a alguien (puede gestionar la tienda), una vez registrada:
 -- insert into public.admins (user_id) select id from auth.users where email = 'su@email.com';
+
+-- 20/11/2026 (v81): solicitudes de amistad. Funciones nuevas: friend_request, friend_requests_list,
+-- friend_answer y friend_cancel; tabla friend_requests (RLS sin políticas: solo vía funciones).
+-- friends_publish admite además mpr, tot, bd, pl, pk y pn. friends_disable borra también las solicitudes.
+-- PENDIENTE al publicar v81 en main: cambiar friends_add para que cree una solicitud en vez de añadir directamente
+-- (la versión antigua de la app lo sigue usando mientras tanto).

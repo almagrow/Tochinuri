@@ -200,6 +200,11 @@ input.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 .ex-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .ex-nums input{padding:9px 8px;text-align:center}
 .ex-nums label{text-align:center}
+.ex-nums{align-items:start}.stp{display:flex;gap:4px;margin-top:4px}
+.stp-b{flex:1;min-width:0;min-height:36px;padding:0;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;font-size:20px;font-weight:700;line-height:1;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.stp-b:active{background:color-mix(in srgb,var(--brand) 18%,var(--surface));border-color:var(--brand)}
+.ex-nums input.auto{background:color-mix(in srgb,var(--brand) 9%,var(--surface));color:color-mix(in srgb,var(--ink) 75%,transparent)}
+.auto-note{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;font-size:12.5px;color:var(--muted)}.auto-note[hidden]{display:none}.auto-note .link-btn{flex:none;font-size:13px}
 .icon-btn{width:44px;height:44px;flex:none;border:1px solid var(--line);background:var(--surface-2);border-radius:9px;cursor:pointer;font-size:20px;line-height:1;color:var(--muted)}
 .form-error{color:var(--danger);font-size:14px;margin:0}
 
@@ -3695,9 +3700,9 @@ function addRow(e={}){
     <button type="button" class="icon-btn" aria-label="Quitar ejercicio">×</button></div>
     <div class="period-note" hidden>${DROP_SVG} Con la regla · sus estadísticas van aparte</div>
     <div class="ex-nums">
-      <div class="field"><label for="exs${i}">${formKind==="gym"?"Series":"Rondas"}</label><input class="num exs" id="exs${i}" inputmode="numeric" value="${esc(e.sets||"")}"></div>
-      <div class="field"><label for="exr${i}">Reps</label><input class="num exr" id="exr${i}" inputmode="numeric" value="${esc(e.reps||"")}"></div>
-      <div class="field"><label for="exw${i}">Kg</label><input class="num exw" id="exw${i}" inputmode="decimal" value="${esc(e.weight||"")}"></div>
+      <div class="field"><label for="exs${i}">${formKind==="gym"?"Series":"Rondas"}</label><input class="num exs" id="exs${i}" inputmode="numeric" value="${esc(e.sets||"")}"><div class="stp"><button type="button" class="stp-b" data-stp="s" data-d="-1" aria-label="Restar ${formKind==="gym"?"una serie":"una ronda"}">−</button><button type="button" class="stp-b" data-stp="s" data-d="1" aria-label="Sumar ${formKind==="gym"?"una serie":"una ronda"}">+</button></div></div>
+      <div class="field"><label for="exr${i}">Reps</label><input class="num exr" id="exr${i}" inputmode="numeric" value="${esc(e.reps||"")}"><div class="stp"><button type="button" class="stp-b" data-stp="r" data-d="-1" aria-label="Restar una repetición">−</button><button type="button" class="stp-b" data-stp="r" data-d="1" aria-label="Sumar una repetición">+</button></div></div>
+      <div class="field"><label for="exw${i}">Kg</label><input class="num exw" id="exw${i}" inputmode="decimal" value="${esc(e.weight||"")}"><div class="stp"><button type="button" class="stp-b" data-stp="w" data-d="-1" aria-label="Restar peso">−</button><button type="button" class="stp-b" data-stp="w" data-d="1" aria-label="Sumar peso">+</button></div></div>
       <div class="field"><label for="ext${i}">Tiempo</label><input class="num ext" id="ext${i}" inputmode="numeric" placeholder="1:42" value="${e.time?fmtTime(e.time):""}"></div>
     </div>
     <div class="grip-wrap" hidden><span class="eyebrow">Agarre</span><div class="grip-chips">${GRIPS.map(g=>`<button type="button" class="grip-c" aria-pressed="${(e.grip||[]).includes(g)?"true":"false"}">${g}</button>`).join("")}</div></div>
@@ -3707,6 +3712,7 @@ function addRow(e={}){
       <div class="share-chips">${[25,33,50,67,75].map(v=>`<button type="button" data-sh="${v}">${v} %</button>`).join("")}</div>
     </div>
     <div class="feel-wrap"><span class="eyebrow" id="feelLbl${i}">¿Qué tal te ha ido?</span><div class="feel" role="radiogroup" aria-labelledby="feelLbl${i}">${[1,2,4,5].map(v=>`<input type="radio" class="feelr" name="feel${i}" id="feel${i}_${v}" value="${v}"${e.feel==v?" checked":""}><label for="feel${i}_${v}" title="${FEEL[v].t}">${FEEL[v].f}</label>`).join("")}</div></div>
+    <div class="auto-note" hidden><span>✓ Rellenado con tu última vez. Cámbialo o súbelo con + y −.</span><button type="button" class="link-btn auto-clear">Vaciar</button></div>
     <div class="last-hint" hidden></div>
     <input class="exnt" id="exnt${i}" aria-label="Nota del ejercicio" placeholder="Nota (opcional): banda verde, unbroken…" value="${esc(e.notes||"")}">`;
   el.querySelector(".icon-btn").onclick=()=>el.remove();
@@ -3730,6 +3736,28 @@ function addRow(e={}){
     b.setAttribute("aria-pressed",on?"true":"false")});
   nm.addEventListener("input",showG);nm.addEventListener("change",showG);showG();
   nm.addEventListener("input",upd);nm.addEventListener("change",upd);upd();
+  /* Autorrelleno con la última vez y botones + y − */
+  const F={s:el.querySelector(".exs"),r:el.querySelector(".exr"),w:el.querySelector(".exw"),t:el.querySelector(".ext")},an=el.querySelector(".auto-note");
+  const paintAuto=()=>{an.hidden=!el.querySelector("input.auto")};
+  const onlyAuto=()=>Object.values(F).every(x=>!x.value||x.classList.contains("auto"));
+  const clearAuto=()=>{Object.values(F).forEach(x=>{if(x.classList.contains("auto")){x.value="";x.classList.remove("auto")}});el._paintSh?.();paintAuto()};
+  const autoFill=()=>{const n=nm.value.trim();if(!n||!onlyAuto())return;clearAuto();const l=lastFor(n,editingId,isP());if(!l)return;
+    const w=workouts.find(x=>x.id===l.wid),raw=(w?.exercises||[])[l.idx]||l;
+    const put=(x,v)=>{if(v==null||v==="")return;x.value=v;x.classList.add("auto")};
+    put(F.s,raw.sets);put(F.r,raw.reps);put(F.w,raw.weight!=null&&raw.weight!==""?String(raw.weight).replace(".",","):"");if(raw.time)put(F.t,fmtTime(raw.time));
+    if(Array.isArray(raw.grip)&&raw.grip.length&&!gOn())gw.querySelectorAll(".grip-c").forEach(b=>b.setAttribute("aria-pressed",raw.grip.includes(b.textContent)?"true":"false"));
+    showG();el._paintSh?.();paintAuto()};
+  nm.addEventListener("change",autoFill);
+  Object.values(F).forEach(x=>x.addEventListener("input",()=>{x.classList.remove("auto");paintAuto()}));
+  el.querySelector(".auto-clear").onclick=clearAuto;
+  const stepIt=b=>{const x=F[b.dataset.stp],d=Number(b.dataset.d),cur=num(x.value)||0;
+    let v=b.dataset.stp==="w"?cur+d*(cur+(d<0?-.01:0)<10?1:2.5):cur+d;v=Math.max(0,Math.round(v*100)/100);
+    x.value=v?String(v).replace(".",","):"";x.classList.remove("auto");paintAuto();x.dispatchEvent(new Event("input",{bubbles:true}));
+    try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}};
+  el.querySelectorAll(".stp-b").forEach(b=>{let t1=0,t2=0;const stop=()=>{clearTimeout(t1);clearInterval(t2)};
+    b.addEventListener("pointerdown",ev=>{if(ev.button)return;ev.preventDefault();stepIt(b);stop();t1=setTimeout(()=>{t2=setInterval(()=>stepIt(b),110)},420)});
+    ["pointerup","pointerleave","pointercancel"].forEach(t=>b.addEventListener(t,stop));
+    b.addEventListener("click",ev=>{if(ev.detail===0)stepIt(b)});b.addEventListener("contextmenu",ev=>ev.preventDefault())});
   nm.addEventListener("click",()=>openPicker(nm));
   nm.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();openPicker(nm)}});
   $("#exRows").appendChild(el);

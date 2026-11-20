@@ -1372,6 +1372,10 @@ header.top.sub .top-coins{display:none}
 .wu-i input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--brand)}.wu-t{display:flex;flex-direction:column;gap:2px;min-width:0}.wu-t b{font-size:15px}.wu-d{font-size:13px;color:var(--brand);font-weight:600}.wu-t small{font-size:13px;color:var(--muted);line-height:1.35}
 .wu-i.done{opacity:.55}.wu-i.done .wu-t b{text-decoration:line-through}
 .wu-tip p{margin:4px 0 0;font-size:14px}
+.off-bar{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--star,#f5a524) 16%,var(--surface));border:1px solid color-mix(in srgb,var(--star,#f5a524) 55%,var(--line))}
+.off-bar.is-off{background:color-mix(in srgb,var(--muted) 14%,var(--surface));border-color:var(--line)}
+.off-bar[hidden]{display:none}.off-bar>span:first-child{font-size:20px}.off-t{flex:1;min-width:0;display:flex;flex-direction:column}.off-t small{color:var(--muted);font-size:13px}.off-bar .btn{flex:none;min-height:36px;padding:6px 12px}
+.wod-pend{margin:0 0 10px;font-size:13px;color:var(--muted)}
 .wu-tm{margin-left:auto;align-self:center;flex:none;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--brand);background:none;color:var(--brand);border-radius:999px;padding:6px 10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;min-height:36px;white-space:nowrap}
 .wu-tm.on{background:var(--brand);color:#fff}
 .wu-panel{position:fixed;left:10px;right:10px;bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom,0px) + 10px);max-width:520px;margin:0 auto;z-index:35;display:flex;align-items:center;gap:10px;background:var(--surface);border:2px solid var(--brand);border-radius:16px;padding:10px 12px;box-shadow:0 8px 28px rgba(0,0,0,.28);overflow:hidden}
@@ -3047,6 +3051,56 @@ async function onAuthSubmit(ev){
   }catch(e){err(AUTH_ERR(e))}
   finally{if(btn.isConnected){btn.disabled=false;btn.textContent=old}}
 }
+/* ---------- Guardar sin conexión ----------
+   Los cambios que no llegan al servidor se guardan en este móvil (IndexedDB) y se suben solos al volver internet.
+   Cada entreno tiene su id, y subir es «upsert», así que repetir una subida nunca duplica. */
+const OFF={uid:null,docs:null,box:{},blind:false,fromCache:false,busy:false,dbp:null,ct:0};
+function offIdb(){return OFF.dbp||(OFF.dbp=new Promise((res,rej)=>{try{const r=indexedDB.open("tochinuri",1);r.onupgradeneeded=()=>r.result.createObjectStore("kv");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}}))}
+async function offGet(k){try{const db=await offIdb();return await new Promise((res,rej)=>{const q=db.transaction("kv").objectStore("kv").get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
+  catch(e){try{return JSON.parse(localStorage.getItem("tn-"+k)||"null")}catch(x){return null}}}
+async function offSet(k,v){try{const db=await offIdb();await new Promise((res,rej)=>{const t=db.transaction("kv","readwrite");t.objectStore("kv").put(v,k);t.oncomplete=()=>res();t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)})}
+  catch(e){localStorage.setItem("tn-"+k,JSON.stringify(v))}}
+const offNet=e=>!navigator.onLine||e?.name==="TypeError"||/fetch|network|load failed|timeout|offline|jwt|token|401|internet|abort/i.test(String(e?.message||e||""));
+const offTmo=(pr,ms)=>Promise.race([pr,new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")),ms))]);
+async function offSave(){await offSet("box:"+OFF.uid,OFF.box)}
+async function offPut(k,it){const prev=OFF.box[k];OFF.box[k]={...it,at:Date.now()};
+  try{await offSave()}catch(e){if(prev)OFF.box[k]=prev;else delete OFF.box[k];throw new Error("No hay sitio en el móvil para guardarlo sin conexión.")}offPaint()}
+async function offDrop(k){delete OFF.box[k];try{await offSave()}catch(e){}offPaint()}
+const offPending=()=>Object.keys(OFF.box).filter(k=>k!==PID).length;
+function offQueued(){setTimeout(()=>toast("📶 Sin conexión: guardado en este móvil. Se subirá solo al volver internet."),1700)}
+/* Aplica lo pendiente encima de lo cargado (para verlo aunque el servidor aún no lo tenga) */
+function offApply(){for(const[k,it] of Object.entries(OFF.box)){
+  if(it.op==="save"&&it.w){const i=workouts.findIndex(x=>x.id===k);if(i>=0)workouts[i]=it.w;else workouts.push(it.w)}
+  else if(it.op==="del")workouts=workouts.filter(x=>x.id!==k);
+  else if(it.op==="prof"&&it.p&&!OFF.blind)profile=it.p}}
+function offCacheSoon(ms){clearTimeout(OFF.ct);OFF.ct=setTimeout(()=>{if(!OFF.uid||OFF.blind)return;offSet("cache:"+OFF.uid,{w:workouts,p:profile,at:Date.now()}).catch(()=>{})},ms==null?1500:ms)}
+async function offFlush(manual){if(OFF.busy||!OFF.docs||!Object.keys(OFF.box).length)return;if(!navigator.onLine){if(manual)toast("Sigues sin conexión.");return}
+  OFF.busy=true;offPaint();let n=0,fail=0;
+  try{try{await offTmo(SB.auth.getSession(),8000)}catch(e){}
+    for(const[k,it] of Object.entries(OFF.box)){
+      try{let r;const now=new Date().toISOString();
+        if(it.op==="save"){const{id,...body}=it.w;r=await offTmo(OFF.docs.upsert({user_id:OFF.uid,id:k,data:body,updated_at:now}),20000)}
+        else if(it.op==="del")r=await offTmo(OFF.docs.delete().eq("id",k),20000);
+        else if(it.op==="prof")r=await offTmo(OFF.docs.upsert({user_id:OFF.uid,id:PID,data:it.p,updated_at:now}),20000);
+        if(r?.error)throw r.error;
+        if(OFF.box[k]===it){delete OFF.box[k];if(k!==PID)n++}}
+      catch(e){if(offNet(e))break;fail++;it.err=String(e?.message||e).slice(0,120)}}
+    await offSave()}
+  catch(e){}finally{OFF.busy=false}
+  if(n){OFF.fromCache=false;$("#saveNote").textContent=`Tus datos se guardan en tu cuenta (${authUser?.email||""})`;toast(`✔ ${n===1?"Subido 1 cambio pendiente":"Subidos "+n+" cambios pendientes"}`);offCacheSoon(0);try{publishStats()}catch(e){}}
+  else if(manual&&fail)toast("Hay cambios que el servidor no acepta. Escríbenos si se repite.");
+  else if(manual&&Object.keys(OFF.box).length)toast("Aún no se ha podido subir. Lo seguiré intentando.");
+  offPaint()}
+function offPaint(){const v=$("#v-log");if(!v)return;let b=$("#offBar");const n=offPending(),off=!navigator.onLine;
+  if(!n&&!off){if(b)b.hidden=true;return}
+  if(!b){b=document.createElement("div");b.id="offBar";b.className="off-bar";b.setAttribute("role","status");v.prepend(b)}
+  b.hidden=false;b.classList.toggle("is-off",off);
+  b.innerHTML=`<span aria-hidden="true">${off?"📶":"⏳"}</span><span class="off-t"><b>${off?"Sin conexión":"Pendiente de subir"}</b><small>${n?`${n} ${n===1?"cambio guardado":"cambios guardados"} en este móvil${off?". Se subirán solos al volver internet.":"."}`:"Puedes seguir apuntando: se guarda en el móvil."}</small></span>${n&&!off?`<button type="button" class="btn" id="offGo"${OFF.busy?" disabled":""}>${OFF.busy?"Subiendo…":"Subir ahora"}</button>`:""}`;
+  const g=$("#offGo");if(g)g.onclick=()=>offFlush(true)}
+addEventListener("online",()=>{offPaint();setTimeout(()=>offFlush(),1500)});
+addEventListener("offline",()=>offPaint());
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")offFlush()});
+setInterval(()=>{if(document.visibilityState==="visible"&&Object.keys(OFF.box).length)offFlush()},60000);
 async function startApp(u){
   if(appStarted&&authUser&&authUser.id===u.id)return;
   authUser=u;appStarted=true;workouts=[];profile=null;profileReady=false;
@@ -3057,21 +3111,33 @@ async function startApp(u){
   try{navigator.storage?.persist?.().catch(()=>{})}catch(e){}
   $("#saveNote").textContent="Cargando tus datos…";show("log");
   const docs=SB.from("docs");
+  OFF.uid=u.id;OFF.docs=docs;OFF.blind=false;OFF.box=(await offGet("box:"+u.id))||{};
   store={
-    async save(w){const{id,...body}=w;const{error}=await docs.upsert({user_id:u.id,id,data:body,updated_at:new Date().toISOString()});if(error)throw error;
-      const i=workouts.findIndex(x=>x.id===id);track(i>=0?"workout_edit":"workout_new");if(i>=0)workouts[i]=w;else workouts.push(w);renderAll()},
-    async remove(id){const{error}=await docs.delete().eq("id",id);if(error)throw error;workouts=workouts.filter(x=>x.id!==id);renderAll()},
-    async saveProfile(p){const{error}=await docs.upsert({user_id:u.id,id:PID,data:p,updated_at:new Date().toISOString()});if(error)throw error;profile=p}
+    async save(w){const{id,...body}=w;
+      try{const{error}=await offTmo(docs.upsert({user_id:u.id,id,data:body,updated_at:new Date().toISOString()}),15000);if(error)throw error;if(OFF.box[id])await offDrop(id)}
+      catch(e){if(!offNet(e))throw e;await offPut(id,{op:"save",w});offQueued()}
+      const i=workouts.findIndex(x=>x.id===id);track(i>=0?"workout_edit":"workout_new");if(i>=0)workouts[i]=w;else workouts.push(w);offCacheSoon();renderAll()},
+    async remove(id){
+      try{const{error}=await offTmo(docs.delete().eq("id",id),15000);if(error)throw error;if(OFF.box[id])await offDrop(id)}
+      catch(e){if(!offNet(e))throw e;await offPut(id,{op:"del"});offQueued()}
+      workouts=workouts.filter(x=>x.id!==id);offCacheSoon();renderAll()},
+    async saveProfile(p){
+      try{const{error}=await offTmo(docs.upsert({user_id:u.id,id:PID,data:p,updated_at:new Date().toISOString()}),15000);if(error)throw error;if(OFF.box[PID])await offDrop(PID)}
+      catch(e){if(OFF.blind||!offNet(e))throw e;await offPut(PID,{op:"prof",p})}
+      profile=p;offCacheSoon()}
   };
   try{
-    const{data,error}=await docs.select("id,data");if(error)throw error;
+    const{data,error}=await offTmo(docs.select("id,data"),20000);if(error)throw error;
     workouts=data.filter(r=>r.id!==PID).map(r=>({...r.data,id:r.id}));
     const pr=data.find(r=>r.id===PID);profile=pr?pr.data:null;
     $("#saveNote").textContent=`Tus datos se guardan en tu cuenta (${u.email})`;
-  }catch(e){$("#saveNote").textContent="No se pudieron cargar tus datos. Revisa la conexión y vuelve a abrir la app.";toast("No se pudieron cargar tus datos.")}
-  profileReady=true;initShop(true);renderAll();
+  }catch(e){const c=await offGet("cache:"+u.id);
+    if(c&&Array.isArray(c.w)){workouts=c.w;profile=c.p||null;OFF.fromCache=true;$("#saveNote").textContent="Sin conexión: ves tus datos guardados en este móvil. Lo que apuntes se subirá solo al volver internet."}
+    else{OFF.blind=true;$("#saveNote").textContent="No se pudieron cargar tus datos. Revisa la conexión y vuelve a abrir la app.";toast("No se pudieron cargar tus datos.")}}
+  offApply();if(!OFF.fromCache&&!OFF.blind)offCacheSoon(0);
+  profileReady=true;initShop(true);renderAll();offFlush();
 }
-function signedOut(){authUser=null;appStarted=false;workouts=[];profile=null;profileReady=false;store=null;SHOP=[];shopFree=false;showAuth("login")}
+function signedOut(){OFF.uid=null;OFF.docs=null;OFF.box={};OFF.fromCache=false;OFF.blind=false;authUser=null;appStarted=false;workouts=[];profile=null;profileReady=false;store=null;SHOP=[];shopFree=false;showAuth("login")}
 async function initStore(){
   if(!SB){showAuth("login");return}
   /* El enlace del correo de "olvidé mi contraseña" vuelve aquí con type=recovery */
@@ -8108,6 +8174,10 @@ function wuTick(){const T=wuTm;if(!T)return clearInterval(wuInt);if(current!=="w
 function wuNext(){const L=wuItems(),T=wuTm;const at=T?L.findIndex(i=>i.id===T.id):-1,nx=L.slice(at+1).find(i=>!wuDone.has(i.id))||L.find(i=>!wuDone.has(i.id));
   if(!nx){wuStop();toast("¡Calentamiento completo! 💪");return}
   wuStart(nx.id);setTimeout(()=>document.querySelector(`[data-wi="${nx.id}"]`)?.scrollIntoView({block:"center",behavior:"smooth"}),60)}
+
+/* Detalle de un entreno pendiente de subir */
+{const _ow2=openWod;openWod=function(id){_ow2(id);try{if(OFF.box[id]?.op==="save"){const v=$("#v-wod");if(v&&!v.querySelector(".wod-pend"))v.insertAdjacentHTML("afterbegin",`<p class="wod-pend">⏳ Guardado en este móvil, pendiente de subir a tu cuenta.</p>`)}}catch(e){}}}
+{const _ra2=renderAll;renderAll=function(){_ra2();try{offPaint()}catch(e){}}}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

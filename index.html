@@ -404,6 +404,10 @@ header.top.authing{display:none}
 .share-txt{font-size:13px}
 .share-r{width:100%;min-height:28px;padding:0;border:0;background:transparent;accent-color:var(--brand)}
 .share-chips{display:flex;gap:5px;flex-wrap:wrap}
+.pg-det{margin:0 0 14px}.pg-list{display:flex;flex-direction:column;gap:8px;padding-bottom:12px}
+.pg-item{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:8px;background:var(--surface-2,var(--surface))}
+.pg-item.on{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand)}
+.pg-svg{width:120px;flex:none;height:auto}.pg-txt{display:flex;flex-direction:column;gap:3px;min-width:0}.pg-txt small{color:var(--muted);font-size:12px}.pg-go{align-self:flex-start;font-size:12px;padding:4px 10px;min-height:30px;white-space:normal;text-align:left}
 .grip-wrap{display:flex;flex-direction:column;gap:5px}.grip-chips{display:flex;gap:5px;flex-wrap:wrap}
 .grip-chips button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px;font-size:13px;cursor:pointer;min-height:32px;color:var(--ink)}
 .grip-chips button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
@@ -2796,6 +2800,38 @@ const EX = [
 {n:"Elíptica",c:"yca",d:"Cardio de bajo impacto moviendo piernas y brazos a la vez.",k:["Pies apoyados todo el rato","Tronco recto","Apunta tiempo y nivel"],m:["Piernas","Brazos","Corazón"],e:"Menos resistencia."},
 {n:"Escaladora",c:"yca",d:"Máquina de subir escalones sin fin.",k:["Sin apoyar el peso en las barras","Pasos completos","Ritmo constante"],m:["Glúteos","Cuádriceps","Corazón"],e:"Cinta con inclinación."}
 ];
+/* ---- Agarres de polea (MAG): cada uno genera un jalón al pecho y un remo en polea baja ---- */
+const PG_BAR='<circle cx="150" cy="16" r="8" fill="none" stroke="var(--ink)" stroke-width="4"/>';
+const pgH=(x,y,w,h,r=0)=>`<rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="7" fill="var(--brand)" transform="rotate(${r} ${x} ${y})"/>`;
+const pgSvg=(path,hands)=>`<svg viewBox="0 0 300 110" class="pg-svg" role="img" aria-hidden="true">${PG_BAR}<path d="${path}" fill="none" stroke="var(--ink)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>${hands}</svg>`;
+const PGRIPS=[
+ {id:"ancho-neutro",n:"Ancho neutro",palm:"Palmas enfrentadas, manos muy separadas",
+  svg:pgSvg("M150 26 L98 62 L34 62 M150 26 L202 62 L266 62",pgH(24,58,16,48)+pgH(276,58,16,48)),
+  jd:"Jalón al pecho con la barra más larga, cogiendo las empuñaduras verticales de los extremos.",jm:["Dorsal","Redondo mayor","Braquial"],jk:["Codos hacia abajo y hacia los lados","Llevar las manos a la altura de los hombros","Más cómodo para el hombro que el ancho prono"],
+  rd:"Remo en polea baja con la barra larga y las empuñaduras verticales de los extremos.",rm:["Dorsal","Espalda alta","Deltoides posterior"],rk:["Codos algo abiertos","Llevar la barra a la parte baja del pecho","Juntar escápulas al final"]},
+ {id:"medio-semineutro",n:"Medio semineutro",palm:"Palmas en diagonal, a la anchura de los hombros o algo más",
+  svg:pgSvg("M150 26 L110 66 L70 66 M150 26 L190 66 L230 66",pgH(64,58,16,44,-35)+pgH(236,58,16,44,35)),
+  jd:"Jalón al pecho con la barra media de empuñaduras inclinadas, a medio camino entre prono y neutro.",jm:["Dorsal","Bíceps","Redondo mayor"],jk:["Muñecas en su posición natural","Codos hacia las costillas","Pecho alto hacia la barra"],
+  rd:"Remo en polea baja con la barra media de empuñaduras inclinadas.",rm:["Dorsal","Romboides","Bíceps"],rk:["Pecho alto, sin balancearse","Codos atrás y algo abiertos","Estirar sin redondear la espalda"]},
+ {id:"medio-prono",n:"Medio prono",palm:"Palmas hacia abajo, a la anchura de los hombros o algo más",
+  svg:pgSvg("M150 26 L112 66 L80 66 M150 26 L188 66 L220 66",pgH(56,68,52,16)+pgH(244,68,52,16)),
+  jd:"Jalón al pecho con la barra media de empuñaduras planas y gruesas, con las palmas hacia abajo.",jm:["Dorsal","Espalda alta","Bíceps"],jk:["Agarre firme sobre las empuñaduras planas","Llevar la barra a la parte alta del pecho","Subir controlando"],
+  rd:"Remo en polea baja con la barra media de empuñaduras planas, palmas hacia abajo.",rm:["Espalda alta","Romboides","Deltoides posterior"],rk:["Codos abiertos a unos 45°","Llevar la barra al esternón","Apretar las escápulas"]},
+ {id:"estrecho-prono",n:"Estrecho prono",palm:"Palmas hacia abajo, manos juntas",
+  svg:pgSvg("M150 26 L150 52 M124 68 L150 52 L176 68",pgH(108,70,44,16)+pgH(192,70,44,16)),
+  jd:"Jalón al pecho con el agarre corto de empuñaduras planas, manos juntas y palmas hacia abajo.",jm:["Dorsal","Bíceps","Braquial"],jk:["Codos delante del cuerpo","Llevar las manos al esternón","Sin echar el tronco muy atrás"],
+  rd:"Remo en polea baja con el agarre corto de empuñaduras planas.",rm:["Dorsal","Trapecio medio","Bíceps"],rk:["Codos pegados al cuerpo","Llevar el agarre al ombligo","Estirar del todo al volver"]},
+ {id:"estrecho-neutro",n:"Estrecho neutro",palm:"Palmas enfrentadas, manos juntas",
+  svg:pgSvg("M150 26 L150 50 M128 58 L150 50 L172 58",`<path d="M112 46 L128 50 L124 96 L104 92 Z" fill="var(--brand)" stroke="var(--brand)" stroke-width="6" stroke-linejoin="round"/><path d="M188 46 L172 50 L176 96 L196 92 Z" fill="var(--brand)" stroke="var(--brand)" stroke-width="6" stroke-linejoin="round"/>`),
+  jd:"Jalón al pecho con el agarre corto de empuñaduras cónicas, palmas enfrentadas, como un agarre en V ergonómico.",jm:["Dorsal","Redondo mayor","Bíceps"],jk:["Codos pegados al cuerpo","Agarre al esternón","Bajada y subida controladas"],
+  rd:"Remo en polea baja con el agarre corto de empuñaduras cónicas, palmas enfrentadas.",rm:["Dorsal","Romboides","Bíceps"],rk:["Codos rozando el cuerpo","Agarre al abdomen","Pecho alto todo el rato"]}
+];
+const PG_FAM=[{f:"Jalón al pecho",x:"Jalón al pecho normal o con otro agarre."},{f:"Remo en polea baja",x:"Remo en polea baja normal o con otro agarre."}];
+PGRIPS.forEach(g=>PG_FAM.forEach((F,i)=>EX.push({n:`${F.f} · ${g.n.toLowerCase()}`,c:"yes",pg:g.id,d:i?g.rd:g.jd,k:i?g.rk:g.jk,m:i?g.rm:g.jm,e:F.x})));
+const pgFamOf=ex=>PG_FAM.find(F=>norm(ex.n).startsWith(norm(F.f)));
+function pgDetails(ex){const F=pgFamOf(ex);if(!F||ex.c!=="yes")return"";
+  return`<details class="mo-det pg-det"${ex.pg?" open":""}><summary><span>Agarres de polea</span><small>${ex.pg?"el de este ejercicio y los demás":"elige uno para ver su ejercicio"}</small></summary><div class="pg-list">${PGRIPS.map(g=>{const nm=`${F.f} · ${g.n.toLowerCase()}`,me=ex.pg===g.id;
+    return`<div class="pg-item${me?" on":""}">${g.svg}<div class="pg-txt"><b>${esc(g.n)}</b>${me?' <span class="tag">Este</span>':""}<small>${esc(g.palm)}</small>${me?"":`<button type="button" class="btn ghost pg-go" data-pg="${esc(nm)}">Ver ${esc(nm)}</button>`}</div></div>`}).join("")}</div></details>`}
 const FEEL=[null,{f:"😿",t:"Muy mal"},{f:"😾",t:"Mal"},{f:"🐱",t:"Normal"},{f:"😺",t:"Bien"},{f:"😻",t:"Muy bien"}];
 const faceHtml=v=>FEEL[v]?`<span class="face" title="${FEEL[v].t}" aria-label="${FEEL[v].t}">${FEEL[v].f}</span>`:"";
 const TYPES=["For Time","AMRAP","EMOM","Fuerza","Intervalos","Otro"];
@@ -4391,6 +4427,7 @@ const PAT={
 };
 /* Qué movimiento y qué material lleva cada ejercicio (por nombre) */
 const ANIM_RULES=[
+  [/^jalon al pecho/,"pulldown"],[/^remo en polea baja/,"seatedrow"],
   [/cluster|thruster/,"thruster"],[/wall ball/,"wallball"],[/snatch balance|overhead squat|\(ohs\)/,"ohs"],
   [/clean & jerk|dos tiempos/,"cleanjerk"],[/jerk/,"jerk"],[/snatch/,"snatch"],[/high pull|sdhp/,"highpull"],[/clean/,"clean"],
   [/push press/,"pushpress"],[/front squat/,"frontsquat"],[/back squat|sentadilla en smith|sentadilla hack/,"backsquat"],[/goblet|sumo con/,"goblet"],[/pistol/,"pistol"],
@@ -4502,6 +4539,7 @@ function openEx(ex){
     <button type="button" class="fav-pill" id="exStar"></button>
     <div class="ex-anim" id="exAnim"></div>
     <p class="lead">${esc(ex.d)}</p>
+    ${pgDetails(ex)}
     ${painAlertFor(ex.n)}
     ${ex.custom?`<div class="cex-actions"><span class="tag">Creado por ti · ${ex.kind==="both"?"CrossFit y Gym":ex.kind==="gym"?"Gym":"CrossFit"}</span><button type="button" class="btn" id="cexEdit">Editar</button><button type="button" class="btn ghost" id="cexDel">Borrar</button></div>
       <div class="confirm" id="cexDelBox" hidden><b>¿Borrar «${esc(ex.n)}» de Otros?</b><span class="muted">Los entrenos donde lo apuntaste no se borran.</span><div class="row-actions"><button type="button" class="btn danger" id="cexDelYes">Borrar</button><button type="button" class="btn" id="cexDelNo">Cancelar</button></div></div>`:""}
@@ -4513,7 +4551,7 @@ function openEx(ex){
       :`<div class="empty" style="padding:18px"><p style="margin:0 0 12px">${arrP.length?"Aún no lo has hecho ningún día sin la regla.":"Aún no lo has apuntado en ningún entreno."}</p><button class="btn" id="eLog">Apuntar con este ejercicio</button></div>`}</div>
     ${periodSec}`;
   const el=$("#eLog");if(el)el.onclick=()=>openForm({exercises:[{name:ex.n}]});
-  paintExStar();$("#exStar").onclick=()=>toggleFav(ex.n);
+  paintExStar();$("#exStar").onclick=()=>toggleFav(ex.n);document.querySelectorAll(".pg-go").forEach(b=>b.onclick=()=>{const t=findEx(b.dataset.pg);if(t){openEx(t);scrollTo(0,0)}});
   if(ex.custom)$("#exAnim").remove();else try{mountAnim($("#exAnim"),ex)}catch(e){$("#exAnim").remove()}
   if(ex.custom){$("#cexEdit").onclick=()=>openCexForm(ex.n);$("#cexDel").onclick=()=>{$("#cexDelBox").hidden=false};$("#cexDelNo").onclick=()=>{$("#cexDelBox").hidden=true};
     $("#cexDelYes").onclick=async()=>{const ok=await saveCustomEx(cexList().filter(x=>norm(x.n)!==norm(ex.n)),`«${ex.n}» borrado de Otros`);if(ok)show("lib")}}

@@ -1363,6 +1363,15 @@ header.top.sub .top-coins{display:none}
 .frp-pet{display:flex;align-items:center;gap:10px;margin:0 0 12px}.frp-pet svg{width:64px;height:64px}.frp-pet span{display:flex;flex-direction:column}
 .frp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 14px}.frp-t{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px}.frp-t b{font-size:18px}.frp-t small{font-size:11px;color:var(--muted)}
 .tpl-row{display:flex;align-items:center;gap:4px}.tpl-row .sheet-opt{flex:1}
+.wu-intro{margin:0 0 10px}.wu-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.wu-c{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer;min-height:34px;color:var(--ink)}
+.wu-c[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+.wu-head{display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px}.wu-bar{height:8px;border-radius:9px;background:var(--surface-2,var(--line));overflow:hidden;margin:0 0 12px}.wu-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--star,var(--brand)));border-radius:9px;transition:width .25s}
+.wu-g{display:flex;flex-direction:column;gap:8px;margin:0 0 14px}
+.wu-i{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}
+.wu-i input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--brand)}.wu-t{display:flex;flex-direction:column;gap:2px;min-width:0}.wu-t b{font-size:15px}.wu-d{font-size:13px;color:var(--brand);font-weight:600}.wu-t small{font-size:13px;color:var(--muted);line-height:1.35}
+.wu-i.done{opacity:.55}.wu-i.done .wu-t b{text-decoration:line-through}
+.wu-tip p{margin:4px 0 0;font-size:14px}
 .fr-board{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
 .fr-board li{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
 .fr-board li.me{border:2px solid var(--brand)}
@@ -7960,6 +7969,88 @@ function openTplSheet(){let el=$("#tplSheet");if(!el){el=document.createElement(
   const pr=monthPRs();if(pr)R.push({e:"🏆",t:`Este mes has batido ${pr} ${pr===1?"récord":"récords"}.`,w:pr>2?"A este paso vas a tener que comprar una vitrina.":"Tu yo del mes pasado está flipando."});
   return[...R,...L]}}
 {const _ch=curioHtml;curioHtml=function(){if(petFx.ci==null)petFx.ci=0;return _ch()}}
+/* ================= v82: Calentamiento por músculos (botón +) ================= */
+const WU_G=[
+ {k:"gen",n:"Para entrar en calor",e:"🔥",x:[
+  ["Cardio suave","3 min","Remo, bici, comba o trote suave hasta notar calor y la respiración algo más rápida."],
+  ["Jumping jacks","30 s","Ritmo cómodo, sin buscar velocidad."],
+  ["Círculos grandes de brazos","10 hacia delante y 10 hacia atrás","Brazos estirados, círculos amplios."]]},
+ {k:"hom",n:"Hombros",e:"💪",x:[
+  ["Pase de palo o banda por encima de la cabeza","10","Brazos estirados y agarre ancho. Si cuesta, abre más las manos."],
+  ["Rotación externa con banda","12 por brazo","Codo pegado al costado y antebrazo hacia fuera."],
+  ["Deslizar los brazos por la pared","10","Espalda, codos y muñecas pegados a la pared mientras subes y bajas."],
+  ["Colgado en la barra, subir y bajar los hombros","8","Sin doblar los codos: solo hombros arriba y abajo."]]},
+ {k:"esa",n:"Espalda alta",e:"🧗",x:[
+  ["Gato-camello","10","A cuatro apoyos, redondea y arquea la espalda despacio."],
+  ["Rotación torácica a cuatro apoyos","8 por lado","Mano detrás de la cabeza, codo hacia el techo."],
+  ["Remo con banda","15","Junta los omóplatos al final de cada repetición."]]},
+ {k:"esb",n:"Espalda baja",e:"🛡️",x:[
+  ["Bird dog","8 por lado","Brazo y pierna contrarios estirados, caderas quietas."],
+  ["Buenos días con el peso del cuerpo","10","Cadera atrás, espalda neutra, rodillas algo flexionadas."],
+  ["Rodillas al pecho tumbado","10","Suave, sin tirones."]]},
+ {k:"pec",n:"Pecho",e:"🫁",x:[
+  ["Apertura de pecho en la pared","30 s por lado","Brazo estirado contra la pared y gira el cuerpo hacia el lado contrario."],
+  ["Apertura con banda","15","Brazos casi estirados, abre hasta sentir el pecho."],
+  ["Flexiones lentas","8","Tres segundos bajando, sin llegar a fallo."]]},
+ {k:"bra",n:"Brazos y muñecas",e:"🤲",x:[
+  ["Círculos de muñeca","10 en cada sentido","Manos entrelazadas, círculos amplios."],
+  ["Estiramiento de muñeca a cuatro apoyos","20 s con palmas y 20 s con dorso","Pesa hacia atrás poco a poco, sin dolor."],
+  ["Giro de antebrazo con palo o mancuerna ligera","10 por brazo","Palma arriba y palma abajo, codo pegado."]]},
+ {k:"cad",n:"Cadera y glúteos",e:"🍑",x:[
+  ["Puente de glúteo","12","Sube la cadera apretando glúteos y pausa 1 s arriba."],
+  ["Zancada del mundo","5 por lado","Zancada profunda, rota el tronco hacia la pierna de delante y mira al techo."],
+  ["Sentadilla profunda con pausa","8","Baja hasta abajo, empuja las rodillas hacia fuera y aguanta 2 s."],
+  ["Paso lateral con banda","12 por lado","Banda sobre las rodillas, rodillas hacia fuera, pasos cortos."]]},
+ {k:"pie",n:"Piernas",e:"🦵",x:[
+  ["Sentadilla con el peso del cuerpo","15","Talones en el suelo, pecho alto."],
+  ["Zancadas caminando","10 por pierna","Paso largo, rodilla de atrás hacia el suelo sin golpear."],
+  ["Peso muerto a una pierna sin peso","8 por pierna","Cadera atrás y espalda recta, apoyo suave en un pie."],
+  ["Balanceo de pierna","10 por lado","Adelante y atrás, apoyado en la pared."]]},
+ {k:"tob",n:"Tobillos",e:"🦶",x:[
+  ["Rodilla a la pared","10 por pie","Talón pegado al suelo y rodilla hacia la pared."],
+  ["Círculos de tobillo","10 en cada sentido","Círculos amplios, de pie o sentado."],
+  ["Elevación de talones","15","Sube de puntillas y baja despacio."]]},
+ {k:"cor",n:"Core",e:"🎯",x:[
+  ["Plancha","30 s","Cuerpo recto, glúteos y abdomen apretados."],
+  ["Dead bug","8 por lado","Lumbar pegada al suelo mientras estiras brazo y pierna contrarios."],
+  ["Plancha lateral","20 s por lado","Cadera alta, codo bajo el hombro."]]}
+];
+const WU_P=[
+ {id:"cf",n:"CrossFit completo",g:["gen","hom","cad","pie","cor","bra"]},
+ {id:"hal",n:"Halterofilia",g:["gen","tob","cad","hom","bra"]},
+ {id:"sup",n:"Tren superior",g:["gen","hom","esa","pec","bra"]},
+ {id:"inf",n:"Tren inferior",g:["gen","cad","pie","tob","cor"]},
+ {id:"esp",n:"Espalda",g:["gen","esa","esb","hom"]}
+];
+let wuSel=null,wuDone=new Set(),wuAll=false;
+function wuLoad(){if(wuSel)return;let s=null;try{s=JSON.parse(localStorage.getItem("tn-warm-sel")||"null")}catch(e){}
+  wuSel=new Set(Array.isArray(s)&&s.length?s.filter(k=>WU_G.some(g=>g.k===k)):WU_P.find(p=>p.id===(mode==="gym"?"sup":"cf")).g)}
+function wuSave(){try{localStorage.setItem("tn-warm-sel",JSON.stringify([...wuSel]))}catch(e){}}
+function wuItems(){return WU_G.filter(g=>wuSel.has(g.k)).flatMap(g=>g.x.map((x,i)=>({id:g.k+i,g})))}
+function warmHtml(){wuLoad();const L=WU_G.filter(g=>wuSel.has(g.k)),n=L.reduce((a,g)=>a+g.x.length,0),dn=L.reduce((a,g)=>a+g.x.filter((x,i)=>wuDone.has(g.k+i)).length,0),
+  mins=Math.max(1,Math.round(n*.5+(wuSel.has("gen")?2:0))),pct=n?Math.round(dn/n*100):0;
+  const same=p=>p.g.length===wuSel.size&&p.g.every(k=>wuSel.has(k));
+  return`<h2 class="view-title">Calentamiento</h2>
+  <p class="muted wu-intro">Elige una rutina o marca tus músculos. Dura entre 8 y 15 minutos y va de lo general a lo concreto.</p>
+  <div class="sec"><span class="eyebrow">Rutinas rápidas</span><div class="wu-chips">${WU_P.map(p=>`<button type="button" class="wu-c" data-wp="${p.id}" aria-pressed="${same(p)}">${esc(p.n)}</button>`).join("")}</div></div>
+  <div class="sec"><span class="eyebrow">O elige tú</span><div class="wu-chips">${WU_G.map(g=>`<button type="button" class="wu-c" data-wg="${g.k}" aria-pressed="${wuSel.has(g.k)}"><span aria-hidden="true">${g.e}</span> ${esc(g.n)}</button>`).join("")}</div></div>
+  ${n?`<div class="wu-head"><b>${n} ejercicios · unos ${mins} min</b><span class="mono">${dn}/${n}</span></div><div class="wu-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div>
+  ${L.map(g=>`<div class="wu-g"><span class="eyebrow">${g.e} ${esc(g.n)}</span>${g.x.map((x,i)=>`<label class="wu-i${wuDone.has(g.k+i)?" done":""}"><input type="checkbox" data-wi="${g.k+i}"${wuDone.has(g.k+i)?" checked":""}><span class="wu-t"><b>${esc(x[0])}</b><span class="wu-d mono">${esc(x[1])}</span><small>${esc(x[2])}</small></span></label>`).join("")}</div>`).join("")}
+  <div class="sec wu-tip"><b>Antes de tu primera serie pesada</b><p>Haz 2 o 3 series de aproximación con ese mismo ejercicio: barra vacía ×10, luego el 50 % ×5 y el 70 % ×3. Descansa 1 minuto entre ellas.</p></div>
+  <div class="row-actions"><button type="button" class="btn primary" id="wuGo">Listo, a entrenar</button><button type="button" class="btn" id="wuReset">Reiniciar</button></div>`
+  :`<p class="muted">Marca al menos un músculo para ver su calentamiento.</p>`}`}
+function renderWarm(){wuLoad();const v=$("#v-warmup");if(!v)return;v.innerHTML=warmHtml();
+  const again=()=>{const y=scrollY;renderWarm();scrollTo(0,y)};
+  v.querySelectorAll("[data-wp]").forEach(b=>b.onclick=()=>{wuSel=new Set(WU_P.find(p=>p.id===b.dataset.wp).g);wuDone=new Set();wuSave();again()});
+  v.querySelectorAll("[data-wg]").forEach(b=>b.onclick=()=>{const k=b.dataset.wg;wuSel.has(k)?wuSel.delete(k):wuSel.add(k);wuSave();again()});
+  v.querySelectorAll("[data-wi]").forEach(c=>c.onchange=()=>{c.checked?wuDone.add(c.dataset.wi):wuDone.delete(c.dataset.wi);
+    const tot=wuItems().length;again();if(tot&&wuItems().every(i=>wuDone.has(i.id)))toast("¡Calentamiento hecho! A por el entreno 💪")});
+  $("#wuReset")?.addEventListener("click",()=>{wuDone=new Set();again()});
+  $("#wuGo")?.addEventListener("click",()=>{show("log");openSheet()})}
+function openWarm(){openTool("warmup","Calentamiento",renderWarm);scrollTo(0,0)}
+if(!$("#v-warmup")){const s=document.createElement("section");s.className="view";s.id="v-warmup";s.hidden=true;$("#v-maxes").insertAdjacentElement("afterend",s)}
+{const ph=$("#sheetPhoto");if(ph&&!$("#sheetWarm")){ph.insertAdjacentHTML("beforebegin",`<button class="sheet-opt" id="sheetWarm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span>Calentamiento<small>Movilidad y activación por músculos</small></span></button>`);
+  $("#sheetWarm").onclick=()=>{closeSheet();openWarm()}}}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

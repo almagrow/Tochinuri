@@ -37,5 +37,4 @@ create policy "shop: quitar (admin)" on public.shop for delete to authenticated 
 -- 20/11/2026 (v81): solicitudes de amistad. Funciones nuevas: friend_request, friend_requests_list,
 -- friend_answer y friend_cancel; tabla friend_requests (RLS sin políticas: solo vía funciones).
 -- friends_publish admite además mpr, tot, bd, pl, pk y pn. friends_disable borra también las solicitudes.
--- PENDIENTE al publicar v81 en main: cambiar friends_add para que cree una solicitud en vez de añadir directamente
--- (la versión antigua de la app lo sigue usando mientras tanto).
+-- Hecho al publicar v81: friends_add ahora llama a friend_request (crea solicitud).

@@ -1377,6 +1377,7 @@ header.top.sub .top-coins{display:none}
 .wu-i input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--brand)}.wu-t{display:flex;flex-direction:column;gap:2px;min-width:0}.wu-t b{font-size:15px}.wu-d{font-size:13px;color:var(--brand);font-weight:600}.wu-t small{font-size:13px;color:var(--muted);line-height:1.35}
 .wu-i.done{opacity:.55}.wu-i.done .wu-t b{text-decoration:line-through}
 .wu-tip p{margin:4px 0 0;font-size:14px}
+.se-opts.se-3{grid-template-columns:repeat(3,minmax(0,1fr))}#rdForm:empty{display:none}#rdForm{margin:4px 0 10px}.rd-in-form{border-color:color-mix(in srgb,var(--brand) 35%,var(--line))}
 .pw-wrap{position:relative;display:block;width:100%}.pw-wrap>input{width:100%;padding-right:48px!important;box-sizing:border-box}
 .pw-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:40px;height:40px;display:grid;place-items:center;border:0;border-radius:10px;background:none;color:var(--muted);cursor:pointer;padding:0}
 .pw-eye[aria-pressed="true"]{color:var(--brand)}.pw-eye:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
@@ -8709,6 +8710,36 @@ function pwEye(inp){if(inp.dataset.eye)return;inp.dataset.eye="1";const w=docume
   inp.form?.addEventListener("submit",()=>set(false),true)}
 const pwScan=()=>document.querySelectorAll('input[type="password"]:not([data-eye])').forEach(pwEye);
 pwScan();let pwT=0;new MutationObserver(()=>{if(!pwT)pwT=requestAnimationFrame(()=>{pwT=0;pwScan()})}).observe(document.body,{childList:true,subtree:true});
+
+/* ================= v94: «¿Cómo llegas hoy?» dentro del formulario de entreno ================= */
+/* Se quita de la portada. En el formulario se añade «¿Algo te molesta?» a las preguntas de sueño y energía,
+   y con las tres contestadas sale la recomendación del día (solo al apuntar un entreno nuevo). */
+$("#readyCard")?.remove();
+{const box=$("#seBox");if(box&&!$("#se_pain_l")){
+  box.insertAdjacentHTML("beforeend",`<div class="se-row"><span class="eyebrow" id="se_pain_l">¿Algo te molesta?</span><div class="se-opts se-3" role="radiogroup" aria-labelledby="se_pain_l">${RD_PAIN.map((o,i)=>`<input type="radio" name="se_pain" id="se_pain${i}" value="${i}"><label for="se_pain${i}" title="${o.t}"><span aria-hidden="true">${o.f}</span><small>${o.t}</small></label>`).join("")}</div></div>`);
+  box.insertAdjacentHTML("afterend",`<div id="rdForm" aria-live="polite"></div>`);
+  box.querySelectorAll('[name=se_pain]+label').forEach(l=>l.addEventListener("click",ev=>{const r=document.getElementById(l.htmlFor);if(r&&r.checked){ev.preventDefault();r.checked=false;rdFormPaint()}}));
+  box.addEventListener("change",()=>rdFormPaint())}}
+let rdSaveT=0;
+function rdFormPaint(){const c=$("#rdForm");if(!c)return;
+  const v=k=>{const r=document.querySelector(`[name=se_${k}]:checked`);return r?Number(r.value):null},s=v("sleep"),e=v("energy"),pn=v("pain");
+  const sm=document.querySelector(".se-det summary small");
+  if(editingId||s==null||e==null||pn==null){c.innerHTML="";if(sm)sm.textContent=editingId?"sueño y energía":"sueño, energía y molestias";return}
+  const r={d:today(),s,e,p:pn},A=rdAnalyze(r);if(sm)sm.textContent=`${A.e} ${A.t}`;
+  c.innerHTML=`<div class="rd-card rd-${A.k} rd-in-form"><div class="rd-top"><span class="rd-e" aria-hidden="true">${A.e}</span><div class="rd-tt"><span class="eyebrow">Cómo llegas hoy</span><b>${esc(A.t)}</b></div></div>
+    <p class="rd-d">${esc(A.d)}</p>
+    ${A.reasons.length?`<details class="rd-why"><summary>Por qué te lo digo</summary><ul>${A.reasons.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></details>`:""}
+    ${A.deload?`<p class="rd-deload">🛌 Llevas ${A.weeks} semanas seguidas cargando y lo estás notando. Plantéate una <b>semana suave</b>: mismos ejercicios, más o menos al 60 % del peso y menos series.</p>`:""}
+    ${A.k==="easy"||A.k==="rest"?`<div class="rd-act"><button type="button" class="btn" id="rdWarmF">Ver calentamiento y movilidad</button></div>`:""}
+    <p class="rd-note">Es una orientación. Si algo duele de verdad, para y consulta.</p></div>`;
+  $("#rdWarmF")?.addEventListener("click",()=>openWarm());
+  /* Se guarda lo de hoy para no volver a preguntarlo si abres otro entreno */
+  const old=rdToday();if(!old||old.s!==s||old.e!==e||old.p!==pn){clearTimeout(rdSaveT);rdSaveT=setTimeout(()=>{profile={...profile,ready:r};saveProf({ready:r})},900)}}
+{const _of3=openForm;openForm=function(w){_of3(w);try{const r=rdToday();document.querySelectorAll("[name=se_pain]").forEach(x=>x.checked=false);
+  if(r&&!editingId){const x=document.getElementById(`se_pain${r.p}`);if(x)x.checked=true}
+  const pr=$("#se_pain_l")?.closest(".se-row");if(pr)pr.hidden=!!editingId;rdFormPaint();
+  /* Entreno nuevo: abierto si hoy aún no has contestado; si ya contestaste, cerrado con la recomendación en la cabecera */
+  const det=document.querySelector(".se-det");if(det&&!editingId)det.open=!r}catch(e){}}}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

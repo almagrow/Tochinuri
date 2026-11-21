@@ -1377,6 +1377,7 @@ header.top.sub .top-coins{display:none}
 .wu-i input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--brand)}.wu-t{display:flex;flex-direction:column;gap:2px;min-width:0}.wu-t b{font-size:15px}.wu-d{font-size:13px;color:var(--brand);font-weight:600}.wu-t small{font-size:13px;color:var(--muted);line-height:1.35}
 .wu-i.done{opacity:.55}.wu-i.done .wu-t b{text-decoration:line-through}
 .wu-tip p{margin:4px 0 0;font-size:14px}
+.pet-paused :is(.pet-svg,.pet-svg *,.pet-field,.pet-field *,.pet-mini,.pet-mini *){animation-play-state:paused!important}
 .rm-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:6px 0 4px}
 .rm-day{min-height:42px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:800;font-size:15px;cursor:pointer}
 .rm-day[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
@@ -8413,6 +8414,18 @@ let wuShow=null;
   v.querySelectorAll("[data-wv]").forEach(b=>b.onclick=ev=>{ev.preventDefault();ev.stopPropagation();const id=b.dataset.wv;wuShow=wuShow===id?null:id;const y=scrollY;renderWarm();scrollTo(0,y);
     if(wuShow)setTimeout(()=>$("#wuDemo")?.scrollIntoView({block:"nearest",behavior:"smooth"}),40)});
   const d=$("#wuDemo");if(d&&wuShow){const f=wuFind(wuShow);try{mountAnim(d,{n:f.x[0],pat:WU_PAT[wuShow]})}catch(e){d.remove()}}}}
+
+/* Mascota en pausa cuando no se ve: la app en segundo plano o la mascota fuera de la pantalla.
+   Se paran las animaciones de CSS y los paseos y visitas del campo; al volver a verse sigue. */
+const petPause={hidden:false,off:false,on:false,io:null,el:null};
+function petPauseApply(){const want=petPause.hidden||petPause.off;if(want===petPause.on)return;petPause.on=want;
+  document.documentElement.classList.toggle("pet-paused",want);
+  if(want){clearTimeout(petFx.timer);clearTimeout(petFx.vis);clearInterval(petFx.dust);clearInterval(petFx.zz);petFx.stopped=true}
+  else if(petFx.stopped){petFx.stopped=false;if(petFx.open){try{paintPet()}catch(e){}}}}
+function petWatch(){const c=$("#petCard");if(!c||!("IntersectionObserver" in window))return;if(petPause.el===c)return;
+  petPause.io?.disconnect();petPause.el=c;petPause.io=new IntersectionObserver(es=>{for(const e of es){petPause.off=!e.isIntersecting}petPauseApply()},{threshold:0});petPause.io.observe(c)}
+document.addEventListener("visibilitychange",()=>{petPause.hidden=document.hidden;petPauseApply()});
+{const _pp=paintPet;paintPet=function(){_pp();try{petWatch();if(petPause.on){clearTimeout(petFx.timer);clearTimeout(petFx.vis);clearInterval(petFx.dust);clearInterval(petFx.zz);petFx.stopped=true}}catch(e){}}}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

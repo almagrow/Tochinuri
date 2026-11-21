@@ -1377,6 +1377,16 @@ header.top.sub .top-coins{display:none}
 .wu-i input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--brand)}.wu-t{display:flex;flex-direction:column;gap:2px;min-width:0}.wu-t b{font-size:15px}.wu-d{font-size:13px;color:var(--brand);font-weight:600}.wu-t small{font-size:13px;color:var(--muted);line-height:1.35}
 .wu-i.done{opacity:.55}.wu-i.done .wu-t b{text-decoration:line-through}
 .wu-tip p{margin:4px 0 0;font-size:14px}
+.wu-see{align-self:flex-start;margin-top:4px;border:0;background:none;padding:4px 0;color:var(--brand);font:inherit;font-size:13px;font-weight:700;cursor:pointer;min-height:30px}
+.wu-demo{margin:-2px 0 4px;padding:10px;border:1px solid var(--brand);border-top:0;border-radius:0 0 12px 12px;background:var(--surface)}
+.wu-demo .ex-anim-wrap{max-width:340px;margin:0 auto}
+.an-steps{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.an-steps li{display:flex;gap:8px;align-items:flex-start;padding:6px 8px;border-radius:10px;font-size:14px;line-height:1.35;color:var(--muted);transition:background .2s,color .2s}
+.an-steps li.on{background:color-mix(in srgb,var(--brand) 14%,transparent);color:var(--ink);font-weight:600}
+.an-sn{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;background:var(--line);color:var(--ink)}
+.an-steps li.on .an-sn{background:var(--brand);color:#fff}
+.an-slow{right:auto!important;left:8px;bottom:auto!important;top:8px;width:auto!important;padding:0 10px!important;font-size:12px;font-weight:700}
+.an-slow[aria-pressed="true"]{background:var(--brand)!important;color:#fff!important}
 .mu-big{margin:6px 0 0;width:100%}.mu-fig.mu-big svg{width:100%;max-width:none;height:auto;max-height:70vh;display:block;margin:0 auto;overflow:visible}
 .mu-sil{fill:color-mix(in srgb,var(--ink) 3%,var(--surface));stroke:color-mix(in srgb,var(--ink) 22%,transparent);stroke-width:1}
 .mu-big .mu-p{cursor:pointer;stroke:color-mix(in srgb,var(--ink) 35%,transparent);stroke-width:.8;transition:fill .2s}
@@ -4599,6 +4609,7 @@ const ANIM_RULES=[
 ];
 const ANIM_FALL={hal:"clean",fue:"squat",gim:"squat",mon:"run",kb:"swing",ype:"bench",yes:"row",ypi:"squat",ygl:"bridge",yho:"press",ybi:"curl",ytr:"pushdown",yco:"plank",yca:"run"};
 function animFor(ex){
+  if(ex.pat)return{P:ex.pat,eq:ex.pat.eq||null,key:"custom"};
   const n=norm(ex.n);let key=null;for(const [re,k] of ANIM_RULES)if(re.test(n)){key=k;break}
   key=key||ANIM_FALL[ex.c]||"squat";const P=PAT[key];let eq=P.eq||null;
   /* El material sale del nombre cuando lo dice */
@@ -4664,10 +4675,19 @@ function mountAnim(box,ex){
   box.innerHTML="";const wrap=document.createElement("div");wrap.className="ex-anim-wrap";wrap.appendChild(svg);
   const btn=document.createElement("button");btn.type="button";btn.className="ex-anim-btn";wrap.appendChild(btn);
   const cap=document.createElement("p");cap.className="ex-anim-cap";cap.textContent="Animación orientativa del movimiento";box.appendChild(wrap);box.appendChild(cap);
-  let playing=!matchMedia("(prefers-reduced-motion: reduce)").matches,t0=performance.now(),acc=0,raf=0;
+  let playing=!matchMedia("(prefers-reduced-motion: reduce)").matches,t0=performance.now(),acc=0,raf=0,spd=1,curStep=-1;
+  /* Modo explicativo: pasos que se resaltan según la postura, y botón de cámara lenta */
+  const steps=P.cap&&P.cap.length?P.cap:null;let stepLis=[];
+  if(steps){cap.textContent="Animación orientativa · sigue los pasos";const ol=document.createElement("ol");ol.className="an-steps";
+    ol.innerHTML=steps.map((t,i)=>`<li><span class="an-sn">${i+1}</span><span>${esc(t)}</span></li>`).join("");box.appendChild(ol);stepLis=[...ol.children];
+    const sl=document.createElement("button");sl.type="button";sl.className="ex-anim-btn an-slow";sl.setAttribute("aria-pressed","false");sl.textContent="🐢 Lento";wrap.appendChild(sl);
+    sl.onclick=()=>{const now=performance.now(),el=acc+(playing?now-t0:0);const ns=spd===1?2.2:1;acc=el*ns/spd;t0=now;spd=ns;sl.setAttribute("aria-pressed",spd>1?"true":"false");sl.textContent=spd>1?"🐢 Lento ✓":"🐢 Lento"}}
+  const origOf=j=>j<F.length?j:F.length-2-(j-F.length);
+  const paintStep=(i,u)=>{if(!steps)return;const n=seq.length,fi=origOf(u<.5?i:(i+1)%n),si=Math.min(steps.length-1,Math.floor(fi*steps.length/F.length));
+    if(si!==curStep){curStep=si;stepLis.forEach((li,k)=>li.classList.toggle("on",k===si))}};
   const ease=u=>.5-.5*Math.cos(Math.PI*u);
   function frame(now){if(!svg.isConnected){cancelAnimationFrame(raf);return}
-    const el=Math.max(0,acc+(playing?now-t0:0)),n=seq.length,pos=(el/ms)%n,i=Math.floor(pos),u=ease(pos-i);draw(lerpPose(seq[i],seq[(i+1)%n],u));if(playing)raf=requestAnimationFrame(frame)}
+    const el=Math.max(0,acc+(playing?now-t0:0)),n=seq.length,pos=(el/(ms*spd))%n,i=Math.floor(pos),uu=pos-i,u=ease(uu);draw(lerpPose(seq[i],seq[(i+1)%n],u));paintStep(i,uu);if(playing)raf=requestAnimationFrame(frame)}
   const paint=()=>{btn.innerHTML=playing?`<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 5h3v14H7zM14 5h3v14h-3z" fill="currentColor"/></svg>`:`<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg>`;btn.setAttribute("aria-label",playing?"Pausar animación":"Reproducir animación")};
   btn.onclick=()=>{if(playing){acc+=performance.now()-t0;playing=false}else{t0=performance.now();playing=true;raf=requestAnimationFrame(frame)}paint()};
   paint();if(playing)raf=requestAnimationFrame(frame);else{acc=ms*(typeof window.__animAt==="number"?window.__animAt:.5);frame(performance.now())}
@@ -8333,6 +8353,56 @@ renderMuscles=function(){const v=$("#v-muscles"),sc=muscleScores(),mx=Math.max(1
     g.onclick=()=>pick(g.dataset.mu);g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(g.dataset.mu)}}});
   v.querySelectorAll("[data-mul]").forEach(b=>b.onclick=()=>pick(b.dataset.mul,true));
   v.querySelectorAll("[data-mex]").forEach(b=>b.onclick=()=>{const e=findEx(b.dataset.mex);if(e){openEx(e);scrollTo(0,0)}})};
+/* ---- Animaciones explicativas del calentamiento (figura de perfil, mismo motor que la Biblioteca) ---- */
+const Q4=o=>Object.assign({hip:[80,104],t:90,ff:[50,136],fb:[52,136],hf:[120,136],hb:[118,136],kf:1,kb:1},o);/* a cuatro apoyos */
+const SUP=o=>Object.assign({hip:[104,130],t:-90,ff:[136,112],fb:[138,112],hf:["s",8,6],hb:["s",8,6],kf:-1,kb:-1},o);/* tumbado boca arriba */
+const WALL_B={r:[84,4,5,132]},WALL_F={r:[150,4,5,132]};
+const WU_PAT={
+ gen0:{...PAT.run,ms:360,cap:["Trote suave: zancada corta y brazos sueltos","Ve subiendo el ritmo hasta notar calor"]},
+ gen1:{ms:380,f:[ST({hf:["s",4,42],hb:["s",-4,42]}),ST({hip:[100,66],ff:[106,130],fb:[94,130],hf:["s",8,-42],hb:["s",-8,-42]})],cap:["Pies juntos y brazos abajo","Salta abriendo las piernas y sube los brazos"]},
+ gen2:{ms:520,f:[H2(["s",2,43]),H2(["s",42,4]),H2(["s",2,-43]),H2(["s",-40,8])],cap:["Brazos abajo y estirados","Llévalos hacia delante","Arriba, por encima de la cabeza","Atrás y vuelve abajo: círculo grande"]},
+ hom0:{eq:"handle",pp:1,ms:1100,f:[H2(["s",36,20]),H2(["s",2,-43]),H2(["s",-34,22])],cap:["Palo o banda delante, agarre ancho","Súbelo por encima de la cabeza sin doblar los codos","Llévalo hasta detrás y vuelve igual"]},
+ hom1:{eq:"handle",pp:1,ms:900,scene:[{c:[160,92,4]}],cable:[160,92],f:[H2(["s",22,22]),H2(["s",8,24])],cap:["Codo pegado al costado, antebrazo hacia delante","Gira el antebrazo hacia fuera sin despegar el codo"]},
+ hom2:{pp:1,ms:1100,scene:[WALL_B],f:[H2(["s",4,-16],{hip:[96,74],ff:[106,136],fb:[102,136],ef:-1,eb:-1}),H2(["s",1,-43],{hip:[96,74],ff:[106,136],fb:[102,136]})],cap:["Espalda, codos y muñecas pegados a la pared","Desliza los brazos hacia arriba sin despegarlos y baja despacio"]},
+ hom3:{eq:"pullbar",pp:1,ms:900,scene:PBAR,f:[Object.assign({},HANGP),Object.assign({},HANGP,{hip:[100,92],ff:[87,133],fb:[84,131],sh:-3})],cap:["Cuélgate con los brazos estirados","Baja los hombros: el cuerpo sube un poco sin doblar los codos"]},
+ esa0:{pp:1,ms:1300,f:[Q4({t:96,hip:[80,100]}),Q4({t:82,hip:[80,106]})],cap:["Redondea la espalda y mira al ombligo","Arquéala y mira al frente"]},
+ esa1:{pp:1,ms:1000,f:[Q4({hf:["s",-8,-12],ef:-1}),Q4({hf:["s",-4,-40],t:84})],cap:["A cuatro apoyos, una mano detrás de la cabeza","Gira el tronco y lleva el codo hacia el techo"]},
+ esa2:{eq:"handle",pp:1,ms:900,scene:[{c:[170,72,4]}],cable:[170,72],f:[H2(["s",40,10]),H2(["s",-8,18],{ef:1,eb:1})],cap:["Brazos estirados delante, banda tensa","Tira con los codos hacia atrás y junta los omóplatos"]},
+ esb0:{pp:1,ms:1200,f:[Q4({}),Q4({hf:["s",42,-4],fb:[20,100],kb:1})],cap:["A cuatro apoyos, espalda recta","Estira brazo y pierna contrarios sin mover la cadera"]},
+ esb1:{pp:1,ms:1100,f:[H2(["s",-6,-8],{ef:-1,eb:-1}),H2(["s",-6,-8],{hip:[86,80],t:72,ef:-1,eb:-1})],cap:["De pie, manos detrás de la cabeza","Lleva la cadera atrás con la espalda recta y rodillas algo dobladas"]},
+ esb2:{pp:1,ms:1100,f:[SUP({ff:[160,132],fb:[160,132],kf:-1,kb:-1}),SUP({ff:[102,96],fb:[104,96],hf:[96,100],hb:[96,100]})],cap:["Tumbado boca arriba, piernas estiradas","Lleva las rodillas al pecho y abrázalas suave"]},
+ pec0:{pp:1,ms:1300,scene:[{r:[40,4,5,132]}],f:[ST({hip:[98,74],hb:["s",-42,0],hf:["s",4,40]}),ST({hip:[106,74],t:4,hb:[48,34],hf:["s",4,40]})],cap:["Brazo estirado contra la pared, a la altura del hombro","Gira el cuerpo hacia el otro lado hasta notar el pecho"]},
+ pec1:{pp:1,ms:900,f:[H2(["s",42,2]),H2(["s",6,4],{ef:-1,eb:-1})],cap:["Banda delante, brazos casi estirados","Abre los brazos hasta llevar la banda al pecho"]},
+ pec2:{...PAT.pushup,ms:1500,cap:["Brazos estirados y cuerpo recto","Baja despacio (3 segundos) y vuelve a subir"]},
+ bra0:{ms:320,f:[H2(["s",30,18]),H2(["s",33,13]),H2(["s",30,8]),H2(["s",27,13])],cap:["Manos entrelazadas delante del pecho","Dibuja círculos amplios con las muñecas"]},
+ bra1:{pp:1,ms:1300,f:[Q4({hip:[84,102],t:86}),Q4({hip:[70,108],t:70})],cap:["A cuatro apoyos, palmas en el suelo","Lleva el peso hacia atrás despacio, sin dolor"]},
+ bra2:{eq:"db",pp:1,ms:700,f:[H2(["s",22,24],{ef:-1,eb:-1}),H2(["s",22,20],{ef:-1,eb:-1})],cap:["Codo pegado, mancuerna ligera o palo delante","Gira la palma arriba y abajo sin mover el codo"]},
+ cad0:{...PAT.bridge,ms:1100,cap:["Tumbado, rodillas dobladas y pies apoyados","Sube la cadera apretando glúteos y aguanta 1 segundo"]},
+ cad1:{pp:1,ms:1400,f:[ST({hip:[92,110],t:42,ff:[126,136],fb:[48,136],kb:1,hf:[132,136],hb:[130,136]}),ST({hip:[92,110],t:30,ff:[126,136],fb:[48,136],kb:1,hf:["s",-2,-43],hb:[130,136]})],cap:["Zancada profunda, manos en el suelo junto al pie","Gira el tronco, lleva la mano al techo y mírala"]},
+ cad2:{...PAT.squat,pp:1,ms:1600,f:[ST({hf:FWD,hb:FWD}),ST(Object.assign({},SQB,{hip:[80,114],t:34,hf:FWD,hb:FWD}))],cap:["De pie, pies algo más abiertos que la cadera","Baja hasta abajo, rodillas hacia fuera y aguanta 2 s"]},
+ cad3:{ms:520,f:[ST({hip:[96,88],t:22,ff:[104,136],fb:[92,136],hf:["s",20,26],hb:["s",20,26]}),ST({hip:[100,88],t:22,ff:[118,136],fb:[92,136],hf:["s",20,26],hb:["s",20,26]}),ST({hip:[104,88],t:22,ff:[118,136],fb:[106,136],hf:["s",20,26],hb:["s",20,26]})],cap:["Media sentadilla, banda en las rodillas","Paso al lado empujando la rodilla hacia fuera","Junta el otro pie sin perder la tensión"]},
+ pie0:{...PAT.squat,pp:1,ms:1100,cap:["De pie, pies a la anchura de los hombros","Baja con el pecho alto y los talones en el suelo"]},
+ pie1:{pp:1,ms:1100,f:[H2(["s",6,26],{ef:-1,eb:-1}),H2(["s",6,26],{hip:[98,102],ff:[126,136],fb:[68,136],ef:-1,eb:-1})],cap:["De pie, manos en la cintura","Paso largo y baja la rodilla de atrás hacia el suelo"]},
+ pie2:{pp:1,ms:1300,f:[ST({}),ST({hip:[96,80],t:80,fb:[38,82],kb:-1,hf:["s",2,43],hb:["s",2,43]})],cap:["De pie sobre una pierna","Cadera atrás y pierna de atrás arriba, espalda recta"]},
+ pie3:{pp:1,ms:800,scene:[WALL_F],f:[ST({ff:[150,100],fb:[98,136],hf:[150,52],hb:[150,52],kf:1}),ST({ff:[50,116],fb:[98,136],hf:[150,52],hb:[150,52],kf:1})],cap:["Apóyate en la pared","Balancea la pierna adelante y atrás, sin forzar"]},
+ tob0:{pp:1,ms:1100,scene:[WALL_F],f:[ST({hip:[100,76],ff:[128,136],fb:[78,136],hf:[150,48],hb:[150,48]}),ST({hip:[110,84],ff:[128,136],fb:[78,136],hf:[150,48],hb:[150,48]})],cap:["Pie delante cerca de la pared, talón en el suelo","Lleva la rodilla hacia la pared sin levantar el talón"]},
+ tob1:{ms:300,f:[ST({ff:[128,120],kf:-1}),ST({ff:[132,124],kf:-1}),ST({ff:[128,128],kf:-1}),ST({ff:[124,124],kf:-1})],cap:["Sobre una pierna, el otro pie en el aire","Dibuja círculos amplios con el tobillo"]},
+ tob2:{pp:1,ms:900,f:[ST({}),ST({hip:[100,67],ff:[104,130],fb:[100,130]})],cap:["De pie, pies a la anchura de la cadera","Sube de puntillas y baja despacio"]},
+ cor0:{...PAT.plank,cap:["Antebrazos en el suelo, cuerpo recto","Aprieta glúteos y abdomen y respira"]},
+ cor1:{...PAT.deadbug,ms:1100,cap:["Boca arriba, brazos al techo y rodillas a 90°","Estira brazo y pierna contrarios con la lumbar pegada al suelo"]},
+ cor2:{pp:1,ms:1500,f:[{hip:[90,116],t:78,ff:[34,136],fb:[38,136],hf:[128,136],hb:[126,136],ef:-1,eb:-1},{hip:[90,110],t:76,ff:[34,136],fb:[38,136],hf:[128,136],hb:[126,136],ef:-1,eb:-1}],cap:["De lado, codo bajo el hombro","Sube la cadera hasta que el cuerpo quede recto"]}
+};
+
+let wuShow=null;
+{const _wh=warmHtml;warmHtml=function(){let h=_wh();
+  /* Botón «Ver cómo se hace» en cada ejercicio y su animación desplegada debajo */
+  h=h.replace(/(<small>[^<]*<\/small><\/span>)(<button type="button" class="wu-tm[^"]*" data-wt="([a-z]{3}\d+)")/g,(m,a,b,id)=>WU_PAT[id]?`${a.slice(0,-7)}<button type="button" class="wu-see" data-wv="${id}" aria-expanded="${wuShow===id}">${wuShow===id?"▾ Ocultar":"▶ Ver cómo se hace"}</button></span>${b}`:m);
+  if(wuShow)h=h.replace(new RegExp(`(<label class="wu-i[^"]*"><input type="checkbox" data-wi="${wuShow}"[\\s\\S]*?</label>)`),`$1<div class="wu-demo" id="wuDemo"></div>`);
+  return h}}
+{const _rw=renderWarm;renderWarm=function(){_rw();const v=$("#v-warmup");if(!v)return;
+  v.querySelectorAll("[data-wv]").forEach(b=>b.onclick=ev=>{ev.preventDefault();ev.stopPropagation();const id=b.dataset.wv;wuShow=wuShow===id?null:id;const y=scrollY;renderWarm();scrollTo(0,y);
+    if(wuShow)setTimeout(()=>$("#wuDemo")?.scrollIntoView({block:"nearest",behavior:"smooth"}),40)});
+  const d=$("#wuDemo");if(d&&wuShow){const f=wuFind(wuShow);try{mountAnim(d,{n:f.x[0],pat:WU_PAT[wuShow]})}catch(e){d.remove()}}}}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

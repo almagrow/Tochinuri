@@ -1377,6 +1377,25 @@ header.top.sub .top-coins{display:none}
 .wu-i input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--brand)}.wu-t{display:flex;flex-direction:column;gap:2px;min-width:0}.wu-t b{font-size:15px}.wu-d{font-size:13px;color:var(--brand);font-weight:600}.wu-t small{font-size:13px;color:var(--muted);line-height:1.35}
 .wu-i.done{opacity:.55}.wu-i.done .wu-t b{text-decoration:line-through}
 .wu-tip p{margin:4px 0 0;font-size:14px}
+#readyCard:empty{display:none}#readyCard{margin:0 0 14px}
+.rd-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.rd-top{display:flex;align-items:center;gap:10px}.rd-e{font-size:28px;line-height:1;flex:none}.rd-tt{flex:1;min-width:0;display:flex;flex-direction:column}.rd-tt b{font-size:17px;line-height:1.2}
+.rd-chg{flex:none;padding:6px 2px;font-size:13px}
+.rd-top .rd-e{font-size:24px;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--brand) 12%,transparent)}
+.rd-d{margin:0;font-size:14.5px;line-height:1.4}
+.rd-me{margin:0;display:flex;flex-wrap:wrap;gap:6px}.rd-me span{font-size:12.5px;background:var(--surface-2,var(--line));border-radius:999px;padding:3px 9px}
+.rd-why summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--brand);min-height:28px;display:flex;align-items:center}
+.rd-why ul{margin:4px 0 0;padding-left:18px;font-size:13.5px;line-height:1.45;color:var(--muted)}
+.rd-deload{margin:0;font-size:13.5px;line-height:1.4;background:color-mix(in srgb,var(--star,#f5a524) 14%,transparent);border-radius:10px;padding:8px 10px}
+.rd-act{display:flex;flex-wrap:wrap;gap:8px}.rd-act:empty{display:none}.rd-act .btn{min-height:38px;padding:6px 12px;font-size:14px}
+.rd-note{margin:0;font-size:11.5px;color:var(--muted)}
+.rd-ok .rd-e{background:color-mix(in srgb,var(--p-green,#22a55b) 16%,transparent)}
+.rd-easy .rd-e{background:color-mix(in srgb,var(--star,#f5a524) 18%,transparent)}.rd-rest .rd-e{background:color-mix(in srgb,var(--muted) 18%,transparent)}
+.rd-row{display:flex;flex-direction:column;gap:4px}.rd-q{font-size:13px;font-weight:700}
+.rd-opts{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.rd-row:last-child .rd-opts{grid-template-columns:repeat(3,1fr)}
+.rd-o{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;min-height:52px}
+.rd-o span{font-size:20px;line-height:1.1}.rd-o small{font-size:10.5px;color:var(--muted);line-height:1.1;text-align:center}
+.rd-o[aria-pressed="true"]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 14%,var(--surface))}.rd-o[aria-pressed="true"] small{color:var(--ink);font-weight:700}
 .pet-paused :is(.pet-svg,.pet-svg *,.pet-field,.pet-field *,.pet-mini,.pet-mini *){animation-play-state:paused!important}
 .rm-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:6px 0 4px}
 .rm-day{min-height:42px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:800;font-size:15px;cursor:pointer}
@@ -8426,6 +8445,69 @@ function petWatch(){const c=$("#petCard");if(!c||!("IntersectionObserver" in win
   petPause.io?.disconnect();petPause.el=c;petPause.io=new IntersectionObserver(es=>{for(const e of es){petPause.off=!e.isIntersecting}petPauseApply()},{threshold:0});petPause.io.observe(c)}
 document.addEventListener("visibilitychange",()=>{petPause.hidden=document.hidden;petPauseApply()});
 {const _pp=paintPet;paintPet=function(){_pp();try{petWatch();if(petPause.on){clearTimeout(petFx.timer);clearTimeout(petFx.vis);clearInterval(petFx.dust);clearInterval(petFx.zz);petFx.stopped=true}}catch(e){}}}
+/* ================= v91: ¿Cómo llegas hoy? =================
+   Une lo que contestas hoy (sueño, energía, molestias) con tus últimos entrenos y te sugiere cómo plantear el día. */
+const RD_PAIN=[{t:"Nada",f:"👌"},{t:"Un poco",f:"🤏"},{t:"Bastante",f:"🤕"}];
+let rdEdit=false;
+const rdToday=()=>{const r=profile?.ready;return r&&r.d===today()?r:null};
+function rdAnalyze(r){const t=today(),reasons=[];let sc=r.s+r.e;
+  const sl=["","dormido fatal","dormido poco","dormido normal","dormido bien","dormido genial"],en=["","sin pilas","floja","normal","con ganas","a tope"];
+  if(r.s<=2)reasons.push(`Has ${sl[r.s]}.`);else if(r.s>=4)reasons.push(`Has ${sl[r.s]}.`);
+  if(r.e<=2)reasons.push(`Llegas ${en[r.e]}.`);else if(r.e>=4)reasons.push(`Llegas ${en[r.e]}.`);
+  if(r.p===1){sc-=1;reasons.push("Tienes alguna molestia: vigílala.")}else if(r.p===2){sc-=3;reasons.push("Tienes bastante molestia: no cargues esa zona.")}
+  /* Molestias fuertes apuntadas en los últimos 3 días */
+  const from3=isoD(addDays(dObj(t),-3)),hard=allPains().filter(p=>p.date>=from3&&p.date<=t&&(p.level||1)>=3);
+  if(hard.length&&r.p!==2){sc-=1;reasons.push(`Apuntaste molestia en ${[...new Set(hard.map(p=>String(p.zone).toLowerCase()))].join(", ")} hace poco.`)}
+  /* Días seguidos entrenando hasta ayer */
+  const days=new Set(workouts.map(w=>w.date).filter(Boolean));let run=0;for(let i=1;i<=10;i++){if(days.has(isoD(addDays(dObj(t),-i))))run++;else break}
+  if(run>=3){sc-=1;reasons.push(`Llevas ${run} días seguidos entrenando.`)}
+  /* Semana más cargada de lo normal */
+  const n7=[...days].filter(d=>d>=isoD(addDays(dObj(t),-7))&&d<t).length,n56=[...days].filter(d=>d>=isoD(addDays(dObj(t),-56))&&d<isoD(addDays(dObj(t),-7))).length,avg=n56/7;
+  if(n7>=5&&n7>avg+1){sc-=1;reasons.push(`Esta semana llevas ${n7} días, más de lo normal en ti.`)}
+  /* Sensaciones de los últimos entrenos */
+  const lastW=[...workouts].filter(w=>w.date&&w.date<t).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,3),fe=lastW.flatMap(w=>(w.exercises||[]).map(e=>e.feel).filter(Boolean));
+  if(fe.length>=3){const a=fe.reduce((x,y)=>x+y,0)/fe.length;if(a<=2.2){sc-=1;reasons.push("Tus últimos entrenos te fueron pesados.")}else if(a>=4.3){sc+=0.5;reasons.push("Tus últimos entrenos te fueron muy bien.")}}
+  /* ¿Toca semana suave? Varias semanas seguidas entrenando y sueño/energía bajos últimamente */
+  let weeks=0;for(let k=0;k<6;k++){const a=isoD(addDays(dObj(t),-7*(k+1))),b=isoD(addDays(dObj(t),-7*k));if([...days].filter(d=>d>=a&&d<b).length>=3)weeks++;else break}
+  const se=workouts.filter(w=>w.date>=isoD(addDays(dObj(t),-14))&&(w.sleep||w.energy)).map(w=>((w.sleep||3)+(w.energy||3))/2),seA=se.length?se.reduce((x,y)=>x+y,0)/se.length:null;
+  const deload=weeks>=4&&((seA!=null&&se.length>=3&&seA<=2.7)||(r.s+r.e<=5));
+  /* Con cualquier señal de alerta (molestias, días seguidos, semana cargada, entrenos pesados) no se recomienda ir a tope */
+  const warn=r.p>0||hard.length>0||run>=3||(n7>=5&&n7>avg+1)||reasons.some(x=>/pesados/.test(x));if(warn&&sc>=8)sc=7;
+  const L=sc>=8?{k:"top",e:"🔥",t:"Día para ir a tope",d:"Buen día para meter peso o ir a por un récord. Calienta bien antes."}
+    :sc>=6?{k:"ok",e:"💪",t:"Entrena como tenías pensado",d:"Vas bien. En las series pesadas, escucha a tu cuerpo."}
+    :sc>=4?{k:"easy",e:"🌤️",t:"Hoy, con calma",d:"Baja un 10-20 % el peso o el ritmo y cuida la técnica. Sumar también es esto."}
+    :{k:"rest",e:"🧘",t:"Día suave",d:"Movilidad, cardio suave o descanso. Mañana volverás con más ganas."};
+  return{...L,reasons,deload,weeks}}
+function readyHtml(){const r=rdToday();
+  if(r&&!rdEdit){const A=rdAnalyze(r);
+    return`<div class="rd-card rd-${A.k}"><div class="rd-top"><span class="rd-e" aria-hidden="true">${A.e}</span><div class="rd-tt"><span class="eyebrow">Cómo llegas hoy</span><b>${esc(A.t)}</b></div><button type="button" class="link-btn rd-chg" id="rdChg">Cambiar</button></div>
+     <p class="rd-d">${esc(A.d)}</p>
+     <p class="rd-me"><span>${SLEEP[r.s].f} ${SLEEP[r.s].t}</span><span>${ENERGY[r.e].f} ${ENERGY[r.e].t}</span><span>${RD_PAIN[r.p].f} ${r.p?"Molestia: "+RD_PAIN[r.p].t.toLowerCase():"Sin molestias"}</span></p>
+     ${A.reasons.length?`<details class="rd-why"><summary>Por qué te lo digo</summary><ul>${A.reasons.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></details>`:""}
+     ${A.deload?`<p class="rd-deload">🛌 Llevas ${A.weeks} semanas seguidas cargando y lo estás notando. Plantéate una <b>semana suave</b>: mismos ejercicios, más o menos al 60 % del peso y menos series.</p>`:""}
+     <div class="rd-act">${A.k==="easy"||A.k==="rest"?`<button type="button" class="btn" id="rdWarm">Ver calentamiento y movilidad</button>`:""}${r.p===2?`<button type="button" class="btn ghost" id="rdPain">Mis molestias</button>`:""}</div>
+     <p class="rd-note">Es una orientación. Si algo duele de verdad, para y consulta.</p></div>`}
+  const cur=rdEdit&&r?r:{};
+  const row=(k,L,lab)=>`<div class="rd-row"><span class="rd-q" id="rdq_${k}">${lab}</span><div class="rd-opts" role="radiogroup" aria-labelledby="rdq_${k}">${L.map((o,i)=>o?`<button type="button" class="rd-o" data-k="${k}" data-v="${k==="p"?i:i}" aria-pressed="${cur[k]===(k==="p"?i:i)}"><span aria-hidden="true">${o.f}</span><small>${o.t}</small></button>`:"").join("")}</div></div>`;
+  return`<div class="rd-card rd-ask"><div class="rd-top"><span class="rd-e" aria-hidden="true">🌡️</span><div class="rd-tt"><span class="eyebrow">Antes de entrenar</span><b>¿Cómo llegas hoy?</b></div>${rdEdit?`<button type="button" class="link-btn rd-chg" id="rdCancel">Cancelar</button>`:""}</div>
+    ${row("s",SLEEP,"¿Cómo has dormido?")}${row("e",ENERGY,"¿Con cuánta energía?")}${row("p",RD_PAIN,"¿Algo te molesta?")}</div>`}
+let rdDraft={};
+function paintReady(){const c=$("#readyCard");if(!c)return;if(!profile){c.innerHTML="";return}
+  if(profile.readyOff){c.innerHTML="";return}
+  c.innerHTML=readyHtml();
+  const ch=$("#rdChg");if(ch)ch.onclick=()=>{rdEdit=true;rdDraft={...rdToday()};paintReady()};
+  const cc=$("#rdCancel");if(cc)cc.onclick=()=>{rdEdit=false;paintReady()};
+  $("#rdWarm")?.addEventListener("click",()=>openWarm());$("#rdPain")?.addEventListener("click",()=>{try{openPain()}catch(e){}});
+  c.querySelectorAll(".rd-o").forEach(b=>b.onclick=async()=>{const k=b.dataset.k,v=Number(b.dataset.v);rdDraft[k]=v;
+    c.querySelectorAll(`.rd-o[data-k="${k}"]`).forEach(o=>o.setAttribute("aria-pressed",o===b?"true":"false"));
+    if(rdDraft.s&&rdDraft.e&&rdDraft.p!=null){const r={d:today(),s:rdDraft.s,e:rdDraft.e,p:rdDraft.p};rdEdit=false;rdDraft={};
+      profile={...profile,ready:r};paintReady();await saveProf({ready:r})}})}
+/* La tarjeta va justo debajo de la mascota */
+{const pc=$("#petCard");if(pc&&!$("#readyCard")){const d=document.createElement("div");d.id="readyCard";pc.insertAdjacentElement("afterend",d)}}
+{const _ra=renderAll;renderAll=function(){_ra();try{paintReady()}catch(e){}}}
+/* Al apuntar un entreno de hoy, el sueño y la energía salen ya marcados */
+{const _of2=openForm;openForm=function(w){_of2(w);try{const r=rdToday();if(!r||editingId)return;
+  [["sleep","s"],["energy","e"]].forEach(([k,q])=>{if(!document.querySelector(`[name=se_${k}]:checked`)){const x=document.getElementById(`se_${k}${r[q]}`);if(x)x.checked=true}})}catch(e){}}}
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>

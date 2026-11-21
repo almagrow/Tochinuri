@@ -1377,6 +1377,10 @@ header.top.sub .top-coins{display:none}
 .wu-i input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--brand)}.wu-t{display:flex;flex-direction:column;gap:2px;min-width:0}.wu-t b{font-size:15px}.wu-d{font-size:13px;color:var(--brand);font-weight:600}.wu-t small{font-size:13px;color:var(--muted);line-height:1.35}
 .wu-i.done{opacity:.55}.wu-i.done .wu-t b{text-decoration:line-through}
 .wu-tip p{margin:4px 0 0;font-size:14px}
+.rm-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:6px 0 4px}
+.rm-day{min-height:42px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:800;font-size:15px;cursor:pointer}
+.rm-day[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+.rm-days-f .lbl{font-weight:700;font-size:14px}.rm-days-f small{display:block;font-size:12.5px}
 .wu-see{align-self:flex-start;margin-top:4px;border:0;background:none;padding:4px 0;color:var(--brand);font:inherit;font-size:13px;font-weight:700;cursor:pointer;min-height:30px}
 .wu-demo{margin:-2px 0 4px;padding:10px;border:1px solid var(--brand);border-top:0;border-radius:0 0 12px 12px;background:var(--surface)}
 .wu-demo .ex-anim-wrap{max-width:340px;margin:0 auto}
@@ -5349,8 +5353,8 @@ Object.assign(window.FRIENDS_API,{
 window.PUSH_API={
   async pubKey(){const{data,error}=await SB.rpc("push_pub_key");if(error)throw error;return data},
   async uid(){const{data}=await SB.auth.getUser();if(!data?.user)throw new Error("no_user");return data.user.id},
-  async getPrefs(){const{data,error}=await SB.from("push_prefs").select("enabled,idle_days,streak,hour").maybeSingle();if(error)throw error;return data},
-  async setPrefs(p){const user_id=await this.uid();const{error}=await SB.from("push_prefs").upsert({user_id,enabled:p.enabled!==false,idle_days:p.idle_days||3,streak:p.streak!==false,hour:p.hour||19,updated_at:new Date().toISOString()});if(error)throw error},
+  async getPrefs(){const{data,error}=await SB.from("push_prefs").select("enabled,idle_days,streak,hour,days").maybeSingle();if(error)throw error;return data},
+  async setPrefs(p){const user_id=await this.uid();const{error}=await SB.from("push_prefs").upsert({user_id,enabled:p.enabled!==false,idle_days:p.idle_days||3,streak:p.streak!==false,hour:p.hour||19,...(Array.isArray(p.days)?{days:p.days}:{}),updated_at:new Date().toISOString()});if(error)throw error},
   async save(sub,p){const user_id=await this.uid();const{error}=await SB.from("push_subs").upsert({endpoint:sub.endpoint,user_id,p256dh:sub.keys.p256dh,auth:sub.keys.auth});if(error)throw error;await this.setPrefs(p)},
   async removeSub(endpoint){await SB.from("push_subs").delete().eq("endpoint",endpoint)},
   async test(){const{data,error}=await SB.functions.invoke("push-reminders",{body:{test:true}});if(error)throw error;return data}
@@ -6193,17 +6197,19 @@ async function pushEnable(){const perm=await Notification.requestPermission();if
 async function pushDisable(){try{const reg=await navigator.serviceWorker.ready,sub=await reg.pushManager.getSubscription();if(sub){await PUSH_API.removeSub(sub.endpoint);await sub.unsubscribe()}}catch(e){}
   await PUSH_API.setPrefs({...(pushState.prefs||{}),enabled:false});pushState.sub=null;pushState.prefs={...(pushState.prefs||{}),enabled:false}}
 async function renderReminders(load){const v=$("#v-reminders");
-  const head=`<h2 class="view-title">Avisos</h2><p class="muted mw-intro">Te aviso en el móvil si llevas días sin entrenar o si estás a punto de perder la racha del reto semanal.</p>`;
+  const head=`<h2 class="view-title">Avisos</h2><p class="muted mw-intro">Te aviso en el móvil en tus días de entreno, si llevas días sin entrenar o si estás a punto de perder la racha del reto semanal.</p>`;
   if(!PUSH_API){v.innerHTML=head+`<div class="empty"><h3>Hace falta tu cuenta</h3><p>Los avisos funcionan en tochinuri.es al entrar con tu cuenta.</p></div>`;return}
   if(!pushSupported()){v.innerHTML=head+`<div class="empty"><h3>${isIOS()?"Primero instala la app":"Este navegador no admite avisos"}</h3><p>${isIOS()?"En iPhone los avisos solo funcionan con TochiNuri en la pantalla de inicio: en Safari toca Compartir → «Añadir a pantalla de inicio» y abre la app desde ese icono.":"Prueba con Chrome, Edge o Firefox, o instala la app en el móvil."}</p></div>`;return}
   if(isIOS()&&!isStandalone()){v.innerHTML=head+`<div class="empty"><h3>Primero instala la app</h3><p>En iPhone los avisos solo funcionan con TochiNuri en la pantalla de inicio: en Safari toca Compartir → «Añadir a pantalla de inicio» y abre la app desde ese icono.</p></div>`;return}
   if(load!==false){v.innerHTML=head+`<p class="muted">Cargando…</p>`;await pushLoad()}
   if(pushState.err){v.innerHTML=head+`<div class="empty"><h3>No se pudo preparar</h3><p>Cierra la app y vuelve a abrirla, con conexión, para activar los avisos.</p><button type="button" class="btn" id="rmRetry">Reintentar</button></div>`;$("#rmRetry").onclick=()=>renderReminders();return}
-  const on=!!pushState.sub&&pushState.prefs?.enabled!==false&&Notification.permission==="granted",P=pushState.prefs||{idle_days:3,streak:true,hour:19},denied=Notification.permission==="denied";
+  const on=!!pushState.sub&&pushState.prefs?.enabled!==false&&Notification.permission==="granted",P=pushState.prefs||{idle_days:3,streak:true,hour:19,days:[]},denied=Notification.permission==="denied";
   v.innerHTML=head+`<div class="sec rm-box">
     <label class="switch rm-sw"><input type="checkbox" id="rmOn"${on?" checked":""}${denied?" disabled":""}><span class="sw"></span><span class="sw-l"><b>Recordatorios en este móvil</b><small>${on?"Activados":"Desactivados"}</small></span></label>
     ${denied?`<p class="form-error">Has bloqueado los avisos de TochiNuri. Actívalos en los ajustes del navegador o del móvil y vuelve aquí.</p>`:""}
     <div class="rm-opts"${on?"":" hidden"}>
+     <div class="field rm-days-f"><span class="lbl" id="rmDaysL">Mis días de entreno</span><div class="rm-days" role="group" aria-labelledby="rmDaysL">${[[1,"L","lunes"],[2,"M","martes"],[3,"X","miércoles"],[4,"J","jueves"],[5,"V","viernes"],[6,"S","sábado"],[7,"D","domingo"]].map(([n,l,f])=>`<button type="button" class="rm-day" data-d="${n}" aria-pressed="${(P.days||[]).includes(n)}" aria-label="${f}">${l}</button>`).join("")}</div>
+      <small class="muted" id="rmDaysTxt">${(P.days||[]).length?"Esos días, a la hora elegida, te recuerdo que toca entrenar (si aún no lo has apuntado).":"Marca tus días y te recordaré que toca entrenar."}</small></div>
      <div class="field"><label for="rmIdle">Avisarme si llevo sin entrenar</label><select id="rmIdle">${[2,3,4,5,7].map(n=>`<option value="${n}"${P.idle_days===n?" selected":""}>${n} días</option>`).join("")}</select></div>
      <label class="chk"><input type="checkbox" id="rmStreak"${P.streak!==false?" checked":""}> Avisarme el fin de semana si me falta para el reto semanal</label>
      <div class="field"><label for="rmHour">Hora del aviso</label><select id="rmHour">${Array.from({length:16},(_,i)=>i+7).map(h=>`<option value="${h}"${P.hour===h?" selected":""}>${h}:00</option>`).join("")}</select></div>
@@ -6213,8 +6219,12 @@ async function renderReminders(load){const v=$("#v-reminders");
   const err=m=>{$("#rmErr").textContent=m;$("#rmErr").hidden=false};
   $("#rmOn").onchange=async ev=>{const want=ev.target.checked;ev.target.disabled=true;try{if(want){await pushEnable();toast("Avisos activados 🔔")}else{await pushDisable();toast("Avisos desactivados")}await renderReminders(false)}
     catch(e){ev.target.checked=!want;ev.target.disabled=false;err(e?.message==="denied"?"Necesito tu permiso para mandarte avisos. Si no te salió la pregunta, revisa los ajustes de notificaciones.":"No se pudo cambiar. Revisa la conexión e inténtalo de nuevo.")}};
-  const savePrefs=async()=>{const p={enabled:true,idle_days:Number($("#rmIdle").value),streak:$("#rmStreak").checked,hour:Number($("#rmHour").value)};try{await PUSH_API.setPrefs(p);pushState.prefs=p;toast("Avisos guardados")}catch(e){err("No se pudo guardar.")}};
+  const curDays=()=>[...document.querySelectorAll(".rm-day[aria-pressed=true]")].map(b=>Number(b.dataset.d));
+  const savePrefs=async()=>{const p={enabled:true,idle_days:Number($("#rmIdle").value),streak:$("#rmStreak").checked,hour:Number($("#rmHour").value),days:curDays()};try{await PUSH_API.setPrefs(p);pushState.prefs=p;toast("Avisos guardados")}catch(e){err("No se pudo guardar.")}};
   ["#rmIdle","#rmStreak","#rmHour"].forEach(s=>{const el=$(s);if(el)el.onchange=savePrefs});
+  let dT=0;document.querySelectorAll(".rm-day").forEach(b=>b.onclick=()=>{b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")==="true"?"false":"true");
+    const n=curDays().length;$("#rmDaysTxt").textContent=n?"Esos días, a la hora elegida, te recuerdo que toca entrenar (si aún no lo has apuntado).":"Marca tus días y te recordaré que toca entrenar.";
+    clearTimeout(dT);dT=setTimeout(savePrefs,700)});
   const t=$("#rmTest");if(t)t.onclick=async()=>{t.disabled=true;try{const r=await PUSH_API.test();toast(r?.sent?"Aviso enviado: mira tu móvil":"No se pudo enviar el aviso")}catch(e){toast("No se pudo enviar el aviso")}t.disabled=false};
 }
 function openReminders(){openTool("reminders","Avisos",()=>{});renderReminders()}
@@ -7017,7 +7027,7 @@ const INTRO={
  pain:"Apunta molestias y pequeñas lesiones para ver si se repiten. Escuchar al cuerpo también es entrenar (y si duele de verdad, al fisio).",
  body:"Peso, altura y envergadura: con eso calculo tu grasa estimada y si tus brazos te dan ventaja. Números para conocerte, no para obsesionarte.",
  water:"Tu cantimplora digital: apunta lo que bebes y mira cómo se llena el vaso. Un músculo deshidratado es un músculo de mal humor.",
- reminders:"Te doy un toque en el móvil si llevas días sin entrenar o si tu racha está en peligro. Como un entrenador, pero sin gritar.",
+ reminders:"Te doy un toque en el móvil en tus días de entreno, si llevas días sin entrenar o si tu racha está en peligro. Como un entrenador, pero sin gritar.",
  friends:"Añade a tu gente del box o del gym con un código y comparad días, rachas y kilos. Retadlos con monedas en juego: el pique sano también suma.",
  badges:"Tus trofeos: insignias por constancia, kilos y récords, y logros secretos escondidos. ¿Los encontrarás todos?",
  weights:"Los últimos pesos que usaste en cada ejercicio, por grupos. Para no volver a preguntarte «¿con cuánto iba yo?».",

@@ -38,3 +38,7 @@ create policy "shop: quitar (admin)" on public.shop for delete to authenticated 
 -- friend_answer y friend_cancel; tabla friend_requests (RLS sin políticas: solo vía funciones).
 -- friends_publish admite además mpr, tot, bd, pl, pk y pn. friends_disable borra también las solicitudes.
 -- Hecho al publicar v81: friends_add ahora llama a friend_request (crea solicitud).
+
+-- 21/11/2026 (v89): recordatorio en días fijos. push_prefs.days smallint[] (1=lunes … 7=domingo, check push_prefs_days_ok).
+-- push_due() avisa «Hoy toca entrenar» (kind 'plan') si hoy es uno de tus días, a tu hora, y aún no hay entreno con fecha de hoy.
+-- Tiene prioridad sobre los avisos de racha y de días sin entrenar; como mucho un aviso de cada tipo al día (push_log).

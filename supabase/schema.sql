@@ -42,3 +42,6 @@ create policy "shop: quitar (admin)" on public.shop for delete to authenticated 
 -- 21/11/2026 (v89): recordatorio en días fijos. push_prefs.days smallint[] (1=lunes … 7=domingo, check push_prefs_days_ok).
 -- push_due() avisa «Hoy toca entrenar» (kind 'plan') si hoy es uno de tus días, a tu hora, y aún no hay entreno con fecha de hoy.
 -- Tiene prioridad sobre los avisos de racha y de días sin entrenar; como mucho un aviso de cada tipo al día (push_log).
+
+-- 21/11/2026 (v92): push_due() leía el reto semanal como g->>'n', pero la app lo guarda como {"from","goal"}:
+-- el aviso de racha nunca se enviaba. Ahora usa coalesce(g->>'goal', g->>'n').

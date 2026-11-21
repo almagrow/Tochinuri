@@ -45,3 +45,7 @@ create policy "shop: quitar (admin)" on public.shop for delete to authenticated 
 
 -- 21/11/2026 (v92): push_due() leía el reto semanal como g->>'n', pero la app lo guarda como {"from","goal"}:
 -- el aviso de racha nunca se enviaba. Ahora usa coalesce(g->>'goal', g->>'n').
+
+-- 21/11/2026 (limpieza): madrid_monday() con search_path fijo (''); pg_net movida del esquema public a extensions
+-- (drop + create; net.http_post sigue igual y la tarea tochinuri-push responde 200).
+-- Repaso app ↔ servidor: todas las llamadas rpc y columnas coinciden; claves de friends_publish y coop_days_sync coinciden.

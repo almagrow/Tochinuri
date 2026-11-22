@@ -9271,13 +9271,26 @@ function kcalSecs(e,I){const sets=num(e.sets)||1;
     if((I.key==="run"||I.key==="walk")&&r<=42)return reps*1000/I.mps;/* km */
     if(r>=20)return reps/I.mps}
   return reps*(I.spr||3)}
+/* v117: metros que recorre la carga en cada repetición (para sumar el trabajo de levantar peso).
+   kcal extra = reps × kg × metros × 9,81 / 4184 / 0,2 (el músculo rinde ~20 %). Calibrado con el estudio ACE/Univ. Wisconsin (Fran y Donkey Kong). */
+const KCAL_DIST={squat:.55,frontsquat:.55,goblet:.5,backsquat:.55,ohs:.55,pistol:.5,thruster:1.4,wallball:3,deadlift:.55,rackpull:.3,rdl:.5,sldl:.5,goodmorning:.4,highpull:1,clean:1.1,snatch:1.7,
+  cleanjerk:1.6,jerk:.5,press:.5,pushpress:.6,bench:.4,incline:.4,decline:.35,fly:.4,chestpress:.4,row:.45,seatedrow:.45,pulldown:.6,legpress:.4,lunge:.45,bulgarian:.45,stepup:.45,hipthrust:.3,
+  swing:1.2,slam:1.8,curl:.4,pushdown:.35,skull:.35,ohext:.4,raise:.5,lateral:.5,shrug:.08,uprightrow:.5,calf:.08,legext:.4,legcurl:.35,seatlegcurl:.35,tgu:1.5,sled:0,boxjump:0};
+function kcalLoad(e,I){const kg=num(e.weight)||0;if(I.mps||(!kg&&!(Array.isArray(e.sl)&&e.sl.some(q=>num(q.kg)))))return 0;const d=KCAL_DIST[I.key]??.5;if(!d)return 0;
+  const sl=Array.isArray(e.sl)&&e.sl.length?e.sl:null,reps=sl?sl.reduce((a,s)=>a+(num(s.reps)||0),0):(num(e.reps)||0)*(num(e.sets)||1);
+  const load=sl?sl.reduce((a,s)=>a+(num(s.reps)||0)*(num(s.kg??s.weight)||kg),0):reps*kg;
+  return load*d*9.81/4184/.2}
+/* Rondas de un AMRAP / RFT apuntadas en el resultado («5 rondas + 12 reps») cuando los ejercicios no llevan rondas */
+function kcalRounds(w){const m=String(w.result||"").match(/(\d+(?:[.,]\d+)?)\s*(?:rondas?|rds?|rounds?)\b(?:\s*\+\s*(\d+))?/i);if(!m)return 1;
+  const r=parseFloat(m[1].replace(",","."));return r>0&&r<100?r:1}
 function wodKcal(w){const bw=kcalW(),gym=w.kind==="gym",metcon=!gym&&/for time|amrap|emom|tabata|chipper|rft|rondas|intervalos/i.test(w.type||"");
   /* En un metcon (For Time, AMRAP, EMOM…) se va a tope: el gasto sube un 25 % y el descanso entre ejercicios no es reposo */
-  const rows=(w.exercises||[]).map(e=>{if(!e.name)return{t:0,met:0};const I=kcalInfo(e.name),me=typeof myEx==="function"?myEx(e):e;let t=kcalSecs(me,I);
+  const noSets=!(w.exercises||[]).some(e=>num(e.sets)>1),R=!gym&&noSets?kcalRounds(w):1;
+  const rows=(w.exercises||[]).map(e=>{if(!e.name)return{t:0,met:0,ld:0};const I=kcalInfo(e.name),me=typeof myEx==="function"?myEx(e):e;let t=kcalSecs(me,I)*R;
     if(gym&&!num(e.time)&&!I.mps&&num(e.weight))t*=1.3;/* con peso, cada repetición va más lenta */
-    return{t,met:I.met*(metcon?1.25:1),sets:num(e.sets)||1,heavy:!!num(e.weight)}});
+    return{t,met:I.met*(metcon?1.25:1),sets:num(e.sets)||1,heavy:!!num(e.weight),ld:kcalLoad(me,I)*R}});
   /* v116: se cuenta lo que se hace en cada ejercicio (repeticiones, distancia o tiempo apuntado). La duración total del entreno y los descansos ya no cambian el resultado. */
-  const A=rows.reduce((a,r)=>a+r.t,0),per=rows.map(r=>r.met*bw*r.t/3600),kcal=per.reduce((a,b)=>a+b,0);
+  const A=rows.reduce((a,r)=>a+r.t,0),per=rows.map(r=>r.met*bw*r.t/3600+(r.ld||0)),kcal=per.reduce((a,b)=>a+b,0);
   return{kcal:Math.round(kcal),per:per.map(Math.round),secs:Math.round(A),bw,def:kcalWDefault()}}
 const fmtKcal=n=>Math.round(n).toLocaleString("es-ES");
 const FIRE='<span aria-hidden="true">🔥</span>';

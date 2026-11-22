@@ -9886,6 +9886,9 @@ function gsPaint(full){if(!GS)return;const x=gsCur(),rest=GS.ph==="rest",show=re
   el.insertAdjacentHTML("beforeend",`<button type="button" role="radio" aria-checked="false" data-casa="1">En casa</button>`);
   el.querySelector("[data-casa]").onclick=()=>openCasa("home")};try{paintModeSw()}catch(e){}}
 
+/* v104: los retos de 28 días ya están en «En casa»; se quitan de la portada */
+{const _rt=renderToday;renderToday=function(){_rt();$("#ch28Box")?.remove()};try{$("#ch28Box")?.remove()}catch(e){}}
+
 
 </script>
 

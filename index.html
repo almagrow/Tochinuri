@@ -9968,7 +9968,7 @@ function rutItems(R){const nj=R.nj||gsNoJump(),out=[];
   (R.st||[]).forEach(id=>{const x=typeof wuFind==="function"&&wuFind(id);if(x)out.push({n:x.x[0],wu:id,work:40,rest:10,tip:x.x[2]})});return out}
 function rutArt(R){const k=R.k[0];if(!k)return(R.st||[])[0]&&WU_PAT[R.st[0]]?R.st[0]+"|1":"plank|0";const b=GS_EX[k];return(b.pat||animKeyOf(b.ex))+"|1"}
 function rutMins(R){return Math.max(1,Math.round(rutItems(R).reduce((a,i)=>a+i.work+i.rest,0)/60))}
-{const _ch=casaHome;casaHome=function(b){_ch(b);const sec=[...b.querySelectorAll(".cs-sec")].find(x=>/Reciente/.test(x.textContent));if(!sec)return;
+{const _ch=casaHome;casaHome=function(b){_ch(b);return;/* v121: rutinas rápidas quitadas de la portada a petición de la usuaria */const sec=[...b.querySelectorAll(".cs-sec")].find(x=>/Reciente/.test(x.textContent));if(!sec)return;
   sec.insertAdjacentHTML("beforebegin",`<div class="cs-sec"><h3>Rutinas rápidas</h3><span class="muted">${CASA_RUT.length} rutinas</span></div>
    <div class="cs-rut">${CASA_RUT.map(R=>`<button type="button" class="cs-rc" style="--c:${R.c}" data-rut="${R.id}"><div class="cs-ra" data-rart="${esc(rutArt(R))}"></div>
      <span class="cs-re" aria-hidden="true">${R.e}</span><b>${esc(R.t)}</b><small>${rutMins(R)} min · ${["","Fácil","Medio","Intenso"][R.lv]}</small><em>${esc(R.d)}</em></button>`).join("")}</div>`);

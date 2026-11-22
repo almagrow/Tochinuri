@@ -1169,7 +1169,7 @@ header.top.sub .top-coins{display:none}
 /* ---------- Mejoras de uso ---------- */
 .log-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:-2px 0 12px}
 .mode-sw{display:flex;width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:4px;gap:4px}
-.mode-sw button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-weight:800;font-size:16px;padding:10px 14px;border-radius:999px;cursor:pointer;min-height:46px}
+.mode-sw button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-weight:800;font-size:16px;padding:10px 8px;white-space:nowrap;border-radius:999px;cursor:pointer;min-height:46px}
 .mode-sw button[aria-checked="true"]{background:var(--brand);color:#fff}
 .repeat-last{display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--line);border-radius:999px;padding:7px 12px;font:inherit;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;min-height:38px;max-width:100%;min-width:0}
 .repeat-last span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -9880,6 +9880,11 @@ function gsPaint(full){if(!GS)return;const x=gsCur(),rest=GS.ph==="rest",show=re
   c.classList.add("an-flat-scope")}}
 {const _q=qaItems;qaItems=function(){const L=_q(),i=L.findIndex(x=>x.id==="plan");L.splice(i+1,0,{id:"casa",label:"En casa",ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',fn:()=>openCasa("home")});return L}}
 {const s=$("#sheetHome");if(s)s.onclick=()=>{closeSheet();openCasa("home")}}
+
+/* v103: «En casa» como tercer apartado junto a CrossFit y Gym */
+{const _pm=paintModeSw;paintModeSw=function(){_pm();const el=$("#modeNow");if(!el||el.querySelector("[data-casa]"))return;
+  el.insertAdjacentHTML("beforeend",`<button type="button" role="radio" aria-checked="false" data-casa="1">En casa</button>`);
+  el.querySelector("[data-casa]").onclick=()=>openCasa("home")};try{paintModeSw()}catch(e){}}
 
 
 </script>

@@ -1707,6 +1707,7 @@ html.gs-lock,html.gs-lock body{overflow:hidden}
 .cs-card.cs-core{background:linear-gradient(90deg,rgba(10,10,14,.85) 0%,rgba(10,10,14,.5) 45%,rgba(10,10,14,.05) 75%),url(images/vientre-plano.jpg) 75% 50%/cover no-repeat!important;color:#fff!important}
 .cs-card.cs-tono{background:linear-gradient(90deg,rgba(10,10,14,.85) 0%,rgba(10,10,14,.45) 45%,rgba(10,10,14,0) 75%),url(images/tonificacion.jpg) 70% 30%/cover no-repeat!important}
 .cs-card.cs-glu{background:linear-gradient(90deg,rgba(10,10,14,.85) 0%,rgba(10,10,14,.45) 45%,rgba(10,10,14,0) 75%),url(images/gluteos.jpg) 70% 60%/cover no-repeat!important}
+.cs-card.cs-burn{background:linear-gradient(90deg,rgba(10,10,14,.85) 0%,rgba(10,10,14,.45) 45%,rgba(10,10,14,0) 75%),url(images/cardio.jpg) 70% 30%/cover no-repeat!important}
 .cs-card.cs-core .cs-pill{background:rgba(255,255,255,.88)!important;color:var(--ci)!important}
 .cs-card.cs-core h4,.cs-card.cs-core .cs-prog,.cs-card.cs-core .cs-prog .mono,.cs-card.cs-core .cs-ready{color:#fff!important}
 .cs-card.cs-core .cs-prog i{background:rgba(255,255,255,.35)!important}
@@ -9772,7 +9773,7 @@ function chStart(ch){const s=ch28State(ch.id),day=s.d>=28?1:s.d+1;
   gsStart(`${ch.t} · Día ${day}`,ch28Day(ch,day),{ch:ch.id,day,art:CH_ART[ch.id]})}
 function casaHome(b){const H=casaHist().slice(-6).reverse();
   b.innerHTML=`<div class="cs-sec"><h3>Desafío</h3><button type="button" class="link-btn" id="csAllCh">Ver todos</button></div>
-    <div class="cs-ch">${CH28.map(c=>{const s=ch28State(c.id),d=Math.min(28,s.d),fin=d>=28;return`<article class="cs-card${c.id==="full"?" cs-photo":c.id==="core"?" cs-photo cs-core":c.id==="tono"?" cs-photo cs-core cs-tono":c.id==="glu"?" cs-photo cs-core cs-glu":""}" style="--c:${c.c};--ci:${c.ink}">
+    <div class="cs-ch">${CH28.map(c=>{const s=ch28State(c.id),d=Math.min(28,s.d),fin=d>=28;return`<article class="cs-card${c.id==="full"?" cs-photo":c.id==="core"?" cs-photo cs-core":c.id==="tono"?" cs-photo cs-core cs-tono":c.id==="glu"?" cs-photo cs-core cs-glu":c.id==="burn"?" cs-photo cs-core cs-burn":""}" style="--c:${c.c};--ci:${c.ink}">
       <span class="cs-pill">28 Días</span><div class="cs-art" data-art="${CH_ART[c.id]}"></div><h4>${esc(c.t)}</h4>${fin?`<b class="cs-ready">¡Listo!</b>`:""}
       <div class="cs-prog"><span class="mono"><b>${d}</b>/28</span><i><s style="width:${Math.round(d/28*100)}%"></s></i></div>
       <button type="button" class="cs-btn" data-chs="${c.id}">${fin?"Reiniciar":d?`Seguir · Día ${d+1}`:"Iniciar"}</button></article>`}).join("")}</div>

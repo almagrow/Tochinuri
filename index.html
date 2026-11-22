@@ -1584,6 +1584,7 @@ button.mu-chip{font-family:inherit;font-size:13px;line-height:1.3;background:non
 .du-form p{margin:0;font-size:13px}
 
 /* v101: entreno guiado y retos de 28 días */
+
 html.gs-lock,html.gs-lock body{overflow:hidden}
 .gs-ov{position:fixed;inset:0;z-index:9500;background:var(--bg,#fff);color:var(--ink);display:flex;flex-direction:column;padding:max(10px,env(safe-area-inset-top)) 16px max(14px,env(safe-area-inset-bottom));--gc:var(--brand)}
 .gs-ov[data-ph=prep]{--gc:#F59E0B}.gs-ov[data-ph=rest]{--gc:#10B981}.gs-ov[data-ph=pause]{--gc:var(--muted)}
@@ -1617,6 +1618,83 @@ html.gs-lock,html.gs-lock body{overflow:hidden}
 .ch28-c small{font-weight:700;opacity:.85}
 .ch28-go{align-self:flex-start;margin-top:4px;border:0;border-radius:999px;padding:10px 18px;background:var(--ci);color:#fff;font-weight:800;font-size:15px;cursor:pointer}
 @media (min-width:700px){.ch28-c{flex-basis:260px}}
+
+/* v102: ilustración plana y sección «En casa» */
+.an-flat-scope{--fl-skin:#F3C3A4;--fl-leg:#6E7584;--fl-top:#F0507A;--fl-shoe:#F0507A;--fl-tee:#5B7FE0;--fl-short:#3A4150;--fl-hair:#3B2418}
+.an-flat-scope .an-mu,.an-flat-scope .an-fib,.an-flat-scope .an-ear{display:none}
+.an-flat-scope .an-sil{stroke:none;fill:var(--fl-skin)}
+.an-flat-scope .an-fem .an-pt-th,.an-flat-scope .an-fem .an-pt-sn{fill:var(--fl-leg)}
+.an-flat-scope .an-fem .an-brief{fill:var(--fl-leg);opacity:1}
+.an-flat-scope .an-fem .an-topw{fill:var(--fl-top)}
+.an-flat-scope .an-fig:not(.an-fem) .an-pt-to{fill:var(--fl-tee)}
+.an-flat-scope .an-fig:not(.an-fem) .an-pt-th,.an-flat-scope .an-fig:not(.an-fem) .an-brief{fill:var(--fl-short);opacity:1}
+.an-flat-scope .an-foot{fill:var(--fl-shoe)}.an-flat-scope .an-hair{fill:var(--fl-hair)}
+.an-flat-scope .an-bk{filter:brightness(.88)}
+.an-flat-scope .ex-anim-svg{background:transparent}
+.pose-svg{width:100%;height:100%;display:block}
+.ch28-e{width:96px;height:120px;right:4px;top:6px;opacity:1}.ch28-e .pose-svg{width:100%;height:100%}
+/* En casa */
+.cs-head{display:flex;align-items:center;justify-content:space-between;margin:10px 0 6px}.cs-head h2{margin:0;font-family:var(--f-display);font-size:30px}
+.cs-kc{padding:6px 12px;border-radius:999px;background:color-mix(in srgb,#F97316 14%,var(--surface));font-size:15px}
+.cs-tabs{position:sticky;top:calc(var(--hdr,56px));z-index:5;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:6px;margin:0 -4px 8px;border-radius:20px;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(10px);border:1px solid var(--line)}
+.cs-tabs button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border:0;border-radius:14px;background:none;color:var(--muted);font-size:11.5px;font-weight:700;cursor:pointer}
+.cs-tabs svg{width:22px;height:22px}.cs-tabs [aria-selected=true]{background:color-mix(in srgb,var(--brand) 12%,var(--surface));color:var(--ink)}
+.cs-sec{display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px}.cs-sec h3{margin:0;font-size:20px}
+.cs-ch{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;margin:0 -4px;padding-left:4px}
+.cs-ch.all{flex-direction:column;overflow:visible}
+.cs-card{flex:0 0 84%;max-width:340px;scroll-snap-align:start;position:relative;min-height:250px;border-radius:26px;padding:16px;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 70%,#fff),var(--c));color:var(--ci);display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.cs-ch.all .cs-card{max-width:none}
+.cs-pill{align-self:flex-start;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.75);font-weight:700;font-size:14px}
+.cs-art{position:absolute;right:0;top:16px;width:46%;height:190px}
+.cs-card h4{margin:auto 0 0;max-width:58%;font-size:22px;line-height:1.1;color:var(--ci)}.cs-ready{font-size:30px;line-height:1;max-width:58%}
+.cs-prog{display:flex;align-items:center;gap:10px;max-width:62%}.cs-prog span{font-size:15px}.cs-prog i{flex:1;height:8px;border-radius:9px;background:rgba(255,255,255,.6);overflow:hidden}.cs-prog s{display:block;height:100%;background:var(--ci);border-radius:9px}
+.cs-btn{position:relative;z-index:1;margin-top:4px;min-height:50px;border:0;border-radius:999px;background:#fff;color:#222;font-weight:800;font-size:17px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.cs-recent,.cs-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.cs-recent li,.cs-list li{display:flex;align-items:center;gap:12px;padding:10px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+.cs-recent b,.cs-list b{display:block;font-size:15.5px}.cs-recent span,.cs-list span{font-size:13px;color:var(--muted)}.cs-list li>div:nth-child(2){flex:1;min-width:0}
+.cs-thumb{flex:none;width:64px;height:64px;border-radius:14px;background:linear-gradient(160deg,#FFF4EC,#FFE1D6);overflow:hidden}
+.cs-empty{margin:0}
+.cs-jf{display:flex;align-items:center;gap:12px;width:100%;padding:14px;border-radius:18px;border:1.5px solid var(--line);background:var(--surface);text-align:left;cursor:pointer;color:var(--ink)}
+.cs-jf span{flex:1}.cs-jf b{display:block;font-size:16px}.cs-jf small{color:var(--muted)}
+.cs-jf i{flex:none;width:50px;height:30px;border-radius:999px;background:var(--line);position:relative;transition:background .2s}.cs-jf i::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s}
+.cs-jf.on{border-color:#10B981}.cs-jf.on i{background:#10B981}.cs-jf.on i::after{left:23px}
+.cs-lvl{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0}.cs-lvl button{min-height:40px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;color:var(--ink);cursor:pointer}
+.cs-lvl [aria-checked=true]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.cs-zones{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.cs-zone{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:104px;padding:14px;border:0;border-radius:20px;background:var(--c);color:#222;text-align:left;cursor:pointer}
+.cs-zone span{font-size:28px}.cs-zone b{font-size:15.5px;line-height:1.2}.cs-zone small{opacity:.7}
+.cs-big{width:100%;min-height:54px;margin:12px 0 4px;border:0;border-radius:999px;background:var(--fl-top,#F0507A);color:#fff;font-weight:800;font-size:17px;cursor:pointer}
+.cs-panel{padding:14px;border-radius:20px;background:var(--surface);border:1px solid var(--line);margin:0 0 12px;display:flex;flex-direction:column;gap:10px}.cs-panel h3{margin:0;font-size:18px}.cs-panel p{margin:0}
+.cs-pick{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}.cs-pick input{position:absolute;opacity:0}.cs-pick label{display:block;padding:8px 12px;border-radius:999px;border:1.5px solid var(--line);font-size:14px;font-weight:600;cursor:pointer}
+.cs-pick input:checked+label{border-color:var(--fl-top,#F0507A);background:color-mix(in srgb,#F0507A 12%,var(--surface))}.cs-pick input:focus-visible+label{outline:2px solid var(--brand)}.cs-pick small{color:var(--muted)}
+.cs-step{display:flex;align-items:center;gap:10px}.cs-step span{flex:1;font-weight:700}.cs-step button{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);font-size:20px;color:var(--ink);cursor:pointer}.cs-step b{min-width:56px;text-align:center;font-size:18px}
+.cs-two{display:flex;gap:8px}.cs-two .btn{flex:1;min-height:48px}
+.cs-stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cs-stats3 div{padding:12px;border-radius:18px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column}
+.cs-stats3 span{font-size:12px;font-weight:700;color:var(--muted)}.cs-stats3 b{font-size:26px;font-family:var(--f-display)}.cs-stats3 small{font-size:12px;color:var(--muted)}
+.cs-cal{margin-top:12px;padding:12px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}.cs-calh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.cs-calh b{text-transform:capitalize}
+.cs-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}.cs-grid span{aspect-ratio:1;display:grid;place-items:center;border-radius:50%;font-size:14px;font-weight:600}
+.cs-grid .h{aspect-ratio:auto;font-size:12px;color:var(--muted)}.cs-grid .on{background:var(--fl-top,#F0507A);color:#fff}.cs-grid .td{box-shadow:inset 0 0 0 2px var(--ink)}
+.cs-note{font-size:12.5px;margin:10px 0 0}
+.cs-nums{grid-template-columns:1fr 1fr 1.1fr}.cs-imc{display:flex;flex-direction:column;justify-content:center;padding:8px 10px;border-radius:14px;background:color-mix(in srgb,#10B981 14%,var(--surface))}.cs-imc.none{background:var(--surface-2)}
+.cs-imc span{font-size:12px;font-weight:700;color:var(--muted)}.cs-imc b{font-size:24px}.cs-imc small{font-size:12px}
+.cs-imcbar{position:relative;height:10px;border-radius:9px;background:linear-gradient(90deg,#60A5FA 0 14%,#34D399 14% 40%,#FBBF24 40% 60%,#F87171 60%)}.cs-imcbar i{position:absolute;top:-4px;width:4px;height:18px;border-radius:3px;background:var(--ink);transform:translateX(-50%)}
+.cs-imcl{display:flex;justify-content:space-between;padding:0 12% 0 12%;font-size:11px;color:var(--muted)}
+.cs-glasses{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.cs-gl{min-height:58px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);font-size:28px;cursor:pointer}.cs-gl:not(.on){filter:grayscale(1);opacity:.35}.cs-gl.on{background:color-mix(in srgb,#38BDF8 18%,var(--surface));border-color:#38BDF8}
+/* Sesión guiada, estilo limpio */
+.gs2{background:#fff;color:#222}.gs2 .gs-bar{margin:4px 0 8px}.gs2 .gs-bar i{height:4px;background:#E5E7EB}.gs2 .gs-bar i.ok,.gs2 .gs-bar i.on{background:#F0507A}
+.gs2 .gs-top{justify-content:space-between}.gs2 .icon-btn{color:#222}
+.gs2 .gs-main{justify-content:center}.gs2 .gs-anim{max-width:420px}.gs2 .ex-anim-wrap,.gs2 .ex-anim{background:transparent!important;border:0!important;box-shadow:none!important}
+.gs2 .gs-info{display:flex;align-items:flex-end;gap:10px;padding:0 4px}.gs2 .gs-info>div:first-child{flex:1;min-width:0}
+.gs2 #gsCount{color:#6B7280;font-size:15px}.gs-time{display:block;font-size:46px;line-height:1.05;font-weight:800;letter-spacing:.01em}
+.gs2 #gsName{display:block;font-size:17px;color:#4B5563;font-weight:600}.gs2 .gs-tip{margin:4px 0 0;font-size:13.5px;text-align:left;max-width:none}
+.gs-fb{display:flex;gap:6px;padding-bottom:6px}.gs-fb button{width:40px;height:40px;border-radius:50%;border:1px solid #E5E7EB;background:#fff;font-size:18px;cursor:pointer;opacity:.7}.gs-fb button.on{opacity:1;border-color:#F0507A}
+.gs-ctrl2{display:flex;align-items:center;gap:10px;margin:12px 0 4px}
+.gs-b2{flex:none;width:52px;height:52px;border-radius:50%;border:1px solid #E5E7EB;background:#F3F4F6;font-size:18px;color:#374151;cursor:pointer}
+.gs-pbar{flex:1;position:relative;height:56px;border-radius:999px;border:0;background:#F1F2F4;overflow:hidden;cursor:pointer;font-weight:800;font-size:16px;color:#222}
+.gs-pbar i{position:absolute;left:0;top:0;bottom:0;width:0;background:#F0507A;border-radius:999px;transition:width .2s linear}.gs-pbar span{position:relative}
+.gs2[data-ph=rest] .gs-pbar i{background:#34D399}.gs2[data-ph=prep] .gs-pbar i{background:#FBBF24}
+.gs2 .gs-ph{background:#F0507A}.gs2[data-ph=rest] .gs-ph{background:#10B981}.gs2[data-ph=prep] .gs-ph{background:#F59E0B}.gs2[data-ph=pause] .gs-ph{background:#9CA3AF}
+.gs2 .gs-hurt{color:#6B7280}.gs2 .gs-nj{background:#fff;color:#222;border-color:#E5E7EB}
+.gs-de .gs-win{width:140px;height:150px}
 
 /* v100: Planificar */
 .pl-prog{display:flex;gap:6px;margin:12px 0 4px}.pl-prog i{flex:1;height:6px;border-radius:9px;background:var(--line)}.pl-prog i.on{background:var(--brand)}
@@ -5049,14 +5127,14 @@ function buildPerson(svg,front,fem,work){const NS="http://www.w3.org/2000/svg",V
   const lvOf=k=>{const f=work&&work.get(k==="gemelos2"?"gemelos":k);return f?(f>=1?3:2):0};
   const root=g(svg,"an-fig"+(front?" an-front":"")+(fem?" an-fem":""));
   /* una parte del cuerpo: silueta, músculos y fibras */
-  function part(par,def,silOverride,extra){const G=g(par),o={def,sil:pa(G,"an-sil"),mu:[],fib:[],extra:[]};const S=silOverride||def.sil;o.S=S;
+  function part(par,def,silOverride,extra,nm){const G=g(par),o={def,sil:pa(G,"an-sil an-pt-"+(nm||"x")),mu:[],fib:[],extra:[]};const S=silOverride||def.sil;o.S=S;
     for(const k in def.mu||{}){const lv=lvOf(k);o.mu.push([pa(G,"an-mu"+(lv?" on":""),`fill:var(--mu${lv})`),def.mu[k]])}
     for(const k in def.fib||{})for(const L of def.fib[k])o.fib.push([pa(G,"an-fib"),L]);
     for(const [cls,pts] of extra||[])o.extra.push([pa(G,cls),pts]);return o}
-  const limb=(par,arm)=>arm?{u:part(par,V.ua),l:part(par,V.fa),h:pa(par,"an-sil an-hand")}:{u:part(par,V.th,fem?V.thW.sil:null,[["an-brief",front?[[-.12,6],[.13,9],[.17,0],[.13,-7],[-.02,-7.4]]:[[-.06,7.8],[.14,8.7],[.17,0],[.15,-7.2],[.02,-7.6]]]]),l:part(par,V.sn),f:pa(par,"an-sil an-foot")};
+  const limb=(par,arm)=>arm?{u:part(par,V.ua,null,null,"ua"),l:part(par,V.fa,null,null,"fa"),h:pa(par,"an-sil an-hand")}:{u:part(par,V.th,fem?V.thW.sil:null,[["an-brief",front?[[-.12,6],[.13,9],[.17,0],[.13,-7],[-.02,-7.4]]:[[-.06,7.8],[.14,8.7],[.17,0],[.15,-7.2],[.02,-7.6]]]],"th"),l:part(par,V.sn,null,null,"sn"),f:pa(par,"an-sil an-foot")};
   const P={};const T=fem?V.toW:null;
-  const torsoPart=par=>part(par,V.to,T?T.sil:null,[["an-brief",T?T.brief:V.to.brief],...(T?[["an-topw",T.top]]:[])]);
-  const neckHead=par=>({neck:pa(par,"an-sil"),hair:fem?pa(par,"an-hair"):null,head:pa(par,"an-sil an-headp"),ear:front?null:pa(par,"an-sil an-ear"),cap:pa(par,"an-hair")});
+  const torsoPart=par=>part(par,V.to,T?T.sil:null,[["an-brief",T?T.brief:V.to.brief],...(T?[["an-topw",T.top]]:[])],"to");
+  const neckHead=par=>({neck:pa(par,"an-sil an-pt-neck"),hair:fem?pa(par,"an-hair"):null,head:pa(par,"an-sil an-headp"),ear:front?null:pa(par,"an-sil an-ear"),cap:pa(par,"an-hair")});
   if(front){const L=g(root);P.lb=limb(L,false);P.lf=limb(L,false);P.to=torsoPart(g(root));P.nh=neckHead(g(root));const A=g(root);P.ab=limb(A,true);P.af=limb(A,true)}
   else{const bk=g(root,"an-bk");P.ab=limb(bk,true);P.lb=limb(bk,false);P.to=torsoPart(g(root));P.nh=neckHead(g(root));P.lf=limb(g(root),false);P.af=limb(g(root),true)}
   /* de las coordenadas del hueso a la pantalla */
@@ -9642,6 +9720,166 @@ function ch28Html(){return`<section class="ch28" aria-label="Retos de 28 días e
 /* ---- Botón +: retos en casa ---- */
 {const r=$("#sheetPlan");if(r&&!$("#sheetHome")){r.insertAdjacentHTML("afterend",`<button class="sheet-opt" id="sheetHome"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Entreno guiado en casa<small>Retos de 28 días, sin material</small></span></button>`);
   $("#sheetHome").onclick=()=>{closeSheet();show("log");setTimeout(()=>$("#ch28Box")?.scrollIntoView({behavior:"smooth",block:"start"}),120)}}}
+
+/* ================= v102: «En casa», como una app de fitness en casa =================
+   Sección propia con 5 pestañas (Inicio, Ejercicios, Personal, Diario y Mío), ilustración plana de persona
+   (top, mallas y zapatillas) y sesión guiada con el estilo del vídeo de referencia. */
+Object.assign(GS_EX,{
+ zl:{n:"Zancadas laterales",ex:"Zancada lateral"},sumo:{n:"Sentadilla sumo",ex:"Sentadilla sumo con mancuerna",tip0:"Pies muy abiertos y puntas hacia fuera; baja con la espalda recta."},
+ gem:{n:"Elevación de talones",ex:"Elevación de gemelos de pie"}});
+/* Zona (abs, glu, bra, hiit, pil) y nivel de cada ejercicio */
+const GS_META={jj:["hiit",1],sq:["glu",1],jsq:["glu hiit",2],pu:["bra",2],lu:["glu",1],gb:["glu pil",1],pl:["abs bra",1],mc:["hiit abs",1],bp:["hiit",2],
+  cr:["abs",1],rt:["abs",2],db:["abs pil",1],hh:["abs pil",2],su:["pil",1],bd:["bra",1],bc:["hiit bra",2],zl:["glu",1],sumo:["glu",1],gem:["glu",1]};
+CH28.push({id:"glu",t:"Glúteos y piernas",c:"#FFD6E7",ink:"#8A1F4E",e:"🍑",pool:["sq","lu","gb","zl","sumo","gem","jsq"]},
+          {id:"burn",t:"Quema de grasa",c:"#D3F4E4",ink:"#14624A",e:"⚡",pool:["jj","bp","mc","jsq","bc","sq","lu","pl"]});
+const CH_ART={full:"jjack|1",tono:"sidelunge|2",core:"plank|0",glu:"squat|1",burn:"jjlow|1"};
+const CASA_ZONES=[["abs","🎯","Abdominales","#E7DDFF"],["glu","🍑","Glúteos y piernas","#FFD6E7"],["bra","💪","Brazos y pecho","#FFE3CC"],["hiit","⚡","HIIT","#FFF1B8"],["pil","🧘","Pilates","#D3F4E4"],["str","🌿","Cuidado especial y estiramientos","#DCEBFF"]];
+const CASA_STR=["pie1","cad0","esa1","hom1","esb0","cad2","tob2","pie0"];
+let casaTab="home",casaLvl=1;
+const casaFem=()=>window.__animFem??(typeof profile!=="undefined"&&profile?.sex==="mujer");
+/* Dibujo fijo (para tarjetas y miniaturas) a partir de una postura de una animación */
+function poseSVG(spec,cls){const [key,fi]=(spec||"squat|0").split("|"),P=PAT[key]||WU_PAT?.[key]||PAT.squat,f=P.f[Math.min(P.f.length-1,Number(fi)||0)],front=f.view==="front"||P.f[0].view==="front";
+  const NS="http://www.w3.org/2000/svg",svg=document.createElementNS(NS,"svg");svg.setAttribute("viewBox",front?"36 -6 128 150":"28 6 148 136");svg.setAttribute("class","ex-anim-svg pose-svg "+(cls||""));svg.setAttribute("aria-hidden","true");
+  try{const p=absPose(f),person=buildPerson(svg,front,casaFem(),null);person.draw(p,skel(p))}catch(e){}return svg}
+const casaKcalToday=()=>{try{return kcalByDay()[today()]||0}catch(e){return 0}};
+function casaHist(){return Array.isArray(profile?.gsHist)?profile.gsHist:[]}
+function openCasa(tab){if(tab)casaTab=tab;if(!document.getElementById("v-casa")){const s=document.createElement("section");s.className="view an-flat-scope";s.id="v-casa";s.hidden=true;$("#v-maxes").insertAdjacentElement("afterend",s)}
+  VIEW_NAME.casa="En casa";openTool("casa","En casa",renderCasa);scrollTo(0,0)}
+function renderCasa(){const v=$("#v-casa");if(!v)return;const k=casaKcalToday();
+  const tabs=[["home","Inicio","M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"],["ex","Ejercicios","M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm3 6-2 5-5 2 2-5z"],["me1","Personal","M4 5h16v14H4zM8 9h8M8 13h5"],["diary","Diario","M5 6h14v14H5zM5 10h14M9 3v4M15 3v4"],["mine","Mío","M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 9a7 7 0 0 1 14 0"]];
+  v.innerHTML=`<div class="cs-head"><h2>En casa</h2><span class="cs-kc" title="Calorías de hoy">🔥 <b class="mono">${fmtKcal(k)}</b></span></div>
+    <nav class="cs-tabs" role="tablist" aria-label="Secciones de En casa">${tabs.map(([id,l,d])=>`<button type="button" role="tab" aria-selected="${casaTab===id}" data-ctab="${id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg><span>${l}</span></button>`).join("")}</nav>
+    <div class="cs-body" id="csBody"></div>`;
+  v.querySelectorAll("[data-ctab]").forEach(b=>b.onclick=()=>{casaTab=b.dataset.ctab;renderCasa();scrollTo(0,0)});
+  ({home:casaHome,ex:casaEx,me1:casaPersonal,diary:casaDiary,mine:casaMine}[casaTab]||casaHome)($("#csBody"))}
+/* ---- Inicio ---- */
+function chStart(ch){const s=ch28State(ch.id),day=s.d>=28?1:s.d+1;
+  if(s.d>=28){const all={...(profile.ch28||{}),[ch.id]:{d:0}};profile={...profile,ch28:all};saveProf({ch28:all}).catch(()=>{})}
+  gsStart(`${ch.t} · Día ${day}`,ch28Day(ch,day),{ch:ch.id,day,art:CH_ART[ch.id]})}
+function casaHome(b){const H=casaHist().slice(-6).reverse();
+  b.innerHTML=`<div class="cs-sec"><h3>Desafío</h3><button type="button" class="link-btn" id="csAllCh">Ver todos</button></div>
+    <div class="cs-ch">${CH28.map(c=>{const s=ch28State(c.id),d=Math.min(28,s.d),fin=d>=28;return`<article class="cs-card" style="--c:${c.c};--ci:${c.ink}">
+      <span class="cs-pill">28 Días</span><div class="cs-art" data-art="${CH_ART[c.id]}"></div><h4>${esc(c.t)}</h4>${fin?`<b class="cs-ready">¡Listo!</b>`:""}
+      <div class="cs-prog"><span class="mono"><b>${d}</b>/28</span><i><s style="width:${Math.round(d/28*100)}%"></s></i></div>
+      <button type="button" class="cs-btn" data-chs="${c.id}">${fin?"Reiniciar":d?`Seguir · Día ${d+1}`:"Iniciar"}</button></article>`}).join("")}</div>
+    <div class="cs-sec"><h3>Reciente</h3>${H.length?`<button type="button" class="link-btn" data-ctab2="diary">Ver todos</button>`:""}</div>
+    ${H.length?`<ul class="cs-recent">${H.map(r=>`<li><div class="cs-thumb" data-art="${esc(r.a||"squat|1")}"></div><div><b>${esc(r.t)}</b><span>Completado 🏆 · ${fmtD(r.d)}${r.k?` · ${fmtKcal(r.k)} kcal`:""}</span></div></li>`).join("")}</ul>`:`<p class="muted cs-empty">Aquí verás tus rutinas completadas. ¡Empieza un desafío!</p>`}`;
+  b.querySelectorAll("[data-art]").forEach(e=>e.appendChild(poseSVG(e.dataset.art)));
+  b.querySelectorAll("[data-chs]").forEach(x=>x.onclick=()=>chStart(CH28.find(c=>c.id===x.dataset.chs)));
+  $("#csAllCh").onclick=()=>{const r=b.querySelector(".cs-ch");r.classList.toggle("all");$("#csAllCh").textContent=r.classList.contains("all")?"Ver menos":"Ver todos"};
+  b.querySelectorAll("[data-ctab2]").forEach(x=>x.onclick=()=>{casaTab=x.dataset.ctab2;renderCasa()})}
+/* ---- Ejercicios ---- */
+function casaItems(zone,lvl){if(zone==="str")return CASA_STR.filter(id=>wuFind(id)).map(id=>({n:wuFind(id).x[0],wu:id,work:40,rest:10,tip:wuFind(id).x[2]}));
+  const nj=gsNoJump();return Object.keys(GS_META).filter(k=>GS_META[k][0].split(" ").includes(zone)&&GS_META[k][1]<=lvl).map(k=>gsItem(k,[30,40,45][lvl-1],[20,15,12][lvl-1],nj)).filter(Boolean)}
+function casaEx(b){const nj=gsNoJump();
+  b.innerHTML=`<button type="button" class="cs-jf${nj?" on":""}" id="csJf" role="switch" aria-checked="${nj}"><span><b>Modo sin saltos</b><small>Cambia los ejercicios con salto por versiones de bajo impacto</small></span><i></i></button>
+    <div class="cs-lvl" role="radiogroup" aria-label="Nivel">${[[1,"Principiante"],[2,"Intermedio"],[3,"Avanzado"]].map(([k,l])=>`<button type="button" role="radio" aria-checked="${casaLvl===k}" data-lv="${k}">${l}</button>`).join("")}</div>
+    <div class="cs-zones">${CASA_ZONES.map(([k,e,l,c])=>{const n=casaItems(k,casaLvl).length;return`<button type="button" class="cs-zone" style="--c:${c}" data-zone="${k}"><span>${e}</span><b>${l}</b><small>${n} ejercicios</small></button>`}).join("")}</div><div id="csZone"></div>`;
+  $("#csJf").onclick=()=>{try{localStorage.setItem("tn-nojump",nj?"0":"1")}catch(e){}casaEx(b)};
+  b.querySelectorAll("[data-lv]").forEach(x=>x.onclick=()=>{casaLvl=Number(x.dataset.lv);casaEx(b)});
+  b.querySelectorAll("[data-zone]").forEach(x=>x.onclick=()=>{const z=x.dataset.zone,L=casaItems(z,casaLvl),Z=CASA_ZONES.find(q=>q[0]===z),mins=Math.round(L.reduce((a,i)=>a+i.work+i.rest,0)/60);
+    $("#csZone").innerHTML=`<div class="cs-sec"><h3>${Z[1]} ${esc(Z[2])}</h3></div><ul class="cs-list">${L.map((i,ix)=>{let kpm=0;try{kpm=kcalInfo(i.ex||i.n).met*kcalW()/60}catch(e){}
+      return`<li><div class="cs-thumb" data-ax="${ix}"></div><div><b>${esc(i.n)}</b><span>${i.work} s${kpm?` · ${String(kpm.toFixed(1)).replace(".",",")} kcal/min`:""}${i.swapped?" · <em>versión sin saltos</em>":GS_EX[i.key]?.jump?" · con salto":""}</span></div></li>`}).join("")}</ul>
+      <button type="button" class="cs-big" id="csZgo">▶ Empezar · ${mins} min</button>`;
+    $("#csZone").querySelectorAll("[data-ax]").forEach(e=>{const i=L[Number(e.dataset.ax)];e.appendChild(poseSVG(i.wu&&WU_PAT[i.wu]?i.wu+"|1":(i.pat?i.pat+"|1":(animKeyOf(i.ex)+"|1"))))});
+    $("#csZgo").onclick=()=>gsStart(Z[2],L,{art:"squat|1"});$("#csZone").scrollIntoView({behavior:"smooth",block:"start"})})}
+function animKeyOf(name){try{return animFor(findEx(name)||{n:name,c:"otr"}).key||"squat"}catch(e){return"squat"}}
+/* ---- Personal: generador rápido y creador manual ---- */
+function casaPersonal(b){const mine=Array.isArray(profile?.gsMine)?profile.gsMine:[];let sel=new Set(),work=40,rest=15;
+  b.innerHTML=`<div class="cs-panel"><h3>✨ Rutina inteligente</h3>
+      <p class="muted">Elige y la creo al momento.</p>
+      <div class="pl-chips" role="radiogroup" aria-label="Objetivo">${[["burn","🔥 Quemar grasa"],["tone","🍑 Tonificar"],["abs","🎯 Abdomen"],["flex","🌿 Flexibilidad"]].map(([k,l],i)=>plChip("cg",k,l,!i)).join("")}</div>
+      <div class="pl-chips pl-row" role="radiogroup" aria-label="Nivel">${[[1,"Principiante"],[2,"Intermedio"],[3,"Avanzado"]].map(([k,l])=>plChip("cl",k,l,casaLvl===k)).join("")}</div>
+      <div class="pl-chips pl-row" role="radiogroup" aria-label="Minutos">${[5,10,15].map((m,i)=>plChip("cm",m,m+" min",i===1)).join("")}</div>
+      <button type="button" class="cs-big" id="csGen">▶ Crear y empezar</button></div>
+    <div class="cs-panel"><h3>🛠️ Crear mi rutina</h3><p class="muted">Marca ejercicios y ajusta los segundos.</p>
+      <ul class="cs-pick">${Object.keys(GS_META).map(k=>`<li><input type="checkbox" id="cp_${k}" value="${k}"><label for="cp_${k}">${esc(GS_EX[k].n)}${GS_EX[k].jump?" <small>salto</small>":""}</label></li>`).join("")}</ul>
+      <div class="cs-step"><span>Trabajo</span><button type="button" data-st="w-">−</button><b class="mono" id="csW">40 s</b><button type="button" data-st="w+">+</button></div>
+      <div class="cs-step"><span>Descanso</span><button type="button" data-st="r-">−</button><b class="mono" id="csR">15 s</b><button type="button" data-st="r+">+</button></div>
+      <div class="cs-two"><button type="button" class="btn" id="csSave">Guardar</button><button type="button" class="btn primary" id="csGo">▶ Empezar</button></div></div>
+    ${mine.length?`<div class="cs-sec"><h3>Mis rutinas</h3></div><ul class="cs-list">${mine.map((r,i)=>`<li><div><b>${esc(r.t)}</b><span>${r.k.length} ejercicios · ${r.w}/${r.r} s</span></div><button type="button" class="btn" data-mgo="${i}">▶</button><button type="button" class="icon-btn" data-mdel="${i}" aria-label="Borrar">✕</button></li>`).join("")}</ul>`:""}`;
+  const paint=()=>{$("#csW").textContent=work+" s";$("#csR").textContent=rest+" s"};
+  b.querySelectorAll("[data-st]").forEach(x=>x.onclick=()=>{const s=x.dataset.st;if(s[0]==="w")work=Math.max(10,Math.min(120,work+(s[1]==="+"?5:-5)));else rest=Math.max(0,Math.min(90,rest+(s[1]==="+"?5:-5)));paint()});
+  b.querySelectorAll(".cs-pick input").forEach(x=>x.onchange=()=>{x.checked?sel.add(x.value):sel.delete(x.value)});
+  const build=keys=>keys.map(k=>gsItem(k,work,rest,gsNoJump())).filter(Boolean);
+  $("#csGo").onclick=()=>{if(!sel.size){toast("Marca al menos un ejercicio");return}gsStart("Mi rutina",build([...sel]),{art:"squat|1"})};
+  $("#csSave").onclick=async()=>{if(!sel.size){toast("Marca al menos un ejercicio");return}const t=(prompt("Nombre de la rutina","Mi rutina")||"").trim().slice(0,40);if(!t)return;
+    const L=[...mine,{t,k:[...sel],w:work,r:rest}].slice(-20);profile={...profile,gsMine:L};await saveProf({gsMine:L},"Rutina guardada");casaPersonal(b)};
+  b.querySelectorAll("[data-mgo]").forEach(x=>x.onclick=()=>{const r=mine[Number(x.dataset.mgo)];work=r.w;rest=r.r;gsStart(r.t,build(r.k),{art:"squat|1"})});
+  b.querySelectorAll("[data-mdel]").forEach(x=>x.onclick=async()=>{const L=mine.filter((_,i)=>i!==Number(x.dataset.mdel));profile={...profile,gsMine:L};await saveProf({gsMine:L});casaPersonal(b)});
+  $("#csGen").onclick=()=>{const g=b.querySelector("[name=cg]:checked").value,lv=Number(b.querySelector("[name=cl]:checked").value),m=Number(b.querySelector("[name=cm]:checked").value);casaLvl=lv;
+    const zones={burn:["hiit","glu"],tone:["glu","bra","abs"],abs:["abs","pil"],flex:["str","pil"]}[g],wk=[30,40,45][lv-1],rs=[20,15,12][lv-1],n=Math.max(4,Math.round(m*60/(wk+rs)));
+    let pool=[];zones.forEach(z=>pool.push(...casaItems(z,lv)));const seen=new Set();pool=pool.filter(i=>{const id=i.n;if(seen.has(id))return false;seen.add(id);return true}).sort(()=>Math.random()-.5);
+    const L=[];for(let i=0;i<n&&pool.length;i++){const it={...pool[i%pool.length]};if(!it.wu){it.work=wk;it.rest=rs}L.push(it)}
+    gsStart(`Rutina ${m} min · ${{burn:"Quemar grasa",tone:"Tonificar",abs:"Abdomen",flex:"Flexibilidad"}[g]}`,L,{art:g==="flex"?"esb0|1":"squat|1"})}}
+/* ---- Diario: calendario, racha y calorías ---- */
+let casaMonth=null;
+function casaDiary(b){const now=new Date();if(!casaMonth)casaMonth=new Date(now.getFullYear(),now.getMonth(),1);const y=casaMonth.getFullYear(),m=casaMonth.getMonth();
+  const days=new Set(workouts.map(w=>w.date));casaHist().forEach(r=>days.add(r.d));const by=kcalByDay();
+  const first=(new Date(y,m,1).getDay()+6)%7,n=new Date(y,m+1,0).getDate();let streak=0;for(let d=new Date(now);;d=addDays(d,-1)){if(days.has(isoD(d)))streak++;else if(isoD(d)!==today())break;if(streak>999)break}
+  let mk=0,md=0;for(let i=1;i<=n;i++){const ds=isoD(new Date(y,m,i));if(by[ds]){mk+=by[ds]}if(days.has(ds))md++}
+  const mon=mondayOf(now);let wk=0;for(let i=0;i<7;i++)wk+=by[isoD(addDays(mon,i))]||0;
+  b.innerHTML=`<div class="cs-stats3"><div><span>🔥 Racha</span><b>${streak}</b><small>${streak===1?"día":"días"}</small></div><div><span>Esta semana</span><b>${fmtKcal(wk)}</b><small>kcal</small></div><div><span>Este mes</span><b>${md}</b><small>días · ${fmtKcal(mk)} kcal</small></div></div>
+    <div class="cs-cal"><div class="cs-calh"><button type="button" class="icon-btn" id="csPm" aria-label="Mes anterior">‹</button><b>${MESL[m]} ${y}</b><button type="button" class="icon-btn" id="csNm" aria-label="Mes siguiente">›</button></div>
+      <div class="cs-grid">${["L","M","X","J","V","S","D"].map(d=>`<span class="h">${d}</span>`).join("")}${Array(first).fill('<span></span>').join("")}${Array.from({length:n},(_,i)=>{const ds=isoD(new Date(y,m,i+1)),on=days.has(ds);return`<span class="${on?"on":""}${ds===today()?" td":""}" ${on?`title="${fmtKcal(by[ds]||0)} kcal"`:""}>${i+1}</span>`}).join("")}</div></div>
+    <p class="muted cs-note">Los días marcados son los que entrenaste (en casa o en tus entrenos de siempre). Las calorías son una estimación.</p>`;
+  $("#csPm").onclick=()=>{casaMonth=new Date(y,m-1,1);casaDiary(b)};$("#csNm").onclick=()=>{casaMonth=new Date(y,m+1,1);casaDiary(b)}}
+/* ---- Mío: peso, IMC, agua y recordatorios ---- */
+function casaMine(b){const w=bodyWeight()||"",h=f2num(profile?.height)||"",imc=w&&h?w/((h/100)**2):0,cat=!imc?"":imc<18.5?"Bajo peso":imc<25?"Normal":imc<30?"Sobrepeso":"Obesidad";
+  const got=(wPend??waterLog()[today()])||0,goal=waterGoal(),G=Math.max(6,Math.round(goal/250)),full=Math.floor(got/250),on=!!(pushState?.prefs?.enabled);
+  b.innerHTML=`<div class="cs-panel"><h3>⚖️ Peso e IMC</h3><div class="pl-nums cs-nums"><label><span>Peso</span><input type="number" inputmode="decimal" id="csWt" value="${w}" placeholder="—"><small>kg</small></label><label><span>Altura</span><input type="number" inputmode="numeric" id="csHt" value="${h}" placeholder="—"><small>cm</small></label>
+      <div class="cs-imc${imc?"":" none"}"><span>IMC</span><b>${imc?String(imc.toFixed(1)).replace(".",","):"—"}</b><small>${cat||"Pon peso y altura"}</small></div></div>
+      ${imc?`<div class="cs-imcbar" aria-hidden="true"><i style="left:${Math.max(0,Math.min(100,(imc-15)/25*100))}%"></i></div><div class="cs-imcl"><span>18,5</span><span>25</span><span>30</span></div>`:""}
+      <button type="button" class="btn" id="csWsave">Guardar</button></div>
+    <div class="cs-panel"><h3>💧 Agua de hoy</h3><p class="muted">${ml(got)} de ${ml(goal)} · toca un vaso</p>
+      <div class="cs-glasses">${Array.from({length:G},(_,i)=>`<button type="button" class="cs-gl${i<full?" on":""}" data-gl="${i}" aria-label="Vaso ${i+1}${i<full?", bebido":""}">🥛</button>`).join("")}</div></div>
+    <div class="cs-panel"><button type="button" class="cs-jf${on?" on":""}" id="csRem" role="switch" aria-checked="${on}"><span><b>Recordatorios</b><small>Aviso en el móvil tus días de entreno</small></span><i></i></button></div>`;
+  $("#csWsave").onclick=async()=>{const nw=f2num($("#csWt").value),nh=f2num($("#csHt").value),patch={};if(nh)patch.height=nh;
+    if(nw){const list=bodyList().filter(x=>x.date!==today());list.push({...(bodyList().find(x=>x.date===today())||{}),date:today(),weight:nw});patch.body=list}
+    if(!Object.keys(patch).length){toast("Escribe peso o altura");return}profile={...profile,...patch};await saveProf(patch,"Guardado");casaMine(b)};
+  b.querySelectorAll("[data-gl]").forEach(x=>x.onclick=()=>{const i=Number(x.dataset.gl),target=(i<full?i:i+1)*250;addWater(target-got);setTimeout(()=>casaMine(b),50)});
+  $("#csRem").onclick=async()=>{if(on){try{await pushDisable();toast("Recordatorios desactivados")}catch(e){toast("No se pudo cambiar")}casaMine(b)}else openReminders()}}
+/* ---- Sesión guiada con el estilo del vídeo de referencia ---- */
+function gsBuild(){let o=$("#gsOv");if(o)o.remove();o=document.createElement("div");o.id="gsOv";o.className="gs-ov gs2 an-flat-scope";o.setAttribute("role","dialog");o.setAttribute("aria-modal","true");o.setAttribute("aria-label","Entreno guiado");
+  o.innerHTML=`<div class="gs-bar" id="gsBar"></div>
+    <div class="gs-top"><button type="button" class="icon-btn" id="gsX" aria-label="Salir del entreno">✕</button><span class="gs-ph" id="gsPh"></span><button type="button" class="gs-nj" id="gsNj" aria-pressed="false">Sin saltos</button></div>
+    <div class="gs-main"><div class="gs-anim" id="gsAnim"></div></div>
+    <div class="gs-info"><div><small id="gsCount"></small><b class="mono gs-time" id="gsSec" role="timer"></b><span id="gsName"></span><p class="gs-tip" id="gsTip"></p></div>
+      <div class="gs-fb"><button type="button" data-fb="1" aria-label="Me gusta este ejercicio">👍</button><button type="button" data-fb="-1" aria-label="No me gusta este ejercicio">👎</button></div></div>
+    <div class="gs-ctrl2"><button type="button" class="gs-b2" id="gsPrev" aria-label="Anterior">⏮</button>
+      <button type="button" class="gs-pbar" id="gsPause" aria-label="Pausa"><i id="gsFill"></i><span id="gsPl">⏸ Pausa</span></button>
+      <button type="button" class="gs-b2" id="gsNext" aria-label="Siguiente">⏭</button></div>
+    <button type="button" class="gs-hurt" id="gsHurt">🩹 Me molesta, cámbialo</button>`;
+  document.body.appendChild(o);document.documentElement.classList.add("gs-lock");
+  $("#gsX").onclick=()=>{if(GS&&!GS.done&&!confirmLeave())return;gsClose()};
+  $("#gsPause").onclick=gsToggle;$("#gsNext").onclick=()=>gsGo(1);$("#gsPrev").onclick=()=>gsGo(-1);$("#gsHurt").onclick=gsSwap;
+  o.querySelectorAll("[data-fb]").forEach(x=>x.onclick=()=>{o.querySelectorAll("[data-fb]").forEach(y=>y.classList.toggle("on",y===x));toast(x.dataset.fb==="1"?"¡Apuntado! Te lo propondré más":"Apuntado. Pulsa «Me molesta» si quieres cambiarlo")});
+  $("#gsNj").onclick=()=>{const on=!gsNoJump();try{localStorage.setItem("tn-nojump",on?"1":"0")}catch(e){}gsApplyNoJump();gsPaint(true);toast(on?"Modo sin saltos activado":"Modo sin saltos desactivado")}}
+function gsPaint(full){if(!GS)return;const x=gsCur(),rest=GS.ph==="rest",show=rest?GS.items[GS.i+1]||x:x,dur=gsDur(),rem=GS.paused?GS.left:Math.max(0,GS.end-Date.now());
+  const o=$("#gsOv");if(!o||!$("#gsSec"))return;o.dataset.ph=GS.paused?"pause":GS.ph;
+  $("#gsCount").textContent=`Ejercicios ${GS.i+1}/${GS.items.length}`;
+  $("#gsBar").innerHTML=GS.items.map((_,i)=>`<i class="${i<GS.i?"ok":i===GS.i?"on":""}"></i>`).join("");
+  $("#gsPh").textContent=GS.paused?"En pausa":GS.ph==="prep"?"Prepárate":rest?"Descanso":"¡Vamos!";
+  $("#gsName").textContent=rest?`Siguiente: ${show.n}`:x.n;
+  const s=Math.ceil(rem/1000);$("#gsSec").textContent=`${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
+  $("#gsFill").style.width=Math.round((1-rem/(dur*1000))*100)+"%";$("#gsPl").textContent=GS.paused?"▶ Seguir":"⏸ Pausa";$("#gsPause").setAttribute("aria-label",GS.paused?"Seguir":"Pausa");
+  $("#gsNj").setAttribute("aria-pressed",String(gsNoJump()));$("#gsNj").textContent=(gsNoJump()?"✓ ":"")+"Sin saltos";
+  const key=(show.wu||show.pat||show.ex||show.n)+"|"+show.n;
+  if(full||key!==gsAnimKey){gsAnimKey=key;const a=$("#gsAnim");a.innerHTML="";
+    try{if(show.wu&&typeof WU_PAT!=="undefined"&&WU_PAT[show.wu])mountAnim(a,{n:show.n,pat:WU_PAT[show.wu]});else if(show.pat)mountAnim(a,{n:show.n,pat:PAT[show.pat]});else{const f=findEx(show.ex||show.n);mountAnim(a,f||{n:show.n,c:"otr"})}}catch(e){}
+    a.querySelectorAll(".ex-anim-cap,.an-steps,.an-slow,.ex-anim-btn").forEach(e=>e.remove());
+    const f=findEx(show.ex||"");$("#gsTip").textContent=show.tip||GS_EX[show.key]?.tip0||(f?.k||[]).slice(0,2).join(" · ")||"Muévete con control y respira.";}}
+/* Al terminar, guarda la sesión en «Reciente» */
+{const _f=gsFinish;gsFinish=function(){const g=GS;const mins=g?Math.max(1,Math.round((Date.now()-g.t0)/60000)):0;let K=0;try{K=g?wodKcal(gsWorkout(mins)).kcal:0}catch(e){}
+  _f();if(!g)return;const H=[...casaHist(),{t:g.title,d:today(),k:K,a:g.meta.art||"squat|1"}].slice(-30);profile={...profile,gsHist:H};saveProf({gsHist:H}).catch(()=>{});
+  const o=$("#gsOv");if(o){o.classList.add("an-flat-scope");const de=o.querySelector(".gs-de");if(de){de.textContent="";de.appendChild(poseSVG("jjack|2","gs-win"))}}
+  try{if(current==="casa")renderCasa()}catch(e){}}}
+/* Portada: el carrusel lleva a «En casa» */
+{const _rt=renderToday;renderToday=function(){_rt();const c=$("#ch28Box");if(!c)return;const h=c.querySelector(".ch28-h");if(h&&!c.querySelector("#chAll")){h.insertAdjacentHTML("beforeend",`<button type="button" class="link-btn" id="chAll">Ver todo ›</button>`);$("#chAll").onclick=()=>openCasa("home")}
+  c.querySelectorAll(".ch28-c").forEach((card,i)=>{const id=CH28[i]?.id;const e=card.querySelector(".ch28-e");if(e&&id&&CH_ART[id]){e.textContent="";e.classList.add("an-flat-scope");e.appendChild(poseSVG(CH_ART[id]))}});
+  c.classList.add("an-flat-scope")}}
+{const _q=qaItems;qaItems=function(){const L=_q(),i=L.findIndex(x=>x.id==="plan");L.splice(i+1,0,{id:"casa",label:"En casa",ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',fn:()=>openCasa("home")});return L}}
+{const s=$("#sheetHome");if(s)s.onclick=()=>{closeSheet();openCasa("home")}}
 
 
 </script>

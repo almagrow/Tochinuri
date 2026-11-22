@@ -9290,14 +9290,20 @@ function wodKcal(w){const bw=kcalW(),gym=w.kind==="gym",metcon=!gym&&/for time|a
     if(gym&&!num(e.time)&&!I.mps&&num(e.weight))t*=1.3;/* con peso, cada repetición va más lenta */
     return{t,met:I.met*(metcon?1.25:1),sets:num(e.sets)||1,heavy:!!num(e.weight),ld:kcalLoad(me,I)*R}});
   /* v116: se cuenta lo que se hace en cada ejercicio (repeticiones, distancia o tiempo apuntado). La duración total del entreno y los descansos ya no cambian el resultado. */
-  const A=rows.reduce((a,r)=>a+r.t,0),per=rows.map(r=>r.met*bw*r.t/3600+(r.ld||0)),kcal=per.reduce((a,b)=>a+b,0);
-  return{kcal:Math.round(kcal),per:per.map(Math.round),secs:Math.round(A),bw,def:kcalWDefault()}}
+  const A=rows.reduce((a,r)=>a+r.t,0),per=rows.map(r=>r.met*bw*r.t/3600+(r.ld||0)),exK=per.reduce((a,b)=>a+b,0);
+  /* v118: el resto de la sesión (calentamiento, técnica, descansos entre series) también gasta, a ritmo suave.
+     Con duración apuntada: el tiempo que no es trabajo cuenta a 3,5 MET en gym (pesas, Compendio) y 5 MET en CrossFit (calentamiento y técnica).
+     Sin duración: en gym se suman 90 s de descanso por serie. */
+  const D=num(w.duration)||0;let rest=0;
+  if(D>A)rest=D-A;else if(!D)rest=rows.reduce((a,r)=>a+((gym||r.heavy)&&r.sets>1?(r.sets-1)*90:0),0);
+  const restK=(gym?3.5:5)*bw*rest/3600,kcal=exK+restK;
+  return{kcal:Math.round(kcal),per:per.map(Math.round),exK:Math.round(exK),restK:Math.round(restK),secs:Math.round(A+rest),bw,def:kcalWDefault()}}
 const fmtKcal=n=>Math.round(n).toLocaleString("es-ES");
 const FIRE='<span aria-hidden="true">🔥</span>';
 function kcalTag(w){const k=wodKcal(w).kcal;return k?` · ${FIRE} ${fmtKcal(k)} kcal`:""}
 function kcalExTag(w,i){const k=wodKcal(w).per[i];return k?` · ${fmtKcal(k)} kcal`:""}
 function kcalHtml(w){const K=wodKcal(w);if(!K.kcal)return"";
-  return`<div class="kc-hero"><span class="kc-ic" aria-hidden="true">🔥</span><div><span class="eyebrow">Calorías quemadas</span><b>${fmtKcal(K.kcal)} <small>kcal</small></b><span class="kc-note">Aprox. ${K.def?`con ${K.bw} kg de peso estimado`:`con tu peso de ${String(K.bw).replace(".",",")} kg`}${K.secs?` · ${fmtHM(K.secs)} de actividad`:""}</span></div></div>`}
+  return`<div class="kc-hero"><span class="kc-ic" aria-hidden="true">🔥</span><div><span class="eyebrow">Calorías quemadas</span><b>${fmtKcal(K.kcal)} <small>kcal</small></b><span class="kc-note">Aprox. ${K.def?`con ${K.bw} kg de peso estimado`:`con tu peso de ${String(K.bw).replace(".",",")} kg`}${K.secs?` · ${fmtHM(K.secs)} de actividad`:""}${K.restK?`<br>${fmtKcal(K.exK)} kcal en los ejercicios + ${fmtKcal(K.restK)} kcal del resto de la sesión`:""}</span></div></div>`}
 /* Calorías por día (cadena AAAA-MM-DD) */
 function kcalByDay(){const m={};for(const w of workouts){if(!w.date)continue;m[w.date]=(m[w.date]||0)+wodKcal(w).kcal}return m}
 function kcalStatsHtml(y,mo){const by=kcalByDay(),now=new Date(),td=today(),sum=(a,b)=>{let s=0;for(let d=new Date(a);d<=b;d=addDays(d,1))s+=by[isoD(d)]||0;return s};

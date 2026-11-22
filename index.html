@@ -1661,6 +1661,7 @@ html.gs-lock,html.gs-lock body{overflow:hidden}
 .cs-lvl{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0}.cs-lvl button{min-height:40px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;color:var(--ink);cursor:pointer}
 .cs-lvl [aria-checked=true]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
 .cs-zones{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.cs-zone{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:104px;padding:14px;border:0;border-radius:20px;background:var(--c);color:#222;text-align:left;cursor:pointer}
+.cs-zone.ph{background:linear-gradient(180deg,rgba(10,10,14,.05) 20%,rgba(10,10,14,.8) 100%),var(--img) center 30%/cover no-repeat;color:#fff;justify-content:flex-end;min-height:130px}.cs-zone.ph span{display:none}.cs-zone.ph small{opacity:.85}
 .cs-zone span{font-size:28px}.cs-zone b{font-size:15.5px;line-height:1.2}.cs-zone small{opacity:.7}
 .cs-big{width:100%;min-height:54px;margin:12px 0 4px;border:0;border-radius:999px;background:var(--fl-top,#F0507A);color:#fff;font-weight:800;font-size:17px;cursor:pointer}
 .cs-panel{padding:14px;border-radius:20px;background:var(--surface);border:1px solid var(--line);margin:0 0 12px;display:flex;flex-direction:column;gap:10px}.cs-panel h3{margin:0;font-size:18px}.cs-panel p{margin:0}
@@ -9748,6 +9749,7 @@ const GS_META={jj:["hiit",1],sq:["glu",1],jsq:["glu hiit",2],pu:["bra",2],lu:["g
 CH28.push({id:"glu",t:"Glúteos y piernas",c:"#FFD6E7",ink:"#8A1F4E",e:"🍑",pool:["sq","lu","gb","zl","sumo","gem","jsq"]},
           {id:"burn",t:"Quema de grasa",c:"#D3F4E4",ink:"#14624A",e:"⚡",pool:["jj","bp","mc","jsq","bc","sq","lu","pl"]});
 const CH_ART={full:"jjack|1",tono:"sidelunge|2",core:"plank|0",glu:"squat|1",burn:"jjlow|1"};
+const CASA_PH={abs:"zona-abs.jpg"};
 const CASA_ZONES=[["abs","🎯","Abdominales","#E7DDFF"],["glu","🍑","Glúteos y piernas","#FFD6E7"],["bra","💪","Brazos y pecho","#FFE3CC"],["hiit","⚡","HIIT","#FFF1B8"],["pil","🧘","Pilates","#D3F4E4"],["str","🌿","Cuidado especial y estiramientos","#DCEBFF"]];
 const CASA_STR=["pie1","cad0","esa1","hom1","esb0","cad2","tob2","pie0"];
 let casaTab="home",casaLvl=1;
@@ -9789,7 +9791,7 @@ function casaItems(zone,lvl){if(zone==="str")return CASA_STR.filter(id=>wuFind(i
 function casaEx(b){const nj=gsNoJump();
   b.innerHTML=`<button type="button" class="cs-jf${nj?" on":""}" id="csJf" role="switch" aria-checked="${nj}"><span><b>Modo sin saltos</b><small>Cambia los ejercicios con salto por versiones de bajo impacto</small></span><i></i></button>
     <div class="cs-lvl" role="radiogroup" aria-label="Nivel">${[[1,"Principiante"],[2,"Intermedio"],[3,"Avanzado"]].map(([k,l])=>`<button type="button" role="radio" aria-checked="${casaLvl===k}" data-lv="${k}">${l}</button>`).join("")}</div>
-    <div class="cs-zones">${CASA_ZONES.map(([k,e,l,c])=>{const n=casaItems(k,casaLvl).length;return`<button type="button" class="cs-zone" style="--c:${c}" data-zone="${k}"><span>${e}</span><b>${l}</b><small>${n} ejercicios</small></button>`}).join("")}</div><div id="csZone"></div>`;
+    <div class="cs-zones">${CASA_ZONES.map(([k,e,l,c])=>{const n=casaItems(k,casaLvl).length;return`<button type="button" class="cs-zone${CASA_PH[k]?" ph":""}" style="--c:${c}${CASA_PH[k]?`;--img:url(images/${CASA_PH[k]})`:""}" data-zone="${k}"><span>${e}</span><b>${l}</b><small>${n} ejercicios</small></button>`}).join("")}</div><div id="csZone"></div>`;
   $("#csJf").onclick=()=>{try{localStorage.setItem("tn-nojump",nj?"0":"1")}catch(e){}casaEx(b)};
   b.querySelectorAll("[data-lv]").forEach(x=>x.onclick=()=>{casaLvl=Number(x.dataset.lv);casaEx(b)});
   b.querySelectorAll("[data-zone]").forEach(x=>x.onclick=()=>{const z=x.dataset.zone,L=casaItems(z,casaLvl),Z=CASA_ZONES.find(q=>q[0]===z),mins=Math.round(L.reduce((a,i)=>a+i.work+i.rest,0)/60);

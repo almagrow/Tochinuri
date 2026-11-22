@@ -1583,6 +1583,41 @@ button.mu-chip{font-family:inherit;font-size:13px;line-height:1.3;background:non
 .fr-board li.du-form{flex-direction:column;align-items:stretch;gap:10px;border:2px dashed var(--brand)}
 .du-form p{margin:0;font-size:13px}
 
+/* v101: entreno guiado y retos de 28 días */
+html.gs-lock,html.gs-lock body{overflow:hidden}
+.gs-ov{position:fixed;inset:0;z-index:9500;background:var(--bg,#fff);color:var(--ink);display:flex;flex-direction:column;padding:max(10px,env(safe-area-inset-top)) 16px max(14px,env(safe-area-inset-bottom));--gc:var(--brand)}
+.gs-ov[data-ph=prep]{--gc:#F59E0B}.gs-ov[data-ph=rest]{--gc:#10B981}.gs-ov[data-ph=pause]{--gc:var(--muted)}
+.gs-top{display:flex;align-items:center;gap:10px}.gs-tt{flex:1;min-width:0;display:flex;flex-direction:column}.gs-tt b{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gs-tt small{color:var(--muted)}
+.gs-nj{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px;color:var(--ink);cursor:pointer;white-space:nowrap}
+.gs-nj[aria-pressed=true]{border-color:#10B981;background:color-mix(in srgb,#10B981 15%,var(--surface))}.gs-nj.sm{padding:4px 10px;font-size:12.5px}
+.gs-bar{display:flex;gap:4px;margin:10px 0 6px}.gs-bar i{flex:1;height:5px;border-radius:9px;background:var(--line)}.gs-bar i.ok{background:var(--gc)}.gs-bar i.on{background:color-mix(in srgb,var(--gc) 55%,var(--line))}
+.gs-main{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;text-align:center;overflow:auto}
+.gs-ph{margin-top:4px;padding:4px 14px;border-radius:999px;background:var(--gc);color:#fff;font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:13px}
+.gs-main h2{margin:6px 0 2px;font-size:22px;line-height:1.15}
+.gs-anim{width:100%;max-width:330px}.gs-anim .ex-anim{margin:0}
+.gs-clock{position:relative;width:118px;height:118px;margin:2px 0}.gs-clock svg{width:100%;height:100%;transform:rotate(-90deg)}
+.gs-ring0{fill:none;stroke:var(--line);stroke-width:9}.gs-ring{fill:none;stroke:var(--gc);stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset .2s linear}
+.gs-clock span{position:absolute;inset:0;display:grid;place-items:center;font-size:42px;font-weight:800}
+.gs-tip{margin:4px 0 0;max-width:340px;font-size:14px;color:var(--muted);line-height:1.4}
+.gs-ctrl{display:flex;justify-content:center;align-items:center;gap:22px;margin:10px 0 6px}
+.gs-b{width:58px;height:58px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);font-size:22px;color:var(--ink);cursor:pointer}
+.gs-b.gs-play{width:78px;height:78px;font-size:30px;background:var(--gc);border-color:var(--gc);color:#fff}
+.gs-hurt{align-self:center;border:0;background:none;color:var(--muted);font-weight:700;font-size:14px;padding:8px;cursor:pointer;text-decoration:underline}
+.gs-done{margin:auto;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;max-width:360px;width:100%}.gs-done h2{margin:0;font-size:26px}.gs-done p{margin:0;color:var(--muted)}
+.gs-de{font-size:64px}.gs-stats{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:6px 0 10px}.gs-stats span{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.gs-stats span.kc{background:linear-gradient(135deg,#F97316,#E11D48);color:#fff;border:0}.gs-done .btn{width:100%;min-height:50px}
+.gs-start{min-height:52px;font-size:16px}
+.ch28{margin:14px 0 4px}.ch28-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.ch28-row{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.ch28-c{flex:0 0 78%;max-width:300px;scroll-snap-align:start;position:relative;border-radius:22px;padding:16px;background:var(--c);color:var(--ci);display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.ch28-tag{align-self:flex-start;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.65);font-weight:800;font-size:12px}
+.ch28-e{position:absolute;right:12px;top:8px;font-size:44px;opacity:.85}
+.ch28-c h3{margin:2px 0 0;font-size:21px;line-height:1.1;color:var(--ci)}
+.ch28-p{height:8px;border-radius:9px;background:rgba(255,255,255,.6);overflow:hidden}.ch28-p i{display:block;height:100%;background:var(--ci);border-radius:9px}
+.ch28-c small{font-weight:700;opacity:.85}
+.ch28-go{align-self:flex-start;margin-top:4px;border:0;border-radius:999px;padding:10px 18px;background:var(--ci);color:#fff;font-weight:800;font-size:15px;cursor:pointer}
+@media (min-width:700px){.ch28-c{flex-basis:260px}}
+
 /* v100: Planificar */
 .pl-prog{display:flex;gap:6px;margin:12px 0 4px}.pl-prog i{flex:1;height:6px;border-radius:9px;background:var(--line)}.pl-prog i.on{background:var(--brand)}
 .pl-sub{margin:0 0 12px}.pl-q{margin:18px 0 8px;font-size:16px}.pl-note{font-size:12.5px;margin:10px 0 0}
@@ -9484,6 +9519,129 @@ function planDailyPop(){try{if(!profile||localStorage.getItem("tn-plan-pop")===t
   setTimeout(go,Math.max(300,2500-performance.now()))}
 {const _ra=renderAll;let done=false;renderAll=function(){_ra();if(!done&&profile){done=true;planDailyPop()}}}
 {const _o=openEx;openEx=function(ex){_o(ex);if(returnTo==="plan")setNav("Ejercicio","Mi plan",()=>{returnTo="log";openPlan(false)})}}
+
+/* ================= v101: Entreno guiado y retos de 28 días en casa =================
+   Sesión a pantalla completa con cuenta atrás (trabajo y descanso automáticos), animación, consejos,
+   Pausa, Anterior, Siguiente y «Me molesta, cámbialo». Modo sin saltos. Retos de 28 días en la portada. */
+PAT.jjlow={view:"front",ms:520,f:[FR({hs:[4,42]}),FR({ff:[124,136],fb:[94,136],hs:[11,-41]}),FR({hs:[4,42]}),FR({ff:[106,136],fb:[76,136],hs:[11,-41]})]};
+/* Ejercicios de casa sin material: versión normal, sin saltos y alternativa suave si molesta */
+const GS_EX={
+ jj:{n:"Jumping jacks",ex:"Jumping Jacks (saltos de tijera)",jump:1,nj:{n:"Jumping jack sin salto",pat:"jjlow",tip:"Abre una pierna cada vez mientras subes los brazos. Mismo ritmo, sin impacto."}},
+ sq:{n:"Sentadilla",ex:"Air Squat"},
+ jsq:{n:"Sentadilla con salto",ex:"Jump Squat (sentadilla con salto)",jump:1,nj:{n:"Sentadilla",ex:"Air Squat",tip:"Baja controlando y sube rápido, de puntillas al final, sin despegar los pies."}},
+ pu:{n:"Flexiones",ex:"Push-up (flexión)",soft:{n:"Flexiones con rodillas apoyadas",ex:"Push-up (flexión)",tip:"Rodillas en el suelo y cuerpo recto de rodillas a cabeza."}},
+ lu:{n:"Zancadas",ex:"Lunges (zancadas)",soft:"gb"},
+ gb:{n:"Puente de glúteo",ex:"Puente de glúteo"},
+ pl:{n:"Plancha",ex:"Plancha",soft:{n:"Plancha con rodillas apoyadas",ex:"Plancha",tip:"Rodillas en el suelo, abdomen apretado y cadera alineada."}},
+ mc:{n:"Escaladores",ex:"Mountain Climbers (escaladores)",soft:{n:"Escaladores lentos",ex:"Mountain Climbers (escaladores)",tip:"Lleva una rodilla al pecho y vuelve despacio, sin saltar."}},
+ bp:{n:"Burpees",ex:"Burpee",jump:1,nj:{n:"Burpee sin salto",ex:"Burpee",tip:"Lleva los pies atrás de uno en uno y sube sin saltar."}},
+ cr:{n:"Crunch",ex:"Crunch abdominal"},rt:{n:"Russian twist",ex:"Russian twist",soft:"db"},db:{n:"Dead bug",ex:"Dead bug"},
+ hh:{n:"Hollow",ex:"Hollow Hold / Rock",soft:"db"},su:{n:"Superman",ex:"Superman"},bd:{n:"Fondos en silla",ex:"Fondos en banco",soft:"pl"},
+ bc:{n:"Paso de oso",ex:"Bear Crawl (paso de oso)",soft:"pl"}};
+const CH28=[
+ {id:"full",t:"Cuerpo entero",c:"#FFD9CF",ink:"#7A2E1C",e:"🔥",pool:["jj","sq","pu","lu","mc","bp","gb","pl","jsq","bd"]},
+ {id:"tono",t:"Tonificación fácil",c:"#FFF1B8",ink:"#6B5400",e:"🌼",pool:["sq","gb","lu","pu","su","pl","db","bd"]},
+ {id:"core",t:"Vientre plano",c:"#E7DDFF",ink:"#4B2C8F",e:"💜",pool:["cr","pl","rt","db","hh","mc","su","gb"]}];
+const GS_STRETCH=["pie1","cad0","esa1","hom1","esb0","cad2"];
+const gsNoJump=()=>{try{return localStorage.getItem("tn-nojump")==="1"}catch(e){return false}};
+function gsItem(key,work,rest,nj){const b=GS_EX[key];if(!b)return null;const v=nj&&b.jump&&b.nj?b.nj:null;
+  return{key,n:v?.n||b.n,ex:v?.ex??b.ex,pat:v?.pat||null,tip:v?.tip||null,jump:!v&&!!b.jump,work,rest,swapped:!!v}}
+function ch28Day(ch,day){const nj=gsNoJump();
+  if(day%7===0){const L=GS_STRETCH.filter(id=>typeof wuFind==="function"&&wuFind(id));return L.map(id=>({n:wuFind(id).x[0],wu:id,work:40,rest:10,tip:wuFind(id).x[2]}))}
+  const wk=Math.floor((day-1)/7),k=Math.min(8,6+wk),work=30+wk*5,rest=Math.max(12,20-wk*2),P=ch.pool,off=(day*3)%P.length,out=[];
+  for(let i=0;out.length<k&&i<P.length*2;i++){const key=P[(off+i)%P.length];if(out.some(x=>x.key===key))continue;const it=gsItem(key,work,rest,nj);if(it&&!out.some(x=>x.n===it.n))out.push(it)}
+  return out}
+const ch28State=id=>(profile?.ch28||{})[id]||{d:0};
+/* ---- Sesión ---- */
+let GS=null,gsInt=0;
+function gsStart(title,items,meta){if(!items?.length)return;clearInterval(gsInt);
+  GS={title,items:items.map(x=>({...x})),meta:meta||{},i:0,ph:"prep",end:Date.now()+5000,left:0,paused:false,done:false,t0:Date.now(),worked:0,lastBeep:-1};
+  gsBuild();wuWake(true);wuTone(660,.1,.2);gsPaint();gsInt=setInterval(gsTick,200)}
+function gsBuild(){let o=$("#gsOv");if(o)o.remove();o=document.createElement("div");o.id="gsOv";o.className="gs-ov";o.setAttribute("role","dialog");o.setAttribute("aria-modal","true");o.setAttribute("aria-label","Entreno guiado");
+  o.innerHTML=`<div class="gs-top"><button type="button" class="icon-btn" id="gsX" aria-label="Salir del entreno">✕</button><div class="gs-tt"><b id="gsTitle"></b><small id="gsCount"></small></div>
+      <button type="button" class="gs-nj" id="gsNj" aria-pressed="false">Sin saltos</button></div>
+    <div class="gs-bar" id="gsBar"></div>
+    <div class="gs-main"><span class="gs-ph" id="gsPh"></span><h2 id="gsName"></h2><div class="gs-anim" id="gsAnim"></div>
+      <div class="gs-clock"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" class="gs-ring0"/><circle cx="60" cy="60" r="52" class="gs-ring" id="gsRing"/></svg><span class="mono" id="gsSec" role="timer" aria-live="off"></span></div>
+      <p class="gs-tip" id="gsTip"></p></div>
+    <div class="gs-ctrl"><button type="button" class="gs-b" id="gsPrev" aria-label="Anterior">⏮</button><button type="button" class="gs-b gs-play" id="gsPause" aria-label="Pausa">⏸</button><button type="button" class="gs-b" id="gsNext" aria-label="Siguiente">⏭</button></div>
+    <button type="button" class="gs-hurt" id="gsHurt">🩹 Me molesta, cámbialo</button>`;
+  document.body.appendChild(o);document.documentElement.classList.add("gs-lock");
+  $("#gsX").onclick=()=>{if(GS&&!GS.done&&!confirmLeave())return;gsClose()};
+  $("#gsPause").onclick=gsToggle;$("#gsNext").onclick=()=>gsGo(1);$("#gsPrev").onclick=()=>gsGo(-1);$("#gsHurt").onclick=gsSwap;
+  $("#gsNj").onclick=()=>{const on=!gsNoJump();try{localStorage.setItem("tn-nojump",on?"1":"0")}catch(e){}gsApplyNoJump();gsPaint(true);toast(on?"Modo sin saltos: cambiados los ejercicios con salto":"Modo sin saltos desactivado")}}
+const confirmLeave=()=>{GS.paused=true;GS.left=Math.max(0,GS.end-Date.now());gsPaint();return window.confirm("¿Salir del entreno? Se perderá lo que llevas.")};
+function gsApplyNoJump(){const nj=gsNoJump();GS.items=GS.items.map((x,i)=>{if(i<GS.i||!x.key||!GS_EX[x.key])return x;const b=GS_EX[x.key];if(!b.jump)return x;let it=gsItem(x.key,x.work,x.rest,nj);
+  if(nj&&GS.items.some((y,j)=>j!==i&&y.n===it.n)){const k=["gb","db","su","pl","cr"].find(k=>!GS.items.some(y=>y.key===k));if(k)it=gsItem(k,x.work,x.rest,true)}return it})}
+function gsCur(){return GS.items[GS.i]}
+function gsDur(){return GS.ph==="prep"?5:GS.ph==="work"?gsCur().work:gsCur().rest}
+function gsSet(ph){GS.ph=ph;GS.end=Date.now()+gsDur()*1000;GS.left=0;GS.lastBeep=-1;gsPaint(true)}
+function gsGo(d){if(!GS||GS.done)return;const j=GS.i+d;if(j<0)return;if(j>=GS.items.length)return gsFinish();GS.i=j;GS.paused=false;gsSet("prep")}
+function gsToggle(){if(!GS||GS.done)return;if(GS.paused){GS.end=Date.now()+GS.left;GS.paused=false;wuWake(true)}else{GS.left=Math.max(0,GS.end-Date.now());GS.paused=true}gsPaint()}
+function gsSwap(){if(!GS||GS.done)return;const x=gsCur(),b=x.key&&GS_EX[x.key];let nx=null;
+  if(b?.soft){nx=typeof b.soft==="string"?gsItem(b.soft,x.work,x.rest,true):{...x,n:b.soft.n,ex:b.soft.ex,pat:null,tip:b.soft.tip,jump:false}}
+  else if(x.key){const used=new Set(GS.items.map(y=>y.key)),alt=["gb","db","pl","sq","su"].find(k=>!used.has(k)&&k!==x.key)||"db";nx=gsItem(alt,x.work,x.rest,true)}
+  else nx={...x,tip:"Hazlo más corto y despacio, hasta donde no moleste."};
+  nx.swapped=true;GS.items[GS.i]=nx;toast(`Cambiado por: ${nx.n}`);gsPaint(true)}
+function gsTick(){if(!GS||GS.paused||GS.done)return;const rem=GS.end-Date.now(),s=Math.ceil(rem/1000);
+  if(s<=3&&s>=1&&s!==GS.lastBeep){GS.lastBeep=s;wuTone(880,.08,.18)}
+  if(rem<=0){if(GS.ph==="work")GS.worked+=gsCur().work;
+    if(GS.ph==="prep"){wuTone(1320,.25,.3);wuVib([80]);gsSet("work")}
+    else if(GS.ph==="work"){wuVib([60,40,60]);if(GS.i>=GS.items.length-1)return gsFinish();if(gsCur().rest>0){wuTone(520,.3,.25);gsSet("rest")}else{GS.i++;gsSet("work")}}
+    else{GS.i++;wuTone(1320,.25,.3);wuVib([80]);gsSet("work")}}
+  else gsPaint()}
+let gsAnimKey="";
+function gsPaint(full){if(!GS)return;const x=gsCur(),rest=GS.ph==="rest",show=rest?GS.items[GS.i+1]||x:x,dur=gsDur(),rem=GS.paused?GS.left:Math.max(0,GS.end-Date.now());
+  const o=$("#gsOv");if(!o)return;o.dataset.ph=GS.paused?"pause":GS.ph;
+  $("#gsTitle").textContent=GS.title;$("#gsCount").textContent=`Ejercicio ${GS.i+1} de ${GS.items.length}`;
+  $("#gsBar").innerHTML=GS.items.map((_,i)=>`<i class="${i<GS.i?"ok":i===GS.i?"on":""}"></i>`).join("");
+  $("#gsPh").textContent=GS.paused?"En pausa":GS.ph==="prep"?"Prepárate":rest?"Descansa":"¡Vamos!";
+  $("#gsName").textContent=rest?`Siguiente: ${show.n}`:x.n;
+  $("#gsSec").textContent=String(Math.ceil(rem/1000));
+  const C=2*Math.PI*52;$("#gsRing").style.strokeDasharray=C;$("#gsRing").style.strokeDashoffset=String(C*(1-rem/(dur*1000)));
+  $("#gsPause").textContent=GS.paused?"▶":"⏸";$("#gsPause").setAttribute("aria-label",GS.paused?"Seguir":"Pausa");
+  $("#gsNj").setAttribute("aria-pressed",String(gsNoJump()));$("#gsNj").textContent=(gsNoJump()?"✓ ":"")+"Sin saltos";
+  const key=(show.wu||show.pat||show.ex||show.n)+"|"+show.n;
+  if(full||key!==gsAnimKey){gsAnimKey=key;const a=$("#gsAnim");a.innerHTML="";
+    try{if(show.wu&&typeof WU_PAT!=="undefined"&&WU_PAT[show.wu])mountAnim(a,{n:show.n,pat:WU_PAT[show.wu]});else if(show.pat)mountAnim(a,{n:show.n,pat:PAT[show.pat]});else{const f=findEx(show.ex||show.n);mountAnim(a,f||{n:show.n,c:"otr"})}}catch(e){}
+    a.querySelectorAll(".ex-anim-cap,.an-steps,.an-slow,.ex-anim-btn").forEach(e=>e.remove());
+    const f=findEx(show.ex||"");$("#gsTip").textContent=show.tip||(f?.k||[]).slice(0,2).join(" · ")||"Muévete con control y respira.";}}
+function gsFinish(){if(!GS)return;clearInterval(gsInt);GS.done=true;wuTone(1320,.18,.3);setTimeout(()=>wuTone(1760,.3,.3),200);wuVib([100,60,100,60,200]);wuWake(false);
+  const mins=Math.max(1,Math.round((Date.now()-GS.t0)/60000)),W=gsWorkout(mins);let K=0;try{K=wodKcal(W).kcal}catch(e){}
+  if(GS.meta.ch){const s=ch28State(GS.meta.ch),d=Math.max(s.d,GS.meta.day);const all={...(profile?.ch28||{}),[GS.meta.ch]:{d,last:today()}};profile={...profile,ch28:all};saveProf({ch28:all}).catch(()=>{});try{renderToday()}catch(e){}}
+  const o=$("#gsOv");o.dataset.ph="done";
+  o.innerHTML=`<div class="gs-done"><span class="gs-de">🎉</span><h2>¡Entreno completado!</h2><p>${esc(GS.title)}</p>
+    <div class="gs-stats"><span><b>${mins}</b> min</span><span><b>${GS.items.length}</b> ejercicios</span>${K?`<span class="kc"><b>≈ ${fmtKcal(K)}</b> kcal</span>`:""}</div>
+    <button type="button" class="btn primary" id="gsSave">Guardar en mis entrenos</button><button type="button" class="btn" id="gsClose">Cerrar</button></div>`;
+  $("#gsSave").onclick=()=>{const w=W;gsClose();openForm({...w,date:today(),kind:mode==="gym"?"gym":undefined,type:mode==="gym"?"Gym":w.type})};
+  $("#gsClose").onclick=gsClose;$("#gsSave").focus()}
+function gsWorkout(mins){const by=new Map();for(const x of GS.items){if(x.wu)continue;const n=findEx(x.ex||"")?.n||x.n;by.set(n,(by.get(n)||0)+x.work)}
+  return{name:GS.title,type:"Intervalos",duration:mins*60,exercises:[...by].map(([name,t])=>({name,time:t}))}}
+function gsClose(){clearInterval(gsInt);GS=null;wuWake(false);$("#gsOv")?.remove();document.documentElement.classList.remove("gs-lock")}
+document.addEventListener("keydown",e=>{if(!GS||GS.done)return;if(e.key==="Escape"){$("#gsX").click()}else if(e.key===" "&&e.target===document.body){e.preventDefault();gsToggle()}});
+/* ---- Portada: carrusel de retos de 28 días ---- */
+function ch28Html(){return`<section class="ch28" aria-label="Retos de 28 días en casa"><div class="ch28-h"><span class="eyebrow">Retos en casa · sin material</span>
+  <button type="button" class="gs-nj sm" id="chNj" aria-pressed="${gsNoJump()}">${gsNoJump()?"✓ ":""}Sin saltos</button></div><div class="ch28-row">${CH28.map(c=>{const s=ch28State(c.id),d=Math.min(28,s.d),fin=d>=28,next=fin?1:d+1,rest=next%7===0,todayDone=s.last===today();
+    return`<article class="ch28-c" style="--c:${c.c};--ci:${c.ink}"><span class="ch28-tag">28 días</span><span class="ch28-e" aria-hidden="true">${c.e}</span><h3>${esc(c.t)}</h3>
+      <div class="ch28-p"><i style="width:${Math.round(d/28*100)}%"></i></div><small>${d}/28 días${todayDone?" · hoy ✓":""}</small>
+      <button type="button" class="ch28-go" data-ch="${c.id}">${fin?"Reiniciar":d?`Día ${next}${rest?" · estirar":""}`:"Iniciar"} ▶</button></article>`}).join("")}</div></section>`}
+{const _rt=renderToday;renderToday=function(){_rt();const pc=$("#planCard")||$("#todayCard");if(!pc||!profile)return;let c=$("#ch28Box");if(!c){c=document.createElement("div");c.id="ch28Box";pc.after(c)}
+  c.innerHTML=ch28Html();
+  c.querySelectorAll("[data-ch]").forEach(b=>b.onclick=()=>{const ch=CH28.find(x=>x.id===b.dataset.ch),s=ch28State(ch.id),day=s.d>=28?1:s.d+1;
+    if(s.d>=28){const all={...(profile.ch28||{}),[ch.id]:{d:0}};profile={...profile,ch28:all};saveProf({ch28:all}).catch(()=>{})}
+    gsStart(`${ch.t} · Día ${day}`,ch28Day(ch,day),{ch:ch.id,day})});
+  $("#chNj").onclick=()=>{const on=!gsNoJump();try{localStorage.setItem("tn-nojump",on?"1":"0")}catch(e){}toast(on?"Modo sin saltos activado: los ejercicios con salto se cambian por versiones suaves":"Modo sin saltos desactivado");renderToday()}}}
+/* ---- Planificar: botón «Empezar guiado» ---- */
+{const _rp=renderPlan;renderPlan=function(){_rp();const go=$("#plGo");if(!go||$("#plGuide"))return;
+  go.insertAdjacentHTML("beforebegin",`<button type="button" class="btn primary gs-start" id="plGuide">▶ Empezar guiado, con cronómetro</button>`);go.classList.remove("primary");
+  $("#plGuide").onclick=()=>{const st=plState();if(!st?.a)return;const P=plMake(st.a,st.s||1),int=Number(st.a.int)||2,rest=P.type==="f"?[90,120,150][int-1]:P.type==="m"?[45,60,75][int-1]:P.type==="r"?10:[30,20,15][int-1];
+    const items=[];for(const w of P.warm)items.push({n:w.n,wu:w.wu,work:w.wu==="gen0"?120:40,rest:10,tip:wuFind(w.wu)?.x[2]});
+    for(const e of P.ex){const sets=e.wu?1:Math.max(1,e.sets||(P.type==="h"?3:1)),work=e.wu?45:e.time&&e.time<=120?e.time:e.time?Math.min(e.time,600):e.reps?Math.min(60,Math.max(20,Math.round(e.reps*3))):40;
+      for(let s=0;s<sets;s++)items.push({n:e.n+(sets>1?` · serie ${s+1}/${sets}`:""),ex:e.wu?null:e.n,wu:e.wu||null,work,rest:s<sets-1||P.type!=="h"?rest:30,tip:e.reps?`${e.reps} repeticiones`:null})}
+    gsStart("Plan: "+PL_TYPES.find(t=>t[0]===P.type)[2],items,{plan:1})}}}
+/* ---- Botón +: retos en casa ---- */
+{const r=$("#sheetPlan");if(r&&!$("#sheetHome")){r.insertAdjacentHTML("afterend",`<button class="sheet-opt" id="sheetHome"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Entreno guiado en casa<small>Retos de 28 días, sin material</small></span></button>`);
+  $("#sheetHome").onclick=()=>{closeSheet();show("log");setTimeout(()=>$("#ch28Box")?.scrollIntoView({behavior:"smooth",block:"start"}),120)}}}
 
 
 </script>

@@ -9775,7 +9775,7 @@ CH28.push({id:"glu",t:"Glúteos y piernas",c:"#FFD6E7",ink:"#8A1F4E",e:"🍑",po
 const CH_ART={full:"jjack|1",tono:"sidelunge|2",core:"plank|0",glu:"squat|1",burn:"jjlow|1"};
 const CASA_PH={abs:"zona-abs.jpg",glu:"zona-glu.jpg",bra:"zona-bra.jpg",hiit:"zona-hiit.jpg",pil:"zona-pil.jpg",str:"zona-str.jpg"};
 const CASA_ZONES=[["abs","🎯","Abdominales","#E7DDFF"],["glu","🍑","Glúteos y piernas","#FFD6E7"],["bra","💪","Brazos y pecho","#FFE3CC"],["hiit","⚡","HIIT","#FFF1B8"],["pil","🧘","Pilates","#D3F4E4"],["str","🌿","Cuidado especial y estiramientos","#DCEBFF"]];
-const CASA_STR=["pie1","cad0","esa1","hom1","esb0","cad2","tob2","pie0"];
+const CASA_STR=["pie1","cad0","esa1","hom1","esb0","cad2","tob2","pie0","esa0","esb2","cad1","pec0","hom2","gen2","pie3","tob0","tob1","bra0","bra1","esb1"];
 let casaTab="home",casaLvl=1;
 const casaFem=()=>window.__animFem??(typeof profile!=="undefined"&&profile?.sex==="mujer");
 /* Dibujo fijo (para tarjetas y miniaturas) a partir de una postura de una animación */
@@ -9962,7 +9962,7 @@ const CASA_RUT=[
  {id:"pil",t:"Pilates suave",e:"🧘",c:"#D3F4E4",lv:1,k:["gb","db","su","hh","kb","plt","gm"],w:40,r:15,v:2,d:"Control, postura y core"},
  {id:"dance",t:"Baila y quema",e:"💃",c:"#FFD6F0",lv:1,k:["dan","box","jjl","jj","mc"],w:60,r:15,v:2,d:"Cardio divertido"},
  {id:"back",t:"Espalda sana",e:"🪑",c:"#E6F0E0",lv:1,k:["su","gm","db","gb","plt"],w:40,r:15,v:1,st:["hom1","esa1","esb0"],d:"Para quien pasa el día sentado"},
- {id:"night",t:"Antes de dormir",e:"🌙",c:"#E2E4FF",lv:1,k:[],st:CASA_STR,w:40,r:10,v:1,d:"Estiramientos suaves"}];
+ {id:"night",t:"Antes de dormir",e:"🌙",c:"#E2E4FF",lv:1,k:[],st:["esb2","esa0","cad1","pec0","esa1","cad0","tob1","bra1"],w:40,r:10,v:1,d:"Estiramientos suaves"}];
 function rutItems(R){const nj=R.nj||gsNoJump(),out=[];
   for(let v=0;v<R.v;v++)R.k.forEach(k=>{const it=gsItem(k,R.w,R.r,nj);if(it)out.push(it)});
   (R.st||[]).forEach(id=>{const x=typeof wuFind==="function"&&wuFind(id);if(x)out.push({n:x.x[0],wu:id,work:40,rest:10,tip:x.x[2]})});return out}
@@ -9974,6 +9974,61 @@ function rutMins(R){return Math.max(1,Math.round(rutItems(R).reduce((a,i)=>a+i.w
      <span class="cs-re" aria-hidden="true">${R.e}</span><b>${esc(R.t)}</b><small>${rutMins(R)} min · ${["","Fácil","Medio","Intenso"][R.lv]}</small><em>${esc(R.d)}</em></button>`).join("")}</div>`);
   b.querySelectorAll("[data-rart]").forEach(e=>{try{e.appendChild(poseSVG(e.dataset.rart))}catch(x){}});
   b.querySelectorAll("[data-rut]").forEach(x=>x.onclick=()=>{const R=CASA_RUT.find(q=>q.id===x.dataset.rut);gsStart(R.t,rutItems(R),{art:rutArt(R)})})}}
+
+/* ================= v120: muchos más ejercicios por zona en «En casa» ================= */
+Object.assign(GS_EX,{
+ /* Abdominales */
+ bic:{n:"Bicicleta abdominal",ex:"Crunch abdominal",pat:"crunch",tip0:"Codo hacia la rodilla contraria, sin tirar del cuello."},
+ htc:{n:"Toque de talones",ex:"Crunch abdominal",pat:"crunch",tip0:"Hombros despegados del suelo; toca un talón y otro."},
+ pst:{n:"Plancha con toque de hombros",ex:"Plancha",pat:"plank",tip0:"Pies separados y cadera quieta mientras tocas el hombro contrario."},
+ wood:{n:"Leñador sin peso",ex:"Leñador (woodchop)",pat:"woodchop",tip0:"Gira el tronco de arriba a abajo en diagonal, con los brazos juntos."},
+ xmc:{n:"Escaladores cruzados",ex:"Mountain Climbers (escaladores)",pat:"climber",soft:"pl",tip0:"Lleva cada rodilla hacia el codo contrario."},
+ pud:{n:"Plancha alta a baja",ex:"Plancha",pat:"plank",tip0:"Baja a codos y sube a manos sin balancear la cadera."},
+ /* Glúteos y piernas */
+ sqp:{n:"Sentadilla con pausa",ex:"Air Squat",pat:"squat",tip0:"Quédate 2 segundos abajo antes de subir."},
+ sqpl:{n:"Pulsos en sentadilla",ex:"Air Squat",pat:"squat",tip0:"Abajo, sube y baja solo un palmo sin parar."},
+ rlu:{n:"Zancada atrás",ex:"Lunges (zancadas)",pat:"lunge",tip0:"Da el paso hacia atrás: cuida más la rodilla."},
+ crt:{n:"Zancada cruzada",ex:"Lunges (zancadas)",pat:"lunge",tip0:"Cruza la pierna por detrás como en una reverencia."},
+ sgb:{n:"Puente a una pierna",ex:"Puente de glúteo",pat:"bridge",soft:"gb",tip0:"Una pierna estirada al aire; cambia a mitad."},
+ sld:{n:"Peso muerto a una pierna",ex:"Peso muerto rumano",pat:"sldl",tip0:"Espalda recta y la pierna de atrás alineada con el tronco."},
+ gob:{n:"Sentadilla con garrafa",ex:"Goblet squat",pat:"goblet",tip0:"Una garrafa de agua o mochila pegada al pecho."},
+ rdlb:{n:"Peso muerto rumano con mochila",ex:"Peso muerto rumano",pat:"rdl",tip0:"Cadera atrás, espalda recta, mochila pegada a las piernas."},
+ sgc:{n:"Talones a una pierna",ex:"Elevación de gemelos de pie",pat:"calf",tip0:"Apóyate en la pared y sube despacio."},
+ jlu:{n:"Zancada con salto",ex:"Lunges (zancadas)",pat:"lunge",jump:1,nj:{n:"Zancada alterna",ex:"Lunges (zancadas)",pat:"lunge",tip:"Alterna las piernas sin saltar."}},
+ /* Brazos y pecho (con garrafas o botellas si no tienes mancuernas) */
+ dpu:{n:"Flexiones diamante",ex:"Push-up (flexión)",pat:"pushup",soft:"ipu",tip0:"Manos juntas formando un rombo bajo el pecho."},
+ wpu:{n:"Flexiones abiertas",ex:"Push-up (flexión)",pat:"pushup",soft:"ipu",tip0:"Manos más abiertas que los hombros."},
+ pkp:{n:"Flexiones en pica",ex:"Push-up (flexión)",pat:"pushup",soft:"ipu",tip0:"Cadera alta en V; baja la cabeza hacia el suelo para hombros."},
+ bdl:{n:"Fondos en silla piernas estiradas",ex:"Fondos en banco",pat:"benchdip",soft:"bd",tip0:"Piernas estiradas para más dificultad; codos hacia atrás."},
+ ohp:{n:"Press de hombros con garrafas",ex:"Press militar",pat:"press",tip0:"Garrafas o botellas a la altura de los hombros y arriba."},
+ crl:{n:"Curl de bíceps con mochila",ex:"Curl de bíceps",pat:"curl",tip0:"Codos pegados al cuerpo; sube y baja despacio."},
+ brow:{n:"Remo con mochila",ex:"Remo con mancuerna",pat:"row",tip0:"Inclina el tronco y lleva la mochila hacia el ombligo."},
+ lrs:{n:"Elevaciones laterales con botellas",ex:"Elevaciones laterales",pat:"lateral",tip0:"Sube hasta la altura de los hombros, codos un poco doblados."},
+ tox:{n:"Extensión de tríceps con botella",ex:"Extensión de tríceps sobre la cabeza",pat:"ohext",tip0:"Codos apuntando al techo; baja la botella detrás de la cabeza."},
+ fpr:{n:"Press de suelo con garrafas",ex:"Press banca con mancuernas",pat:"bench",tip0:"Tumbada en el suelo; los codos tocan el suelo abajo."},
+ rdf:{n:"Pájaro con botellas",ex:"Pájaro (deltoides posterior)",pat:"reardelt",tip0:"Tronco inclinado y abre los brazos hacia los lados."},
+ /* HIIT */
+ hk:{n:"Rodillas arriba",ex:"Carrera",pat:"run",tip0:"Corre en el sitio subiendo las rodillas a la cadera."},
+ bk:{n:"Talones al glúteo",ex:"Carrera",pat:"run",tip0:"Corre en el sitio tocando el glúteo con los talones."},
+ spr:{n:"Sprint en el sitio",ex:"Sprint",pat:"run",tip0:"Lo más rápido que puedas, brazos activos."},
+ skt:{n:"Saltos de patinador",ex:"Zancada lateral",pat:"sidelunge",jump:1,nj:{n:"Paso de patinador",ex:"Zancada lateral",pat:"sidelunge",tip:"Paso lateral amplio sin saltar."}},
+ jri:{n:"Comba imaginaria",ex:"Comba",pat:"jumprope",jump:1,nj:{n:"Comba sin salto",ex:"Comba",pat:"jumprope",tip:"Gira las muñecas y sube talones sin despegar."}},
+ bpu:{n:"Burpee con flexión",ex:"Burpee",pat:"burpee",jump:1,soft:"bp",nj:{n:"Burpee lento con flexión",ex:"Burpee",tip:"Pies atrás de uno en uno, flexión y sube sin saltar."}},
+ sqbx:{n:"Sentadilla y puñetazo",ex:"Boxeo (saco)",pat:"boxing",tip0:"Sentadilla y al subir dos golpes al aire."},
+ shu:{n:"Ida y vuelta en el pasillo",ex:"Shuttle Run",pat:"shuttle",tip0:"Toca el suelo en cada extremo del pasillo."},
+ sjj:{n:"Saltos de estrella",ex:"Jumping Jacks (saltos de tijera)",pat:"jjack",jump:1,nj:{n:"Estrella sin salto",ex:"Jumping Jacks (saltos de tijera)",pat:"jjlow",tip:"Abre brazos y una pierna cada vez."}},
+ /* Pilates */
+ hun:{n:"El cien",ex:"Hollow Hold / Rock",pat:"hollow",tip0:"Piernas arriba y bombea los brazos con respiraciones cortas."},
+ bmr:{n:"Puente con marcha",ex:"Puente de glúteo",pat:"bridge",tip0:"Cadera arriba y levanta una rodilla y otra sin que baje."},
+ swm:{n:"Natación",ex:"Superman",pat:"backext",tip0:"Boca abajo; mueve brazo y pierna contrarios como nadando."},
+ rup:{n:"Roll up",ex:"Sit-up (AbMat)",pat:"situp",tip0:"Sube vértebra a vértebra con los brazos estirados."},
+ sci:{n:"Tijeras",ex:"Hollow Hold / Rock",pat:"hollow",tip0:"Espalda baja pegada al suelo y alterna las piernas arriba."},
+ spl:{n:"Plancha lateral con elevación",ex:"Plancha lateral",pat:"plank",soft:"plt",tip0:"En plancha lateral, sube y baja la cadera."}});
+Object.assign(GS_META,{bic:["abs",1],htc:["abs",1],pst:["abs bra",2],wood:["abs",1],xmc:["abs hiit",2],pud:["abs bra",3],
+ sqp:["glu",1],sqpl:["glu",1],rlu:["glu",1],crt:["glu",2],sgb:["glu pil",2],sld:["glu",2],gob:["glu",1],rdlb:["glu",1],sgc:["glu",2],jlu:["glu hiit",3],
+ dpu:["bra",3],wpu:["bra",2],pkp:["bra",3],bdl:["bra",2],ohp:["bra",1],crl:["bra",1],brow:["bra",1],lrs:["bra",1],tox:["bra",1],fpr:["bra",1],rdf:["bra",2],
+ hk:["hiit",1],bk:["hiit",1],spr:["hiit",2],skt:["hiit glu",2],jri:["hiit",1],bpu:["hiit",3],sqbx:["hiit",1],shu:["hiit",2],sjj:["hiit",2],
+ hun:["pil abs",2],bmr:["pil glu",1],swm:["pil",1],rup:["pil abs",2],sci:["pil abs",2],spl:["pil abs",3]});
 
 
 </script>

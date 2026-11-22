@@ -1712,6 +1712,13 @@ html.gs-lock,html.gs-lock body{overflow:hidden}
 .cs-card.cs-core .cs-pill{background:rgba(255,255,255,.88)!important;color:var(--ci)!important}
 .cs-card.cs-core h4,.cs-card.cs-core .cs-prog,.cs-card.cs-core .cs-prog .mono,.cs-card.cs-core .cs-ready{color:#fff!important}
 .cs-card.cs-core .cs-prog i{background:rgba(255,255,255,.35)!important}
+/* v119: rutinas rápidas */
+.cs-rut{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:8px}
+.cs-rc{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:150px;padding:12px;border:0;border-radius:20px;background:var(--c);color:#222;text-align:left;cursor:pointer;overflow:hidden}
+.cs-rc .cs-ra{position:absolute;right:-6px;bottom:-4px;width:58%;height:96px;opacity:.95;pointer-events:none}
+.cs-rc .cs-re{font-size:24px;line-height:1}.cs-rc b{font-size:15.5px;line-height:1.15;margin-top:4px;max-width:100%}.cs-rc small{font-size:12.5px;opacity:.75;font-weight:600}
+.cs-rc em{font-style:normal;font-size:12px;opacity:.7;max-width:54%;position:relative;z-index:1;line-height:1.25;margin-top:auto}
+.cs-rc:active{transform:scale(.98)}
 /* v100: Planificar */
 .pl-prog{display:flex;gap:6px;margin:12px 0 4px}.pl-prog i{flex:1;height:6px;border-radius:9px;background:var(--line)}.pl-prog i.on{background:var(--brand)}
 .pl-sub{margin:0 0 12px}.pl-q{margin:18px 0 8px;font-size:16px}.pl-note{font-size:12.5px;margin:10px 0 0}
@@ -9922,6 +9929,51 @@ function gsPaint(full){if(!GS)return;const x=gsCur(),rest=GS.ph==="rest",show=re
 
 /* v104: los retos de 28 días ya están en «En casa»; se quitan de la portada */
 {const _rt=renderToday;renderToday=function(){_rt();$("#ch28Box")?.remove()};try{$("#ch28Box")?.remove()}catch(e){}}
+
+/* ================= v119: más ejercicios y rutinas rápidas en «En casa» ================= */
+{const _gi=gsItem;gsItem=function(key,work,rest,nj){const it=_gi(key,work,rest,nj);if(it&&!it.pat&&GS_EX[key]?.pat)it.pat=GS_EX[key].pat;if(it&&!it.tip&&GS_EX[key]?.tip0)it.tip=GS_EX[key].tip0;return it}}
+Object.assign(GS_EX,{
+ plt:{n:"Plancha lateral",ex:"Plancha lateral",tip0:"Codo bajo el hombro y cadera arriba; cambia de lado a mitad."},
+ vup:{n:"V-up",ex:"V-up",soft:"cr"},
+ sit:{n:"Abdominales completos",ex:"Sit-up (AbMat)"},
+ ipu:{n:"Flexiones inclinadas",ex:"Push-up (flexión)",pat:"incline",tip0:"Manos en el sofá, una silla firme o la mesa: cuanto más alto, más fácil."},
+ bul:{n:"Sentadilla búlgara",ex:"Sentadilla búlgara",tip0:"Empeine de atrás sobre una silla; baja recto. Cambia de pierna a mitad."},
+ stp:{n:"Subir al escalón",ex:"Step-up",pat:"stepup",tip0:"Usa un escalón o una silla estable; sube con toda la planta."},
+ ht:{n:"Hip thrust en el sofá",ex:"Hip thrust",pat:"hipthrust",tip0:"Espalda alta apoyada en el sofá; aprieta glúteos arriba."},
+ gm:{n:"Buenos días",ex:"Good Morning",tip0:"Manos detrás de la cabeza, rodillas un poco dobladas y espalda recta."},
+ kb:{n:"Patada de glúteo",ex:"Patada de glúteo",pat:"kickback",tip0:"A cuatro patas; sube la pierna sin arquear la espalda. Cambia a mitad."},
+ lat:{n:"Pasos laterales en sentadilla",ex:"Paso lateral con banda",pat:"bandwalk",tip0:"Media sentadilla y pasos a un lado y a otro; con banda si tienes."},
+ box:{n:"Boxeo al aire",ex:"Boxeo (saco)",tip0:"Golpes rápidos al aire con los pies en movimiento."},
+ dan:{n:"Baile",ex:"Baile (zumba, aeróbic)",tip0:"Pon tu canción favorita y no pares."},
+ jjl:{n:"Jacks sin salto",ex:"Jumping Jacks (saltos de tijera)",pat:"jjlow",tip0:"Abre una pierna cada vez y sube los brazos: sin saltar."},
+ pist:{n:"Sentadilla a una pierna asistida",ex:"Pistol",pat:"pistol",soft:"bul",tip0:"Agárrate a una puerta o una mesa y baja controlando."}});
+Object.assign(GS_META,{plt:["abs bra pil",1],vup:["abs",3],sit:["abs",1],ipu:["bra",1],bul:["glu",2],stp:["glu",1],ht:["glu",2],gm:["glu pil",1],kb:["glu pil",1],
+ lat:["glu",1],box:["hiit bra",1],dan:["hiit",1],jjl:["hiit",1],pist:["glu",3]});
+/* Rutinas rápidas: lista de ejercicios, segundos de trabajo y de descanso, y vueltas */
+const CASA_RUT=[
+ {id:"wake",t:"Despierta",e:"🌅",c:"#FFE9C7",lv:1,k:["jjl","sq","ipu","gb","pl"],w:30,r:10,v:2,d:"Activa el cuerpo por la mañana"},
+ {id:"abs",t:"Abdomen exprés",e:"🎯",c:"#E7DDFF",lv:2,k:["cr","plt","rt","db","sit","pl"],w:40,r:15,v:2,d:"Core en menos de 15 min"},
+ {id:"glu",t:"Glúteos de acero",e:"🍑",c:"#FFD6E7",lv:2,k:["sq","gb","kb","lat","bul","ht","sumo"],w:40,r:15,v:2,d:"Glúteos y piernas a fondo"},
+ {id:"arms",t:"Brazos sin material",e:"💪",c:"#FFE3CC",lv:2,k:["ipu","bd","pu","plt","bc","box"],w:40,r:15,v:2,d:"Brazos, pecho y hombros"},
+ {id:"tabata",t:"Tabata 4 min",e:"⚡",c:"#FFF1B8",lv:3,k:["jsq","mc","bp","jj"],w:20,r:10,v:2,d:"20 s a tope, 10 s de descanso"},
+ {id:"quiet",t:"Cardio sin saltos",e:"🤫",c:"#DCEBFF",lv:1,k:["jjl","box","sq","dan","stp","mc"],w:45,r:15,v:2,nj:1,d:"Sin ruido para los vecinos"},
+ {id:"full",t:"Cuerpo entero 20",e:"🔥",c:"#FFD9CF",lv:2,k:["jj","sq","pu","lu","mc","gb","pl","bp","su","rt"],w:40,r:20,v:2,d:"Sesión completa de 20 min"},
+ {id:"legs",t:"Piernas fuertes",e:"🦵",c:"#FFDCE0",lv:2,k:["sq","lu","bul","stp","zl","gem"],w:45,r:15,v:2,d:"Fuerza de piernas en casa"},
+ {id:"pil",t:"Pilates suave",e:"🧘",c:"#D3F4E4",lv:1,k:["gb","db","su","hh","kb","plt","gm"],w:40,r:15,v:2,d:"Control, postura y core"},
+ {id:"dance",t:"Baila y quema",e:"💃",c:"#FFD6F0",lv:1,k:["dan","box","jjl","jj","mc"],w:60,r:15,v:2,d:"Cardio divertido"},
+ {id:"back",t:"Espalda sana",e:"🪑",c:"#E6F0E0",lv:1,k:["su","gm","db","gb","plt"],w:40,r:15,v:1,st:["hom1","esa1","esb0"],d:"Para quien pasa el día sentado"},
+ {id:"night",t:"Antes de dormir",e:"🌙",c:"#E2E4FF",lv:1,k:[],st:CASA_STR,w:40,r:10,v:1,d:"Estiramientos suaves"}];
+function rutItems(R){const nj=R.nj||gsNoJump(),out=[];
+  for(let v=0;v<R.v;v++)R.k.forEach(k=>{const it=gsItem(k,R.w,R.r,nj);if(it)out.push(it)});
+  (R.st||[]).forEach(id=>{const x=typeof wuFind==="function"&&wuFind(id);if(x)out.push({n:x.x[0],wu:id,work:40,rest:10,tip:x.x[2]})});return out}
+function rutArt(R){const k=R.k[0];if(!k)return(R.st||[])[0]&&WU_PAT[R.st[0]]?R.st[0]+"|1":"plank|0";const b=GS_EX[k];return(b.pat||animKeyOf(b.ex))+"|1"}
+function rutMins(R){return Math.max(1,Math.round(rutItems(R).reduce((a,i)=>a+i.work+i.rest,0)/60))}
+{const _ch=casaHome;casaHome=function(b){_ch(b);const sec=[...b.querySelectorAll(".cs-sec")].find(x=>/Reciente/.test(x.textContent));if(!sec)return;
+  sec.insertAdjacentHTML("beforebegin",`<div class="cs-sec"><h3>Rutinas rápidas</h3><span class="muted">${CASA_RUT.length} rutinas</span></div>
+   <div class="cs-rut">${CASA_RUT.map(R=>`<button type="button" class="cs-rc" style="--c:${R.c}" data-rut="${R.id}"><div class="cs-ra" data-rart="${esc(rutArt(R))}"></div>
+     <span class="cs-re" aria-hidden="true">${R.e}</span><b>${esc(R.t)}</b><small>${rutMins(R)} min · ${["","Fácil","Medio","Intenso"][R.lv]}</small><em>${esc(R.d)}</em></button>`).join("")}</div>`);
+  b.querySelectorAll("[data-rart]").forEach(e=>{try{e.appendChild(poseSVG(e.dataset.rart))}catch(x){}});
+  b.querySelectorAll("[data-rut]").forEach(x=>x.onclick=()=>{const R=CASA_RUT.find(q=>q.id===x.dataset.rut);gsStart(R.t,rutItems(R),{art:rutArt(R)})})}}
 
 
 </script>

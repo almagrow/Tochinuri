@@ -10035,7 +10035,7 @@ Object.assign(GS_META,{bic:["abs",1],htc:["abs",1],pst:["abs bra",2],wood:["abs"
   _f();const btn=$("#gsSave");if(!btn||!W)return;btn.textContent="Guardar en mis entrenos";
   btn.onclick=async()=>{if(!store){toast("Tus datos aún se están cargando. Prueba en un momento.");return}btn.disabled=true;
     const w={id:newId(),date:today(),kind:"casa",type:"En casa",name:W.name||"Entreno en casa",result:"",duration:W.duration,notes:"",exercises:W.exercises,photo:null,level:null,pains:[],createdAt:Date.now()};
-    try{await store.save(w);btn.textContent="✓ Guardado en tus entrenos";toast("Entreno en casa guardado");try{renderToday()}catch(e){}try{if(current==="casa")renderCasa()}catch(e){}}
+    try{await store.save(w);toast("Entreno en casa guardado");gsClose();try{openCasa(typeof casaTab==="string"&&casaTab?casaTab:"home")}catch(e){}}
     catch(e){btn.disabled=false;toast("No se pudo guardar. Inténtalo de nuevo.")}}}}
 
 

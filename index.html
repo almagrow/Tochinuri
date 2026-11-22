@@ -3226,7 +3226,7 @@ const exFor=k=>(k==="gym"?EX.filter(e=>isGymCat(e.c)||e.y):EX.filter(e=>!isGymCa
 const catIn=(e,k)=>k==="gym"?(isGymCat(e.c)?e.c:e.y):e.c;
 const catsFor=k=>Object.entries(CATS).filter(([c])=>isGymCat(c)===(k==="gym"));
 var LOG_ALL=false;
-const inMode=x=>LOG_ALL||(x.kind==="gym")===(mode==="gym");
+const inMode=x=>LOG_ALL||x.kind==="casa"||(x.kind==="gym")===(mode==="gym");
 function findEx(name){const n=norm(name);return EX.find(e=>norm(e.n)===n)||EX.find(e=>norm(e.n).split(" (")[0]===n)}
 
 /* ---------------- Progreso por ejercicio ---------------- */
@@ -4137,7 +4137,7 @@ $("#wodForm").addEventListener("submit",async ev=>{
   const gym=formKind==="gym";
   const w={id:editingId||newId(),date,name:$("#fName").value.trim(),type:gym?"Gym":(document.querySelector("[name=ftype]:checked")||{}).value||"Otro",
     result:gym?"":$("#fResult").value.trim(),duration:durS,notes:$("#fNotes").value.trim(),exercises,photo:formPhoto||null,level:gym?null:getLevel(),pains:readPains(),...(typeof readSE==="function"?readSE():{}),pair:!gym&&$("#fPair").checked?{name:$("#fPairName").value.trim()||null}:null,createdAt:old?.createdAt||Date.now()};
-  if(gym)w.kind="gym";
+  if(gym)w.kind="gym";else if(old?.kind==="casa")w.kind="casa";
   if(lifts.length)w.lifts=lifts;
   if(!store)return err("Tus datos aún se están cargando. Espera un momento y vuelve a guardar.");
   const btn=$("#saveBtn");btn.disabled=true;
@@ -10029,6 +10029,14 @@ Object.assign(GS_META,{bic:["abs",1],htc:["abs",1],pst:["abs bra",2],wood:["abs"
  dpu:["bra",3],wpu:["bra",2],pkp:["bra",3],bdl:["bra",2],ohp:["bra",1],crl:["bra",1],brow:["bra",1],lrs:["bra",1],tox:["bra",1],fpr:["bra",1],rdf:["bra",2],
  hk:["hiit",1],bk:["hiit",1],spr:["hiit",2],skt:["hiit glu",2],jri:["hiit",1],bpu:["hiit",3],sqbx:["hiit",1],shu:["hiit",2],sjj:["hiit",2],
  hun:["pil abs",2],bmr:["pil glu",1],swm:["pil",1],rup:["pil abs",2],sci:["pil abs",2],spl:["pil abs",3]});
+
+/* v122: al terminar una rutina de «En casa», «Guardar» la guarda directamente como entreno en casa (sin abrir el formulario de CrossFit o Gym) */
+{const _f=gsFinish;gsFinish=function(){const g=GS;let W=null;if(g){try{W=gsWorkout(Math.max(1,Math.round((Date.now()-g.t0)/60000)))}catch(e){}}
+  _f();const btn=$("#gsSave");if(!btn||!W)return;btn.textContent="Guardar en mis entrenos";
+  btn.onclick=async()=>{if(!store){toast("Tus datos aún se están cargando. Prueba en un momento.");return}btn.disabled=true;
+    const w={id:newId(),date:today(),kind:"casa",type:"En casa",name:W.name||"Entreno en casa",result:"",duration:W.duration,notes:"",exercises:W.exercises,photo:null,level:null,pains:[],createdAt:Date.now()};
+    try{await store.save(w);btn.textContent="✓ Guardado en tus entrenos";toast("Entreno en casa guardado");try{renderToday()}catch(e){}try{if(current==="casa")renderCasa()}catch(e){}}
+    catch(e){btn.disabled=false;toast("No se pudo guardar. Inténtalo de nuevo.")}}}}
 
 
 </script>

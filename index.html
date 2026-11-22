@@ -9240,7 +9240,7 @@ function rdFormPaint(){const c=$("#rdForm");if(!c)return;
 /* ================= v96: calorías aproximadas =================
    Cada ejercicio tiene un MET (gasto respecto a estar en reposo, valores del Compendio de Actividades Físicas).
    kcal = MET × peso (kg) × horas. El tiempo sale del tiempo apuntado o de las repeticiones (segundos por repetición),
-   o de los metros en carrera, remo, esquí… Si el entreno tiene duración, el resto del tiempo cuenta como descanso activo. */
+   o de los metros en carrera, remo, esquí… Desde v116 la duración del entreno y los descansos no cuentan: solo el trabajo de cada ejercicio. */
 const KCAL_MET={squat:5.5,frontsquat:6,goblet:5.5,backsquat:6,ohs:6,pistol:6,thruster:8,wallball:8,deadlift:6,rackpull:5,rdl:5,goodmorning:5,highpull:7,clean:7,snatch:7,cleanjerk:7,jerk:6,press:5,pushpress:6,
   bench:5,incline:5,decline:5,fly:4,pullover:4,chestpress:4.5,crossover:4,pecdeck:4,pushup:8,plank:3.8,pullup:8,muscleup:8,t2b:7,k2e:6,hspu:8,dip:7,benchdip:5,burpee:8,boxjump:8,stepup:6,stairs:9,
   lunge:6,bulgarian:6,ropeclimb:9,situp:5,crunch:4,hollow:4,lsit:4,vup:5,deadbug:3.5,ringrow:5,backext:4,rower:7,bike:7,ski:7,run:9.8,walk:5,sled:8,jumprope:11,swim:8,swing:9,tgu:6,slam:8,row:5,
@@ -9255,6 +9255,7 @@ const kcalW=()=>{const w=typeof bodyWeight==="function"?bodyWeight():null;return
 const kcalWDefault=()=>!(typeof bodyWeight==="function"&&bodyWeight());
 function kcalInfo(name){const f=findEx(name),n=norm(name);let key="squat";try{key=animFor(f||{n:name,c:"otr"}).key}catch(e){}
   if(key==="custom")key=null;
+  if(!f&&/comba|jump ?rope|saltar a la cuerda|single under/.test(n))key="jumprope";
   let met=KCAL_MET[key]??(f?{hal:7,fue:6,gim:7,mon:8,kb:7,ype:4.5,yes:4.5,ypi:5,ygl:4.5,yho:4,ybi:3.5,ytr:3.5,yco:4,yca:7}[f.c]:null)??5;
   if(/double/.test(n))met=12.3;if(/assault|echo/.test(n))met=9;if(/sprint/.test(n))met=12;if(/handstand walk/.test(n))met=7;
   let spr=KCAL_SPR[key]??3;if(/double/.test(n))spr=.6;if(/handstand walk/.test(n))spr=null;
@@ -9275,12 +9276,9 @@ function wodKcal(w){const bw=kcalW(),gym=w.kind==="gym",metcon=!gym&&/for time|a
   const rows=(w.exercises||[]).map(e=>{if(!e.name)return{t:0,met:0};const I=kcalInfo(e.name),me=typeof myEx==="function"?myEx(e):e;let t=kcalSecs(me,I);
     if(gym&&!num(e.time)&&!I.mps&&num(e.weight))t*=1.3;/* con peso, cada repetición va más lenta */
     return{t,met:I.met*(metcon?1.25:1),sets:num(e.sets)||1,heavy:!!num(e.weight)}});
-  let A=rows.reduce((a,r)=>a+r.t,0),D=num(w.duration)||0,rest=0,f=1;
-  if(D){if(A>D)f=D/A;else rest=D-A}
-  else rest=rows.reduce((a,r)=>a+((gym||r.heavy)&&r.sets>1?(r.sets-1)*75:0),0);
-  const per=rows.map(r=>r.met*bw*r.t*f/3600),restK=(metcon?4:3)*bw*rest/3600;
-  const kcal=per.reduce((a,b)=>a+b,0)+restK;
-  return{kcal:Math.round(kcal),per:per.map(Math.round),secs:Math.round(A*f+rest),bw,def:kcalWDefault()}}
+  /* v116: se cuenta lo que se hace en cada ejercicio (repeticiones, distancia o tiempo apuntado). La duración total del entreno y los descansos ya no cambian el resultado. */
+  const A=rows.reduce((a,r)=>a+r.t,0),per=rows.map(r=>r.met*bw*r.t/3600),kcal=per.reduce((a,b)=>a+b,0);
+  return{kcal:Math.round(kcal),per:per.map(Math.round),secs:Math.round(A),bw,def:kcalWDefault()}}
 const fmtKcal=n=>Math.round(n).toLocaleString("es-ES");
 const FIRE='<span aria-hidden="true">🔥</span>';
 function kcalTag(w){const k=wodKcal(w).kcal;return k?` · ${FIRE} ${fmtKcal(k)} kcal`:""}

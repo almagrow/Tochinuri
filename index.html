@@ -1333,7 +1333,7 @@ header.top.sub .top-coins{display:none}
 .rt-rows{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
 .rt-row{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px}
 .rt-n{cursor:pointer;font-weight:600}
-.rt-top{display:flex;gap:8px}.rt-top .rt-n{flex:1;min-width:0}.rt-s{cursor:text}.rt-sets{display:flex;flex-direction:column;gap:8px}.rt-sr{display:grid;grid-template-columns:64px 1fr 1fr;gap:8px;align-items:end}.rt-sr b{font-size:13px;padding-bottom:12px;color:var(--ink-soft,inherit)}
+.rt-top{display:flex;gap:8px}.rt-top .rt-n{flex:1;min-width:0}.rt-s{cursor:text}.rt-more[hidden]{display:none}
 .rt-nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:8px;align-items:end}
 .rt-nums label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;min-width:0}
 .rt-nums input{min-width:0;width:100%}
@@ -6555,14 +6555,11 @@ function renderRoutineEditor(){
   const rows=$("#rtRows");
   const row=e=>{const d=document.createElement("div");d.className="rt-row";
     d.innerHTML=`<div class="rt-top"><input class="rt-n" readonly placeholder="Toca para elegir ejercicio" value="${esc(e.name||"")}" aria-label="Ejercicio"><button type="button" class="icon-btn rt-x" aria-label="Quitar ejercicio">×</button></div>
-     <input class="rt-n rt-s" inputmode="numeric" placeholder="Series" value="${esc(e.sets||"")}" aria-label="Series"><div class="rt-sets"></div>
+     <input class="rt-n rt-s" inputmode="numeric" placeholder="Series" value="${esc(e.sets||"")}" aria-label="Series">
+     <div class="rt-nums rt-more"><label>Reps<input class="num rt-r" inputmode="numeric" value="${esc(e.reps||"")}"></label><label>Kg<input class="num rt-w" inputmode="decimal" placeholder="último" value="${esc(e.weight||"")}"></label></div>
      <label class="chk rt-ss"><input type="checkbox" class="rt-ssc"${e.ss?" checked":""}> Superserie con el siguiente (sin descanso entre los dos)</label>`;
-    const sIn=d.querySelector(".rt-s"),box=d.querySelector(".rt-sets"),det=(e.det||[]).slice();
-    const keep=()=>{box.querySelectorAll(".rt-sr").forEach((x,i)=>{det[i]={reps:x.querySelector(".rt-r").value,weight:x.querySelector(".rt-w").value}})};
-    const paint=()=>{keep();const n=Math.min(Math.max(parseInt(sIn.value)||0,0),30);box.innerHTML="";
-      for(let i=0;i<n;i++){const q=det[i]||det[i-1]||{reps:e.reps||"",weight:e.weight||""},x=document.createElement("div");x.className="rt-sr";
-        x.innerHTML=`<b>Serie ${i+1}</b><label>Reps<input class="num rt-r" inputmode="numeric" value="${esc(q.reps||"")}"></label><label>Kg<input class="num rt-w" inputmode="decimal" placeholder="último" value="${esc(q.weight||"")}"></label>`;box.appendChild(x)}};
-    sIn.oninput=paint;paint();
+    const sIn=d.querySelector(".rt-s"),more=d.querySelector(".rt-more");
+    const paint=()=>{more.hidden=!(parseInt(sIn.value)>0)};sIn.oninput=paint;paint();
     const n=d.querySelector(".rt-n");n.onclick=()=>{formKind="gym";openPicker(n)};
     d.querySelector(".rt-x").onclick=()=>d.remove();rows.appendChild(d);return d};
   r.ex.forEach(row);
@@ -6571,9 +6568,7 @@ function renderRoutineEditor(){
   if(r.id){$("#rtDel").onclick=()=>{$("#rtConf").hidden=false;$("#rtDel").hidden=true};$("#rtDelNo").onclick=()=>{$("#rtConf").hidden=true;$("#rtDel").hidden=false};
     $("#rtDelYes").onclick=async()=>{const p={...planMap()};for(const k in p)if(p[k]===r.id)p[k]="";await saveProf({routines:routines().filter(x=>x.id!==r.id),plan:p},"Rutina borrada");rtEdit=null;tbTab="routines";renderTable();paintPlanCard()}}
   $("#rtSave").onclick=async()=>{const name=$("#rtName").value.trim(),err=m=>{$("#rtErr").textContent=m;$("#rtErr").hidden=false};
-    const ex=[...rows.querySelectorAll(".rt-row")].map(d=>{const sr=[...d.querySelectorAll(".rt-sr")].map(x=>({reps:Number(x.querySelector(".rt-r").value)||null,weight:f2num(x.querySelector(".rt-w").value)}));
-      const same=sr.every(q=>q.reps===sr[0].reps&&q.weight===sr[0].weight);
-      return{name:d.querySelector(".rt-n").value.trim(),sets:Number(d.querySelector(".rt-s").value)||null,reps:sr[0]?sr[0].reps:null,weight:sr[0]?sr[0].weight:null,...(sr.length&&!same?{det:sr}:{}),...(d.querySelector(".rt-ssc").checked?{ss:true}:{})}}).filter(e=>e.name);
+    const ex=[...rows.querySelectorAll(".rt-row")].map(d=>({name:d.querySelector(".rt-n").value.trim(),sets:Number(d.querySelector(".rt-s").value)||null,reps:Number(d.querySelector(".rt-r").value)||null,weight:f2num(d.querySelector(".rt-w").value),...(d.querySelector(".rt-ssc").checked?{ss:true}:{})})).filter(e=>e.name);
     if(!name)return err("Ponle un nombre a la rutina.");if(!ex.length)return err("Añade al menos un ejercicio.");
     const it={id:r.id||"r"+Date.now().toString(36),name,ex},list=r.id?routines().map(x=>x.id===r.id?it:x):[...routines(),it];
     const ok=await saveProf({routines:list},r.id?"Rutina guardada":`Rutina «${name}» creada`);if(ok===false)return;rtEdit=null;tbTab=r.id?tbTab:"routines";renderTable();paintPlanCard()};

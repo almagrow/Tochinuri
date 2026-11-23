@@ -2721,6 +2721,7 @@ button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding
 .tdc-empty b{font-size:17px}.tdc-empty span{font-size:13px;color:var(--muted);line-height:1.35}
 .tdc-plus{width:60px;height:60px;border-radius:50%;border:0;background:var(--brand);color:#fff;font-size:34px;line-height:1;font-weight:500;cursor:pointer;margin-top:6px;box-shadow:0 6px 16px color-mix(in srgb,var(--brand) 35%,transparent)}
 .tdc-empty small{font-weight:800;color:var(--brand);font-size:13px}
+.tdc-tag.today{background:var(--brand);color:#fff}.tdc-last{font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.16);align-self:flex-start}.tdc-last.ok{background:#22a55b}
 #todayCard{min-width:0;max-width:100%}.tdc-r,.tdc-empty,#todayCard .tdc-main{touch-action:pan-x pan-y}
 .tdc-dots{display:flex;justify-content:center;gap:6px;margin-top:6px}.tdc-dots button{width:8px;height:8px;padding:0;border:0;border-radius:99px;background:color-mix(in srgb,var(--ink) 22%,transparent);cursor:pointer;transition:width .2s}.tdc-dots button.on{width:22px;background:var(--brand)}
 .tne{display:inline-block;line-height:0;vertical-align:-.22em}.tne .tni{width:1.25em;height:1.25em;vertical-align:0}
@@ -10074,10 +10075,16 @@ function tdcNewRoutine(){openTable("routines");rtEdit={id:null,name:"",ex:[{name
 {const _rt=renderToday;renderToday=function(){_rt();const c=$("#todayCard");if(!c||!profile||mode!=="gym"||!c.firstElementChild)return;
   const row=document.createElement("div");row.className="tdc-row";const main=document.createElement("div");main.className="tdc-main";
   while(c.firstChild)main.appendChild(c.firstChild);row.appendChild(main);
-  const R=routines().filter(r=>(r.ex||[]).some(e=>e.name));
-  if(R.length)R.forEach((r,i)=>{const ex=r.ex.filter(e=>e.name),b=document.createElement("button");b.type="button";b.className="tdc-r";b.style.setProperty("--ph",`url(images/${TDC_PH[i%TDC_PH.length]})`);
-    b.innerHTML=`<span class="tdc-tag">Tu rutina</span><b class="tdc-n">${esc(r.name||"Rutina")}</b><span class="tdc-s">${ex.length} ejercicio${ex.length===1?"":"s"} · ${ex.slice(0,3).map(e=>esc(e.name)).join(", ")}${ex.length>3?"…":""}</span><span class="tdc-go">Empezar ${V2_IC.arrow}</span>`;
-    b.onclick=()=>startRoutine(r);row.appendChild(b)});
+  const DN=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"],td=Number(todayDow()),PM=planMap();
+  const daysOf=r=>Object.keys(PM).filter(k=>PM[k]===r.id).map(Number),ahead=d=>(d-td+7)%7;
+  const lastOf=r=>sorted().find(w=>w.kind==="gym"&&(w.name||"").trim().toLowerCase()===(r.name||"").trim().toLowerCase());
+  const R=routines().filter(r=>(r.ex||[]).some(e=>e.name)).map(r=>({r,ds:daysOf(r)})).map(o=>({...o,nx:o.ds.length?Math.min(...o.ds.map(ahead)):99})).sort((x,y)=>x.nx-y.nx);
+  if(R.length)R.forEach(({r,ds,nx},i)=>{const ex=r.ex.filter(e=>e.name),b=document.createElement("button");b.type="button";b.className="tdc-r";b.style.setProperty("--ph",`url(images/${TDC_PH[i%TDC_PH.length]})`);
+    const L=lastOf(r),doneToday=L&&L.date===today(),vol=L?wodVolume(L):0;
+    const dayTxt=!ds.length?"Sin día en tu tabla":nx===0?`Hoy · ${DN[td]}`:nx===1?`Mañana · ${DN[(td+1)%7]}`:ds.sort((x,y)=>ahead(x)-ahead(y)).map(d=>DN[d]).join(" · ");
+    const lastTxt=!L?"Aún no la has hecho":doneToday?`Hecha hoy · ${(L.exercises||[]).filter(e=>e.name).length} ejercicios${vol?` · ${fmtBig(vol)} kg`:""}`:`Última vez: ${fmtD(L.date)}${vol?` · ${fmtBig(vol)} kg`:""}`;
+    b.innerHTML=`<span class="tdc-tag${nx===0?" today":""}">${esc(dayTxt)}</span><b class="tdc-n">${esc(r.name||"Rutina")}</b><span class="tdc-s">${ex.length} ejercicio${ex.length===1?"":"s"} · ${ex.slice(0,3).map(e=>esc(e.name)).join(", ")}${ex.length>3?"…":""}</span><span class="tdc-last${doneToday?" ok":""}">${esc(lastTxt)}</span><span class="tdc-go">${doneToday?"Ver entreno":"Empezar"} ${V2_IC.arrow}</span>`;
+    b.onclick=()=>doneToday?openWod(L.id):startRoutine(r);row.appendChild(b)});
   else{const e=document.createElement("div");e.className="tdc-empty";
     e.innerHTML=`<b>Aún no tienes rutinas de gym</b><span>Crea una rutina con tus ejercicios, series y pesos, y empiézala desde aquí con un toque.</span><button type="button" class="tdc-plus" aria-label="Crear una rutina">+</button><small>Crear rutina</small>`;
     e.querySelector(".tdc-plus").onclick=tdcNewRoutine;row.appendChild(e)}

@@ -2710,10 +2710,17 @@ button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding
 .qa-ic .tni-m{width:36px;height:36px}
 .kc-hero .kc-ic .tni{width:44px;height:44px;background:#fff;border-radius:50%;padding:5px;box-sizing:border-box;vertical-align:middle}
 .pl-pe .tni{width:1.2em;height:1.2em;vertical-align:middle}
-.gp-box{margin:14px 0 4px}.gp-sec{margin-bottom:8px}
-.cs-card.cs-core.gp{background:linear-gradient(90deg,rgba(10,10,14,.88) 0%,rgba(10,10,14,.55) 50%,rgba(10,10,14,.1) 80%),var(--ph) var(--pp)/cover no-repeat!important;color:#fff!important;--ci:#fff}
-.cs-card.gp .cs-pill{color:#1B1340!important}.cs-card.gp h4{max-width:70%}.cs-card.gp .gp-d{max-width:70%;font-size:12.5px;line-height:1.3;opacity:.9;color:#fff}
-.cs-card.gp .cs-btn{color:#1B1340}
+#todayCard .tdc-row{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -4px;padding:0 4px 6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}#todayCard .tdc-row::-webkit-scrollbar{display:none}
+#todayCard .tdc-main{flex:0 0 88%;scroll-snap-align:start;min-width:0;display:flex;flex-direction:column;gap:8px}
+.tdc-r,.tdc-empty{flex:0 0 66%;scroll-snap-align:start;min-height:230px;border-radius:24px;padding:20px 18px 18px;display:flex;flex-direction:column;gap:6px;text-align:left;font:inherit}
+.tdc-r{border:0;cursor:pointer;color:#fff;background:linear-gradient(0deg,rgba(10,10,12,.88) 0%,rgba(10,10,12,.5) 55%,rgba(10,10,12,.15) 100%),var(--ph) 60% 30%/cover no-repeat}
+.tdc-tag{align-self:flex-start;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.88);color:#1B1340;font-weight:800;font-size:12px}
+.tdc-n{margin-top:auto;font-family:var(--f-display);font-size:24px;line-height:1.05;text-transform:uppercase}
+.tdc-s{font-size:13px;line-height:1.3;opacity:.9}.tdc-go{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:15px;margin-top:4px}.tdc-go svg{width:18px;height:18px}
+.tdc-empty{align-items:center;justify-content:center;text-align:center;border:2px dashed color-mix(in srgb,var(--brand) 45%,var(--line));background:color-mix(in srgb,var(--brand) 7%,var(--surface));color:var(--ink)}
+.tdc-empty b{font-size:17px}.tdc-empty span{font-size:13px;color:var(--muted);line-height:1.35}
+.tdc-plus{width:60px;height:60px;border-radius:50%;border:0;background:var(--brand);color:#fff;font-size:34px;line-height:1;font-weight:500;cursor:pointer;margin-top:6px;box-shadow:0 6px 16px color-mix(in srgb,var(--brand) 35%,transparent)}
+.tdc-empty small{font-weight:800;color:var(--brand);font-size:13px}
 .tne{display:inline-block;line-height:0;vertical-align:-.22em}.tne .tni{width:1.25em;height:1.25em;vertical-align:0}
 .face .tni,.feel label .tni{width:1.6em;height:1.6em}
 </style>
@@ -10059,43 +10066,20 @@ Object.assign(GS_META,{bic:["abs",1],htc:["abs",1],pst:["abs bra",2],wood:["abs"
 /* v124: iconos propios en el Menú */
 const TNI_QA={plan:"menu-planificar",casa:"menu-en-casa",lib:"menu-ejercicios",openMonth:"menu-estadisticas",openTableBtn:"menu-tabla",openChBtn:"menu-retos",openMaxBtn:"menu-pesos-maximos",openPlatesBtn:"menu-discos",openGoalsBtn:"menu-objetivos",openMuscleBtn:"menu-musculos",openTotalsBtn:"menu-totales",openPainBtn:"menu-molestias"};
 {const _q=qaItems;qaItems=function(){return _q().map(q=>TNI_QA[q.id]?{...q,ic:tni(TNI_QA[q.id],"tni-m")}:q)}}
-/* v126: programas de gym en la portada de Gym (mismo diseño que los desafíos de En casa) */
-const GP_X=(n,sets,reps)=>({n,sets,reps});
-const GYM_PROG=[
- {id:"f55",t:"Fuerza 5×5",w:8,ph:"tonificacion.jpg",pp:"70% 30%",d:"3 días por semana, alternando A y B. Sube un poco el peso cada semana.",days:[
-  {n:"A",x:[GP_X("Sentadilla libre con barra",5,5),GP_X("Bench Press",5,5),GP_X("Remo con barra",5,5)]},
-  {n:"B",x:[GP_X("Sentadilla libre con barra",5,5),GP_X("Strict Press (press militar)",5,5),GP_X("Deadlift (peso muerto)",1,5)]}]},
- {id:"ppl",t:"Empuje · Tirón · Pierna",w:8,ph:"zona-bra.jpg",pp:"60% 30%",d:"Cada día trabajas un grupo: empuje, tirón y pierna.",days:[
-  {n:"Empuje",x:[GP_X("Bench Press",4,8),GP_X("Press militar con mancuernas",3,10),GP_X("Press inclinado con mancuernas",3,10),GP_X("Elevaciones laterales",3,15),GP_X("Extensión de tríceps en polea",3,12)]},
-  {n:"Tirón",x:[GP_X("Jalón al pecho",4,10),GP_X("Remo en polea baja",3,10),GP_X("Face pull",3,15),GP_X("Curl con barra",3,12),GP_X("Curl martillo",3,12)]},
-  {n:"Pierna",x:[GP_X("Sentadilla libre con barra",4,8),GP_X("Prensa de piernas",3,12),GP_X("Romanian Deadlift (RDL)",3,10),GP_X("Curl femoral tumbado",3,12),GP_X("Elevación de gemelos de pie",4,15)]}]},
- {id:"glu",t:"Glúteos y pierna",w:8,ph:"gluteos.jpg",pp:"70% 60%",d:"3 días por semana, alternando A y B, con foco en glúteo.",days:[
-  {n:"A",x:[GP_X("Hip thrust con barra",4,10),GP_X("Sentadilla búlgara",3,10),GP_X("Romanian Deadlift (RDL)",3,10),GP_X("Patada de glúteo en polea",3,15),GP_X("Abductores en máquina",3,15)]},
-  {n:"B",x:[GP_X("Sentadilla libre con barra",4,8),GP_X("Prensa de piernas",3,12),GP_X("Zancada con mancuernas",3,12),GP_X("Puente de glúteo",3,15),GP_X("Curl femoral sentado",3,12)]}]},
- {id:"tp",t:"Torso · Pierna",w:8,ph:"cardio.jpg",pp:"70% 30%",d:"4 días por semana, alternando torso y pierna.",days:[
-  {n:"Torso",x:[GP_X("Bench Press",4,8),GP_X("Remo con barra",4,8),GP_X("Press militar con mancuernas",3,10),GP_X("Jalón al pecho",3,10),GP_X("Curl con mancuernas",3,12),GP_X("Extensión de tríceps en polea",3,12)]},
-  {n:"Pierna",x:[GP_X("Sentadilla libre con barra",4,8),GP_X("Romanian Deadlift (RDL)",3,10),GP_X("Prensa de piernas",3,12),GP_X("Curl femoral tumbado",3,12),GP_X("Elevación de gemelos de pie",4,15),GP_X("Plancha",3,null)]}]},
- {id:"ini",t:"Cuerpo entero para empezar",w:4,ph:"cuerpo-entero.jpg",pp:"60% 25%",d:"3 días por semana con máquinas, para coger técnica y rutina.",days:[
-  {n:"Cuerpo entero",x:[GP_X("Prensa de piernas",3,12),GP_X("Press de pecho en máquina",3,12),GP_X("Jalón al pecho",3,12),GP_X("Press militar con mancuernas",3,10),GP_X("Curl femoral sentado",3,12),GP_X("Plancha",3,null)]}]}];
-const gpTotal=p=>p.w*(p.id==="tp"?4:3);
-const gpDayName=(p,n)=>`${p.t} · Día ${n} · ${p.days[(n-1)%p.days.length].n}`;
-function gpState(p){const st=(profile?.gymProg||{})[p.id]||{},from=st.s||"0000",re=new RegExp("^"+p.t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+" · Día (\\d+)\\b");
-  const done=new Set();workouts.forEach(w=>{if(!w.date||w.date<from)return;const m=re.exec(w.name||"");if(m)done.add(Number(m[1]))});
-  const N=gpTotal(p);let next=1;while(done.has(next)&&next<=N)next++;return{done:Math.min(done.size,N),next,N,fin:done.size>=N,started:!!st.s}}
-async function gpStart(p){let st=gpState(p);const all={...(profile.gymProg||{})};
-  if(st.fin||!st.started){all[p.id]={s:today()};profile={...profile,gymProg:all};saveProf({gymProg:all}).catch(()=>{});st=gpState(p)}
-  const day=p.days[(st.next-1)%p.days.length];if(mode!=="gym")setMode("gym");
-  openForm({kind:"gym",type:"Gym",name:gpDayName(p,st.next),exercises:day.x.map(e=>({name:e.n,sets:e.sets||null,reps:e.reps||null,weight:lastKgFor(e.n)?.kg||null}))})}
-function gpHtml(){return`<div class="cs-sec gp-sec"><h3>Programas de gym</h3></div><div class="cs-ch gp-row">${GYM_PROG.map(p=>{const s=gpState(p);
-  return`<article class="cs-card cs-core gp" style="--ph:url(images/${p.ph});--pp:${p.pp}"><span class="cs-pill">${p.w} semanas</span><h4>${esc(p.t)}</h4>${s.fin?`<b class="cs-ready">¡Listo!</b>`:""}<small class="gp-d">${esc(p.d)}</small>
-    <div class="cs-prog"><span class="mono"><b>${s.done}</b>/${s.N}</span><i><s style="width:${Math.round(s.done/s.N*100)}%"></s></i></div>
-    <button type="button" class="cs-btn" data-gp="${p.id}">${s.fin?"Reiniciar":s.started&&s.done?`Seguir · Día ${s.next}`:"Iniciar"}</button></article>`}).join("")}</div>`}
-{const _rt=renderToday;renderToday=function(){_rt();let c=$("#gpBox");
-  if(mode!=="gym"||!profile){c?.remove();return}
-  const pc=$("#planCard")||$("#todayCard");if(!pc)return;
-  if(!c){c=document.createElement("div");c.id="gpBox";c.className="gp-box"}
-  if(c.previousElementSibling!==pc)pc.after(c);
-  c.innerHTML=gpHtml();c.querySelectorAll("[data-gp]").forEach(b=>b.onclick=()=>gpStart(GYM_PROG.find(p=>p.id===b.dataset.gp)))}}
+/* v126: en Gym, «¿Qué vas a entrenar hoy?» en un carrusel con tus rutinas de gym */
+const TDC_PH=["zona-bra.jpg","tonificacion.jpg","gluteos.jpg","cardio.jpg","zona-str.jpg"];
+function tdcNewRoutine(){openTable("routines");rtEdit={id:null,name:"",ex:[{name:"",sets:4,reps:10,weight:null}]};renderTable()}
+{const _rt=renderToday;renderToday=function(){_rt();const c=$("#todayCard");if(!c||!profile||mode!=="gym"||!c.firstElementChild)return;
+  const row=document.createElement("div");row.className="tdc-row";const main=document.createElement("div");main.className="tdc-main";
+  while(c.firstChild)main.appendChild(c.firstChild);row.appendChild(main);
+  const R=routines().filter(r=>(r.ex||[]).some(e=>e.name));
+  if(R.length)R.forEach((r,i)=>{const ex=r.ex.filter(e=>e.name),b=document.createElement("button");b.type="button";b.className="tdc-r";b.style.setProperty("--ph",`url(images/${TDC_PH[i%TDC_PH.length]})`);
+    b.innerHTML=`<span class="tdc-tag">Tu rutina</span><b class="tdc-n">${esc(r.name||"Rutina")}</b><span class="tdc-s">${ex.length} ejercicio${ex.length===1?"":"s"} · ${ex.slice(0,3).map(e=>esc(e.name)).join(", ")}${ex.length>3?"…":""}</span><span class="tdc-go">Empezar ${V2_IC.arrow}</span>`;
+    b.onclick=()=>startRoutine(r);row.appendChild(b)});
+  else{const e=document.createElement("div");e.className="tdc-empty";
+    e.innerHTML=`<b>Aún no tienes rutinas de gym</b><span>Crea una rutina con tus ejercicios, series y pesos, y empiézala desde aquí con un toque.</span><button type="button" class="tdc-plus" aria-label="Crear una rutina">+</button><small>Crear rutina</small>`;
+    e.querySelector(".tdc-plus").onclick=tdcNewRoutine;row.appendChild(e)}
+  c.appendChild(row)}}
 /* v125: el resto de emoticonos se cambian por iconos propios al pintarse */
 const TNI_EMO={"💪": "musculos", "🦍": "musculos", "🦾": "musculos", "🔥": "calorias", "⚡": "racha", "🏆": "retos", "🏋️": "halterofilia", "🏋": "halterofilia", "🎉": "fiesta", "🙌": "fiesta", "🎊": "fiesta", "🌱": "brote", "🌿": "hoja", "🍃": "hoja", "🍂": "hoja-otono", "🍁": "hoja-otono", "🌳": "arbol", "🌲": "pino", "🌸": "flor", "🌼": "flor", "🌷": "flor", "🌻": "flor", "🌹": "flor", "✿": "flor", "💐": "flor", "🧘": "yoga", "💧": "gota", "🏅": "medalla", "🥇": "medalla", "🥈": "medalla", "🥉": "medalla", "🎯": "diana", "⚔️": "duelo", "⚔": "duelo", "🤝": "juntos", "👥": "juntos", "🙋": "juntos", "🐱": "gato", "🐈": "gato", "😺": "gato", "😻": "gato", "😸": "gato", "😹": "gato", "😿": "gato", "😾": "gato", "🐢": "tortuga", "🍑": "gluteos", "🦵": "pierna", "🦶": "pierna", "✨": "chispas", "⭐": "chispas", "💫": "chispas", "🤫": "chispas", "🙃": "chispas", "🏃": "correr", "🚴": "bici", "🏊": "nadar", "🚶": "caminar", "🧗": "trepar", "🤸": "estirar", "💃": "estirar", "🧍": "cuerpo", "🍌": "platano", "🐟": "pez", "🍎": "manzana", "😋": "manzana", "🐕": "huella", "🦘": "huella", "🐼": "huella", "🦁": "huella", "🐻": "huella", "🐎": "huella", "🦬": "huella", "🦒": "huella", "🦛": "huella", "🦏": "huella", "🐘": "huella", "🦖": "huella", "🐋": "huella", "🐳": "huella", "🦅": "huella", "🐺": "huella", "🐅": "huella", "🐴": "huella", "🐂": "huella", "🦔": "huella", "🐿️": "huella", "🐿": "huella", "🐇": "huella", "😴": "dormir", "💤": "dormir", "🛌": "dormir", "🥱": "dormir", "🌙": "luna", "☀️": "sol", "☀": "sol", "🌤️": "sol", "🌤": "sol", "🌅": "sol", "🌇": "sol", "❄️": "copo", "❄": "copo", "⛄": "copo", "🌈": "arcoiris", "🌊": "ola", "🌡️": "termometro", "🌡": "termometro", "❤️": "corazon", "❤": "corazon", "💕": "corazon", "💖": "corazon", "♥": "corazon", "💚": "corazon", "💜": "corazon", "🥲": "corazon", "💥": "impacto", "❗": "exclamacion", "❓": "pregunta", "🤷": "pregunta", "📶": "senal", "⏳": "reloj", "⏱": "reloj", "⏱️": "reloj", "⚠": "aviso", "⚠️": "aviso", "🛡️": "escudo", "🛡": "escudo", "🔒": "candado", "🔓": "candado-abierto", "🪢": "cuerda", "📅": "menu-tabla", "🗓️": "menu-tabla", "🗓": "menu-tabla", "📈": "menu-estadisticas", "📊": "menu-estadisticas", "🏁": "menu-objetivos", "🏡": "menu-en-casa", "🏠": "menu-en-casa", "👏": "aplauso", "🤲": "aplauso", "👍": "pulgar", "👎": "pulgar-abajo", "👆": "dedo", "🙂": "nivel-1", "😤": "nivel-2", "✅": "hecho", "✔": "hecho", "🔄": "repetir", "✏️": "lapiz", "✏": "lapiz", "🛠️": "llave", "🛠": "llave", "⚖️": "balanza", "⚖": "balanza", "🥛": "botella", "🥫": "botella", "🍼": "botella", "🧴": "botella", "💡": "idea", "🔗": "enlace", "🔔": "campana", "💎": "diamante", "🪙": "moneda", "📦": "caja", "🎨": "paleta", "🖼️": "paleta", "🖼": "paleta", "🚀": "cohete", "🚗": "coche", "🗼": "torre", "🏗️": "torre", "🏗": "torre", "🪜": "escalera", "💍": "anillas", "📺": "pantalla", "🪑": "silla", "⚽": "pelota", "🧶": "pelota", "💨": "viento", "🐦": "pajaro", "🐧": "pajaro", "🐥": "pajaro", "🦋": "mariposa", "🐝": "abeja", "🫁": "pulmones", "⏸": "pausa", "⏸️": "pausa", "⏮": "anterior", "⏮️": "anterior", "⏭": "siguiente", "⏭️": "siguiente", "▶": "reproducir", "▶️": "reproducir", "📋": "planificar", "🩹": "molestias-2-un-poco"};
 const TNI_RE=new RegExp("("+Object.keys(TNI_EMO).sort((a,b)=>b.length-a.length).map(e=>e.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|")+")\uFE0F?","u");

@@ -526,6 +526,10 @@ select{background:var(--surface);border:1px solid var(--line);border-radius:9px;
 @media (min-width:560px){.mgrid{grid-template-columns:repeat(3,1fr)}}
 .mtile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;font-size:13px;min-width:0}
 .mtile b{font-family:var(--f-display);font-size:30px;line-height:1.05;font-variant-numeric:tabular-nums}
+/* v134: modo admin */
+.h-grid.adm-grid{grid-template-columns:repeat(3,1fr)}
+.mtile.adm-go{font:inherit;color:inherit;text-align:left;cursor:pointer}
+.mtile.adm-go:active{transform:scale(.98)}
 .mtile .pos,.mtile .neg,.mtile .muted{font-family:var(--f-mono);font-size:13px}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
 .cal>b{font-size:11px;color:var(--muted);font-weight:700}
@@ -5772,58 +5776,66 @@ addEventListener("pagehide",usageFlush);
 {const _start=startApp;startApp=async function(u){const fresh=!(appStarted&&authUser&&authUser.id===u.id);await _start(u);if(fresh){usageStart();if(current&&current!=="auth"){USAGE.lastView=current;track("view",{view:current})}paintAdminUI()}}}
 {const _out=signedOut;signedOut=function(){usageStop();$("#openUsageBtn").hidden=true;_out()}}
 {const _init=initShop;initShop=async function(on){await _init(on);paintAdminUI()}}
-/* ---------------- Panel «Uso de la app» (solo administradoras) ---------------- */
-let usageDays=30;
+/* ---------------- Panel «Uso de la app» (solo administradoras) ----------------
+   v134: las cuentas se hacen en Supabase (admin_usage_stats), así no hay límite de eventos. */
+let usageDays=30,usageMetric="users";
+Object.assign(VIEW_LABEL,{casa:"En casa",friends:"Amigos",badges:"Insignias",totals:"Totales",muscles:"Músculos",summary:"Resumen",challenges:"Retos",table:"Tabla",maxes:"Pesos máximos",plan:"Planificar",warmup:"Calentamiento",weights:"Mis pesos",plates:"Discos",goals:"Objetivos",users:"Usuarios",reminders:"Avisos",body:"Cuerpo",water:"Agua",skills:"Habilidades",cex:"Ejercicios propios"});
+const admDur=s=>{s=Math.round(s||0);if(s<60)return s+" s";const m=Math.floor(s/60);if(m<60)return m+" min";const h=Math.floor(m/60);return h+" h "+(m%60)+" min"};
+const admAgo=d=>{if(!d)return"nunca";const m=Math.round((Date.now()-new Date(d))/6e4);if(m<2)return"ahora";if(m<60)return`hace ${m} min`;const h=Math.round(m/60);if(h<24)return`hace ${h} h`;const dd=Math.round(h/24);return`hace ${dd} ${dd===1?"día":"días"}`};
+const admDays=d=>d?(Date.now()-new Date(d))/864e5:Infinity;
+const admSeen=u=>u.last_seen||u.last_sign_in_at;
 function openUsage(){openTool("usage","Uso de la app",renderUsage)}
 async function renderUsage(){
-  const v=$("#v-usage");v.innerHTML=`<h2 class="view-title" style="margin-top:12px">Uso de la app</h2><p class="muted">Cargando…</p>`;
-  const since=new Date(Date.now()-usageDays*864e5).toISOString();
-  let ev=[],users=[];
+  const v=$("#v-usage"),T=`<h2 class="view-title" style="margin-top:12px">Uso de la app</h2>`;v.innerHTML=T+`<p class="muted">Cargando…</p>`;
+  let st,users=[];
   try{
-    const [e,u]=await Promise.all([SB.from("events").select("user_id,session_id,type,view,seconds,created_at").gte("created_at",since).order("created_at",{ascending:false}).limit(20000),SB.rpc("admin_users")]);
-    if(e.error)throw e.error;if(u.error)throw u.error;ev=e.data||[];users=u.data||[];
-  }catch(err){v.innerHTML=`<h2 class="view-title" style="margin-top:12px">Uso de la app</h2><p class="form-error">No se pudieron cargar los datos de uso: ${esc(err.message||err)}</p>`;return}
-  const day=d=>d.slice(0,10),todayK=new Date().toISOString().slice(0,10),wk=new Date(Date.now()-7*864e5).toISOString();
-  const byUser={};users.forEach(u=>byUser[u.user_id]={...u,sessions:new Set(),secs:0,views:{},last:null,days:new Set()});
-  const sess={};
-  for(const x of ev){const U=byUser[x.user_id];if(!U)continue;U.sessions.add(x.session_id);U.days.add(day(x.created_at));if(!U.last||x.created_at>U.last)U.last=x.created_at;
-    if(x.type==="time"&&x.seconds)U.secs+=x.seconds;if(x.type==="view"&&x.view)U.views[x.view]=(U.views[x.view]||0)+1;
-    const S=sess[x.session_id]||(sess[x.session_id]={secs:0,start:x.created_at});if(x.type==="time")S.secs+=x.seconds||0;if(x.created_at<S.start)S.start=x.created_at}
-  const U=Object.values(byUser),activeToday=U.filter(u=>u.days.has(todayK)).length,active7=U.filter(u=>u.last&&u.last>=wk).length;
-  const S=Object.values(sess),totalSecs=S.reduce((a,s)=>a+s.secs,0),avg=S.length?totalSecs/S.length:0;
-  const viewsAll={};ev.forEach(x=>{if(x.type==="view"&&x.view&&x.view!=="usage")viewsAll[x.view]=(viewsAll[x.view]||0)+1});
-  const vTot=Object.values(viewsAll).reduce((a,b)=>a+b,0);
-  const timeByView={};ev.forEach(x=>{if(x.type==="time"&&x.view&&x.seconds)timeByView[x.view]=(timeByView[x.view]||0)+x.seconds});
-  const tv=Object.values(timeByView).reduce((a,b)=>a+b,0);
-  const newW=ev.filter(x=>x.type==="workout_new").length;
-  const fmtDur=s=>{s=Math.round(s);if(s<60)return s+" s";const m=Math.floor(s/60);if(m<60)return m+" min";const h=Math.floor(m/60);return h+" h "+(m%60)+" min"};
-  const fmtAgo=d=>{if(!d)return"—";const m=Math.round((Date.now()-new Date(d))/6e4);if(m<2)return"ahora";if(m<60)return`hace ${m} min`;const h=Math.round(m/60);if(h<24)return`hace ${h} h`;const dd=Math.round(h/24);return`hace ${dd} ${dd===1?"día":"días"}`};
-  /* usuarios activos por día (últimos 14) */
-  const days=[];for(let i=13;i>=0;i--){const k=new Date(Date.now()-i*864e5).toISOString().slice(0,10);days.push({k,n:U.filter(u=>u.days.has(k)).length})}
-  const mx=Math.max(1,...days.map(d=>d.n));
-  const bar=(l,n,t,extra="")=>`<div class="sbar sbar-w"><span class="sbar-l">${l}</span><span class="sbar-t"><span class="sbar-f brand" style="width:${t?Math.round(n/t*100):0}%"></span></span><span class="sbar-v mono">${t?Math.round(n/t*100):0} %</span><span class="sbar-n mono">${extra||n}</span></div>`;
-  v.innerHTML=`<h2 class="view-title" style="margin-top:12px">Uso de la app</h2>
+    const [a,b]=await Promise.all([SB.rpc("admin_usage_stats",{p_days:usageDays}),SB.rpc("admin_user_list")]);
+    if(a.error)throw a.error;if(b.error)throw b.error;st=a.data;users=b.data||[];
+  }catch(err){v.innerHTML=T+`<p class="form-error">No se pudieron cargar los datos de uso: ${esc(err.message||err)}</p>`;return}
+  const t=st.totals,pu={};(st.per_user||[]).forEach(p=>pu[p.user_id]=p);
+  const noW=users.filter(u=>!Number(u.workouts)).length,gone7=users.filter(u=>admDays(admSeen(u))>=7).length;
+  const avg=t.sessions?t.secs/t.sessions:0;
+  const bar=(l,n,tot,extra="")=>`<div class="sbar sbar-w"><span class="sbar-l">${l}</span><span class="sbar-t"><span class="sbar-f brand" style="width:${tot?Math.round(n/tot*100):0}%"></span></span><span class="sbar-v mono">${tot?Math.round(n/tot*100):0} %</span><span class="sbar-n mono">${extra||n}</span></div>`;
+  const vw=Object.entries(st.views||{}).sort((a,b)=>b[1]-a[1]),vTot=vw.reduce((a,x)=>a+x[1],0);
+  const vs=Object.entries(st.view_secs||{}).filter(([k])=>k!=="usage").sort((a,b)=>b[1]-a[1]),vsTot=vs.reduce((a,x)=>a+Number(x[1]),0);
+  const per=t.active_period;
+  v.innerHTML=T+`
     <div class="seg seg3" style="margin-bottom:12px">${[7,30,90].map(d=>`<input type="radio" name="usDays" id="us${d}" value="${d}"${usageDays===d?" checked":""}><label for="us${d}">${d} días</label>`).join("")}</div>
     <div class="mgrid">
-      <div class="mtile"><span class="eyebrow">Usuarios</span><b>${users.length}</b><span class="muted">registrados</span></div>
-      <div class="mtile"><span class="eyebrow">Activos hoy</span><b>${activeToday}</b><span class="muted">${active7} en 7 días</span></div>
-      <div class="mtile"><span class="eyebrow">Sesiones</span><b>${S.length}</b><span class="muted">en ${usageDays} días</span></div>
-      <div class="mtile"><span class="eyebrow">Tiempo medio</span><b style="font-size:24px">${fmtDur(avg)}</b><span class="muted">por sesión</span></div>
-      <div class="mtile"><span class="eyebrow">Tiempo total</span><b style="font-size:24px">${fmtDur(totalSecs)}</b><span class="muted">con la app abierta</span></div>
-      <div class="mtile"><span class="eyebrow">Entrenos nuevos</span><b>${newW}</b><span class="muted">apuntados</span></div>
+      <div class="mtile"><span class="eyebrow">Usuarios</span><b>${t.users}</b><span class="muted">+${t.new_users} ${t.new_users===1?"alta":"altas"} en ${usageDays} días</span></div>
+      <div class="mtile"><span class="eyebrow">Activos hoy</span><b>${t.active_today}</b><span class="muted">${t.active_7} en 7 días</span></div>
+      <div class="mtile"><span class="eyebrow">Activos</span><b>${per}</b><span class="muted">en ${usageDays} días</span></div>
+      <div class="mtile"><span class="eyebrow">Sesiones</span><b>${t.sessions}</b><span class="muted">${per?(t.sessions/per).toFixed(1).replace(".",","):0} por persona</span></div>
+      <div class="mtile"><span class="eyebrow">Tiempo medio</span><b style="font-size:24px">${admDur(avg)}</b><span class="muted">por sesión</span></div>
+      <div class="mtile"><span class="eyebrow">Tiempo total</span><b style="font-size:24px">${admDur(t.secs)}</b><span class="muted">con la app abierta</span></div>
+      <div class="mtile"><span class="eyebrow">Entrenos</span><b>${t.workouts}</b><span class="muted">guardados o editados</span></div>
+      <div class="mtile"><span class="eyebrow">App instalada</span><b>${t.installed}</b><span class="muted">de ${per} activos</span></div>
+      <button type="button" class="mtile adm-go" data-uf="now"><span class="eyebrow">Sin entrenos</span><b>${noW}</b><span class="muted">registrados sin apuntar nada ›</span></button>
+      <button type="button" class="mtile adm-go" data-uf="7"><span class="eyebrow">Se han ido</span><b>${gone7}</b><span class="muted">sin entrar 7 días o más ›</span></button>
     </div>
-    <div class="sec"><h3>Usuarios activos por día</h3><div class="pr-box"><div class="mchart">${days.map((d,i)=>`<div class="mc-col${i===13?" cur":""}"><span class="mc-n mono">${d.n}</span><span class="mc-bar" style="height:${Math.max(3,d.n/mx*100)}%"></span><span class="mc-l">${d.k.slice(8)}</span></div>`).join("")}</div></div></div>
+    <div class="sec"><h3>Por día</h3><div class="pr-box">
+      <div class="chips" id="usMetric">${[["users","Usuarios"],["signups","Altas"],["sessions","Sesiones"],["mins","Minutos"],["events","Eventos"]].map(([k,l])=>`<button type="button" class="chip" data-m="${k}" aria-pressed="${usageMetric===k}">${l}</button>`).join("")}</div>
+      <div id="usChart"></div></div></div>
     <div class="sec"><h3>Lo que más usan</h3><div class="pr-box">
       <div class="eyebrow" style="margin-bottom:6px">Veces que se abre cada sección</div>
-      ${Object.entries(viewsAll).sort((a,b)=>b[1]-a[1]).map(([k,n])=>bar(esc(VIEW_LABEL[k]||k),n,vTot)).join("")||`<p class="muted" style="margin:0">Aún no hay datos.</p>`}
-      ${tv?`<div class="eyebrow" style="margin:12px 0 6px">Tiempo en cada sección</div>${Object.entries(timeByView).sort((a,b)=>b[1]-a[1]).map(([k,n])=>bar(esc(VIEW_LABEL[k]||k),n,tv,fmtDur(n))).join("")}`:""}
+      ${vw.map(([k,n])=>bar(esc(VIEW_LABEL[k]||k),n,vTot)).join("")||`<p class="muted" style="margin:0">Aún no hay datos.</p>`}
+      ${vsTot?`<div class="eyebrow" style="margin:12px 0 6px">Tiempo en cada sección</div>${vs.map(([k,n])=>bar(esc(VIEW_LABEL[k]||k),Number(n),vsTot,admDur(n))).join("")}`:""}
     </div></div>
-    <div class="sec"><h3>Usuarios</h3><div class="list">${U.sort((a,b)=>(b.last||"").localeCompare(a.last||"")).map(u=>{const top=Object.entries(u.views).filter(([k])=>k!=="usage").sort((a,b)=>b[1]-a[1])[0];
-      return`<div class="pr-box us-user"><div class="us-h"><b>${esc(u.name||"Sin perfil")}</b><span class="muted">${esc(u.email||"")}</span></div>
-        <div class="h-grid"><span><small>Último acceso</small><b>${fmtAgo(u.last||u.last_sign_in_at)}</b></span><span><small>Sesiones</small><b class="mono">${u.sessions.size}</b></span><span><small>Tiempo</small><b class="mono">${fmtDur(u.secs)}</b></span><span><small>Entrenos</small><b class="mono">${u.workouts}</b></span></div>
-        <p class="muted" style="margin:6px 0 0;font-size:12px">Alta: ${esc(shortDate(u.created_at.slice(0,10)))} ${u.created_at.slice(0,4)}${top?` · Lo que más abre: ${esc(VIEW_LABEL[top[0]]||top[0])}`:""} · Días activo: ${u.days.size}</p></div>`}).join("")}</div></div>
-    <p class="muted" style="font-size:12px">Solo las administradoras ven esta pantalla. El tiempo cuenta mientras la app está abierta y a la vista.</p>`;
+    <div class="sec"><h3>Usuarios</h3><div class="list">${users.slice().sort((a,b)=>(admSeen(b)||"").localeCompare(admSeen(a)||"")).map(u=>{const p=pu[u.user_id]||{};
+      return`<div class="pr-box us-user"><div class="us-h"><b>${esc(u.name||"Sin perfil")}${u.is_admin?` <span class="tag">Admin</span>`:""}</b><span class="muted">${esc(u.email||"")}</span></div>
+        <div class="h-grid adm-grid"><span><small>Último uso</small><b>${admAgo(admSeen(u))}</b></span><span><small>Último dato</small><b>${admAgo(u.last_data)}</b></span><span><small>Último entreno</small><b>${admAgo(u.last_workout)}</b></span><span><small>Entrenos</small><b class="mono">${u.workouts}</b></span><span><small>Sesiones</small><b class="mono">${p.sessions||0}</b></span><span><small>Tiempo</small><b class="mono">${admDur(p.secs)}</b></span></div>
+        <p class="muted" style="margin:6px 0 0;font-size:12px">Alta: ${esc(shortDate(u.created_at.slice(0,10)))} ${u.created_at.slice(0,4)}${p.top_view?` · Lo que más abre: ${esc(VIEW_LABEL[p.top_view]||p.top_view)}`:""} · Días activo: ${p.days||0} de ${usageDays}</p></div>`}).join("")}</div></div>
+    <p class="muted" style="font-size:12px">Solo las administradoras ven esta pantalla. El tiempo cuenta mientras la app está abierta y a la vista. «Último dato» es cualquier cambio guardado (entreno o perfil); «Último entreno», el último entreno guardado o editado.</p>`;
+  const chart=()=>{const D=st.daily||[],k=usageMetric,val=x=>k==="mins"?Math.round(x.secs/60):x[k];
+    const step=D.length>31?7:1,B=[];for(let i=D.length;i>0;i-=step){const g=D.slice(Math.max(0,i-step),i);
+      B.unshift({l:step===1?g[g.length-1].d.slice(8):g[0].d.slice(8)+"/"+g[0].d.slice(5,7),n:k==="users"&&step>1?Math.max(...g.map(val)):g.reduce((a,x)=>a+val(x),0)})}
+    const mx=Math.max(1,...B.map(b=>b.n)),many=B.length>14,tot=B.reduce((a,b)=>a+b.n,0);
+    $("#usChart").innerHTML=`<div class="mchart"${many?` style="gap:2px"`:""}>${B.map((b,i)=>`<div class="mc-col${i===B.length-1?" cur":""}" title="${b.l}: ${b.n}">${many?"":`<span class="mc-n mono">${b.n}</span>`}<span class="mc-bar" style="height:${Math.max(3,b.n/mx*100)}%${many?";width:90%":""}"></span><span class="mc-l"${many?` style="white-space:nowrap;overflow:visible;font-size:10px"`:""}>${!many||i%5===4||i===B.length-1?b.l:"&nbsp;"}</span></div>`).join("")}</div>
+      <p class="muted" style="margin:8px 0 0;font-size:12px">${k==="users"?(step>1?"Por semanas: el día con más usuarios de cada semana.":"Personas distintas que entran cada día."):`${step>1?"Por semanas. ":""}Total: ${tot.toLocaleString("es")}${k==="mins"?" min":""}`}</p>`;
+    $("#usMetric").querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.m===k))};
+  $("#usMetric").querySelectorAll(".chip").forEach(c=>c.onclick=()=>{usageMetric=c.dataset.m;chart()});chart();
   v.querySelectorAll("[name=usDays]").forEach(r=>r.onchange=()=>{usageDays=Number(r.value);renderUsage()});
+  v.querySelectorAll(".adm-go").forEach(b=>b.onclick=()=>openUsers(b.dataset.uf));
 }
 $("#openUsageBtn").onclick=()=>openUsage();
 
@@ -5925,34 +5937,41 @@ function paintAdminSwitch(){
 
 
 /* ---------------- Usuarios registrados (solo administradoras) ----------------
-   Lista de quién se ha registrado, con un interruptor para dar la tienda gratis (todo desbloqueado sin monedas). */
-let usersQ="";
-function openUsers(){openTool("users","Usuarios",renderUsers)}
+   Lista de quién se ha registrado, con filtros (sin entrenos, sin entrar) y un interruptor para dar la tienda gratis. */
+let usersQ="",usersF="all";
+const US_FILTERS=[["all","Todos"],["now","Sin entrenos"],["7","Sin entrar 7+ días"],["14","14+ días"],["30","30+ días"]];
+function openUsers(f){if(f)usersF=f;openTool("users","Usuarios",renderUsers)}
 async function renderUsers(){
-  const v=$("#v-users");v.innerHTML=`<h2 class="view-title" style="margin-top:12px">Usuarios</h2><p class="muted">Cargando…</p>`;
+  const v=$("#v-users"),T=`<h2 class="view-title" style="margin-top:12px">Usuarios</h2>`;v.innerHTML=T+`<p class="muted">Cargando…</p>`;
   let list=[];
   try{const{data,error}=await SB.rpc("admin_user_list");if(error)throw error;list=data||[]}
-  catch(err){v.innerHTML=`<h2 class="view-title" style="margin-top:12px">Usuarios</h2><p class="form-error">No se pudo cargar la lista: ${esc(err.message||err)}</p>`;return}
-  const fmtAgo=d=>{if(!d)return"nunca";const m=Math.round((Date.now()-new Date(d))/6e4);if(m<2)return"ahora";if(m<60)return`hace ${m} min`;const h=Math.round(m/60);if(h<24)return`hace ${h} h`;const dd=Math.round(h/24);return`hace ${dd} ${dd===1?"día":"días"}`};
-  v.innerHTML=`<h2 class="view-title" style="margin-top:12px">Usuarios</h2>
+  catch(err){v.innerHTML=T+`<p class="form-error">No se pudo cargar la lista: ${esc(err.message||err)}</p>`;return}
+  v.innerHTML=T+`
     <p class="muted" style="margin:0 0 12px" id="usCount"></p>
-    <input type="search" id="usQ" placeholder="Buscar por nombre o correo" autocomplete="off" aria-label="Buscar usuario" value="${esc(usersQ)}" style="width:100%;margin-bottom:12px">
+    <input type="search" id="usQ" placeholder="Buscar por nombre o correo" autocomplete="off" aria-label="Buscar usuario" value="${esc(usersQ)}" style="width:100%;margin-bottom:10px">
+    <div class="chips" id="usF" role="group" aria-label="Filtrar usuarios">${US_FILTERS.map(([k,l])=>`<button type="button" class="chip" data-f="${k}" aria-pressed="${usersF===k}">${l} <span class="chip-n mono" data-n="${k}"></span></button>`).join("")}</div>
     <div class="list" id="usList"></div>
-    <p class="muted" style="font-size:13px">«Tienda gratis» desbloquea todos los temas e imágenes de la tienda para esa persona, sin gastar monedas. Se aplica la próxima vez que abra la app.</p>`;
+    <p class="muted" style="font-size:13px">«Último uso» es la última vez que abrió la app; «Último dato», el último cambio guardado (entreno o perfil). «Tienda gratis» desbloquea todos los temas e imágenes de la tienda para esa persona, sin gastar monedas. Se aplica la próxima vez que abra la app.</p>`;
+  const pass=(u,f)=>f==="all"?true:f==="now"?!Number(u.workouts):admDays(admSeen(u))>=Number(f);
   const paint=()=>{const q=norm(usersQ);
     const fr=list.filter(u=>u.free_shop&&!u.is_admin).length;$("#usCount").textContent=`${list.length} ${list.length===1?"persona registrada":"personas registradas"} · ${fr} con la tienda gratis.`;
-    $("#usList").innerHTML=list.filter(u=>!q||norm((u.name||"")+" "+(u.email||"")).includes(q)).map(u=>`
+    US_FILTERS.forEach(([k])=>{const e=v.querySelector(`[data-n="${k}"]`);if(e)e.textContent=list.filter(u=>pass(u,k)).length});
+    v.querySelectorAll("#usF .chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.f===usersF));
+    const rows=list.filter(u=>pass(u,usersF)&&(!q||norm((u.name||"")+" "+(u.email||"")).includes(q))).sort((a,b)=>(admSeen(b)||"").localeCompare(admSeen(a)||""));
+    $("#usList").innerHTML=rows.map(u=>`
       <div class="pr-box us-row">
         <div class="us-h"><b>${esc(u.name||"Sin nombre todavía")}${u.is_admin?` <span class="tag">Admin</span>`:""}</b><span class="muted">${esc(u.email||"")}</span>
-          <span class="muted">Alta ${esc(shortDate((u.created_at||"").slice(0,10)))} ${(u.created_at||"").slice(0,4)} · ${u.workouts} ${Number(u.workouts)===1?"entreno":"entrenos"} · último acceso ${esc(fmtAgo(u.last_sign_in_at))}</span></div>
+          <span class="muted">Alta ${esc(shortDate((u.created_at||"").slice(0,10)))} ${(u.created_at||"").slice(0,4)} · ${u.workouts} ${Number(u.workouts)===1?"entreno":"entrenos"}</span></div>
+        <div class="h-grid adm-grid"><span><small>Último uso</small><b>${admAgo(admSeen(u))}</b></span><span><small>Último dato</small><b>${admAgo(u.last_data)}</b></span><span><small>Último entreno</small><b>${admAgo(u.last_workout)}</b></span></div>
         ${u.is_admin?`<p class="muted us-note">Tiene toda la tienda por ser administradora.</p>`:`<label class="switch us-sw"><input type="checkbox" data-free="${esc(u.user_id)}"${u.free_shop?" checked":""}><span class="sw"></span><span class="sw-l"><b>Tienda gratis</b><small>${u.free_shop?"Tiene todo desbloqueado":"Paga con TochiCoins"}</small></span></label>`}
-      </div>`).join("")||`<p class="muted">Nadie coincide con la búsqueda.</p>`;
+      </div>`).join("")||`<p class="muted">Nadie coincide con ${usersF==="all"?"la búsqueda":"este filtro"}.</p>`;
     $("#usList").querySelectorAll("[data-free]").forEach(c=>c.onchange=async()=>{const u=list.find(x=>x.user_id===c.dataset.free),on=c.checked;c.disabled=true;
       const{error}=await SB.rpc("admin_set_free_shop",{target:u.user_id,allow:on});c.disabled=false;
       if(error){c.checked=!on;toast("No se pudo cambiar: "+error.message);return}
       u.free_shop=on;if(u.user_id===authUser?.id){shopFree=on}
       toast(on?`${u.name||u.email} ya tiene la tienda gratis`:`${u.name||u.email} vuelve a pagar con monedas`);paint()})};
   $("#usQ").addEventListener("input",()=>{usersQ=$("#usQ").value;paint()});
+  v.querySelectorAll("#usF .chip").forEach(c=>c.onclick=()=>{usersF=c.dataset.f;paint()});
   paint();
 }
 {const _pas=paintAdminSwitch;paintAdminSwitch=function(){_pas();if(!shopAdmin)return;const sw=$("#adminSw");const box=sw?.closest(".acct");if(!box||$("#openUsersBtn"))return;

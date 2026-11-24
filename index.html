@@ -2101,48 +2101,6 @@ h2.view-title{text-wrap:balance}
 [data-skin="corona"][data-night] .sheet-group{background:rgba(21,19,29,.96);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid rgba(233,196,106,.22);box-shadow:0 14px 40px rgba(0,0,0,.6)}
 [data-skin="corona"][data-night] #safeTop{background:#0B0A10}
 
-/* v142 · Elegancia japonesa (washi): papel de arroz, tinta sumi, sello bermellón y olas seigaiha. Letra Shippori Mincho y Zen Kaku Gothic. Con noche. */
-:root[data-skin="washi"]{--bg:#F4EFE4;--surface:#FBF8F1;--surface-2:#EFE8DA;--ink:#1C1A17;--muted:#5E574C;--line:#D9CFBD;--accent:#B7352A;--accent-ink:#FFFFFF;--brand:#B7352A;--ai:#2B3A55;--kin:#A88B4A;--f-display:"Shippori Mincho","Hiragino Mincho ProN",Georgia,serif;--f-body:"Zen Kaku Gothic New",-apple-system,system-ui,sans-serif;--p-red:#B7352A;--p-blue:#2B3A55;--p-yellow:#A88B4A;--p-green:#4F6B4A;--p-white:#8A8275;--danger:#A12C22;--drop:#B7352A;--star:#A88B4A;color-scheme:light}
-:root[data-skin="washi"][data-night]{--bg:#14130F;--surface:#1D1B17;--surface-2:#25221D;--ink:#EDE6D8;--muted:#A99F8E;--line:#3A352D;--accent:#D9543F;--accent-ink:#FFFFFF;--brand:#E06A55;--ai:#8FA3C7;--kin:#C8A96A;--p-red:#E06A55;--p-blue:#8FA3C7;--p-yellow:#C8A96A;--p-green:#8FB38A;--p-white:#B9B0A0;--danger:#E8786A;--drop:#E06A55;--star:#C8A96A;color-scheme:dark}
-[data-skin="washi"] body{-webkit-font-smoothing:antialiased;letter-spacing:.01em}
-[data-skin="washi"] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 15% 0%,rgba(168,139,74,.10),transparent 55%),radial-gradient(ellipse at 100% 100%,rgba(183,53,42,.06),transparent 50%)}
-[data-skin="washi"][data-night] body::before{background:radial-gradient(ellipse at 15% 0%,rgba(200,169,106,.10),transparent 55%),radial-gradient(ellipse at 100% 100%,rgba(224,106,85,.08),transparent 50%)}
-[data-skin="washi"] :is(.wod,.goal,.pr-box,.shop-card,.wallet,.confirm,.mw-item,.lift-card,.lift-view,.ex-card,.stat,.tool,.empty,.mtile){background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:0 1px 0 rgba(28,26,23,.04),0 8px 24px rgba(60,45,20,.06)}
-[data-skin="washi"][data-night] :is(.wod,.goal,.pr-box,.shop-card,.wallet,.confirm,.mw-item,.lift-card,.lift-view,.ex-card,.stat,.tool,.empty,.mtile){box-shadow:0 10px 28px rgba(0,0,0,.35)}
-[data-skin="washi"] .goal{border-top:3px solid var(--accent)}
-[data-skin="washi"] header.top{background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-[data-skin="washi"] .brand{font-family:var(--f-display);font-weight:700;letter-spacing:.06em}
-[data-skin="washi"] .brand-word span{color:var(--accent)}
-[data-skin="washi"] :is(h2.view-title,.sec h3,.goal-txt h3,.empty h3){text-transform:none;font-family:var(--f-display);font-weight:600;letter-spacing:.04em}
-[data-skin="washi"] h2.view-title{font-size:30px;padding-bottom:8px;border-bottom:1px solid var(--line);position:relative}
-[data-skin="washi"] h2.view-title::after{content:"";position:absolute;left:0;bottom:-1px;width:36px;height:2px;background:var(--accent)}
-[data-skin="washi"] :is(.stat b,.date b,.streak b,.mtile b){font-family:var(--f-display);font-weight:700}
-[data-skin="washi"] .eyebrow{letter-spacing:.2em}
-[data-skin="washi"] .streak{background:var(--accent);color:#FFFFFF;border-radius:6px;transform:rotate(-2deg);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
-[data-skin="washi"] .streak.zero{background:var(--surface-2);color:var(--muted);transform:none;box-shadow:none}
-[data-skin="washi"] .btn{border-radius:6px;border-color:var(--line);background:var(--surface)}
-[data-skin="washi"] .btn.primary{background:var(--accent);border-color:var(--accent);color:#FFFFFF;letter-spacing:.06em}
-[data-skin="washi"] :is(input,select,textarea){border-radius:6px;background:var(--surface);border-color:var(--line)}
-[data-skin="washi"] :is(input,select,textarea):focus{border-color:var(--ai);outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--ai) 18%,transparent)}
-[data-skin="washi"] .mode-sw{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:3px}
-[data-skin="washi"] .mode-sw button{border-radius:6px;color:var(--muted);font-weight:700;letter-spacing:.06em}
-[data-skin="washi"] .mode-sw button[aria-checked="true"]{background:var(--ink);color:var(--bg)}
-[data-skin="washi"] .seg{border-radius:8px;background:var(--surface-2);border-color:var(--line)}
-[data-skin="washi"] .seg input:checked+label{background:var(--surface);box-shadow:inset 0 -2px 0 var(--accent)}
-[data-skin="washi"] .dot{border-radius:2px;background:var(--surface-2);border-color:var(--line)}
-[data-skin="washi"] .dot.on{background:var(--ink);border-color:var(--ink)}
-[data-skin="washi"] .goal.met .dot.on{background:var(--accent);border-color:var(--accent)}
-[data-skin="washi"] .gb-track span.on{background:var(--ink)}
-[data-skin="washi"] .gb.met .gb-track span.on{background:var(--accent)}
-[data-skin="washi"] nav.tabs{background-color:var(--surface);background-image:radial-gradient(circle at 50% 100%,transparent 0 5px,rgba(43,58,85,.09) 5px 6px,transparent 6px 9px,rgba(43,58,85,.09) 9px 10px,transparent 10px 13px,rgba(43,58,85,.09) 13px 14px,transparent 14px);background-size:28px 14px;background-position:bottom;border-top:1px solid var(--line)}
-[data-skin="washi"][data-night] nav.tabs{background-image:radial-gradient(circle at 50% 100%,transparent 0 5px,rgba(200,169,106,.10) 5px 6px,transparent 6px 9px,rgba(200,169,106,.10) 9px 10px,transparent 10px 13px,rgba(200,169,106,.10) 13px 14px,transparent 14px)}
-[data-skin="washi"] .tab{color:var(--muted)}
-[data-skin="washi"] .tab[aria-current="page"]{color:var(--accent)}
-[data-skin="washi"] .tab-new{background:var(--accent);color:#FFFFFF;border-radius:10px;transform:rotate(-4deg);box-shadow:0 0 0 3px var(--bg),0 6px 16px color-mix(in srgb,var(--accent) 35%,transparent)}
-[data-skin="washi"] .sheet-group{border-radius:10px;border:1px solid var(--line);background:var(--surface)}
-[data-skin="washi"] .tag{border-radius:3px;letter-spacing:.12em}
-[data-skin="washi"] #safeTop{background:var(--bg)}
-
 /* ================= Modo noche para los temas claros (generado a partir de cada tema) ================= */
 :root[data-skin="suizo"][data-night]{--bg:#131313;--surface:#131313;--surface-2:#1A1A1A;--ink:#EAEAEA;--muted:#888888;--line:#EAEAEA;--accent:#CCCCCC;--accent-ink:#FFFFFF;--brand:#F63C43;--f-display:"Inter Tight","Helvetica Neue",Arial,sans-serif;--f-body:"Inter Tight","Helvetica Neue",Arial,sans-serif;
   --p-red:#D96259;--p-blue:#5786DB;--p-yellow:#F4C63E;--p-green:#62D08A;--p-white:#7D8894;--danger:#DA6158;--drop:#E05264;--star:#FFC633;color-scheme:dark}
@@ -4017,7 +3975,6 @@ const SKINS=[
   {id:"anime",added:"2026-11-15",name:"Anime de gimnasio",price:250,ff:"Dela Gothic One",fonts:["Dela+Gothic+One","M+PLUS+Rounded+1c:wght@500;700;800"],c:["#FFFFFF","#E11D48","#111111","#F3F3F3","#FACC15"]},
   {id:"cristal",added:"2026-11-15",name:"Cristal líquido",price:300,ff:"Inter",fonts:["Inter:wght@400;500;600;700;800"],c:["#DCE4F7","#7C3AED","#111827","#F472B6","#A78BFA"]},
   {id:"sakura",added:"2026-11-19",name:"Sakura kawaii",price:250,ff:"Yusei Magic",fonts:["Yusei+Magic","Zen+Maru+Gothic:wght@500;700;900"],c:["#FFF0F5","#FF6F9F","#5B3446","#FFFFFF","#FF6F9F"]},
-  {id:"washi",added:"2026-11-24",name:"Elegancia japonesa",price:250,ff:"Shippori Mincho",fonts:["Shippori+Mincho:wght@500;600;700","Zen+Kaku+Gothic+New:wght@400;500;700"],c:["#F4EFE4","#B7352A","#1C1A17","#FBF8F1","#B7352A"]},
   {id:"arcade",added:"2026-11-14",name:"Arcade 8-bit",price:300,ff:"Press Start 2P",fonts:["Press+Start+2P","VT323"],c:["#10102A","#B07CFF","#F4F4F4","#17173A","#E83B3B"]},
 ];
 const skinItemId=id=>"t-"+id;

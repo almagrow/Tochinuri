@@ -2021,6 +2021,20 @@ h2.view-title{text-wrap:balance}
 .gb-disc.off{background:none;box-shadow:none;border:3px dashed;opacity:.6;align-items:center;padding:0;font-size:16px}
 .gb-rack{height:6px;border-radius:3px;background:linear-gradient(180deg,#D1D5DB,#9CA3AF)}
 
+/* v137 · Probar antes de comprar y Novedades */
+.try-bar{position:fixed;left:12px;right:12px;bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom,0px) + 14px);z-index:40;max-width:620px;margin:0 auto;display:flex;align-items:center;gap:8px;padding:10px 10px 10px 14px;border-radius:18px;background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.22)}
+.try-bar .tb-t{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.try-bar .tb-t b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.try-bar .tb-t small{font-size:12px;color:var(--muted)}
+.try-bar .btn{min-height:40px;padding:8px 12px}
+.try-btn{font-size:13px}
+.tag-new{align-self:flex-start;background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.new-dot{display:inline-block;width:8px;height:8px;margin-left:4px;border-radius:50%;background:var(--accent);vertical-align:middle}
+.news-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(150px,46%);gap:10px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
+.news-card{scroll-snap-align:start}
+.news-card .lg-prev{display:grid;place-items:center;min-height:90px}
+.shop-card.flash{outline:3px solid var(--accent);outline-offset:2px;transition:outline-color .3s}
+
 /* ================= Modo noche para los temas claros (generado a partir de cada tema) ================= */
 :root[data-skin="suizo"][data-night]{--bg:#131313;--surface:#131313;--surface-2:#1A1A1A;--ink:#EAEAEA;--muted:#888888;--line:#EAEAEA;--accent:#CCCCCC;--accent-ink:#FFFFFF;--brand:#F63C43;--f-display:"Inter Tight","Helvetica Neue",Arial,sans-serif;--f-body:"Inter Tight","Helvetica Neue",Arial,sans-serif;
   --p-red:#D96259;--p-blue:#5786DB;--p-yellow:#F4C63E;--p-green:#62D08A;--p-white:#7D8894;--danger:#DA6158;--drop:#E05264;--star:#FFC633;color-scheme:dark}
@@ -3602,7 +3616,7 @@ async function initStore(){
 /* Tienda en Supabase */
 async function initShop(on){
   if(!on||!SB)return;
-  try{const{data}=await SB.from("shop").select("id,data,created_at").order("created_at");SHOP=(data||[]).map(r=>({...r.data,id:r.id}))}catch(e){SHOP=[]}
+  try{const{data}=await SB.from("shop").select("id,data,created_at").order("created_at");SHOP=(data||[]).map(r=>({...r.data,id:r.id,added:String(r.created_at||"").slice(0,10)}))}catch(e){SHOP=[]}
   try{const{data}=await SB.rpc("is_admin");shopAdmin=!!data}catch(e){shopAdmin=false}
   try{const{data}=await SB.rpc("has_free_shop");shopFree=!!data}catch(e){shopFree=false}
   if(shopFree||shopAdmin){applySkin(skinPref());try{applyExtras();renderAll()}catch(e){}}
@@ -3756,7 +3770,7 @@ function coinChip(){return`<button type="button" class="coin-chip" id="coinChip"
 function openShop(tab){shopTab=tab||shopTab;buying=null;openTool("shop","Tienda",renderShop)}
 function renderShop(){
   const v=$("#v-shop"),B=coinBalance(),own=ownedIds(),C=coinsData(),slots=C.slots||{};
-  const seg=`<div class="seg seg4 shop-seg">${[["mine","Mías"],["coins","Logros"],["shop","Tienda"],["reto","Reto semanal"]].map(([k,n])=>`<input type="radio" name="shopTab" id="st-${k}" value="${k}"${shopTab===k?" checked":""}><label for="st-${k}">${n}</label>`).join("")}</div>`;
+  const seg=`<div class="seg seg4 shop-seg">${[["mine","Mías"],["coins","Monedas"],["shop","Tienda"],["reto","Reto semanal"]].map(([k,n])=>`<input type="radio" name="shopTab" id="st-${k}" value="${k}"${shopTab===k?" checked":""}><label for="st-${k}">${n}</label>`).join("")}</div>`;
   let body="";
   if(shopTab==="shop"){
     const items=SHOP;
@@ -3874,25 +3888,25 @@ const SKINS=[
   {id:"cielo",name:"Cielo",price:0,free:true,ff:"Inter",fonts:["Inter:wght@400;500;600;700;800"],c:["#EEF3FA","#1F6FEB","#0B1526","#FFFFFF","#1F6FEB"],g:["#BFDBFE","#1F6FEB"]},
   {id:"perla",name:"Perla rosa",price:0,free:true,ff:"Inter",fonts:["Inter:wght@400;500;600;700;800"],c:["#FBF3F5","#C2185B","#24131A","#FFFFFF","#C2185B"],g:["#FBCFE8","#C2185B"]},
   {id:"morado",name:"Morado",price:0,free:true,ff:"Inter",fonts:["Inter:wght@400;500;600;700;800"],c:["#F4F1FB","#7C3AED","#1B1230","#FFFFFF","#7C3AED"],g:["#DDD6FE","#7C3AED"]},
-  {id:"industrial",name:"Box industrial",price:100,ff:"Oswald",fonts:["Oswald:wght@500;700"],c:["#1B1C1E","#F5C400","#ECEAE4","#26272A","#F5C400"]},
-  {id:"pizarra",name:"Pizarra de tiza",price:100,ff:"Caveat Brush",fonts:["Caveat+Brush","Patrick+Hand"],c:["#24302A","#F4A7B9","#EDEFE8","#2B3831","#F2E28A"]},
-  {id:"suizo",name:"Minimal suizo",price:100,ff:"Inter Tight",fonts:["Inter+Tight:wght@400;500;700;800"],c:["#FFFFFF","#D10A11","#111111","#F3F3F3","#111111"]},
-  {id:"outdoor",name:"Aventura outdoor",price:150,ff:"Barlow Condensed",fonts:["Barlow:wght@400;500;600"],c:["#F1ECDF","#2E6B48","#1D2A22","#1F3D2B","#C2501C"]},
-  {id:"revista",name:"Revista fitness",price:150,ff:"Anton",fonts:["Anton"],c:["#ECECEA","#6D28D9","#111111","#C6F432","#6D28D9"]},
-  {id:"neon",name:"Neón nocturno",price:200,ff:"Audiowide",fonts:["Audiowide"],c:["#0B0A14","#FF3EA5","#2DE2E6","#15132A","#FF3EA5"]},
-  {id:"gatitos",name:"Gatitos kawaii",price:200,ff:"Baloo 2",fonts:["Baloo+2:wght@500;600;700;800"],c:["#FFF1F5","#7B4FD0","#3B2A4A","#FFFFFF","#7B4FD0"]},
-  {id:"marcador",name:"Marcador de estadio",price:200,ff:"Teko",fonts:["Teko:wght@500;600","Share+Tech+Mono"],c:["#0E0F11","#FF3B30","#E9E9EA","#000000","#FF3B30"]},
-  {id:"comic",name:"Cómic",price:250,ff:"Bangers",fonts:["Comic+Neue:wght@400;700"],c:["#FFE14D","#9B5CF6","#111111","#FFFFFF","#2F6BFF"]},
-  {id:"llama",name:"Llama clásica",price:200,ff:"Lilita One",fonts:["Lilita+One","Nunito:wght@600;700;800;900"],c:["#FFFFFF","#C026D3","#2E1065","#EDE4FF","#A21CAF"]},
-  {id:"lava",name:"Lava",price:250,ff:"Baloo 2",fonts:["Baloo+2:wght@500;600;700;800"],c:["#4C1D95","#F0ABFC","#FFFFFF","#5B21B6","#FDE68A"]},
-  {id:"nube",name:"Nube blanca",price:150,ff:"Fraunces",fonts:["Fraunces:opsz,wght@9..144,500;9..144,600","Inter:wght@400;500;600;700"],c:["#F0EEE9","#7D6E5B","#2D2A26","#FAF9F6","#2D2A26"]},
-  {id:"bruto",name:"Brutalista",price:200,ff:"Archivo Black",fonts:["Archivo+Black","IBM+Plex+Mono:wght@400;500;700"],c:["#F2F2EC","#1D4ED8","#000000","#E6E6DE","#FFE600"]},
-  {id:"subidon",name:"Colores de subidón",price:200,ff:"Bricolage Grotesque",fonts:["Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800"],c:["#FFF6EA","#FF7A1A","#1A1033","#C4A1FF","#C6F432"]},
-  {id:"kpop",name:"K-pop neón",price:250,ff:"Unbounded",fonts:["Unbounded:wght@600;700;900","Outfit:wght@400;500;700;800"],c:["#0B0620","#FF2E93","#F8F4FF","#150B30","#22D3EE"]},
-  {id:"anime",name:"Anime de gimnasio",price:250,ff:"Dela Gothic One",fonts:["Dela+Gothic+One","M+PLUS+Rounded+1c:wght@500;700;800"],c:["#FFFFFF","#E11D48","#111111","#F3F3F3","#FACC15"]},
-  {id:"cristal",name:"Cristal líquido",price:300,ff:"Inter",fonts:["Inter:wght@400;500;600;700;800"],c:["#DCE4F7","#7C3AED","#111827","#F472B6","#A78BFA"]},
-  {id:"sakura",name:"Sakura kawaii",price:250,ff:"Yusei Magic",fonts:["Yusei+Magic","Zen+Maru+Gothic:wght@500;700;900"],c:["#FFF0F5","#FF6F9F","#5B3446","#FFFFFF","#FF6F9F"]},
-  {id:"arcade",name:"Arcade 8-bit",price:300,ff:"Press Start 2P",fonts:["Press+Start+2P","VT323"],c:["#10102A","#B07CFF","#F4F4F4","#17173A","#E83B3B"]},
+  {id:"industrial",added:"2026-11-14",name:"Box industrial",price:100,ff:"Oswald",fonts:["Oswald:wght@500;700"],c:["#1B1C1E","#F5C400","#ECEAE4","#26272A","#F5C400"]},
+  {id:"pizarra",added:"2026-11-14",name:"Pizarra de tiza",price:100,ff:"Caveat Brush",fonts:["Caveat+Brush","Patrick+Hand"],c:["#24302A","#F4A7B9","#EDEFE8","#2B3831","#F2E28A"]},
+  {id:"suizo",added:"2026-11-14",name:"Minimal suizo",price:100,ff:"Inter Tight",fonts:["Inter+Tight:wght@400;500;700;800"],c:["#FFFFFF","#D10A11","#111111","#F3F3F3","#111111"]},
+  {id:"outdoor",added:"2026-11-14",name:"Aventura outdoor",price:150,ff:"Barlow Condensed",fonts:["Barlow:wght@400;500;600"],c:["#F1ECDF","#2E6B48","#1D2A22","#1F3D2B","#C2501C"]},
+  {id:"revista",added:"2026-11-14",name:"Revista fitness",price:150,ff:"Anton",fonts:["Anton"],c:["#ECECEA","#6D28D9","#111111","#C6F432","#6D28D9"]},
+  {id:"neon",added:"2026-11-14",name:"Neón nocturno",price:200,ff:"Audiowide",fonts:["Audiowide"],c:["#0B0A14","#FF3EA5","#2DE2E6","#15132A","#FF3EA5"]},
+  {id:"gatitos",added:"2026-11-14",name:"Gatitos kawaii",price:200,ff:"Baloo 2",fonts:["Baloo+2:wght@500;600;700;800"],c:["#FFF1F5","#7B4FD0","#3B2A4A","#FFFFFF","#7B4FD0"]},
+  {id:"marcador",added:"2026-11-14",name:"Marcador de estadio",price:200,ff:"Teko",fonts:["Teko:wght@500;600","Share+Tech+Mono"],c:["#0E0F11","#FF3B30","#E9E9EA","#000000","#FF3B30"]},
+  {id:"comic",added:"2026-11-14",name:"Cómic",price:250,ff:"Bangers",fonts:["Comic+Neue:wght@400;700"],c:["#FFE14D","#9B5CF6","#111111","#FFFFFF","#2F6BFF"]},
+  {id:"llama",added:"2026-11-14",name:"Llama clásica",price:200,ff:"Lilita One",fonts:["Lilita+One","Nunito:wght@600;700;800;900"],c:["#FFFFFF","#C026D3","#2E1065","#EDE4FF","#A21CAF"]},
+  {id:"lava",added:"2026-11-14",name:"Lava",price:250,ff:"Baloo 2",fonts:["Baloo+2:wght@500;600;700;800"],c:["#4C1D95","#F0ABFC","#FFFFFF","#5B21B6","#FDE68A"]},
+  {id:"nube",added:"2026-11-15",name:"Nube blanca",price:150,ff:"Fraunces",fonts:["Fraunces:opsz,wght@9..144,500;9..144,600","Inter:wght@400;500;600;700"],c:["#F0EEE9","#7D6E5B","#2D2A26","#FAF9F6","#2D2A26"]},
+  {id:"bruto",added:"2026-11-15",name:"Brutalista",price:200,ff:"Archivo Black",fonts:["Archivo+Black","IBM+Plex+Mono:wght@400;500;700"],c:["#F2F2EC","#1D4ED8","#000000","#E6E6DE","#FFE600"]},
+  {id:"subidon",added:"2026-11-15",name:"Colores de subidón",price:200,ff:"Bricolage Grotesque",fonts:["Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800"],c:["#FFF6EA","#FF7A1A","#1A1033","#C4A1FF","#C6F432"]},
+  {id:"kpop",added:"2026-11-15",name:"K-pop neón",price:250,ff:"Unbounded",fonts:["Unbounded:wght@600;700;900","Outfit:wght@400;500;700;800"],c:["#0B0620","#FF2E93","#F8F4FF","#150B30","#22D3EE"]},
+  {id:"anime",added:"2026-11-15",name:"Anime de gimnasio",price:250,ff:"Dela Gothic One",fonts:["Dela+Gothic+One","M+PLUS+Rounded+1c:wght@500;700;800"],c:["#FFFFFF","#E11D48","#111111","#F3F3F3","#FACC15"]},
+  {id:"cristal",added:"2026-11-15",name:"Cristal líquido",price:300,ff:"Inter",fonts:["Inter:wght@400;500;600;700;800"],c:["#DCE4F7","#7C3AED","#111827","#F472B6","#A78BFA"]},
+  {id:"sakura",added:"2026-11-19",name:"Sakura kawaii",price:250,ff:"Yusei Magic",fonts:["Yusei+Magic","Zen+Maru+Gothic:wght@500;700;900"],c:["#FFF0F5","#FF6F9F","#5B3446","#FFFFFF","#FF6F9F"]},
+  {id:"arcade",added:"2026-11-14",name:"Arcade 8-bit",price:300,ff:"Press Start 2P",fonts:["Press+Start+2P","VT323"],c:["#10102A","#B07CFF","#F4F4F4","#17173A","#E83B3B"]},
 ];
 const skinItemId=id=>"t-"+id;
 const skinOwned=id=>!!SKINS.find(s=>s.id===id&&s.free)||ownedIds().has(skinItemId(id));
@@ -3964,10 +3978,10 @@ const FLAME_IN="M12 13c.9 2.6 4.2 3.8 4.2 7.4a4.2 4.2 0 0 1-8.4 0c0-2 1.2-3.2 2.
 const flameI=(fill,stroke,inner)=>`<span class="lg-i">ı<svg viewBox="0 0 24 30" aria-hidden="true"><path d="${FLAME_OUT}" fill="${fill}"${stroke?` stroke="${stroke}" stroke-width="2.2" stroke-linejoin="round"`:""}/>${inner?`<path d="${FLAME_IN}" fill="${inner}"${stroke?` stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"`:""}/>`:""}</svg></span>`;
 const LOGO_BAR=`<svg class="lg-bar" viewBox="0 0 210 20" aria-hidden="true"><path d="M8 14 Q105 0 202 14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><rect x="22" y="2" width="10" height="18" rx="3" fill="#C026D3" stroke="currentColor" stroke-width="2"/><rect x="178" y="2" width="10" height="18" rx="3" fill="#C026D3" stroke="currentColor" stroke-width="2"/></svg>`;
 const LOGOS=[
-  {id:"viva",name:"Llama viva",price:150,html:()=>`<span class="lg lg-viva"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("currentColor","#2E1065")}</span></span>${LOGO_BAR}</span>`},
-  {id:"pegatina",name:"Pegatina",price:200,html:()=>`<span class="lg lg-peg"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("currentColor","#2E1065")}</span></span></span>`},
-  {id:"noche",name:"Noche",price:200,html:()=>`<span class="lg lg-noche"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("currentColor","")}</span></span><span class="lg-sub">CROSSFIT · GYM</span></span>`},
-  {id:"escudo",name:"Escudo",price:250,html:()=>`<span class="lg lg-esc"><span class="lg-t">Tochi</span><span class="lg-n">Nur${flameI("currentColor","#2E1065")}</span></span>`}
+  {id:"viva",added:"2026-11-14",name:"Llama viva",price:150,html:()=>`<span class="lg lg-viva"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("currentColor","#2E1065")}</span></span>${LOGO_BAR}</span>`},
+  {id:"pegatina",added:"2026-11-14",name:"Pegatina",price:200,html:()=>`<span class="lg lg-peg"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("currentColor","#2E1065")}</span></span></span>`},
+  {id:"noche",added:"2026-11-14",name:"Noche",price:200,html:()=>`<span class="lg lg-noche"><span class="lg-w">Tochi<span class="lg-n">Nur${flameI("currentColor","")}</span></span><span class="lg-sub">CROSSFIT · GYM</span></span>`},
+  {id:"escudo",added:"2026-11-14",name:"Escudo",price:250,html:()=>`<span class="lg lg-esc"><span class="lg-t">Tochi</span><span class="lg-n">Nur${flameI("currentColor","#2E1065")}</span></span>`}
 ];
 const logoItemId=id=>"l-"+id;
 const logoOwned=id=>ownedIds().has(logoItemId(id));
@@ -8408,6 +8422,82 @@ function groupShop(){const body=$("#v-shop .shop-body");if(!body||shopTab==="coi
     while(n&&n.tagName!=="H3"){if(n.querySelector&&n.querySelector("h3"))break;nodes.push(n);n=n.nextElementSibling}
     const t=h.textContent.trim();const anchor=h;mk(t,[...nodes],anchor);h.remove()}}
 {const _rs=renderShop;renderShop=function(){_rs();try{groupShop()}catch(e){}}}
+/* v137 · Tienda: «Probar 1 minuto» temas y logos antes de comprarlos, y «Novedades» arriba de la pestaña Tienda.
+   Al añadir un tema, un logo o una imagen nueva, ponle added:"AAAA-MM-DD" (las imágenes lo cogen solas de Supabase). */
+const TRY_SECS=60;let tryItem=null,tryTick=null;
+const tryName=t=>t?((t.kind==="skin"?SKINS:LOGOS).find(x=>x.id===t.id)||{}).name||"":"";
+function tryPaint(){
+  if(!tryItem)return;
+  if(tryItem.kind==="skin"){const sk=SKINS.find(x=>x.id===tryItem.id);if(sk){document.documentElement.setAttribute("data-skin",sk.id);loadFonts(sk.fonts)}
+    try{paintNight()}catch(e){}requestAnimationFrame(()=>{try{paintStatusBar()}catch(e){}})}
+  else{const b=$("#brand"),L=LOGOS.find(x=>x.id===tryItem.id);if(b&&L){const cur=b.querySelector(".lg");if(!cur||cur.dataset.logo!==L.id){cur?.remove();b.insertAdjacentHTML("beforeend",L.html());b.querySelector(".lg").dataset.logo=L.id}b.classList.add("has-logo");loadFonts(["Lilita+One"])}}
+}
+{const _as=applySkin;applySkin=function(id){_as(id);if(tryItem&&tryItem.kind==="skin")tryPaint()}}
+{const _al=applyLogo;applyLogo=function(id){_al(id);if(tryItem&&tryItem.kind==="logo")tryPaint()}}
+function tryBar(){
+  let el=$("#tryBar");if(!tryItem){el?.remove();return}
+  const left=Math.max(0,Math.ceil((tryItem.until-Date.now())/1000));
+  if(!el){el=document.createElement("div");el.id="tryBar";el.className="try-bar";el.setAttribute("role","status");document.body.appendChild(el)}
+  el.innerHTML=`<span class="tb-t"><b>Probando «${esc(tryName(tryItem))}»</b><small>Queda ${left} s · mira la app con ${tryItem.kind==="skin"?"este tema":"este logo"}</small></span><button type="button" class="btn primary" id="tryBuy">Comprar</button><button type="button" class="btn" id="tryEnd" aria-label="Quitar la prueba">Quitar</button>`;
+  $("#tryEnd").onclick=()=>endTry(true);
+  $("#tryBuy").onclick=()=>{const t=tryItem;endTry(false);buying=(t.kind==="skin"?"t-":"l-")+t.id;openShop("shop");
+    setTimeout(()=>{const c=document.querySelector(`[data-${t.kind==="skin"?"skinok":"logook"}="${t.id}"]`);if(c){c.closest("details")&&(c.closest("details").open=true);c.scrollIntoView({block:"center"})}},150)};
+}
+function startTry(kind,id){
+  if(tryTick)clearInterval(tryTick);
+  tryItem={kind,id,until:Date.now()+TRY_SECS*1000};
+  applySkin(skinPref());applyLogo(logoPref());tryPaint();tryBar();
+  toast(kind==="skin"?"Tema puesto durante 1 minuto. Muévete por la app para verlo.":"Logo puesto durante 1 minuto.");
+  tryTick=setInterval(()=>{if(!tryItem)return;const owned=tryItem.kind==="skin"?skinOwned(tryItem.id):logoOwned(tryItem.id);
+    if(owned||Date.now()>=tryItem.until){endTry(!owned)}else tryBar()},1000);
+}
+function endTry(say){
+  const was=tryItem;tryItem=null;if(tryTick){clearInterval(tryTick);tryTick=null}
+  applySkin(skinPref());applyLogo(logoPref());tryBar();
+  if(say&&was)toast(`Fin de la prueba de «${tryName(was)}»`);
+}
+/* Novedades: lo último que ha llegado a la tienda (temas, logos e imágenes), con «Nuevo» si tiene menos de 10 días */
+const NEW_DAYS=10;
+function shopNews(){
+  const L=[...SKINS.filter(x=>!x.free&&x.added).map(x=>({kind:"skin",id:x.id,name:x.name,price:x.price,added:x.added,own:skinOwned(x.id)})),
+    ...LOGOS.filter(x=>x.added).map(x=>({kind:"logo",id:x.id,name:x.name,price:x.price,added:x.added,own:logoOwned(x.id)})),
+    ...SHOP.filter(x=>x.added).map(x=>({kind:"img",id:x.id,name:x.name,price:x.price,added:x.added,src:x.src,own:ownedIds().has(x.id)}))];
+  return L.sort((a,b)=>b.added.localeCompare(a.added)).slice(0,8);
+}
+const isNew=d=>{if(!d)return false;const t=new Date(d+"T12:00:00");return(Date.now()-t)/864e5<=NEW_DAYS};
+function shopSeen(){try{return localStorage.getItem("tn-shop-seen")||""}catch(e){return""}}
+function paintShopExtrasV137(){
+  const v=$("#v-shop");if(!v)return;
+  const news=shopNews(),newest=news.reduce((a,n)=>n.added>a?n.added:a,"");
+  /* Punto en la pestaña Tienda si hay algo nuevo que aún no has visto */
+  const lbl=v.querySelector('label[for="st-shop"]');
+  if(lbl&&shopTab!=="shop"&&newest&&newest>shopSeen()&&isNew(newest)&&!lbl.querySelector(".new-dot"))lbl.insertAdjacentHTML("beforeend",'<span class="new-dot" aria-label="Hay novedades"></span>');
+  if(shopTab!=="shop")return;
+  try{if(newest)localStorage.setItem("tn-shop-seen",newest)}catch(e){}
+  const body=v.querySelector(".shop-body");if(!body)return;
+  /* Botón «Probar» en los temas y logos que no tienes */
+  body.querySelectorAll("[data-skinbuy],[data-logobuy]").forEach(b=>{const sc=b.closest(".sc-b");if(!sc||sc.querySelector("[data-try]"))return;
+    const kind=b.dataset.skinbuy?"skin":"logo",id=b.dataset.skinbuy||b.dataset.logobuy;
+    b.insertAdjacentHTML("afterend",`<button type="button" class="btn ghost try-btn" data-try="${kind}:${id}">${tryItem&&tryItem.kind===kind&&tryItem.id===id?"Probando…":"Probar 1 minuto"}</button>`)});
+  /* Etiqueta «Nuevo» en las tarjetas */
+  news.filter(n=>isNew(n.added)).forEach(n=>{const sel=n.kind==="skin"?`[data-skinbuy="${n.id}"],[data-skinok="${n.id}"]`:n.kind==="logo"?`[data-logobuy="${n.id}"],[data-logook="${n.id}"]`:`[data-buy="${n.id}"],[data-buyok="${n.id}"]`;
+    const b=body.querySelector(sel),sc=b&&b.closest(".sc-b");if(sc&&!sc.querySelector(".tag-new"))sc.insertAdjacentHTML("afterbegin",'<span class="tag tag-new">Nuevo</span>')});
+  /* Sección Novedades arriba */
+  if(news.length&&!body.querySelector(".shop-news")){
+    const sec=document.createElement("div");sec.className="sec shop-news";
+    sec.innerHTML=`<h3>Novedades</h3><div class="news-row">${news.map(n=>{const pv=n.kind==="skin"?skinPreview(SKINS.find(x=>x.id===n.id)):n.kind==="logo"?`<div class="lg-prev">${LOGOS.find(x=>x.id===n.id).html()}</div>`:`<img src="${n.src}" alt="">`;
+      return`<div class="shop-card news-card${n.own?" owned":""}">${pv}<div class="sc-b">${isNew(n.added)?'<span class="tag tag-new">Nuevo</span>':""}<b>${esc(n.name)}</b><span class="muted" style="font-size:12px">${n.kind==="skin"?"Tema":n.kind==="logo"?"Logo":"Imagen"}${n.own?" · ya es tuyo":` · ${n.price} monedas`}</span>
+        ${!n.own&&n.kind!=="img"?`<button type="button" class="btn ghost try-btn" data-try="${n.kind}:${n.id}">Probar 1 minuto</button>`:""}<button type="button" class="btn" data-newgo="${n.kind}:${n.id}">Ver</button></div></div>`}).join("")}</div>`;
+    body.prepend(sec);
+  }
+  body.querySelectorAll("[data-try]").forEach(b=>b.onclick=()=>{const[k,id]=b.dataset.try.split(":");startTry(k,id);renderShop()});
+  body.querySelectorAll("[data-newgo]").forEach(b=>b.onclick=()=>{const[k,id]=b.dataset.newgo.split(":");
+    const sel=k==="skin"?`[data-skinbuy="${id}"],[data-skinok="${id}"]`:k==="logo"?`[data-logobuy="${id}"],[data-logook="${id}"]`:`[data-buy="${id}"],[data-buyok="${id}"]`;
+    const t=[...body.querySelectorAll(sel)].find(x=>!x.closest(".shop-news"));const card=t?t.closest(".shop-card"):null;
+    if(!card){toast("Ya es tuyo: lo tienes en «Mías».");return}
+    const d=card.closest("details");if(d)d.open=true;card.scrollIntoView({block:"center",behavior:"smooth"});card.classList.add("flash");setTimeout(()=>card.classList.remove("flash"),1200)});
+}
+{const _rs=renderShop;renderShop=function(){_rs();try{paintShopExtrasV137()}catch(e){}}}
 
 /* Resumen semanal y estadísticas del mes en un mismo sitio: fuera del menú el acceso suelto «Resumen» */
 {const b=document.getElementById("openSumBtn");if(b)b.remove()}

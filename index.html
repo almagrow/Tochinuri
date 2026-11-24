@@ -1972,7 +1972,7 @@ h2.view-title{text-wrap:balance}
 :is([data-skin="menta"],[data-skin="cielo"],[data-skin="perla"],[data-skin="morado"])[data-night] .mode-sw button[aria-checked="true"]{background:#48484A;color:#FFFFFF}
 :is([data-skin="menta"],[data-skin="cielo"],[data-skin="perla"],[data-skin="morado"])[data-night] .seg input:checked+label{background:#48484A;color:#FFFFFF}
 /* Selector de color en el Perfil */
-.look-pick{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.look-pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(58px,1fr));gap:4px}
 .look-pick button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:6px;padding:4px 0;min-height:44px;cursor:pointer;color:var(--muted);font-weight:600;font-size:13px}
 .look-pick .lp-dot{width:44px;height:44px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
 .look-pick button[aria-pressed="true"]{color:var(--ink)}
@@ -2034,6 +2034,42 @@ h2.view-title{text-wrap:balance}
 .news-card{scroll-snap-align:start}
 .news-card .lg-prev{display:grid;place-items:center;min-height:90px}
 .shop-card.flash{outline:3px solid var(--accent);outline-offset:2px;transition:outline-color .3s}
+
+/* v138 · Corona: tema exclusivo de administradoras. Negro profundo, oro y el morado de las llamas del icono. Igual de día y de noche. */
+:root[data-skin="corona"],:root[data-skin="corona"][data-night]{--bg:#0B0A10;--surface:#15131D;--surface-2:#1C1926;--ink:#F5F1E6;--muted:#B3AC9C;--line:#2E2A3A;--accent:#E9C46A;--accent-ink:#1A1206;--brand:#E9C46A;--gold-1:#FBE7A1;--gold-2:#E9C46A;--gold-3:#B8862B;--royal:#8B5CF6;--f-display:"Fraunces",Georgia,serif;--f-body:"Inter",-apple-system,system-ui,sans-serif;--p-red:#ff7a6c;--p-blue:#8fb0ff;--p-yellow:#F6D98A;--p-green:#6EE7A8;--p-white:#cfc8b8;--danger:#ff8a7e;--drop:#ff7a90;--star:#F6D98A;--coin:#E9C46A;color-scheme:dark}
+[data-skin="corona"] body{-webkit-font-smoothing:antialiased}
+[data-skin="corona"] body::before{content:"";position:fixed;width:360px;height:360px;left:50%;top:-200px;margin-left:-180px;border-radius:50%;background:radial-gradient(circle,rgba(233,196,106,.55),rgba(139,92,246,.35) 55%,transparent 72%);filter:blur(70px);opacity:.55;z-index:-1;pointer-events:none}
+[data-skin="corona"] body::after{content:"";position:fixed;width:300px;height:300px;right:-140px;bottom:8%;border-radius:50%;background:#7C3AED;filter:blur(90px);opacity:.22;z-index:-1;pointer-events:none}
+[data-skin="corona"] :is(.wod,.goal,.pr-box,.shop-card,.wallet,.confirm,.mw-item,.lift-card,.lift-view,.ex-card,.stat,.tool,.empty,.mtile){background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.015)),var(--surface);border:1px solid rgba(233,196,106,.22);border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 1px 0 rgba(251,231,161,.08)}
+[data-skin="corona"] header.top{background:rgba(11,10,16,.72);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border-bottom:1px solid rgba(233,196,106,.14)}
+[data-skin="corona"] .brand-word{background:linear-gradient(180deg,var(--gold-1),var(--gold-2) 55%,var(--gold-3));-webkit-background-clip:text;background-clip:text;color:transparent}
+[data-skin="corona"] .brand-word span{color:transparent}
+[data-skin="corona"] .brand::after{content:"ADMIN";margin-top:3px;font-family:var(--f-body);font-size:9px;font-weight:800;letter-spacing:.32em;padding:2px 8px 2px 10px;border-radius:999px;color:#1A1206;background:linear-gradient(90deg,var(--gold-1),var(--gold-3))}
+[data-skin="corona"] :is(h2.view-title,.sec h3,.goal-txt h3,.empty h3){text-transform:none;font-weight:700;letter-spacing:-.01em}
+[data-skin="corona"] h2.view-title{background:linear-gradient(180deg,#FFF6D8,var(--gold-2) 60%,var(--gold-3));-webkit-background-clip:text;background-clip:text;color:transparent}
+[data-skin="corona"] :is(.stat b,.date b,.streak b,.mtile b){font-family:var(--f-display);font-weight:700;color:var(--gold-1)}
+[data-skin="corona"] .streak{background:radial-gradient(circle at 30% 20%,rgba(251,231,161,.25),rgba(139,92,246,.18));color:var(--gold-1);border:1px solid rgba(233,196,106,.35)}
+[data-skin="corona"] .btn{border-radius:14px;border-color:rgba(233,196,106,.25);background:rgba(255,255,255,.04);color:var(--ink)}
+[data-skin="corona"] .btn.primary{background:linear-gradient(180deg,var(--gold-1),var(--gold-2) 50%,var(--gold-3));border:0;color:#1A1206;box-shadow:0 8px 22px rgba(233,196,106,.28),inset 0 1px 0 rgba(255,255,255,.5)}
+[data-skin="corona"] :is(input,select,textarea){border-radius:12px;background:var(--surface-2);border-color:var(--line)}
+[data-skin="corona"] :is(input,select,textarea):focus{border-color:var(--gold-2);outline:none;box-shadow:0 0 0 3px rgba(233,196,106,.2)}
+[data-skin="corona"] .mode-sw{background:rgba(255,255,255,.04);border:1px solid rgba(233,196,106,.22);border-radius:14px;padding:3px}
+[data-skin="corona"] .mode-sw button{border-radius:11px;color:var(--muted)}
+[data-skin="corona"] .mode-sw button[aria-checked="true"]{background:linear-gradient(180deg,var(--gold-1),var(--gold-2) 55%,var(--gold-3));color:#1A1206;box-shadow:0 4px 14px rgba(233,196,106,.3)}
+[data-skin="corona"] .seg{background:rgba(255,255,255,.04);border:1px solid rgba(233,196,106,.18)}
+[data-skin="corona"] .seg input:checked+label{background:linear-gradient(180deg,#2A2536,#1F1B29);color:var(--gold-1);box-shadow:inset 0 0 0 1px rgba(233,196,106,.35)}
+[data-skin="corona"] .dot{background:rgba(255,255,255,.06);border-color:var(--line)}
+[data-skin="corona"] .dot.on{background:linear-gradient(90deg,var(--gold-3),var(--gold-1));border-color:transparent;box-shadow:0 0 10px rgba(233,196,106,.45)}
+[data-skin="corona"] .goal.met .dot.on{background:linear-gradient(90deg,#7C3AED,#C4B5FD);box-shadow:0 0 10px rgba(139,92,246,.55)}
+[data-skin="corona"] .gb-track span.on{background:linear-gradient(90deg,var(--gold-3),var(--gold-1))}
+[data-skin="corona"] nav.tabs{background:rgba(14,12,20,.78);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-top:1px solid rgba(233,196,106,.18)}
+[data-skin="corona"] .tab{color:var(--muted)}
+[data-skin="corona"] .tab[aria-current="page"]{color:var(--gold-1)}
+[data-skin="corona"] .tab-new{background:conic-gradient(from 210deg,var(--gold-1),var(--gold-3),#7C3AED,var(--gold-2),var(--gold-1));color:#1A1206;box-shadow:0 0 0 3px rgba(11,10,16,.9),0 8px 26px rgba(233,196,106,.45),0 0 30px rgba(139,92,246,.35)}
+[data-skin="corona"] .sheet-group{background:rgba(21,19,29,.96);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid rgba(233,196,106,.22);border-radius:20px;box-shadow:0 14px 40px rgba(0,0,0,.6)}
+[data-skin="corona"] .tag{border-color:rgba(233,196,106,.35);color:var(--gold-1)}
+[data-skin="corona"] .tag-new{background:linear-gradient(90deg,var(--gold-1),var(--gold-3));color:#1A1206;border:0}
+[data-skin="corona"] #safeTop{background:#0B0A10}
 
 /* ================= Modo noche para los temas claros (generado a partir de cada tema) ================= */
 :root[data-skin="suizo"][data-night]{--bg:#131313;--surface:#131313;--surface-2:#1A1A1A;--ink:#EAEAEA;--muted:#888888;--line:#EAEAEA;--accent:#CCCCCC;--accent-ink:#FFFFFF;--brand:#F63C43;--f-display:"Inter Tight","Helvetica Neue",Arial,sans-serif;--f-body:"Inter Tight","Helvetica Neue",Arial,sans-serif;
@@ -3887,6 +3923,7 @@ const SKINS=[
   {id:"menta",name:"Menta",price:0,free:true,ff:"Inter",fonts:["Inter:wght@400;500;600;700;800"],c:["#EFF5F1","#0E8A5F","#0F1F17","#FFFFFF","#0E8A5F"],g:["#A7E9C9","#0E8A5F"]},
   {id:"cielo",name:"Cielo",price:0,free:true,ff:"Inter",fonts:["Inter:wght@400;500;600;700;800"],c:["#EEF3FA","#1F6FEB","#0B1526","#FFFFFF","#1F6FEB"],g:["#BFDBFE","#1F6FEB"]},
   {id:"perla",name:"Perla rosa",price:0,free:true,ff:"Inter",fonts:["Inter:wght@400;500;600;700;800"],c:["#FBF3F5","#C2185B","#24131A","#FFFFFF","#C2185B"],g:["#FBCFE8","#C2185B"]},
+  {id:"corona",name:"Corona · admin",price:0,admin:true,ff:"Fraunces",fonts:["Fraunces:opsz,wght@9..144,600;9..144,700","Inter:wght@400;500;600;700;800"],c:["#0B0A10","#E9C46A","#F5F1E6","#17151F","#E9C46A"],g:["#F6D98A","#7C3AED"]},
   {id:"morado",name:"Morado",price:0,free:true,ff:"Inter",fonts:["Inter:wght@400;500;600;700;800"],c:["#F4F1FB","#7C3AED","#1B1230","#FFFFFF","#7C3AED"],g:["#DDD6FE","#7C3AED"]},
   {id:"industrial",added:"2026-11-14",name:"Box industrial",price:100,ff:"Oswald",fonts:["Oswald:wght@500;700"],c:["#1B1C1E","#F5C400","#ECEAE4","#26272A","#F5C400"]},
   {id:"pizarra",added:"2026-11-14",name:"Pizarra de tiza",price:100,ff:"Caveat Brush",fonts:["Caveat+Brush","Patrick+Hand"],c:["#24302A","#F4A7B9","#EDEFE8","#2B3831","#F2E28A"]},
@@ -3909,7 +3946,7 @@ const SKINS=[
   {id:"arcade",added:"2026-11-14",name:"Arcade 8-bit",price:300,ff:"Press Start 2P",fonts:["Press+Start+2P","VT323"],c:["#10102A","#B07CFF","#F4F4F4","#17173A","#E83B3B"]},
 ];
 const skinItemId=id=>"t-"+id;
-const skinOwned=id=>!!SKINS.find(s=>s.id===id&&s.free)||ownedIds().has(skinItemId(id));
+const skinOwned=id=>{const k=SKINS.find(s=>s.id===id);if(k&&k.admin)return !!shopAdmin;return !!(k&&k.free)||ownedIds().has(skinItemId(id))};
 const fontsLoaded=new Set();
 function loadFonts(list){const need=list.filter(f=>!fontsLoaded.has(f));if(!need.length)return;need.forEach(f=>fontsLoaded.add(f));
   const l=document.createElement("link");l.rel="stylesheet";l.href="https://fonts.googleapis.com/css2?"+need.map(f=>"family="+f).join("&")+"&display=swap";document.head.appendChild(l)}
@@ -3932,7 +3969,7 @@ function paintSkinShop(){
   loadFonts(SKINS.flatMap(s=>s.fonts).concat(["Oswald:wght@500;700","Caveat+Brush","Inter+Tight:wght@400;500;700;800","Anton","Audiowide","Baloo+2:wght@500;600;700;800","Teko:wght@500;600","Press+Start+2P"]));
   const B=coinBalance(),cur=skinPref(),sec=document.createElement("div");sec.className="sec skins-sec";
   if(shopTab==="shop"){
-    sec.innerHTML=`<h3>Temas</h3><p class="muted">Cambia el aspecto de toda la app. Cuando lo compres, lo pones desde «Mías».</p><div class="shop-grid">${SKINS.filter(s=>!s.free).map(s=>{const iid=skinItemId(s.id),has=skinOwned(s.id),short=s.price-B.bal;
+    sec.innerHTML=`<h3>Temas</h3><p class="muted">Cambia el aspecto de toda la app. Cuando lo compres, lo pones desde «Mías».</p><div class="shop-grid">${SKINS.filter(s=>!s.free&&!s.admin).map(s=>{const iid=skinItemId(s.id),has=skinOwned(s.id),short=s.price-B.bal;
       return`<div class="shop-card${has?" owned":""}">${skinPreview(s)}<div class="sc-b"><b>${esc(s.name)}</b><span class="price">${COIN_SVG}<span class="mono">${s.price}</span></span>
         ${has?`<span class="tag">Ya es tuyo</span>`:buying===iid?`<div class="buy-confirm"><span>¿Comprar por ${s.price}?</span><div class="row-actions"><button type="button" class="btn primary" data-skinok="${s.id}">Sí</button><button type="button" class="btn" data-buyno>No</button></div></div>`
           :`<button type="button" class="btn ${short>0?"":"primary"}" data-skinbuy="${s.id}" ${short>0?"disabled":""}>${short>0?`Te faltan ${short}`:"Comprar"}</button>`}</div></div>`}).join("")}</div>
@@ -3959,7 +3996,7 @@ function paintSkinShop(){
 function paintLook(){
   const f=$("#lookField"),box=$("#lookPick");if(!f||!box)return;
   f.hidden=!profile;if(!profile)return;
-  const cur=skinPref()||"",opts=[{id:"",name:"Clásico",g:["#eceff2","#7c3aed"]},...SKINS.filter(s=>s.free)];
+  const cur=skinPref()||"",opts=[{id:"",name:"Clásico",g:["#eceff2","#7c3aed"]},...SKINS.filter(s=>s.free),...(shopAdmin?SKINS.filter(s=>s.admin).map(s=>({...s,name:"Corona"})):[])];
   box.innerHTML=opts.map(o=>`<button type="button" data-look="${o.id}" aria-pressed="${cur===o.id}"><span class="lp-dot" style="background:linear-gradient(135deg,${o.g[0]},${o.g[1]})"></span>${esc(o.name)}</button>`).join("");
   const shop=cur&&!opts.some(o=>o.id===cur)?SKINS.find(s=>s.id===cur):null;
   $("#lookHint").textContent=shop?`Ahora llevas «${shop.name}» de la tienda. Toca un color para cambiarlo.`:"Gratis. Los temas de la tienda se ponen desde Tienda › Mías.";
@@ -8459,7 +8496,7 @@ function endTry(say){
 /* Novedades: lo último que ha llegado a la tienda (temas, logos e imágenes), con «Nuevo» si tiene menos de 10 días */
 const NEW_DAYS=10;
 function shopNews(){
-  const L=[...SKINS.filter(x=>!x.free&&x.added).map(x=>({kind:"skin",id:x.id,name:x.name,price:x.price,added:x.added,own:skinOwned(x.id)})),
+  const L=[...SKINS.filter(x=>!x.free&&!x.admin&&x.added).map(x=>({kind:"skin",id:x.id,name:x.name,price:x.price,added:x.added,own:skinOwned(x.id)})),
     ...LOGOS.filter(x=>x.added).map(x=>({kind:"logo",id:x.id,name:x.name,price:x.price,added:x.added,own:logoOwned(x.id)})),
     ...SHOP.filter(x=>x.added).map(x=>({kind:"img",id:x.id,name:x.name,price:x.price,added:x.added,src:x.src,own:ownedIds().has(x.id)}))];
   return L.sort((a,b)=>b.added.localeCompare(a.added)).slice(0,8);

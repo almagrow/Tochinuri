@@ -2636,6 +2636,8 @@ button.cd{border:0;font:inherit;font-family:var(--f-mono);cursor:pointer;padding
 .rt-pop-a{display:flex;flex-direction:column;gap:8px}
 #wodForm .fx-hide{display:none!important}
 #wodForm.is-gym .fmt-row{display:none}
+#wodForm.is-gym .ex-card.no-time .ex-nums{grid-template-columns:repeat(3,1fr)}
+#wodForm.is-gym .ex-card.no-time .field:has(.ext){display:none}
 #wodForm select{width:100%;min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;padding:0 12px}
 #photoCta{padding:10px 12px;min-height:0}#photoCta small{display:none}#photoCta svg{width:20px;height:20px}
 .se-det{margin:4px 0 2px}.mo-det{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:0 12px;margin-top:6px}
@@ -4297,6 +4299,11 @@ function addRow(e={}){
     if(on&&gr)gw.querySelectorAll(".grip-c").forEach(o=>{if(o!==b&&gr.includes(o.textContent))o.setAttribute("aria-pressed","false")});
     b.setAttribute("aria-pressed",on?"true":"false")});
   nm.addEventListener("input",showG);nm.addEventListener("change",showG);showG();
+  /* Gym: los ejercicios de musculación no llevan tiempo; solo cardio y aguantes (plancha…) */
+  const tIn=el.querySelector(".ext"),showT=()=>{const n=nm.value.trim(),x=n&&findEx(n);
+    const timed=!x||x.c==="yca"||x.c==="mon"||x.y==="yca"||/plancha|plank|hold|isom|colgad|wall sit|sentadilla isom/i.test(n);
+    el.classList.toggle("no-time",!!n&&!timed&&!tIn.value.trim())};
+  nm.addEventListener("input",showT);nm.addEventListener("change",showT);showT();
   nm.addEventListener("input",upd);nm.addEventListener("change",upd);upd();
   /* Autorrelleno con la última vez y botones + y − */
   const F={s:el.querySelector(".exs"),r:el.querySelector(".exr"),w:el.querySelector(".exw"),t:el.querySelector(".ext")},an=el.querySelector(".auto-note");
